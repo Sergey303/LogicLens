@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import json
+import socket
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from pathlib import Path
 from typing import Any, Callable, Sequence
 
 from .processes import ManagedProcess, RunFailure
@@ -166,6 +166,26 @@ def validate_loopback_url(value: str, name: str) -> urllib.parse.ParseResult:
     if parsed.path not in {"", "/"} or parsed.query or parsed.fragment:
         raise RunFailure(f"{name} must be an origin without path/query/fragment: {value}")
     return parsed
+
+
+def require_port_not_listening(
+    parsed: urllib.parse.ParseResult,
+    name: str,
+) -> None:
+    hostname = parsed.hostname
+    port = parsed.port
+    if hostname is None or port is None:
+        raise RunFailure(f"{name} has no host or port")
+
+    addresses = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
+    for family, socket_type, protocol, _, socket_address in addresses:
+        with socket.socket(family, socket_type, protocol) as probe:
+            probe.settimeout(0.2)
+            if probe.connect_ex(socket_address) == 0:
+                raise RunFailure(
+                    f"{name} is already in use at {hostname}:{port}; "
+                    "stop the previous local run or choose another port"
+                )
 
 
 def require(condition: bool, message: str) -> None:
