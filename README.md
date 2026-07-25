@@ -20,6 +20,10 @@ LogicLens is a research system for building stable and query-specific interfaces
 - query-specific search resolver;
 - atomic editing through `AddFact` and `DeleteFact`.
 
+## Independent research
+
+- [`EpistemicCompilerLab/`](EpistemicCompilerLab/) — isolated experiments on compound teachers, weak local students, adaptive knowledge representations and SWI-Prolog execution. It does not define the main LogicLens UI architecture.
+
 ## Architecture
 
 - [Architecture v0](docs/architecture-v0.md)
