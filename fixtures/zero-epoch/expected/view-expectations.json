@@ -1,0 +1,95 @@
+{
+  "preferredUiLanguage": "ru",
+  "technicalPredicates": [
+    "urn:logiclens:test:internal-code"
+  ],
+  "labelExpectations": [
+    {
+      "resource": "urn:logiclens:person:alex",
+      "selected": "Алексей Ветров",
+      "reason": "ru"
+    },
+    {
+      "resource": "urn:logiclens:org:iis",
+      "selected": "Институт систем информатики",
+      "reason": "ru"
+    },
+    {
+      "resource": "urn:logiclens:org:lab",
+      "selected": "Logic Lab",
+      "reason": "untagged"
+    },
+    {
+      "resource": "urn:logiclens:document:paper",
+      "selected": "Verified Logic Interfaces",
+      "reason": "en"
+    }
+  ],
+  "subgraphExpectations": [
+    {
+      "root": "urn:logiclens:person:alex",
+      "depth": 2,
+      "direction": "both",
+      "minimumDistance": {
+        "urn:logiclens:person:alex": 0,
+        "urn:logiclens:participation:work": 1,
+        "urn:logiclens:student:study": 1,
+        "urn:logiclens:authority:paper-author": 1,
+        "urn:logiclens:org:iis": 2,
+        "urn:logiclens:document:paper": 2
+      },
+      "requiredRepeatedNodeOccurrences": [
+        {
+          "node": "urn:logiclens:org:iis",
+          "viaPredicates": [
+            "http://fogid.net/o/in-org",
+            "http://fogid.net/o/learning-org"
+          ],
+          "minimumOccurrenceCount": 2
+        }
+      ],
+      "requiredIncomingPredicatesAtRoot": [
+        "http://fogid.net/o/participant",
+        "http://fogid.net/o/learner",
+        "http://fogid.net/o/author"
+      ]
+    },
+    {
+      "root": "urn:logiclens:org:lab",
+      "depth": 2,
+      "direction": "both",
+      "minimumDistance": {
+        "urn:logiclens:org:lab": 0,
+        "urn:logiclens:org:archive": 1
+      },
+      "requiredCycle": {
+        "from": "urn:logiclens:org:archive",
+        "predicate": "urn:logiclens:test:related",
+        "to": "urn:logiclens:org:lab"
+      }
+    }
+  ],
+  "duplicateOriginExpectations": [
+    {
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "originCount": 2
+    },
+    {
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "ru",
+        "lexical": "Алексей Ветров"
+      },
+      "originCount": 2
+    },
+    {
+      "subject": "urn:logiclens:document:paper",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "originCount": 2
+    }
+  ]
+}
