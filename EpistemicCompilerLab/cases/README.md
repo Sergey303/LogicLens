@@ -10,7 +10,8 @@ Each line is one independent JSON object. The benchmark preserves the same domai
 - `questionRu` — user-facing Russian question;
 - `expectedAction` — `query` or `ask_user`;
 - `expectedStatus` — `success`, `unknown` or `need_user`;
-- `requiresTail` — `null`, `evidence` or `exceptions`.
+- `requiresTail` — `null`, `evidence` or `exceptions`;
+- `tailEntity` — the entity that owns the required tail, or `null`.
 
 Query cases also contain:
 
@@ -19,6 +20,10 @@ Query cases also contain:
 - `expectedMaterial` when a unique material must be returned.
 
 Clarification cases contain `expectedField`.
+
+A tail is not implicitly owned by `expectedMaterial`. A result may select one entity while its explanation or exception list belongs to the rule, replacement target or source assertion represented by another entity.
+
+Do not require a tail for a direct answer when the compact result and proof already contain enough information. For example, selecting `asd2` for revision A after the transition is already justified by `rule:revision_a_exception`; the `exceptions` tail is reserved for a separate request to inspect the exception set.
 
 ## Representation modes
 
@@ -40,6 +45,7 @@ Record separately:
 - correct final status;
 - correct material when applicable;
 - correct decision to open or not open a tail;
+- correct tail entity;
 - unnecessary CLI calls and tails;
 - semantic query errors;
 - final-answer accuracy.
