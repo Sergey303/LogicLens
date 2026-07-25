@@ -6,6 +6,7 @@ on:
       - "src/LogicLens.Core/**"
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
+      - "tests/LogicLens.Prolog.Verification/**"
       - "fixtures/zero-epoch/**"
       - "epochs/epoch-000/**"
       - "LogicLens.sln"
@@ -17,6 +18,7 @@ on:
       - "src/LogicLens.Core/**"
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
+      - "tests/LogicLens.Prolog.Verification/**"
       - "fixtures/zero-epoch/**"
       - "epochs/epoch-000/**"
       - "LogicLens.sln"
@@ -111,11 +113,25 @@ jobs:
           cp epochs/epoch-000/data/epoch_data.pl /tmp/epoch-a/data/epoch_data.pl
           mkdir --parents /tmp/epoch-a/tests
           cp epochs/epoch-000/tests/data_contract_tests.pl /tmp/epoch-a/tests/
+          cp epochs/epoch-000/tests/escaping_contract_tests.pl /tmp/epoch-a/tests/
+
+      - name: Generate escaping round-trip terms
+        run: >-
+          dotnet run
+          --project tests/LogicLens.Prolog.Verification/LogicLens.Prolog.Verification.csproj
+          --configuration Release
+          --no-build
+          --
+          /tmp/epoch-a/tests/escaping.generated.pl
 
       - name: Load generated data and run SWI-Prolog tests
         run: >-
           swipl -q
-          -g "load_files('/tmp/epoch-a/tests/data_contract_tests.pl', [silent(true)]), run_tests, halt"
+          -g "load_files([
+          '/tmp/epoch-a/tests/data_contract_tests.pl',
+          '/tmp/epoch-a/tests/escaping.generated.pl',
+          '/tmp/epoch-a/tests/escaping_contract_tests.pl'
+          ], [silent(true)]), run_tests, halt"
           -t "halt(1)"
 
       - name: Upload verified epoch data
