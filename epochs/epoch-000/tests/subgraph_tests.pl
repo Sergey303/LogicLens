@@ -180,6 +180,66 @@ test(low_node_limit_selects_stable_subset) :-
     )).
 
 
+test(low_fact_limit_selects_first_fact_only) :-
+    person(Person),
+    Options = _{
+        depth: 2,
+        direction: both,
+        languages: [ru, en],
+        limits: _{maxFacts:1}
+    },
+    subgraph:subgraph(Person, Options, Result),
+    fact_ids(Result, FactIds),
+    assertion(FactIds == [
+        'f:sha256:3242677a145c47ae3bc6037b8877beb244659c99fbbec00b87f8977ec60afaae'
+    ]),
+    node_ids(Result, NodeIds),
+    assertion(NodeIds == ['urn:logiclens:person:alex']),
+    assertion(member(
+        diagnostic{code:max_facts, severity:warning, message:_, context:_},
+        Result.diagnostics
+    )).
+
+
+test(low_occurrence_limit_keeps_root_and_first_path) :-
+    person(Person),
+    Options = _{
+        depth: 2,
+        direction: both,
+        languages: [ru, en],
+        limits: _{maxOccurrences:2}
+    },
+    subgraph:subgraph(Person, Options, Result),
+    length(Result.occurrences, 2),
+    Result.occurrences = [RootOccurrence, ChildOccurrence],
+    assertion(RootOccurrence.nodeId == Person),
+    assertion(ChildOccurrence.nodeId == 'urn:logiclens:authority:paper-author'),
+    assertion(member(
+        diagnostic{code:max_occurrences, severity:warning, message:_, context:_},
+        Result.diagnostics
+    )).
+
+
+test(path_length_limit_is_explicit) :-
+    person(Person),
+    Options = _{
+        depth: 2,
+        direction: both,
+        languages: [ru, en],
+        limits: _{maxPathLength:1}
+    },
+    subgraph:subgraph(Person, Options, Result),
+    assertion(\+ node_with_id(Result, 'urn:logiclens:org:iis')),
+    forall(
+        member(Occurrence, Result.occurrences),
+        assertion(Occurrence.pathLength =< 1)
+    ),
+    assertion(member(
+        diagnostic{code:max_path_length, severity:warning, message:_, context:_},
+        Result.diagnostics
+    )).
+
+
 test(all_occurrence_fact_references_are_valid) :-
     person(Person),
     default_options(2, Options),
