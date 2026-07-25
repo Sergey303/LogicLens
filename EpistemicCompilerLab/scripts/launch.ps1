@@ -1,7 +1,17 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('sync-doctor', 'doctor', 'tests', 'cases', 'oracle', 'query')]
+    [ValidateSet(
+        'sync-doctor',
+        'doctor',
+        'tests',
+        'cases',
+        'oracle',
+        'runner-check',
+        'representation-run',
+        'representation-score',
+        'query'
+    )]
     [string] $Action = 'sync-doctor',
 
     [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
@@ -45,6 +55,21 @@ try {
         }
         'oracle' {
             & (Join-Path $scriptsRoot 'verify-oracle.ps1')
+        }
+        'runner-check' {
+            & (Join-Path $scriptsRoot 'validate-runner.ps1')
+        }
+        'representation-run' {
+            if (-not $Arguments -or $Arguments.Count -eq 0) {
+                throw 'Runner arguments are required, for example: representation-run -Mode markdown -Model qwen2.5:7b'
+            }
+            & (Join-Path $scriptsRoot 'run-representation.ps1') @Arguments
+        }
+        'representation-score' {
+            if (-not $Arguments -or $Arguments.Count -eq 0) {
+                throw 'Scorer arguments are required, for example: representation-score -RunPath <file.jsonl>'
+            }
+            & (Join-Path $scriptsRoot 'score-representation.ps1') @Arguments
         }
         'query' {
             if (-not $Arguments -or $Arguments.Count -eq 0) {
