@@ -47,7 +47,7 @@ public static class OccurrenceIdV1
             ArgumentNullException.ThrowIfNull(step);
             ArgumentException.ThrowIfNullOrWhiteSpace(step.FactId);
             WriteField(stream, step.FactId);
-            stream.WriteByte((byte)step.Direction);
+            stream.WriteByte(DirectionTag(step.Direction));
         }
 
         return stream.ToArray();
@@ -57,6 +57,16 @@ public static class OccurrenceIdV1
         string root,
         IReadOnlyList<OccurrenceStep> steps) =>
         Convert.ToHexString(Encode(root, steps)).ToLowerInvariant();
+
+    private static byte DirectionTag(OccurrenceDirection direction) => direction switch
+    {
+        OccurrenceDirection.Outgoing => 0x01,
+        OccurrenceDirection.Incoming => 0x02,
+        _ => throw new ArgumentOutOfRangeException(
+            nameof(direction),
+            direction,
+            "Unsupported occurrence direction.")
+    };
 
     private static void WriteField(Stream stream, string value)
     {
