@@ -12,6 +12,7 @@ on:
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
       - "tools/LogicLens.OntologyCompiler/**"
+      - "tools/active_epoch/**"
       - "tools/build_active_epoch.py"
       - "tests/active_epoch_package_test.py"
       - ".github/workflows/verify-active-epoch.yml"
@@ -28,6 +29,7 @@ on:
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
       - "tools/LogicLens.OntologyCompiler/**"
+      - "tools/active_epoch/**"
       - "tools/build_active_epoch.py"
       - "tests/active_epoch_package_test.py"
       - ".github/workflows/verify-active-epoch.yml"
@@ -43,6 +45,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
@@ -66,18 +70,27 @@ jobs:
           dotnet restore LogicLens.sln
           dotnet build LogicLens.sln --configuration Release --no-restore
 
+      - name: Resolve package source commit
+        run: |
+          if git rev-parse HEAD^2 >/dev/null 2>&1; then
+            source_commit=$(git rev-parse HEAD^2)
+          else
+            source_commit=$(git rev-parse HEAD)
+          fi
+          echo "SOURCE_COMMIT=$source_commit" >> "$GITHUB_ENV"
+
       - name: Build active epoch twice
         run: |
           mkdir --parents /tmp/active-epoch-a /tmp/active-epoch-b
           python tools/build_active_epoch.py \
             --repository-root . \
             --output /tmp/active-epoch-a \
-            --engine-commit "$GITHUB_SHA" \
+            --engine-commit "$SOURCE_COMMIT" \
             --no-build
           python tools/build_active_epoch.py \
             --repository-root . \
             --output /tmp/active-epoch-b \
-            --engine-commit "$GITHUB_SHA" \
+            --engine-commit "$SOURCE_COMMIT" \
             --no-build
 
       - name: Verify determinism hashes and portable smoke commands
