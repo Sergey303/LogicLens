@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('sync-doctor', 'doctor', 'tests', 'cases', 'query')]
+    [ValidateSet('sync-doctor', 'doctor', 'tests', 'cases', 'oracle', 'query')]
     [string] $Action = 'sync-doctor',
 
     [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
@@ -42,6 +42,9 @@ try {
         }
         'cases' {
             & (Join-Path $scriptsRoot 'validate-cases.ps1')
+        }
+        'oracle' {
+            & (Join-Path $scriptsRoot 'verify-oracle.ps1')
         }
         'query' {
             if (-not $Arguments -or $Arguments.Count -eq 0) {
