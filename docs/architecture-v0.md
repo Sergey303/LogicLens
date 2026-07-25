@@ -98,7 +98,7 @@ The manifest must pin at least:
 ### Epoch and runtime revision are different
 
 - **Epoch** changes when data is compacted and/or stable rules and profiles change.
-- **Revision** changes after every successful runtime `ApplyDelta`.
+- **Revision** changes after every state-changing runtime `ApplyDelta`.
 
 A stable page is identified by:
 
@@ -118,6 +118,8 @@ origin(OriginId, Origin).
 
 The graph is a set of normalized triples. Repeated archival occurrences attach multiple origins to one fact.
 
+`FactId` is deterministic from a versioned, length-prefixed UTF-8 encoding of the canonical triple. It does not depend on Prolog formatting or file order.
+
 ## 6. Runtime persistence
 
 The in-memory SWI-Prolog graph is not the sole durable copy.
@@ -125,8 +127,9 @@ The in-memory SWI-Prolog graph is not the sole durable copy.
 Runtime state consists of:
 
 1. the selected epoch snapshot;
-2. an ordered append-only delta journal;
-3. the current revision.
+2. an ordered append-only state-change journal;
+3. accepted-command receipts keyed by `CommandId`;
+4. the current revision.
 
 On startup:
 
@@ -137,49 +140,61 @@ load epoch snapshot
 -> expose API
 ```
 
-After a successful delta:
+After a state-changing delta:
 
 ```text
-validate expected revision
+validate CommandId and expected revision
 -> prepare next graph state
--> durably append journal entry
+-> durably write change and command receipt
 -> publish graph mutation
 -> increment revision once
 -> rebuild affected views
 ```
 
+A command containing only no-op operations leaves the revision and state-change journal unchanged but returns a stable receipt for retries.
+
 The exact crash-safe write sequence remains part of ENG-24.
 
 ## 7. Static rule layers
 
-### 7.1 Generic value rendering
+### 7.1 Trusted UI Document v0
 
-Required components for the first version:
+The minimal trusted contract is defined in [ADR-0003](adr/0003-minimal-ui-document.md) and [its JSON Schema](../contracts/ui-document-v0.schema.json).
+
+Structural components:
 
 ```text
 Page
-Group
+Section
+```
+
+Data components:
+
+```text
 Property
-Text
-ResourceLink
-PropertyList
-Table
-Tree
-Graph
-Timeline
-Image
+TextBlock
 RawProlog
+Diagnostic
+```
+
+Property value kinds:
+
+```text
+TextValue
+ResourceLinkValue
 ```
 
 Minimal generic rules:
 
-- IRI object -> `ResourceLink`;
-- literal object -> `Text`;
-- one predicate with several values -> one `PropertyList`;
+- IRI object -> `ResourceLinkValue`;
+- literal object -> `TextValue`;
+- one predicate with several values -> one `Property` with an array of values;
 - unknown predicate -> `Property` using ontology label or compact identifier;
 - unknown entity type -> generic property page;
-- source/provenance -> optional technical details;
+- technical facts -> collapsed technical section, never silent removal;
 - generated Prolog fragment -> `RawProlog`.
+
+`Table`, `Tree`, `Graph`, `Timeline`, `Image`, arbitrary Markdown, HTML, CSS, and JavaScript are not trusted v0 components. They may enter a later UI contract after an experiment demonstrates a stable need and safe fallback.
 
 ### 7.2 Language selection
 
@@ -201,22 +216,24 @@ The UI must provide access to alternate language values rather than silently dis
 
 ### 7.3 Graph traversal
 
-Conceptual predicates:
+Traversal semantics are defined in [ADR-0002](adr/0002-layered-subgraphs-and-occurrences.md).
 
 ```prolog
-subgraph1(Entity, Result).
-subgraph2(Entity, Result).
+subgraph1(Entity, Options, Result).
+subgraph2(Entity, Options, Result).
 ```
 
-The shared implementation must distinguish:
+Both aliases use one bounded generic engine. A result contains:
 
-- unique nodes;
-- unique facts;
-- distinct paths by which a node was reached.
+- a normalized set of unique nodes and facts;
+- fact layers that exclude facts already emitted by earlier layers;
+- path-sensitive node occurrences;
+- links from occurrences to newly exposed facts;
+- explicit cycle and limit diagnostics.
 
-A node such as one organization may therefore appear once in the node set but have both `studied_at` and `worked_at` paths.
+The same target may have several occurrences through different facts, such as `studied_at` and `worked_at`, while underlying nodes and facts remain unique.
 
-Exact traversal direction, cycle handling, and serialization are intentionally unresolved until ENG-21 is completed.
+Traversal supports `outgoing`, `incoming`, and `both`; the generic page defaults to `both` while preserving original edge direction.
 
 ### 7.4 Type profiles
 
@@ -241,12 +258,12 @@ base facts
 -> type profile
 -> derived predicates
 -> visibility and ordering rules
--> UI Document
+-> validated UI Document
 ```
 
-Each UI element that displays base data carries `FactId`. Derived elements carry rule identity and evidence `FactId` values.
+Each UI value that displays base data carries `FactId`. Derived values carry rule identity and evidence `FactId` values.
 
-React only renders the validated UI Document and sends declared actions back to the server.
+React only renders the validated UI Document and sends declared edit operations back to the server.
 
 ## 9. Editing
 
@@ -262,12 +279,16 @@ DeleteFact(FactId)
 Examples:
 
 ```text
-change literal = DeleteFact(old) + AddFact(new literal)
-change link    = DeleteFact(old) + AddFact(new IRI)
+change literal   = DeleteFact(old) + AddFact(new literal)
+change link      = DeleteFact(old) + AddFact(new IRI)
 change predicate = DeleteFact(old) + AddFact(new predicate)
 ```
 
-These operations are enclosed in one atomic `ApplyDelta`.
+These operations are enclosed in one atomic command:
+
+```text
+ApplyDelta(CommandId, ExpectedRevision, AddFact[], DeleteFact[])
+```
 
 The first version does not validate a predicate against the subject type and does not edit ontology labels, domain/range, cardinality, or constraints. It performs only technical validation required to preserve a readable Prolog state.
 
@@ -374,12 +395,13 @@ Builder can later propose stable predicates and profiles for repeated successful
 - Generated query timeout -> terminate isolated run, no active-state change.
 - Invalid UI Document -> reject generated view, use generic renderer.
 - Stale edit revision -> reject entire delta and return current facts.
+- Unsupported rich component -> diagnostic plus trusted v0 fallback.
 
 ## 14. Verification order
 
 1. ADR-0001 canonical fact model.
-2. ENG-21 subgraph semantics.
-3. ENG-22 fixed UI ontology and fallback view.
+2. ADR-0002 subgraph semantics.
+3. ADR-0003 fixed UI ontology and fallback view.
 4. ENG-23 zero-epoch vertical slice.
 5. ENG-24 crash-safe ApplyDelta.
 6. ENG-25 restricted Prolog CLI.
