@@ -28,6 +28,23 @@ public sealed class FogSubsetImporter
     private static readonly XNamespace Rdf = RdfNamespace;
     private static readonly XNamespace Xml = XNamespace.Xml;
 
+    private static readonly HashSet<XName> RootAttributes =
+    [
+        XName.Get("dbid")
+    ];
+
+    private static readonly HashSet<XName> EntityAttributes =
+    [
+        Rdf + "about"
+    ];
+
+    private static readonly HashSet<XName> PropertyAttributes =
+    [
+        Rdf + "resource",
+        Rdf + "datatype",
+        Xml + "lang"
+    ];
+
     public FogImportResult Import(
         Stream xml,
         string sourcePath,
@@ -68,11 +85,13 @@ public sealed class FogSubsetImporter
                 $"Expected rdf:RDF root, got '{root.Name}'.");
         }
 
+        ValidateAttributes(root, RootAttributes, sourcePath);
         var sourceDbId = RequiredAttribute(root, "dbid", sourcePath);
         var occurrences = new List<ImportedFactOccurrence>();
 
         foreach (var entity in root.Elements())
         {
+            ValidateAttributes(entity, EntityAttributes, sourcePath);
             var subject = RequiredAttribute(entity, Rdf + "about", sourcePath);
             var context = new FogOriginContext(sourcePath, sourceDbId, subject);
             var origin = originFactory(context)
@@ -110,6 +129,8 @@ public sealed class FogSubsetImporter
         XElement property,
         string sourcePath)
     {
+        ValidateAttributes(property, PropertyAttributes, sourcePath);
+
         if (property.HasElements)
         {
             throw At(
@@ -161,6 +182,28 @@ public sealed class FogSubsetImporter
         }
 
         return CanonicalFact.Create(subject, predicate, value);
+    }
+
+    private static void ValidateAttributes(
+        XElement element,
+        IReadOnlySet<XName> allowed,
+        string sourcePath)
+    {
+        foreach (var attribute in element.Attributes())
+        {
+            if (attribute.IsNamespaceDeclaration)
+            {
+                continue;
+            }
+
+            if (!allowed.Contains(attribute.Name))
+            {
+                throw At(
+                    sourcePath,
+                    attribute,
+                    $"Attribute '{attribute.Name}' is outside the supported FOG subset.");
+            }
+        }
     }
 
     private static string ExpandedName(XName name)
