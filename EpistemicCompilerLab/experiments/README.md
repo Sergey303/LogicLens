@@ -2,6 +2,8 @@
 
 Each experiment compares one controlled change to a fixed baseline.
 
+Confirmed runs are appended to [`runs.jsonl`](runs.jsonl). Do not rewrite prior records; add a correcting run when metadata was wrong.
+
 ## Version identity
 
 Record:
@@ -60,5 +62,7 @@ Store future run records as JSONL:
 ```json
 {"runId":"run-001","commit":"<sha>","studentModel":"<model>","changedLayer":"rules","cases":10,"correct":9,"unknownCorrect":1,"cliCalls":12,"openedTails":3,"notes":"Added revision condition"}
 ```
+
+Infrastructure-only runs may omit model fields but must identify the platform, PowerShell version, SWI-Prolog version, tested commit and observed pass counts.
 
 Do not commit private prompts, secrets, raw customer documents or machine-local paths.
