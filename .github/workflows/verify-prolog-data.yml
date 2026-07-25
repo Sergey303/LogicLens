@@ -67,7 +67,8 @@ jobs:
             src/LogicLens.Core \
             src/LogicLens.Prolog \
             tools/LogicLens.EpochCompiler \
-            fixtures/zero-epoch
+            fixtures/zero-epoch/archive \
+            fixtures/zero-epoch/expected/origins.json
 
       - name: Restore
         run: dotnet restore LogicLens.sln

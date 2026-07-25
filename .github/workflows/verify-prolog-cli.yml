@@ -5,9 +5,13 @@ on:
     paths:
       - "contracts/prolog-cli-v0.schema.json"
       - "epochs/epoch-000/**"
+      - "fixtures/zero-epoch/expected/occurrence-id-v1-golden.json"
+      - "src/LogicLens.Protocol/**"
+      - "tests/LogicLens.Protocol.Verification/**"
       - "tests/prolog_cli_contract_test.py"
       - "tools/LogicLens.OntologyCompiler/**"
       - "data/Ontology.xml"
+      - "LogicLens.sln"
       - ".github/workflows/verify-prolog-cli.yml"
   push:
     branches:
@@ -15,9 +19,13 @@ on:
     paths:
       - "contracts/prolog-cli-v0.schema.json"
       - "epochs/epoch-000/**"
+      - "fixtures/zero-epoch/expected/occurrence-id-v1-golden.json"
+      - "src/LogicLens.Protocol/**"
+      - "tests/LogicLens.Protocol.Verification/**"
       - "tests/prolog_cli_contract_test.py"
       - "tools/LogicLens.OntologyCompiler/**"
       - "data/Ontology.xml"
+      - "LogicLens.sln"
       - ".github/workflows/verify-prolog-cli.yml"
 
 permissions:
@@ -50,10 +58,25 @@ jobs:
           grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
           python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
 
-      - name: Restore and build ontology compiler
+      - name: Restore and build solution
         run: |
           dotnet restore LogicLens.sln
           dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Verify C# OccurrenceId contract
+        id: protocol-tests
+        shell: bash
+        run: |
+          set +e
+          dotnet run \
+            --project tests/LogicLens.Protocol.Verification/LogicLens.Protocol.Verification.csproj \
+            --configuration Release \
+            --no-build \
+            > /tmp/protocol-verification.log 2>&1
+          exit_code=$?
+          cat /tmp/protocol-verification.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: Generate ontology package
         run: |
@@ -71,6 +94,8 @@ jobs:
           cp --recursive epochs/epoch-000/data /tmp/epoch-000/data
           cp --recursive epochs/epoch-000/rules /tmp/epoch-000/rules
           cp --recursive epochs/epoch-000/tests /tmp/epoch-000/tests
+          cp fixtures/zero-epoch/expected/occurrence-id-v1-golden.json \
+            /tmp/epoch-000/tests/occurrence-id-v1-golden.json
           cp epochs/epoch-000/entry.pl /tmp/epoch-000/entry.pl
           cp epochs/epoch-000/manifest.json /tmp/epoch-000/manifest.json
           cp epochs/epoch-000/ontology/ontology_data.pl /tmp/epoch-000/ontology/
@@ -86,6 +111,7 @@ jobs:
             -g "load_files([
               '/tmp/epoch-000/tests/ontology_contract_tests.pl',
               '/tmp/epoch-000/tests/generic_view_tests.pl',
+              '/tmp/epoch-000/tests/occurrence_identity_fixture_tests.pl',
               '/tmp/epoch-000/tests/subgraph_tests.pl'
             ], [silent(true)]), run_tests, halt" \
             -t "halt(1)" \
@@ -117,6 +143,7 @@ jobs:
           name: prolog-cli-verification
           path: |
             /tmp/swipl-version.txt
+            /tmp/protocol-verification.log
             /tmp/prolog-unit-tests.log
             /tmp/prolog-cli-contract.log
           if-no-files-found: error
@@ -125,5 +152,6 @@ jobs:
       - name: Enforce all verification results
         if: always()
         run: |
+          test "${{ steps.protocol-tests.outputs.exit_code }}" = "0"
           test "${{ steps.prolog-tests.outputs.exit_code }}" = "0"
           test "${{ steps.process-tests.outputs.exit_code }}" = "0"
