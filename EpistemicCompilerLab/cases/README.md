@@ -25,6 +25,16 @@ A tail is not implicitly owned by `expectedMaterial`. A result may select one en
 
 Do not require a tail for a direct answer when the compact result and proof already contain enough information. For example, selecting `asd2` for revision A after the transition is already justified by `rule:revision_a_exception`; the `exceptions` tail is reserved for a separate request to inspect the exception set.
 
+## CLI result contract
+
+Every `current-material` response has a `solutions` array:
+
+- `success` contains one or more solution objects;
+- `unknown` contains `solutions: []`;
+- consumers must not infer array contents from a missing property.
+
+This stable shape keeps PowerShell, future gateways and student tools independent of runtime-specific missing-property behaviour.
+
 ## Representation modes
 
 Run the same cases with:
