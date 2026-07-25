@@ -8,6 +8,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Prolog", "src\Log
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Protocol", "src\LogicLens.Protocol\LogicLens.Protocol.csproj", "{ED330744-56BD-4A97-A5F4-4C9D3DC73C93}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Ui", "src\LogicLens.Ui\LogicLens.Ui.csproj", "{EE3FA6B7-71ED-43B8-BB8A-DA3B15654B37}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Api", "src\LogicLens.Api\LogicLens.Api.csproj", "{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.EpochCompiler", "tools\LogicLens.EpochCompiler\LogicLens.EpochCompiler.csproj", "{C2A29224-1A56-43EA-99D0-688492E3A8BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.OntologyCompiler", "tools\LogicLens.OntologyCompiler\LogicLens.OntologyCompiler.csproj", "{6E77ACCF-A86D-44F4-A23B-2B2C0B73E6AE}"
@@ -17,6 +21,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Prolog.Verification", "tests\LogicLens.Prolog.Verification\LogicLens.Prolog.Verification.csproj", "{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Protocol.Verification", "tests\LogicLens.Protocol.Verification\LogicLens.Protocol.Verification.csproj", "{65236C32-A3D4-4533-9BE2-2F3F42E83C61}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Ui.Verification", "tests\LogicLens.Ui.Verification\LogicLens.Ui.Verification.csproj", "{0497C968-A594-426D-91D6-F9F92E3686A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +42,14 @@ Global
 		{ED330744-56BD-4A97-A5F4-4C9D3DC73C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED330744-56BD-4A97-A5F4-4C9D3DC73C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED330744-56BD-4A97-A5F4-4C9D3DC73C93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE3FA6B7-71ED-43B8-BB8A-DA3B15654B37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE3FA6B7-71ED-43B8-BB8A-DA3B15654B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE3FA6B7-71ED-43B8-BB8A-DA3B15654B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE3FA6B7-71ED-43B8-BB8A-DA3B15654B37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,6 +70,10 @@ Global
 		{65236C32-A3D4-4533-9BE2-2F3F42E83C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65236C32-A3D4-4533-9BE2-2F3F42E83C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65236C32-A3D4-4533-9BE2-2F3F42E83C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0497C968-A594-426D-91D6-F9F92E3686A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0497C968-A594-426D-91D6-F9F92E3686A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0497C968-A594-426D-91D6-F9F92E3686A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0497C968-A594-426D-91D6-F9F92E3686A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
