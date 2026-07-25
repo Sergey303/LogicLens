@@ -64,6 +64,7 @@ effective_traversal_limits(
     effective_limit(maxPathLength, Requested, Defaults, Hard, MaxPathLength, D4),
     effective_limit(maxOutputBytes, Requested, Defaults, Hard, MaxOutputBytes, D5),
     effective_limit(timeoutMs, Requested, Defaults, Hard, TimeoutMs, D6),
+    path_length_diagnostics(EffectiveDepth, MaxPathLength, PathDiagnostics),
     Effective = _{
         maxNodes: MaxNodes,
         maxFacts: MaxFacts,
@@ -72,8 +73,35 @@ effective_traversal_limits(
         maxOutputBytes: MaxOutputBytes,
         timeoutMs: TimeoutMs
     },
-    append([DepthDiagnostics, D1, D2, D3, D4, D5, D6], Diagnostics0),
+    append(
+        [
+            DepthDiagnostics,
+            D1,
+            D2,
+            D3,
+            D4,
+            D5,
+            D6,
+            PathDiagnostics
+        ],
+        Diagnostics0
+    ),
     sort(Diagnostics0, Diagnostics).
+
+
+path_length_diagnostics(EffectiveDepth, MaxPathLength, []) :-
+    EffectiveDepth =< MaxPathLength,
+    !.
+path_length_diagnostics(EffectiveDepth, MaxPathLength, [Diagnostic]) :-
+    Diagnostic = diagnostic{
+        code: max_path_length,
+        severity: warning,
+        message: "Path-length limit stops traversal before effective depth.",
+        context: _{
+            effectiveDepth: EffectiveDepth,
+            maxPathLength: MaxPathLength
+        }
+    }.
 
 
 effective_limit(Key, Requested, Defaults, Hard, Effective, Diagnostics) :-
