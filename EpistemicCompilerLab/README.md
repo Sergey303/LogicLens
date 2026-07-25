@@ -81,14 +81,18 @@ Other deterministic actions:
 Run one model and representation after replacing `<installed-model>` with an exact name from `ollama list`:
 
 ```powershell
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-run -Mode markdown -Model '<installed-model>'
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-run markdown '<installed-model>'
 ```
+
+Allowed mode names are `markdown`, `compact-json`, `prolog-text`, `cli` and `cli-tails`. An optional third positional argument sets an absolute output JSONL path.
 
 The runner prints the generated JSONL path. Score that file without editing it:
 
 ```powershell
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-score -RunPath '<absolute-jsonl-path>'
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-score '<absolute-jsonl-path>'
 ```
+
+An optional second positional argument sets the summary JSON path.
 
 The doctor validates benchmark-v0, the representation-runner assets, the deterministic Prolog oracle, all PL-Unit tests and a JSON CLI smoke test. It does not require Ollama or run a model experiment.
 
