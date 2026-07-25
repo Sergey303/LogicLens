@@ -9,7 +9,6 @@ on:
       - "tests/LogicLens.Prolog.Verification/**"
       - "fixtures/zero-epoch/**"
       - "epochs/epoch-000/**"
-      - "LogicLens.sln"
       - ".github/workflows/verify-prolog-data.yml"
   push:
     branches:
@@ -21,7 +20,6 @@ on:
       - "tests/LogicLens.Prolog.Verification/**"
       - "fixtures/zero-epoch/**"
       - "epochs/epoch-000/**"
-      - "LogicLens.sln"
       - ".github/workflows/verify-prolog-data.yml"
 
 permissions:
@@ -70,11 +68,23 @@ jobs:
             fixtures/zero-epoch/archive \
             fixtures/zero-epoch/expected/origins.json
 
-      - name: Restore
-        run: dotnet restore LogicLens.sln
+      - name: Restore data compiler and escaping verifier
+        run: |
+          dotnet restore \
+            tools/LogicLens.EpochCompiler/LogicLens.EpochCompiler.csproj
+          dotnet restore \
+            tests/LogicLens.Prolog.Verification/LogicLens.Prolog.Verification.csproj
 
-      - name: Build
-        run: dotnet build LogicLens.sln --configuration Release --no-restore
+      - name: Build data compiler and escaping verifier
+        run: |
+          dotnet build \
+            tools/LogicLens.EpochCompiler/LogicLens.EpochCompiler.csproj \
+            --configuration Release \
+            --no-restore
+          dotnet build \
+            tests/LogicLens.Prolog.Verification/LogicLens.Prolog.Verification.csproj \
+            --configuration Release \
+            --no-restore
 
       - name: Generate epoch data twice
         run: |
