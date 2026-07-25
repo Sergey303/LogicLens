@@ -254,7 +254,9 @@ public sealed class PrologCliClient(PrologCliOptions options)
         var exceeded = false;
         while (true)
         {
-            var read = await stream.ReadAsync(buffer, cancellationToken);
+            var read = await stream.ReadAsync(
+                buffer.AsMemory(),
+                cancellationToken);
             if (read == 0)
             {
                 break;
@@ -300,5 +302,7 @@ public sealed class PrologCliClient(PrologCliOptions options)
     private static string? OptionalString(JsonObject value, string name) =>
         value[name]?.GetValue<string?>();
 
-    private sealed class OutputLimitException : Exception;
+    private sealed class OutputLimitException : Exception
+    {
+    }
 }
