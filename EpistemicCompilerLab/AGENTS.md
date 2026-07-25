@@ -48,6 +48,7 @@ A successful Prolog proof establishes a consequence of loaded facts and rules. I
 - Prefer explicit predicates and small modules.
 - Keep source evidence addressable from derived facts.
 - Do not mix changes to knowledge, prompts and model settings in one experiment unless their interaction is being measured.
-- Run all Prolog tests before accepting a knowledge change.
+- Run `pwsh EpistemicCompilerLab/scripts/run-tests.ps1` before accepting a knowledge change.
+- Use `pwsh EpistemicCompilerLab/scripts/doctor.ps1` to verify the Windows environment and CLI smoke test.
 - Preserve JSON CLI statuses and field meanings.
 - Keep generated or temporary experiment output out of the main LogicLens project paths.
