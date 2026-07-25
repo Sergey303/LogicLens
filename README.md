@@ -31,6 +31,17 @@ LogicLens is a research system for building stable and query-specific interfaces
 - [A0 architecture exit criteria](docs/verification/a0-exit-criteria.md)
 - [ENG-23 zero-epoch vertical slice plan](docs/plans/eng-23-zero-epoch-vertical-slice.md)
 
+## Current executable foundation
+
+ENG-30 adds the minimal .NET 8 canonical-fact foundation and a zero-dependency verifier.
+
+```powershell
+dotnet build .\LogicLens.sln
+dotnet run --project .\tests\LogicLens.Core.Verification\LogicLens.Core.Verification.csproj
+```
+
+See [ENG-30 canonical facts and FactId v1](docs/development/eng-30-canonical-facts.md).
+
 ## Project tracking
 
 Architecture verification and implementation tasks are tracked in the Linear project `LogicLens` inside ChatPilotGroup.

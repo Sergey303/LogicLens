@@ -1,0 +1,70 @@
+name: Verify core
+
+on:
+  pull_request:
+    paths:
+      - "src/LogicLens.Core/**"
+      - "tests/LogicLens.Core.Verification/**"
+      - "fixtures/zero-epoch/**"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-core.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/LogicLens.Core/**"
+      - "tests/LogicLens.Core.Verification/**"
+      - "fixtures/zero-epoch/**"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-core.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore LogicLens.sln
+
+      - name: Build
+        run: dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Verify canonical facts and fixture
+        id: core-verification
+        shell: bash
+        run: |
+          set +e
+          dotnet run \
+            --project tests/LogicLens.Core.Verification/LogicLens.Core.Verification.csproj \
+            --configuration Release \
+            --no-build \
+            > core-verification.log 2>&1
+          exit_code=$?
+          cat core-verification.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload verification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-verification-log
+          path: core-verification.log
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Fail when verification failed
+        if: steps.core-verification.outputs.exit_code != '0'
+        run: exit 1

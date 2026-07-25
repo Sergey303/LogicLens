@@ -3,61 +3,61 @@
     {
       "originId": "origin:fixture-a:person-alex",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:person:alex"
     },
     {
       "originId": "origin:fixture-a:org-iis",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:org:iis"
     },
     {
       "originId": "origin:fixture-a:org-lab",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:org:lab"
     },
     {
       "originId": "origin:fixture-a:org-archive",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:org:archive"
     },
     {
       "originId": "origin:fixture-a:participation-work",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:participation:work"
     },
     {
       "originId": "origin:fixture-a:student-study",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:student:study"
     },
     {
       "originId": "origin:fixture-a:document-paper",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:document:paper"
     },
     {
       "originId": "origin:fixture-a:authority-paper-author",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-a.fog",
-      "sourceDbid": "logiclens-zero-epoch-a",
+      "sourceDbId": "logiclens-zero-epoch-a",
       "entityId": "urn:logiclens:authority:paper-author"
     },
     {
       "originId": "origin:fixture-b:person-alex",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-b.fog",
-      "sourceDbid": "logiclens-zero-epoch-b",
+      "sourceDbId": "logiclens-zero-epoch-b",
       "entityId": "urn:logiclens:person:alex"
     },
     {
       "originId": "origin:fixture-b:document-paper",
       "sourcePath": "fixtures/zero-epoch/archive/cassette-b.fog",
-      "sourceDbid": "logiclens-zero-epoch-b",
+      "sourceDbId": "logiclens-zero-epoch-b",
       "entityId": "urn:logiclens:document:paper"
     }
   ]
