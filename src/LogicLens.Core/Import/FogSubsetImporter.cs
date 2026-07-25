@@ -34,7 +34,13 @@ public sealed class FogSubsetImporter
         Func<FogOriginContext, Origin> originFactory)
     {
         ArgumentNullException.ThrowIfNull(xml);
-        ArgumentException.ThrowIfNullOrWhiteSpace(sourcePath);
+        if (string.IsNullOrWhiteSpace(sourcePath))
+        {
+            throw new ArgumentException(
+                "Source path cannot be null, empty, or whitespace.",
+                nameof(sourcePath));
+        }
+
         ArgumentNullException.ThrowIfNull(originFactory);
 
         XDocument document;
