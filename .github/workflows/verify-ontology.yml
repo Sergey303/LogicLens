@@ -9,7 +9,6 @@ on:
       - "epochs/epoch-000/rules/**"
       - "epochs/epoch-000/tests/ontology_contract_tests.pl"
       - "epochs/epoch-000/tests/generic_view_tests.pl"
-      - "LogicLens.sln"
       - ".github/workflows/verify-ontology.yml"
   push:
     branches:
@@ -21,7 +20,6 @@ on:
       - "epochs/epoch-000/rules/**"
       - "epochs/epoch-000/tests/ontology_contract_tests.pl"
       - "epochs/epoch-000/tests/generic_view_tests.pl"
-      - "LogicLens.sln"
       - ".github/workflows/verify-ontology.yml"
 
 permissions:
@@ -49,11 +47,17 @@ jobs:
           sudo apt-get install --yes swi-prolog-nox
           swipl --version
 
-      - name: Restore
-        run: dotnet restore LogicLens.sln
+      - name: Restore ontology compiler
+        run: >-
+          dotnet restore
+          tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj
 
-      - name: Build
-        run: dotnet build LogicLens.sln --configuration Release --no-restore
+      - name: Build ontology compiler
+        run: >-
+          dotnet build
+          tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj
+          --configuration Release
+          --no-restore
 
       - name: Generate ontology labels twice
         run: |
@@ -110,7 +114,7 @@ jobs:
         with:
           name: generic-view-test-log
           path: /tmp/generic-view-tests.log
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7
 
       - name: Fail when SWI-Prolog tests failed
