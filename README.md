@@ -25,6 +25,8 @@ LogicLens is a research system for building stable and query-specific interfaces
 - [Architecture v0](docs/architecture-v0.md)
 - [ADR-0001: Canonical fact, provenance, and change model](docs/adr/0001-canonical-fact-model.md)
 - [ADR-0002: Layered subgraphs and repeated-path occurrences](docs/adr/0002-layered-subgraphs-and-occurrences.md)
+- [ADR-0003: Minimal trusted UI Document](docs/adr/0003-minimal-ui-document.md)
+- [UI Document v0 JSON Schema](contracts/ui-document-v0.schema.json)
 
 ## Project tracking
 
