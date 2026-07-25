@@ -1,6 +1,6 @@
 # ADR-0009: crash-safe runtime state log
 
-- Status: Proposed
+- Status: Accepted
 - Linear: ENG-24
 - Scope: runtime `ApplyDelta` persistence and recovery
 
@@ -108,7 +108,7 @@ One process owns a runtime state log for writing. The store keeps an exclusive w
 
 ## Verification
 
-ENG-24 must prove on Windows and Linux:
+The accepted implementation is verified on Windows and Linux for:
 
 - add and replacement revision semantics;
 - exact retry after later revisions;
