@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "0.1",
+  "candidateId": "fixture-qwen-researcher-at-iis",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "base": {
+    "epoch": 0,
+    "revision": 0
+  },
+  "provider": {
+    "kind": "fixture",
+    "name": "qwen-fixture",
+    "model": "qwen2.5-coder:7b",
+    "runId": "fixture-qwen"
+  },
+  "uiContractVersion": "0.1",
+  "cliProtocolVersion": "0.1",
+  "metrics": {
+    "cliCalls": 3,
+    "manualFixes": 0,
+    "elapsedMs": 1200,
+    "costUsd": 0
+  },
+  "files": [
+    {
+      "path": "rules/candidate_researcher_at_iis.pl",
+      "kind": "rule"
+    },
+    {
+      "path": "tests/candidate_researcher_at_iis_tests.pl",
+      "kind": "test"
+    },
+    {
+      "path": "ui/researcher-at-iis.json",
+      "kind": "ui"
+    }
+  ],
+  "notes": "Deterministic Qwen-shaped fixture; not a real model run."
+}
