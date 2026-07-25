@@ -1,4 +1,4 @@
-name: Verify ontology labels
+name: Verify ontology labels and generic view
 
 on:
   pull_request:
@@ -6,7 +6,9 @@ on:
       - "data/Ontology.xml"
       - "tools/LogicLens.OntologyCompiler/**"
       - "epochs/epoch-000/ontology/**"
+      - "epochs/epoch-000/rules/**"
       - "epochs/epoch-000/tests/ontology_contract_tests.pl"
+      - "epochs/epoch-000/tests/generic_view_tests.pl"
       - "LogicLens.sln"
       - ".github/workflows/verify-ontology.yml"
   push:
@@ -16,7 +18,9 @@ on:
       - "data/Ontology.xml"
       - "tools/LogicLens.OntologyCompiler/**"
       - "epochs/epoch-000/ontology/**"
+      - "epochs/epoch-000/rules/**"
       - "epochs/epoch-000/tests/ontology_contract_tests.pl"
+      - "epochs/epoch-000/tests/generic_view_tests.pl"
       - "LogicLens.sln"
       - ".github/workflows/verify-ontology.yml"
 
@@ -72,25 +76,30 @@ jobs:
       - name: Verify byte-identical generation
         run: diff --recursive --unified /tmp/ontology-a /tmp/ontology-b
 
-      - name: Add reviewed module and tests
+      - name: Assemble temporary epoch
         run: |
-          cp epochs/epoch-000/ontology/ontology_data.pl /tmp/ontology-a/ontology_data.pl
-          mkdir --parents /tmp/ontology-a/tests
-          cp epochs/epoch-000/tests/ontology_contract_tests.pl /tmp/ontology-a/tests/
-          sed --in-place \
-            "s#../ontology/ontology_data.pl#../ontology_data.pl#" \
-            /tmp/ontology-a/tests/ontology_contract_tests.pl
+          mkdir --parents /tmp/epoch-000/ontology /tmp/epoch-000/tests
+          cp --recursive epochs/epoch-000/data /tmp/epoch-000/data
+          cp --recursive epochs/epoch-000/rules /tmp/epoch-000/rules
+          cp /tmp/ontology-a/ontology.generated.pl /tmp/epoch-000/ontology/
+          cp /tmp/ontology-a/manifest.json /tmp/epoch-000/ontology/
+          cp epochs/epoch-000/ontology/ontology_data.pl /tmp/epoch-000/ontology/
+          cp epochs/epoch-000/tests/ontology_contract_tests.pl /tmp/epoch-000/tests/
+          cp epochs/epoch-000/tests/generic_view_tests.pl /tmp/epoch-000/tests/
 
       - name: Load generated labels and run SWI-Prolog tests
         run: >-
           swipl -q
-          -g "load_files('/tmp/ontology-a/tests/ontology_contract_tests.pl', [silent(true)]), run_tests, halt"
+          -g "load_files([
+          '/tmp/epoch-000/tests/ontology_contract_tests.pl',
+          '/tmp/epoch-000/tests/generic_view_tests.pl'
+          ], [silent(true)]), run_tests, halt"
           -t "halt(1)"
 
       - name: Upload verified ontology package
         uses: actions/upload-artifact@v4
         with:
           name: epoch-000-ontology
-          path: /tmp/ontology-a
+          path: /tmp/epoch-000/ontology
           if-no-files-found: error
           retention-days: 7
