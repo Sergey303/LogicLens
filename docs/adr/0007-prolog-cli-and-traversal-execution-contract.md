@@ -1,7 +1,7 @@
 # ADR-0007: Prolog CLI and traversal execution contract
 
-- Status: Proposed
-- Linear: ENG-38
+- Status: Accepted
+- Linear: ENG-38, architecture step ENG-25
 - Depends on: ADR-0002, ADR-0004, ADR-0005, ADR-0006
 - Scope: zero-epoch traversal and the stable process boundary used by C#, Builder, Search and manual experiments
 
@@ -347,6 +347,13 @@ Unknown commands and unsupported protocol versions are validation errors, not dy
 16. Volatile process data does not appear in deterministic output.
 17. Timeout or output-limit termination changes no active files.
 18. No request field can select a module, file path, predicate or raw Prolog goal.
+
+The accepted contract is enforced by four independent layers in `Verify bounded Prolog CLI`:
+
+- C# golden-vector verification for OccurrenceId v1;
+- SWI-Prolog unit tests for depth, traversal, cycles, visibility and deterministic structure;
+- stdin/stdout process tests for schemas, limits, timeout, output bounds and byte identity;
+- ADR closure tests for invalid correlation fields, loaded-state errors, command-option isolation, forbidden execution selectors, canonical direction semantics, volatile-field exclusion and active-file immutability.
 
 ## Rejected alternatives
 
