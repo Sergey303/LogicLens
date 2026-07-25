@@ -4,43 +4,59 @@ on:
   pull_request:
     paths:
       - "contracts/prolog-cli-v0.schema.json"
+      - "contracts/epoch-candidate-v0.schema.json"
       - "data/Ontology.xml"
       - "docs/adr/0008-active-epoch-package.md"
+      - "docs/adr/0010-builder-candidate-package.md"
       - "epochs/epoch-000/**"
       - "fixtures/zero-epoch/**"
+      - "fixtures/builder-candidate/**"
       - "src/LogicLens.Core/**"
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
       - "tools/LogicLens.OntologyCompiler/**"
       - "tools/active_epoch/**"
+      - "tools/builder_candidate/**"
       - "tools/build_active_epoch.py"
+      - "tools/build_epoch_candidate.py"
       - "tests/active_epoch_package_test.py"
+      - "tests/builder_candidate_contract_test.py"
       - ".github/workflows/verify-active-epoch.yml"
   push:
     branches:
       - main
     paths:
       - "contracts/prolog-cli-v0.schema.json"
+      - "contracts/epoch-candidate-v0.schema.json"
       - "data/Ontology.xml"
       - "docs/adr/0008-active-epoch-package.md"
+      - "docs/adr/0010-builder-candidate-package.md"
       - "epochs/epoch-000/**"
       - "fixtures/zero-epoch/**"
+      - "fixtures/builder-candidate/**"
       - "src/LogicLens.Core/**"
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
       - "tools/LogicLens.OntologyCompiler/**"
       - "tools/active_epoch/**"
+      - "tools/builder_candidate/**"
       - "tools/build_active_epoch.py"
+      - "tools/build_epoch_candidate.py"
       - "tests/active_epoch_package_test.py"
+      - "tests/builder_candidate_contract_test.py"
       - ".github/workflows/verify-active-epoch.yml"
 
 permissions:
   contents: read
 
+concurrency:
+  group: verify-active-epoch-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
@@ -58,12 +74,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install pinned SWI-Prolog
+      - name: Install pinned SWI-Prolog and JSON Schema validator
         run: |
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox
           swipl --version | tee /tmp/swipl-version.txt
           grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
+          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
 
       - name: Restore and build solution
         run: |
@@ -101,6 +118,24 @@ jobs:
             --run-smoke \
             | tee /tmp/active-epoch-verification.log
 
+      - name: Build provider-neutral candidate fixture
+        run: |
+          python tools/build_epoch_candidate.py \
+            --baseline /tmp/active-epoch-a \
+            --proposal fixtures/builder-candidate/valid \
+            --schema contracts/epoch-candidate-v0.schema.json \
+            --output /tmp/builder-candidate-package \
+            --report /tmp/builder-candidate-comparison.json \
+            | tee /tmp/builder-candidate-build.log
+
+      - name: Verify candidate isolation determinism and rejection cases
+        run: |
+          python tests/builder_candidate_contract_test.py \
+            --baseline /tmp/active-epoch-a \
+            --schema contracts/epoch-candidate-v0.schema.json \
+            --fixture fixtures/builder-candidate/valid \
+            | tee /tmp/builder-candidate-verification.log
+
       - name: Upload portable active epoch
         uses: actions/upload-artifact@v4
         with:
@@ -109,7 +144,17 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Upload verification log
+      - name: Upload verified builder candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: logiclens-builder-candidate-fixture
+          path: |
+            /tmp/builder-candidate-package
+            /tmp/builder-candidate-comparison.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload verification logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -117,5 +162,7 @@ jobs:
           path: |
             /tmp/swipl-version.txt
             /tmp/active-epoch-verification.log
+            /tmp/builder-candidate-build.log
+            /tmp/builder-candidate-verification.log
           if-no-files-found: warn
           retention-days: 14
