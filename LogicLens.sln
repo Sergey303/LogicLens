@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.EpochCompiler", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Core.Verification", "tests\LogicLens.Core.Verification\LogicLens.Core.Verification.csproj", "{594B06F7-C87B-4E41-A9A2-640DA678C799}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Prolog.Verification", "tests\LogicLens.Prolog.Verification\LogicLens.Prolog.Verification.csproj", "{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
