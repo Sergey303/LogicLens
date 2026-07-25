@@ -15,7 +15,7 @@ on:
       - ".github/workflows/verify-web-renderer.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: verify-web-${{ github.workflow }}-${{ github.ref }}
@@ -33,23 +33,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
           node-version: "24.x"
+          cache: npm
+          cache-dependency-path: src/LogicLens.Web/package-lock.json
 
-      - name: Install dependency graph
-        shell: bash
-        run: |
-          if [[ -f package-lock.json ]]; then
-            npm ci --ignore-scripts --no-audit --no-fund
-          else
-            npm install --ignore-scripts --no-audit --no-fund
-          fi
+      - name: Install committed dependency graph
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Verify dependency tree
         run: npm ls --all
@@ -84,22 +77,6 @@ jobs:
           if failures:
               raise SystemExit("Domain-specific branches found: " + ", ".join(failures))
           PY
-
-      - name: Commit generated lockfile to the same-repository PR branch
-        if: >-
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository &&
-          steps.web-build.outputs.exit_code == '0'
-        shell: bash
-        run: |
-          git add package-lock.json
-          if git diff --cached --quiet; then
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "ENG-33: pin web dependency graph"
-          git push origin "HEAD:${GITHUB_HEAD_REF}"
 
       - name: Upload renderer bundle lockfile and logs
         if: always()
