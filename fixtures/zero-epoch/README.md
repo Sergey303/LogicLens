@@ -14,10 +14,13 @@ It is intentionally separate from the large historical files in `data/`:
 ```text
 archive/cassette-a.fog
 archive/cassette-b.fog
+expected/origins.json
 expected/normalized-facts.json
 expected/fact-id-v1-golden.json
 expected/view-expectations.json
 ```
+
+`expected/origins.json` fixes stable fixture-only origin identifiers. Production origin identity may later use another deterministic scheme, but ENG-29 must not depend on an undocumented naming guess.
 
 ## Covered cases
 
@@ -61,6 +64,10 @@ For `urn:logiclens:org:lab`:
 - `urn:logiclens:org:archive` is distance 1;
 - expanding it exposes a relation back to the root;
 - this produces a cycle reference rather than recursive expansion.
+
+## Verified consistency
+
+The fixture is designed so a standard XML parser and the RDF/XML subset mapping produce exactly 29 unique canonical triples. The expected graph and FactId v1 vectors were generated independently from the XML and compared before review.
 
 ## Archival immutability
 
