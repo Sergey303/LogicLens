@@ -1,0 +1,121 @@
+name: Verify UI Document and API
+
+on:
+  pull_request:
+    paths:
+      - "contracts/ui-document-v0.schema.json"
+      - "epochs/epoch-000/**"
+      - "src/LogicLens.Api/**"
+      - "src/LogicLens.Ui/**"
+      - "tests/LogicLens.Ui.Verification/**"
+      - "tests/ui_api_contract_test.py"
+      - "tools/active_epoch/**"
+      - "tools/build_active_epoch.py"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-ui-api.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/ui-document-v0.schema.json"
+      - "epochs/epoch-000/**"
+      - "src/LogicLens.Api/**"
+      - "src/LogicLens.Ui/**"
+      - "tests/LogicLens.Ui.Verification/**"
+      - "tests/ui_api_contract_test.py"
+      - "tools/active_epoch/**"
+      - "tools/build_active_epoch.py"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-ui-api.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned SWI-Prolog and JSON Schema validator
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version | tee /tmp/swipl-version.txt
+          grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
+          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+
+      - name: Restore and build solution
+        run: |
+          dotnet restore LogicLens.sln 2>&1 | tee /tmp/ui-build.log
+          dotnet build LogicLens.sln \
+            --configuration Release \
+            --no-restore \
+            2>&1 | tee -a /tmp/ui-build.log
+
+      - name: Verify UI Document contract and negative cases
+        run: |
+          dotnet run \
+            --project tests/LogicLens.Ui.Verification/LogicLens.Ui.Verification.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            contracts/ui-document-v0.schema.json \
+            | tee /tmp/ui-document-verification.log
+
+      - name: Resolve package source commit
+        run: |
+          if git rev-parse HEAD^2 >/dev/null 2>&1; then
+            source_commit=$(git rev-parse HEAD^2)
+          else
+            source_commit=$(git rev-parse HEAD)
+          fi
+          echo "SOURCE_COMMIT=$source_commit" >> "$GITHUB_ENV"
+
+      - name: Build isolated active epoch
+        run: |
+          mkdir --parents /tmp/logiclens-active-epoch
+          python tools/build_active_epoch.py \
+            --repository-root . \
+            --output /tmp/logiclens-active-epoch \
+            --engine-commit "$SOURCE_COMMIT" \
+            --no-build
+
+      - name: Run real ASP.NET and SWI-Prolog API contract
+        env:
+          LOGICLENS_API_LOG: /tmp/logiclens-api.log
+        run: |
+          python tests/ui_api_contract_test.py \
+            --repository-root . \
+            --epoch /tmp/logiclens-active-epoch \
+            --schema contracts/ui-document-v0.schema.json \
+            | tee /tmp/ui-api-contract.log
+
+      - name: Upload verification logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-api-verification
+          path: |
+            /tmp/swipl-version.txt
+            /tmp/ui-build.log
+            /tmp/ui-document-verification.log
+            /tmp/ui-api-contract.log
+            /tmp/logiclens-api.log
+          if-no-files-found: warn
+          retention-days: 14

@@ -11,7 +11,6 @@ on:
       - "tests/prolog_cli_contract_test.py"
       - "tools/LogicLens.OntologyCompiler/**"
       - "data/Ontology.xml"
-      - "LogicLens.sln"
       - ".github/workflows/verify-prolog-cli.yml"
   push:
     branches:
@@ -25,7 +24,6 @@ on:
       - "tests/prolog_cli_contract_test.py"
       - "tools/LogicLens.OntologyCompiler/**"
       - "data/Ontology.xml"
-      - "LogicLens.sln"
       - ".github/workflows/verify-prolog-cli.yml"
 
 permissions:
@@ -58,10 +56,23 @@ jobs:
           grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
           python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
 
-      - name: Restore and build solution
+      - name: Restore protocol verifier and ontology compiler
         run: |
-          dotnet restore LogicLens.sln
-          dotnet build LogicLens.sln --configuration Release --no-restore
+          dotnet restore \
+            tests/LogicLens.Protocol.Verification/LogicLens.Protocol.Verification.csproj
+          dotnet restore \
+            tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj
+
+      - name: Build protocol verifier and ontology compiler
+        run: |
+          dotnet build \
+            tests/LogicLens.Protocol.Verification/LogicLens.Protocol.Verification.csproj \
+            --configuration Release \
+            --no-restore
+          dotnet build \
+            tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
+            --configuration Release \
+            --no-restore
 
       - name: Verify C# OccurrenceId contract
         id: protocol-tests
@@ -146,7 +157,7 @@ jobs:
             /tmp/protocol-verification.log
             /tmp/prolog-unit-tests.log
             /tmp/prolog-cli-contract.log
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
 
       - name: Enforce all verification results
