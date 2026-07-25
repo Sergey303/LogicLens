@@ -92,14 +92,16 @@ jobs:
           swipl --version | tee /tmp/swipl-version.txt
           grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
 
-      - name: Compile runner modules
+      - name: Compile and unit-test runner modules
         run: |
           python -m py_compile \
             tools/run_zero_epoch.py \
             tools/zero_epoch/__init__.py \
             tools/zero_epoch/processes.py \
             tools/zero_epoch/verification.py \
-            tools/zero_epoch/cli.py
+            tools/zero_epoch/cli.py \
+            tests/zero_epoch_runner_unit_test.py
+          python tests/zero_epoch_runner_unit_test.py
 
       - name: Run the documented zero-epoch command
         env:
@@ -132,5 +134,6 @@ jobs:
             .logiclens/zero-epoch/active-epoch-000/manifest.json
             .logiclens/zero-epoch/logs
             src/LogicLens.Web/dist
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
