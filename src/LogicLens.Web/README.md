@@ -15,17 +15,24 @@ The web application does not know domain types such as people, organizations, or
 
 ## Local run
 
-Start `LogicLens.Api` first, then from this directory:
+From the repository root, start the API on the port used by the Vite proxy:
+
+```bash
+ASPNETCORE_URLS=http://localhost:5080 dotnet run \
+  --project src/LogicLens.Api/LogicLens.Api.csproj
+```
+
+Then, from `src/LogicLens.Web`:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-By default the browser calls the API on the same origin. For a separate development API:
+The browser calls `/api` on the Vite origin. Vite proxies those requests to `http://localhost:5080`, so the API does not need a development CORS policy. To use another local API address:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:5080 npm run dev
+LOGICLENS_API_URL=http://localhost:5090 npm run dev
 ```
 
 Open an entity with either form:
