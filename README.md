@@ -27,6 +27,7 @@ LogicLens is a research system for building stable and query-specific interfaces
 - [ADR-0002: Layered subgraphs and repeated-path occurrences](docs/adr/0002-layered-subgraphs-and-occurrences.md)
 - [ADR-0003: Minimal trusted UI Document](docs/adr/0003-minimal-ui-document.md)
 - [ADR-0004: Traversal edge eligibility](docs/adr/0004-traversal-edge-eligibility.md)
+- [ADR-0005: Generated Prolog epoch data](docs/adr/0005-generated-prolog-epoch-data.md)
 - [UI Document v0 JSON Schema](contracts/ui-document-v0.schema.json)
 - [A0 architecture exit criteria](docs/verification/a0-exit-criteria.md)
 - [ENG-23 zero-epoch vertical slice plan](docs/plans/eng-23-zero-epoch-vertical-slice.md)
@@ -41,6 +42,16 @@ dotnet run --project .\tests\LogicLens.Core.Verification\LogicLens.Core.Verifica
 ```
 
 See [ENG-30 canonical facts and FactId v1](docs/development/eng-30-canonical-facts.md).
+
+ENG-36 adds deterministic generation of Prolog epoch data:
+
+```powershell
+dotnet run --project .\tools\LogicLens.EpochCompiler\LogicLens.EpochCompiler.csproj -- `
+  --output .\epochs\epoch-000 `
+  --compiler-commit <git-sha>
+```
+
+The generated package is accepted only after byte-for-byte regeneration and SWI-Prolog tests.
 
 ## Project tracking
 
