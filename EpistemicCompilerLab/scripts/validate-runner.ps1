@@ -43,13 +43,14 @@ if ($null -eq $compact.transitionDate) {
 
 $parseTargets = @(
     'scripts/run-representation.ps1',
-    'scripts/score-representation.ps1'
+    'scripts/score-representation.ps1',
+    'scripts/validate-runner.ps1'
 )
 foreach ($relativePath in $parseTargets) {
     $path = Join-Path $labRoot $relativePath
     $tokens = $null
     $errors = $null
-    [void] [Management.Automation.Language.Parser]::ParseFile(
+    [void] [System.Management.Automation.Language.Parser]::ParseFile(
         $path,
         [ref] $tokens,
         [ref] $errors
@@ -63,4 +64,4 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 2 PowerShell scripts.'
+Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 3 PowerShell scripts.'
