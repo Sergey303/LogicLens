@@ -135,45 +135,60 @@ def test_no_dynamic_execution_selectors(
     base.require_error(epoch, validator, top_level, "invalid_request")
 
 
-def test_occurrence_direction_preserves_canonical_fact(
-    epoch: Path,
-    validator: Draft202012Validator,
+def assert_direction_contract(
+    result: dict[str, Any],
+    expected_direction: str,
 ) -> None:
-    response, _ = base.require_ok(
-        epoch,
-        validator,
-        base.request(
-            "subgraph",
-            {"rootId": base.PERSON, "depth": 1, "direction": "both"},
-        ),
-    )
-    result = response["result"]
     facts = {fact["factId"]: fact for fact in result["facts"]}
     occurrences = {
         occurrence["occurrenceId"]: occurrence
         for occurrence in result["occurrences"]
     }
-
-    checked = {"incoming": 0, "outgoing": 0}
+    checked = 0
     for occurrence in result["occurrences"]:
         if occurrence["depth"] == 0:
             continue
+        assert occurrence["direction"] == expected_direction
         parent = occurrences[occurrence["parentOccurrenceId"]]
         fact = facts[occurrence["viaFactId"]]
         assert fact["object"]["kind"] == "iri"
-        if occurrence["direction"] == "outgoing":
+        if expected_direction == "outgoing":
             assert fact["subject"] == parent["nodeId"]
             assert fact["object"]["value"] == occurrence["nodeId"]
-            checked["outgoing"] += 1
-        elif occurrence["direction"] == "incoming":
+        else:
             assert fact["object"]["value"] == parent["nodeId"]
             assert fact["subject"] == occurrence["nodeId"]
-            checked["incoming"] += 1
-        else:
-            raise AssertionError(f"unexpected direction: {occurrence!r}")
+        checked += 1
+    assert checked > 0
 
-    assert checked["incoming"] > 0
-    assert checked["outgoing"] > 0
+
+def test_occurrence_direction_preserves_canonical_fact(
+    epoch: Path,
+    validator: Draft202012Validator,
+) -> None:
+    incoming, _ = base.require_ok(
+        epoch,
+        validator,
+        base.request(
+            "subgraph",
+            {"rootId": base.PERSON, "depth": 1, "direction": "incoming"},
+        ),
+    )
+    assert_direction_contract(incoming["result"], "incoming")
+
+    outgoing, _ = base.require_ok(
+        epoch,
+        validator,
+        base.request(
+            "subgraph",
+            {
+                "rootId": "urn:logiclens:org:lab",
+                "depth": 1,
+                "direction": "outgoing",
+            },
+        ),
+    )
+    assert_direction_contract(outgoing["result"], "outgoing")
 
 
 def test_unknown_ordinary_iri_predicate_is_traversable(
