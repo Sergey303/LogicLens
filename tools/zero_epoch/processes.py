@@ -20,6 +20,27 @@ def require_executable(name: str) -> str:
     return path
 
 
+def executable_command(
+    executable: str,
+    *arguments: str,
+    windows: bool | None = None,
+) -> list[str]:
+    """Build a shell-free command, including Windows .cmd/.bat launchers."""
+    is_windows = os.name == "nt" if windows is None else windows
+    suffix = Path(executable).suffix.lower()
+    if is_windows and suffix in {".cmd", ".bat"}:
+        command_processor = os.environ.get("COMSPEC", "cmd.exe")
+        return [
+            command_processor,
+            "/d",
+            "/s",
+            "/c",
+            executable,
+            *arguments,
+        ]
+    return [executable, *arguments]
+
+
 def run_checked(
     command: Sequence[str],
     *,
