@@ -126,7 +126,13 @@ internal static class Guard
 {
     public static string Required(string? value, string parameterName)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(value, parameterName);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException(
+                "Value cannot be null, empty, or whitespace.",
+                parameterName);
+        }
+
         return value;
     }
 }
