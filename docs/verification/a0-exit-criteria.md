@@ -31,6 +31,10 @@ The A0 architecture is ready to merge when all criteria below are satisfied.
 - Cycles terminate and remain visible as references.
 - Incoming and outgoing facts preserve their original direction.
 - Traversal limits and truncation are visible in diagnostics.
+- Fact visibility and traversal eligibility are independent.
+- `rdf:type`, technical, provenance and UI/profile predicates remain visible but are not followed by default.
+- Ordinary unknown IRI predicates are followed by default unless explicitly excluded or classified as non-traversable.
+- Query overrides are explicit, bounded and deterministic.
 
 ## UI contract
 
@@ -53,7 +57,7 @@ The A0 architecture is ready to merge when all criteria below are satisfied.
 
 ## Consistency gate
 
-- README, architecture-v0, ADR-0001, ADR-0002, ADR-0003 and the JSON Schema use the same terminology.
+- README, architecture-v0, ADR-0001, ADR-0002, ADR-0003, ADR-0004 and the JSON Schema use the same terminology.
 - Known unresolved implementation questions are assigned to later Linear issues rather than hidden in architecture prose.
 - ENG-23 is allowed to implement only the contracts accepted here; changing them requires a new ADR or an explicit amendment.
 
