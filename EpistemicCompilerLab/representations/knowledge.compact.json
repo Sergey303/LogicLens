@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "supportedRevisions": ["a", "b"],
+  "transitionDate": 20260701,
+  "materials": {
+    "beforeTransition": "asd2",
+    "defaultAfterTransition": "asd100500"
+  },
+  "exceptions": [
+    {
+      "revision": "a",
+      "dateFrom": 20260701,
+      "material": "asd2",
+      "sourceAssertion": "a1042"
+    }
+  ],
+  "sources": {
+    "a1042": {
+      "file": "EpistemicCompilerLab/sources/materials.md",
+      "section": "ASD100500"
+    }
+  },
+  "tails": {
+    "asd100500": {
+      "evidence": "Original source section for the replacement rule",
+      "exceptions": "Hardware revisions that do not use the default material"
+    }
+  },
+  "unknownPolicy": "Unsupported revisions produce unknown; never infer a default."
+}
