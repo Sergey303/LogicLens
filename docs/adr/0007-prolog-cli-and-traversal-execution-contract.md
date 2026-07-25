@@ -47,7 +47,7 @@ Command-line arguments may select only reviewed operational modes such as a futu
 Required fields:
 
 - `protocolVersion` — exact supported protocol version;
-- `requestId` — opaque caller-generated correlation identifier, returned unchanged;
+- `requestId` — opaque caller-generated correlation identifier;
 - `command` — one value from the closed command set;
 - `epoch` and `revision` — the state the caller expects;
 - `options` — a command-specific object validated before execution.
@@ -63,6 +63,8 @@ subgraph
 
 There is no generic `query`, `consult`, module name, predicate name, file path or Prolog source option in v0.
 
+Each command has its own closed options schema. A field accepted by one command is not silently accepted and ignored by another.
+
 ### 3. Stable response envelope for success and expected failure
 
 Successful response:
@@ -71,6 +73,7 @@ Successful response:
 {
   "protocolVersion": "0.1",
   "requestId": "01J2...",
+  "command": "subgraph",
   "status": "ok",
   "epoch": 0,
   "revision": 0,
@@ -85,26 +88,31 @@ Expected command error:
 {
   "protocolVersion": "0.1",
   "requestId": "01J2...",
+  "command": "subgraph",
   "status": "error",
   "epoch": 0,
   "revision": 0,
   "error": {
     "code": "invalid_request",
-    "message": "depth must be between 0 and 2",
+    "message": "depth must be a non-negative integer",
     "details": {}
   },
   "diagnostics": []
 }
 ```
 
-For every request that reaches the reviewed command loop, stdout contains one response envelope even when the command fails. The process exits:
+Response `epoch` and `revision` always describe the loaded process state, not untrusted request values. This makes stale-state errors unambiguous.
+
+A valid request ID is returned unchanged. If envelope validation fails before a valid request ID or command can be obtained, the error response uses JSON `null` for that field.
+
+For every JSON value that reaches the reviewed command loop, stdout contains one response envelope even when validation or command execution fails. The process exits:
 
 - `0` for `status = ok`;
 - non-zero for `status = error`.
 
 Stderr is reserved for process/bootstrap diagnostics that cannot be represented by the protocol. Callers must not parse ordinary results from stderr.
 
-A syntax error before the command loop, missing epoch files or a broken SWI runtime may terminate without a valid response envelope; the caller classifies that as a process failure rather than a command error.
+Invalid JSON syntax, missing epoch files or a broken SWI runtime may terminate before the reviewed command loop and therefore without a valid response envelope. The caller classifies that as a process failure rather than a command error.
 
 ### 4. Requested limits and hard limits are different
 
@@ -124,7 +132,18 @@ Hard limits cover at least:
 - output byte count;
 - execution time.
 
-The effective limits and any truncation are returned in diagnostics. Missing requested limits use reviewed defaults, not infinity.
+`subgraph.options.depth` is the requested traversal depth. There is no second request field named `maxDepth`. Effective depth is the requested depth clamped to the reviewed hard depth.
+
+Command-specific request limits:
+
+```text
+inspect-facts: maxFacts, maxOutputBytes, timeoutMs
+entity-view:   maxFacts, maxOutputBytes, timeoutMs
+subgraph:      maxNodes, maxFacts, maxOccurrences,
+               maxPathLength, maxOutputBytes, timeoutMs
+```
+
+Missing requested limits use reviewed defaults, not infinity. Effective limits and every clamp or truncation are returned in diagnostics.
 
 The process is additionally bounded by the caller with an external timeout and kill policy. SWI-Prolog uses an internal time limit where practical. Both layers are required because one cannot safely substitute for the other.
 
@@ -132,12 +151,14 @@ The process is additionally bounded by the caller with an external timeout and k
 
 Depth is defined by expansion layers, not merely by which nodes appear.
 
-- depth `0`: return the root node only; do not expand incident facts;
+- depth `0`: return the root node and root occurrence only; do not expand incident facts;
 - depth `1`: expand all selected incident facts of the root and include nodes reached through eligible IRI edges;
 - depth `2`: include depth-1 results and expand selected incident facts of depth-1 occurrences; facts already selected at a lower layer are not duplicated;
-- later depths, if introduced, follow the same rule.
+- later depths, if enabled by a future hard-limit change, follow the same rule.
 
 All selected incident facts remain visible even when an IRI fact is not traversal-eligible under ADR-0004. Edge eligibility controls expansion only.
+
+The zero-epoch protocol exposes the reviewed default traversal policy only. Request-time predicate include/exclude and type/technical-link overrides from the wider ADR-0004 model are deferred until they receive their own closed contract.
 
 ### 6. Direction is relative to the current occurrence
 
@@ -161,22 +182,74 @@ The original canonical fact is never reversed. An occurrence step records:
 
 This allows UI and proof code to recover the original source triple without inventing a reversed fact.
 
-### 7. Deterministic occurrence identity
+### 7. Deterministic occurrence identity v1
 
 Graph nodes and facts are unique, but occurrences are path-sensitive.
 
-`OccurrenceId` is derived from:
+Occurrence identity is pinned by a versioned canonical byte encoding.
 
 ```text
-root entity
-+ ordered list of (FactId, direction) traversal steps
+ASCII "LogicLensOccurrence\0"
+1 byte encoding version 0x01
+field root resource identifier
+repeated step:
+  field FactId
+  1 byte direction tag
 ```
 
-It must not depend on enumeration order, memory addresses, generated counters or wall-clock values.
+Fields use the same unsigned 64-bit big-endian UTF-8 byte-length prefix as FactId v1.
+
+Direction tags:
+
+```text
+0x01 outgoing
+0x02 incoming
+```
+
+The ID is:
+
+```text
+o:sha256:<lowercase SHA-256 hex of canonical bytes>
+```
+
+The root occurrence uses the same encoding with zero steps. `maxPathLength` counts traversal steps, so the root path length is `0`.
 
 Two paths to the same node therefore produce two occurrences. Reaching an already visited node through another path is allowed. Reaching a node already present in the current path creates a terminal cycle occurrence and is not expanded further.
 
-### 8. Deterministic output
+Changing this encoding requires a new occurrence-identity version and new golden vectors.
+
+### 8. Deterministic expansion and limit application
+
+Final sorting alone is insufficient because limits decide which candidates survive. Candidate discovery and admission are therefore deterministic.
+
+Breadth-first work order:
+
+```text
+layer
+occurrence ID
+```
+
+For one expanded occurrence, incident candidates are ordered by:
+
+```text
+FactId
+direction
+next resource identifier
+```
+
+Rules:
+
+1. facts are admitted in candidate order;
+2. a traversal occurrence can be created only from an admitted fact;
+3. nodes are admitted by resource identifier as candidate occurrences are processed;
+4. a fact or node already present in the normalized result does not consume its limit again;
+5. the root consumes one node and one occurrence;
+6. a cycle occurrence consumes an occurrence but is terminal;
+7. once a global limit is reached, later candidates are omitted and a stable diagnostic records the first blocked category.
+
+This order is part of the contract. Clause order, hash-table order and XML order cannot choose the truncated subset.
+
+### 9. Deterministic output
 
 Semantic ordering is fixed before JSON serialization:
 
@@ -190,7 +263,9 @@ The implementation emits compact UTF-8 JSON with a fixed property order. Byte-fo
 
 Timing, process ID, temporary paths and other volatile values are excluded from deterministic result documents. They may appear in a separate run report outside the command result.
 
-### 9. Command boundaries
+`maxOutputBytes` applies to the UTF-8 success envelope. The implementation reserves a small reviewed control budget for a deterministic `output_limit_exceeded` error envelope. The external caller still enforces an absolute process-output cap.
+
+### 10. Command boundaries
 
 #### `health`
 
@@ -198,11 +273,11 @@ Returns protocol version, loaded epoch/revision, manifest hashes, available comm
 
 #### `inspect-facts`
 
-Returns canonical base facts incident to one entity, including complete source triples and origins. It does not apply generic UI grouping.
+Returns canonical base facts incident to one entity, including complete source triples and origins. It does not apply generic UI grouping. Its only semantic option is `entityId`; fact/output/time limits are operational bounds.
 
 #### `entity-view`
 
-Returns the deterministic generic Prolog view defined by ADR-0006. Optional bounded depth may compose nested sections through the same traversal engine; it does not introduce new domain-specific profiles.
+Returns the deterministic root generic Prolog view defined by ADR-0006. In v0 it does not perform neighbor expansion; nested composition uses the separate `subgraph` command. Options are `entityId`, language, raw-Prolog inclusion and fact/output/time limits.
 
 #### `subgraph`
 
@@ -210,7 +285,7 @@ Returns:
 
 ```text
 root
-limits/effective limits
+requested/effective limits
 nodes
 facts
 occurrences
@@ -220,7 +295,7 @@ diagnostics
 
 It does not return arbitrary Prolog terms, execute caller-provided predicates or modify the epoch.
 
-### 10. Security and isolation
+### 11. Security and isolation
 
 The reviewed entry module:
 
@@ -235,36 +310,43 @@ The reviewed entry module:
 
 Builder and Search will later receive additional reviewed tools, but they do not gain a generic Prolog execution endpoint through this protocol.
 
-## Validation order
+### 12. Validation order
 
-For every request:
+For every parsed JSON value:
 
-1. parse one JSON value;
-2. validate envelope and command-specific shape;
+1. capture a valid request ID and command when available, otherwise use null in errors;
+2. validate the envelope and command-specific shape;
 3. validate protocol version;
-4. validate requested epoch/revision;
+4. validate requested epoch/revision against loaded state;
 5. calculate effective limits;
 6. execute the whitelisted command under limits;
 7. normalize and sort the result;
-8. serialize one response envelope;
-9. exit with the corresponding code.
+8. measure the compact UTF-8 response against the output limit;
+9. serialize exactly one response envelope;
+10. exit with the corresponding code.
 
-## Required verification cases
+Unknown commands and unsupported protocol versions are validation errors, not dynamic dispatch inputs.
+
+### 13. Required verification cases
 
 1. JSON containing Cyrillic, quotes and backslashes passes through stdin without shell escaping.
 2. Unknown command returns a structured error and non-zero exit.
 3. Wrong protocol version is rejected before command execution.
-4. Wrong epoch or revision is rejected explicitly.
-5. Requested limits above hard limits are clamped and diagnosed.
-6. `rdf:type` remains visible but does not create occurrences by default.
-7. An unknown ordinary IRI predicate remains traversable.
-8. Incoming and outgoing traversal retain the original source triple.
-9. Two distinct paths to IIS create one node and two deterministic occurrences.
-10. A cycle creates a terminal cycle occurrence and terminates.
-11. Repeated execution in the pinned environment produces byte-identical stdout.
-12. Volatile process data does not appear in deterministic output.
-13. Timeout or output-limit termination changes no active files.
-14. No request field can select a module, file path, predicate or raw Prolog goal.
+4. Missing/invalid request ID returns an error envelope with `requestId: null` when JSON syntax was valid.
+5. Wrong epoch or revision is rejected explicitly and the response reports loaded state.
+6. Options valid for one command are rejected for another.
+7. Requested limits above hard limits are clamped and diagnosed.
+8. `rdf:type` remains visible but does not create occurrences by default.
+9. An unknown ordinary IRI predicate remains traversable.
+10. Incoming and outgoing traversal retain the original source triple.
+11. Two distinct paths to IIS create one node and two deterministic occurrences.
+12. A cycle creates a terminal cycle occurrence and terminates.
+13. OccurrenceId v1 golden byte/hash vectors pass independently of traversal enumeration.
+14. Low fact/node/occurrence limits select the same deterministic subset on repeated runs.
+15. Repeated execution in the pinned environment produces byte-identical stdout.
+16. Volatile process data does not appear in deterministic output.
+17. Timeout or output-limit termination changes no active files.
+18. No request field can select a module, file path, predicate or raw Prolog goal.
 
 ## Rejected alternatives
 
@@ -279,6 +361,14 @@ Rejected because C#, Builder and Search need one machine-readable failure contra
 ### Caller-controlled unbounded limits
 
 Rejected because the same CLI is intended for LLM-assisted workflows and must remain safe under malformed or adversarial requests.
+
+### Two request fields for traversal depth
+
+Rejected because `depth` plus `limits.maxDepth` creates ambiguous precedence. The requested depth is one value and the hard cap belongs to reviewed configuration.
+
+### Shared permissive options for several commands
+
+Rejected because ignored options hide caller mistakes and make security review harder.
 
 ### Global visited-node suppression
 
@@ -296,3 +386,4 @@ Rejected for v0. It would bypass reviewed predicates, limits and evidence contra
 - Traversal semantics become testable independently of React and ASP.NET.
 - Builder/Search gain a safe primitive rather than a generic code-execution channel.
 - Exact deterministic output has a defined runtime boundary instead of an accidental promise across all SWI versions.
+- Truncated results remain deterministic because admission order is specified before limits are applied.
