@@ -56,8 +56,17 @@ foreach ($line in Get-Content -LiteralPath $caseFile -Encoding utf8) {
         throw "Case '$($case.id)' expected status '$($case.expectedStatus)' but got '$($result.status)'."
     }
 
+    $solutionsProperty = $result.PSObject.Properties['solutions']
+    $solutions = @()
+    if ($null -ne $solutionsProperty -and $null -ne $solutionsProperty.Value) {
+        $solutions = @($solutionsProperty.Value)
+    }
+
     if ($case.expectedStatus -eq 'success') {
-        $solutions = @($result.solutions)
+        if ($null -eq $solutionsProperty) {
+            throw "Case '$($case.id)' returned success without a solutions field."
+        }
+
         if ($solutions.Count -ne 1) {
             throw "Case '$($case.id)' expected one solution but got $($solutions.Count)."
         }
@@ -86,8 +95,14 @@ foreach ($line in Get-Content -LiteralPath $caseFile -Encoding utf8) {
         }
     }
 
-    if ($case.expectedStatus -eq 'unknown' -and @($result.solutions).Count -gt 0) {
-        throw "Case '$($case.id)' returned solutions with unknown status."
+    if ($case.expectedStatus -eq 'unknown') {
+        if ($null -eq $solutionsProperty) {
+            throw "Case '$($case.id)' returned unknown without a stable solutions field."
+        }
+
+        if ($solutions.Count -ne 0) {
+            throw "Case '$($case.id)' returned $($solutions.Count) solutions with unknown status."
+        }
     }
 
     $executed++
