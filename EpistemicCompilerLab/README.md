@@ -16,9 +16,9 @@ Can a strong or slow teacher system improve a weak local LLM by choosing:
 
 ## MVP boundary
 
-The first executable slice contains repository-local sources, Prolog knowledge, short-lived SWI-Prolog CLI calls, JSON results, separate teacher/student prompts, optional evidence tails and regression tests.
+The executable lab contains repository-local sources, Prolog knowledge, short-lived SWI-Prolog CLI calls, JSON results, separate teacher/student prompts, optional evidence tails, regression tests and a local Ollama-compatible representation runner.
 
-It does not include React, LogicLens epochs, UI Document generation, a web proxy, a persistent Prolog service or production sandboxing.
+It does not include React, LogicLens epochs, UI Document generation, a web proxy, a persistent Prolog service, model training or production sandboxing.
 
 ## Structure
 
@@ -28,6 +28,8 @@ It does not include React, LogicLens epochs, UI Document generation, a web proxy
 - [`prolog/knowledge.pl`](prolog/knowledge.pl) — executable fixture knowledge;
 - [`prolog/entry.pl`](prolog/entry.pl) — JSON CLI;
 - [`sources/materials.md`](sources/materials.md) — original fixture evidence;
+- [`representations/knowledge.compact.json`](representations/knowledge.compact.json) — compact non-executable representation;
+- [`runner/README.md`](runner/README.md) — five-mode local-model experiment;
 - [`tests/knowledge_tests.pl`](tests/knowledge_tests.pl) — regression tests;
 - [`cases/README.md`](cases/README.md) — benchmark-v0 contract and scoring;
 - [`cases/benchmark-v0.jsonl`](cases/benchmark-v0.jsonl) — fixed representation cases;
@@ -36,7 +38,7 @@ It does not include React, LogicLens epochs, UI Document generation, a web proxy
 
 ## Windows setup
 
-Install the Windows 64-bit stable build from:
+Install the Windows 64-bit stable SWI-Prolog build from:
 
 `https://www.swi-prolog.org/download/stable`
 
@@ -48,27 +50,46 @@ swipl --version
 
 The repository scripts also search the registry and standard installation folders when `PATH` is not yet refreshed.
 
+For E2, start Ollama and list installed local models:
+
+```powershell
+ollama list
+```
+
 ## Run from any directory
 
 The launcher validates the checkout and temporarily enters `D:\projects\ChatPilotGroup\LogicLens`.
 
-Update `main` and verify everything:
+Update `main` and verify the deterministic lab:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' sync-doctor
 ```
 
-Other actions:
+Other deterministic actions:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' doctor
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' tests
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' cases
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' oracle
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' runner-check
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query current-material b 20260810
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query expand asd100500 evidence
 ```
 
-The doctor validates benchmark-v0, executes its deterministic Prolog oracle, runs all PL-Unit tests and performs a JSON CLI smoke test.
+Run one model and representation after replacing `<installed-model>` with an exact name from `ollama list`:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-run -Mode markdown -Model '<installed-model>'
+```
+
+The runner prints the generated JSONL path. Score that file without editing it:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-score -RunPath '<absolute-jsonl-path>'
+```
+
+The doctor validates benchmark-v0, the representation-runner assets, the deterministic Prolog oracle, all PL-Unit tests and a JSON CLI smoke test. It does not require Ollama or run a model experiment.
 
 `unknown` means the loaded knowledge is insufficient. It never means `false`.
