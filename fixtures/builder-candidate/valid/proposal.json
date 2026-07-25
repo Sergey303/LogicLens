@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "0.1",
+  "candidateId": "fixture-candidate-member-v0",
+  "taskId": "ENG-46-fixture",
+  "base": {
+    "epoch": 0,
+    "revision": 0
+  },
+  "provider": {
+    "kind": "fixture",
+    "name": "manual-fixture",
+    "model": "deterministic"
+  },
+  "uiContractVersion": "0.1",
+  "cliProtocolVersion": "0.1",
+  "metrics": {
+    "cliCalls": 0,
+    "manualFixes": 0,
+    "elapsedMs": 0,
+    "costUsd": 0
+  },
+  "files": [
+    {
+      "path": "rules/candidate_member.pl",
+      "kind": "rule",
+      "description": "Minimal derived predicate over reviewed epoch data."
+    },
+    {
+      "path": "tests/candidate_member_tests.pl",
+      "kind": "test",
+      "description": "Candidate-owned executable acceptance test."
+    },
+    {
+      "path": "ui/component-bindings.json",
+      "kind": "ui",
+      "description": "Closed-vocabulary UI binding metadata."
+    }
+  ],
+  "notes": "Provider-neutral fixture used to verify the candidate package contract."
+}
