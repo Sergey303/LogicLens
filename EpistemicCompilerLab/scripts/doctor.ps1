@@ -11,6 +11,9 @@ Write-Host "Version: $version"
 Write-Host 'Validating benchmark cases...'
 & (Join-Path $PSScriptRoot 'validate-cases.ps1')
 
+Write-Host 'Validating representation runner...'
+& (Join-Path $PSScriptRoot 'validate-runner.ps1')
+
 Write-Host 'Running benchmark oracle...'
 & (Join-Path $PSScriptRoot 'verify-oracle.ps1')
 
