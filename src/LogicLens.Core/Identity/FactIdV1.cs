@@ -26,8 +26,8 @@ public static class FactIdV1
         string predicate,
         FactObject @object)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(subject);
-        ArgumentException.ThrowIfNullOrWhiteSpace(predicate);
+        subject = Guard.Required(subject, nameof(subject));
+        predicate = Guard.Required(predicate, nameof(predicate));
         ArgumentNullException.ThrowIfNull(@object);
 
         using var stream = new MemoryStream();
