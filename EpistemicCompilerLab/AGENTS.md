@@ -43,12 +43,24 @@ A successful Prolog proof establishes a consequence of loaded facts and rules. I
 - adds a regression test;
 - records model, prompt, commit and metrics.
 
+## User launch convention
+
+Commands sent to the user must work from any PowerShell location.
+
+Use the absolute launcher path:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' <action>
+```
+
+The launcher validates the checkout, enters `D:\projects\ChatPilotGroup\LogicLens`, performs the action and restores the caller's previous location.
+
 ## Change discipline
 
 - Prefer explicit predicates and small modules.
 - Keep source evidence addressable from derived facts.
 - Do not mix changes to knowledge, prompts and model settings in one experiment unless their interaction is being measured.
-- Run `pwsh EpistemicCompilerLab/scripts/run-tests.ps1` before accepting a knowledge change.
-- Use `pwsh EpistemicCompilerLab/scripts/doctor.ps1` to verify the Windows environment and CLI smoke test.
+- Run the `tests` launcher action before accepting a knowledge change.
+- Use the `doctor` launcher action to verify the Windows environment and CLI smoke test.
 - Preserve JSON CLI statuses and field meanings.
 - Keep generated or temporary experiment output out of the main LogicLens project paths.
