@@ -10,7 +10,8 @@ $requiredFields = @(
     'questionRu',
     'expectedAction',
     'expectedStatus',
-    'requiresTail'
+    'requiresTail',
+    'tailEntity'
 )
 $allowedActions = @('query', 'ask_user')
 $allowedStatuses = @('success', 'unknown', 'need_user')
@@ -56,6 +57,15 @@ foreach ($line in Get-Content -LiteralPath $caseFile -Encoding utf8) {
 
     if ($null -ne $record.requiresTail -and $record.requiresTail -notin $allowedTails) {
         throw "Unsupported requiresTail '$($record.requiresTail)' in '$($record.id)'."
+    }
+
+    if ($null -eq $record.requiresTail -and $null -ne $record.tailEntity) {
+        throw "Case '$($record.id)' has tailEntity but requiresTail is null."
+    }
+
+    if ($null -ne $record.requiresTail -and
+        [string]::IsNullOrWhiteSpace([string] $record.tailEntity)) {
+        throw "Case '$($record.id)' requires a tail but has no tailEntity."
     }
 
     if ($record.expectedAction -eq 'query') {
