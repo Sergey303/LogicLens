@@ -67,18 +67,21 @@ foreach ($line in Get-Content -LiteralPath $caseFile -Encoding utf8) {
         }
 
         if ($null -ne $case.requiresTail) {
+            $tailEntity = [string] $case.tailEntity
             $kinds = @($solutions[0].available_expansions | ForEach-Object { $_.kind })
-            if ($case.requiresTail -notin $kinds) {
-                throw "Case '$($case.id)' requires unavailable tail '$($case.requiresTail)'."
+
+            if ($tailEntity -eq $case.expectedMaterial -and
+                $case.requiresTail -notin $kinds) {
+                throw "Case '$($case.id)' requires unavailable tail '$($case.requiresTail)' on '$tailEntity'."
             }
 
             $tail = Invoke-PrologJson -CliArguments @(
                 'expand',
-                $case.expectedMaterial,
+                $tailEntity,
                 $case.requiresTail
             )
             if ($tail.status -ne 'success') {
-                throw "Case '$($case.id)' could not open tail '$($case.requiresTail)'."
+                throw "Case '$($case.id)' could not open tail '$($case.requiresTail)' on '$tailEntity'."
             }
         }
     }
