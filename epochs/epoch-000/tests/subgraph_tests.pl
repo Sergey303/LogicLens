@@ -8,6 +8,7 @@ person('urn:logiclens:person:alex').
 lab('urn:logiclens:org:lab').
 iis('urn:logiclens:org:iis').
 person_type('http://fogid.net/o/person').
+rdf_type('http://www.w3.org/1999/02/22-rdf-syntax-ns#type').
 
 
 default_labels(_{languages:[ru, en]}).
@@ -63,7 +64,7 @@ test(depth_zero_contains_only_root_node_and_occurrence) :-
     assertion(RootOccurrence.state == boundary).
 
 
-test(two_semantic_paths_to_iis_share_one_node) :-
+test(two_semantic_paths_to_iis_share_one_node, [nondet]) :-
     person(Person),
     iis(Iis),
     default_labels(Labels),
@@ -82,9 +83,10 @@ test(two_semantic_paths_to_iis_share_one_node) :-
     ).
 
 
-test(rdf_type_is_visible_but_class_is_not_traversed) :-
+test(rdf_type_is_visible_but_class_is_not_traversed, [nondet]) :-
     person(Person),
     person_type(PersonType),
+    rdf_type(RdfType),
     default_labels(Labels),
     default_limits(Limits),
     subgraph:build_subgraph(
@@ -92,15 +94,15 @@ test(rdf_type_is_visible_but_class_is_not_traversed) :-
     ),
     assertion(\+ (
         member(Node, Result.nodes),
-        Node.id == PersonType
+        get_dict(id, Node, PersonType)
     )),
     assertion((
         member(Fact, Result.facts),
-        Fact.predicate == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+        get_dict(predicate, Fact, RdfType)
     )).
 
 
-test(two_node_cycle_creates_terminal_cycle_occurrence) :-
+test(two_node_cycle_creates_terminal_cycle_occurrence, [nondet]) :-
     lab(Lab),
     default_labels(Labels),
     default_limits(Limits),
@@ -127,7 +129,7 @@ test(node_limit_selects_stable_root_only_subset) :-
         Person, 2, 2, both, Labels, Limits, Second, SecondDiagnostics
     ),
     assertion(First == Second),
-    assertion(FirstDiagnostics == SecondDiagnostics),
+    assertion(FirstDiagnostics =@= SecondDiagnostics),
     assertion(First.truncated == true),
     First.nodes = [Root],
     assertion(Root.id == Person).
@@ -144,7 +146,7 @@ test(repeated_full_traversal_is_structurally_equal) :-
         Person, 2, 2, both, Labels, Limits, Second, SecondDiagnostics
     ),
     assertion(First == Second),
-    assertion(FirstDiagnostics == SecondDiagnostics).
+    assertion(FirstDiagnostics =@= SecondDiagnostics).
 
 
 node_is(Id, Node) :- Node.id == Id.
