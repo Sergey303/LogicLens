@@ -65,7 +65,7 @@ test(person_has_exactly_eight_incident_facts_once) :-
     ),
     sort(IncidentFactIds0, IncidentFactIds),
     assertion(ViewFactIds == IncidentFactIds),
-    assertion(ViewFactIds = [_, _, _, _, _, _, _, _]).
+    length(ViewFactIds, 8).
 
 
 test(person_name_values_share_one_group) :-
@@ -79,7 +79,7 @@ test(person_name_values_share_one_group) :-
         Group
     ),
     assertion(Group.label == "имя"),
-    assertion(Group.values = [_, _]).
+    length(Group.values, 2).
 
 
 test(incoming_participant_uses_inverse_label_and_full_source) :-
@@ -93,7 +93,7 @@ test(incoming_participant_uses_inverse_label_and_full_source) :-
         Group
     ),
     assertion(Group.label == "участник в орг."),
-    assertion(Group.values = [Value]),
+    Group.values = [Value],
     assertion(Value.kind == resourceLink),
     assertion(Value.targetId == 'urn:logiclens:participation:work'),
     assertion(Value.source.subject == 'urn:logiclens:participation:work'),
@@ -114,7 +114,7 @@ test(unknown_technical_predicate_is_visible_and_marked) :-
     ),
     assertion(Group.label == "internal-code"),
     assertion(Group.technical == true),
-    assertion(Group.values = [Value]),
+    Group.values = [Value],
     assertion(Value.text == "A-17").
 
 
@@ -129,7 +129,7 @@ test(rdf_type_uses_builtin_label_and_class_resource_label) :-
         Group
     ),
     assertion(Group.label == "тип"),
-    assertion(Group.values = [Value]),
+    Group.values = [Value],
     assertion(Value.targetId == 'http://fogid.net/o/person'),
     assertion(Value.label == "Персона").
 
@@ -164,8 +164,8 @@ test(raw_prolog_contains_all_and_only_incident_facts) :-
     person(Person),
     generic_view:entity_prolog(Person, Text),
     split_string(Text, "\n", "", Lines0),
-    exclude(==(\"\"), Lines0, Lines),
-    assertion(Lines = [_, _, _, _, _, _, _, _]),
+    exclude(==(""), Lines0, Lines),
+    length(Lines, 8),
     forall(
         member(Line, Lines),
         sub_string(Line, 0, 5, _, "fact(")
