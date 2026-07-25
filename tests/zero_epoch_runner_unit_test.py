@@ -3,8 +3,14 @@ from __future__ import annotations
 
 import os
 import socket
+import sys
 import unittest
+from pathlib import Path
 from unittest import mock
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from tools.zero_epoch.processes import RunFailure, executable_command
 from tools.zero_epoch.verification import (
