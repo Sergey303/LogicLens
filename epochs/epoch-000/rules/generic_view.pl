@@ -34,13 +34,14 @@ entity_view(Entity, Options, View) :-
     group_pairs_by_key(Pairs, GroupedFacts),
     maplist(build_group(Options), GroupedFacts, Groups0),
     sort_groups(Groups0, Groups),
-    View = _{
+    View = entity_view{
         kind: entity_view,
         entity: Entity,
         title: Title,
         groups: Groups,
         diagnostics: []
-    }.
+    },
+    !.
 
 
 incident_fact(
@@ -82,7 +83,7 @@ build_group(
     ),
     sort_facts(Facts0, Facts),
     maplist(fact_value(Direction, Options), Facts, Values),
-    Group = _{
+    Group = group{
         direction: Direction,
         predicate: Predicate,
         label: Label,
@@ -108,7 +109,7 @@ fact_value(
 ) :-
     base_source(FactId, Subject, Predicate, Object, Source),
     label_rules:resource_label(Subject, Options, Label),
-    Value = _{
+    Value = value{
         kind: resourceLink,
         targetId: Subject,
         label: Label,
@@ -118,14 +119,14 @@ fact_value(
 
 outgoing_value(iri(Resource), Options, Source, Value) :-
     label_rules:resource_label(Resource, Options, Label),
-    Value = _{
+    Value = value{
         kind: resourceLink,
         targetId: Resource,
         label: Label,
         source: Source
     }.
 outgoing_value(literal(Text, plain), _, Source, Value) :-
-    Value = _{
+    Value = value{
         kind: text,
         text: Text,
         literalKind: plain,
@@ -134,7 +135,7 @@ outgoing_value(literal(Text, plain), _, Source, Value) :-
         source: Source
     }.
 outgoing_value(literal(Text, lang(Language)), _, Source, Value) :-
-    Value = _{
+    Value = value{
         kind: text,
         text: Text,
         literalKind: language,
@@ -143,7 +144,7 @@ outgoing_value(literal(Text, lang(Language)), _, Source, Value) :-
         source: Source
     }.
 outgoing_value(literal(Text, datatype(Datatype)), _, Source, Value) :-
-    Value = _{
+    Value = value{
         kind: text,
         text: Text,
         literalKind: datatype,
@@ -161,7 +162,7 @@ base_source(FactId, Subject, Predicate, Object, Source) :-
         Origins0
     ),
     sort(Origins0, Origins),
-    Source = _{
+    Source = source{
         kind: base,
         factId: FactId,
         subject: Subject,
@@ -171,25 +172,25 @@ base_source(FactId, Subject, Predicate, Object, Source) :-
     }.
 
 
-object_dict(iri(Resource), _{
+object_dict(iri(Resource), object{
     kind: iri,
     value: Resource
 }).
-object_dict(literal(Text, plain), _{
+object_dict(literal(Text, plain), object{
     kind: literal,
     literalKind: plain,
     lexical: Text,
     language: null,
     datatype: null
 }).
-object_dict(literal(Text, lang(Language)), _{
+object_dict(literal(Text, lang(Language)), object{
     kind: literal,
     literalKind: language,
     lexical: Text,
     language: Language,
     datatype: null
 }).
-object_dict(literal(Text, datatype(Datatype)), _{
+object_dict(literal(Text, datatype(Datatype)), object{
     kind: literal,
     literalKind: datatype,
     lexical: Text,
@@ -260,4 +261,5 @@ entity_prolog(Entity, Text) :-
                 nl
             )
         )
-    ).
+    ),
+    !.
