@@ -5,23 +5,34 @@ on:
     paths:
       - "contracts/prolog-cli-v0.schema.json"
       - "contracts/epoch-candidate-v0.schema.json"
+      - "contracts/builder-task-v0.schema.json"
+      - "contracts/builder-run-v0.schema.json"
       - "data/Ontology.xml"
       - "docs/adr/0008-active-epoch-package.md"
       - "docs/adr/0010-builder-candidate-package.md"
+      - "docs/adr/0011-builder-experiment-envelope.md"
+      - "docs/runbooks/builder-provider-experiment.md"
       - "epochs/epoch-000/**"
+      - "experiments/builder/**"
       - "fixtures/zero-epoch/**"
       - "fixtures/builder-candidate/**"
+      - "fixtures/builder-experiment/**"
       - "src/LogicLens.Core/**"
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
       - "tools/LogicLens.OntologyCompiler/**"
       - "tools/active_epoch/**"
       - "tools/builder_candidate/**"
+      - "tools/builder_experiment/**"
       - "tools/build_active_epoch.py"
       - "tools/build_epoch_candidate.py"
+      - "tools/builder_experiment.py"
+      - "tools/run_builder_ollama.py"
       - "tests/active_epoch_package_test.py"
       - "tests/builder_candidate_contract_test.py"
       - "tests/builder_candidate_meta_call_test.py"
+      - "tests/builder_experiment_contract_test.py"
+      - "tests/builder_ollama_adapter_test.py"
       - ".github/workflows/verify-active-epoch.yml"
   push:
     branches:
@@ -29,23 +40,34 @@ on:
     paths:
       - "contracts/prolog-cli-v0.schema.json"
       - "contracts/epoch-candidate-v0.schema.json"
+      - "contracts/builder-task-v0.schema.json"
+      - "contracts/builder-run-v0.schema.json"
       - "data/Ontology.xml"
       - "docs/adr/0008-active-epoch-package.md"
       - "docs/adr/0010-builder-candidate-package.md"
+      - "docs/adr/0011-builder-experiment-envelope.md"
+      - "docs/runbooks/builder-provider-experiment.md"
       - "epochs/epoch-000/**"
+      - "experiments/builder/**"
       - "fixtures/zero-epoch/**"
       - "fixtures/builder-candidate/**"
+      - "fixtures/builder-experiment/**"
       - "src/LogicLens.Core/**"
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
       - "tools/LogicLens.OntologyCompiler/**"
       - "tools/active_epoch/**"
       - "tools/builder_candidate/**"
+      - "tools/builder_experiment/**"
       - "tools/build_active_epoch.py"
       - "tools/build_epoch_candidate.py"
+      - "tools/builder_experiment.py"
+      - "tools/run_builder_ollama.py"
       - "tests/active_epoch_package_test.py"
       - "tests/builder_candidate_contract_test.py"
       - "tests/builder_candidate_meta_call_test.py"
+      - "tests/builder_experiment_contract_test.py"
+      - "tests/builder_ollama_adapter_test.py"
       - ".github/workflows/verify-active-epoch.yml"
 
 permissions:
@@ -58,7 +80,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 50
 
     steps:
       - name: Checkout
@@ -147,6 +169,68 @@ jobs:
             --fixture fixtures/builder-candidate/valid \
             2>&1 | tee -a /tmp/builder-candidate-verification.log
 
+      - name: Build retained fixture provider runs
+        run: |
+          set -o pipefail
+          task=experiments/builder/eng-26-researcher-at-iis
+          python tools/builder_experiment.py prepare \
+            --baseline /tmp/active-epoch-a \
+            --task "$task" \
+            --task-schema contracts/builder-task-v0.schema.json \
+            --candidate-schema contracts/epoch-candidate-v0.schema.json \
+            --output /tmp/builder-workspace \
+            2>&1 | tee /tmp/builder-experiment-build.log
+          python tools/builder_experiment.py import-run \
+            --baseline /tmp/active-epoch-a \
+            --task "$task" \
+            --task-schema contracts/builder-task-v0.schema.json \
+            --candidate-schema contracts/epoch-candidate-v0.schema.json \
+            --run-schema contracts/builder-run-v0.schema.json \
+            --workspace /tmp/builder-workspace \
+            --proposal fixtures/builder-experiment/qwen \
+            --output /tmp/builder-run-qwen \
+            --run-id fixture-qwen \
+            2>&1 | tee -a /tmp/builder-experiment-build.log
+          python tools/builder_experiment.py import-run \
+            --baseline /tmp/active-epoch-a \
+            --task "$task" \
+            --task-schema contracts/builder-task-v0.schema.json \
+            --candidate-schema contracts/epoch-candidate-v0.schema.json \
+            --run-schema contracts/builder-run-v0.schema.json \
+            --workspace /tmp/builder-workspace \
+            --proposal fixtures/builder-experiment/codex \
+            --output /tmp/builder-run-codex \
+            --run-id fixture-codex \
+            2>&1 | tee -a /tmp/builder-experiment-build.log
+          python tools/builder_experiment.py compare \
+            --run-schema contracts/builder-run-v0.schema.json \
+            --run /tmp/builder-run-qwen \
+            --run /tmp/builder-run-codex \
+            --output /tmp/builder-run-comparison.json \
+            2>&1 | tee -a /tmp/builder-experiment-build.log
+
+      - name: Verify frozen task run envelopes hidden oracle and comparison
+        run: |
+          set -o pipefail
+          task=experiments/builder/eng-26-researcher-at-iis
+          python tests/builder_experiment_contract_test.py \
+            --baseline /tmp/active-epoch-a \
+            --task "$task" \
+            --task-schema contracts/builder-task-v0.schema.json \
+            --candidate-schema contracts/epoch-candidate-v0.schema.json \
+            --run-schema contracts/builder-run-v0.schema.json \
+            --qwen-fixture fixtures/builder-experiment/qwen \
+            --codex-fixture fixtures/builder-experiment/codex \
+            2>&1 | tee /tmp/builder-experiment-verification.log
+          python tests/builder_ollama_adapter_test.py \
+            --baseline /tmp/active-epoch-a \
+            --task "$task" \
+            --task-schema contracts/builder-task-v0.schema.json \
+            --candidate-schema contracts/epoch-candidate-v0.schema.json \
+            --run-schema contracts/builder-run-v0.schema.json \
+            --response fixtures/builder-experiment/ollama-response.json \
+            2>&1 | tee -a /tmp/builder-experiment-verification.log
+
       - name: Stage builder candidate artifact
         run: |
           mkdir --parents /tmp/builder-candidate-artifact
@@ -156,6 +240,18 @@ jobs:
           cp \
             /tmp/builder-candidate-comparison.json \
             /tmp/builder-candidate-artifact/comparison.json
+
+      - name: Stage Builder experiment artifact
+        run: |
+          mkdir --parents /tmp/builder-experiment-artifact
+          cp --recursive /tmp/builder-workspace \
+            /tmp/builder-experiment-artifact/workspace
+          cp --recursive /tmp/builder-run-qwen \
+            /tmp/builder-experiment-artifact/qwen
+          cp --recursive /tmp/builder-run-codex \
+            /tmp/builder-experiment-artifact/codex
+          cp /tmp/builder-run-comparison.json \
+            /tmp/builder-experiment-artifact/comparison.json
 
       - name: Upload portable active epoch
         uses: actions/upload-artifact@v4
@@ -173,6 +269,14 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Upload verified Builder experiment fixtures
+        uses: actions/upload-artifact@v4
+        with:
+          name: logiclens-builder-experiment-fixtures
+          path: /tmp/builder-experiment-artifact
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Upload verification logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -183,5 +287,7 @@ jobs:
             /tmp/active-epoch-verification.log
             /tmp/builder-candidate-build.log
             /tmp/builder-candidate-verification.log
+            /tmp/builder-experiment-build.log
+            /tmp/builder-experiment-verification.log
           if-no-files-found: warn
           retention-days: 14
