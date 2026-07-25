@@ -47,23 +47,26 @@ swipl --version
 
 The repository scripts also search the registry and standard installation folders when `PATH` is not yet refreshed.
 
-## Verify everything
+## Run from any directory
 
-From the LogicLens repository root:
+The launcher validates the checkout and temporarily enters `D:\projects\ChatPilotGroup\LogicLens`.
+
+Update `main` and verify everything:
 
 ```powershell
-pwsh EpistemicCompilerLab/scripts/doctor.ps1
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' sync-doctor
+```
+
+Other actions:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' doctor
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' tests
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' cases
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query current-material b 20260810
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query expand asd100500 evidence
 ```
 
 The doctor reports the executable and version, validates benchmark-v0, runs all Prolog tests and executes a JSON CLI smoke test.
-
-Individual commands:
-
-```powershell
-pwsh EpistemicCompilerLab/scripts/validate-cases.ps1
-pwsh EpistemicCompilerLab/scripts/run-tests.ps1
-pwsh EpistemicCompilerLab/scripts/query.ps1 current-material b 20260810
-pwsh EpistemicCompilerLab/scripts/query.ps1 expand asd100500 evidence
-```
 
 `unknown` means the loaded knowledge is insufficient. It never means `false`.
