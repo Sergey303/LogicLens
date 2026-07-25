@@ -13,12 +13,17 @@ LogicLens is a research system for building stable and query-specific interfaces
 ## Planned layers
 
 - archived source data;
-- canonical Prolog assertions and provenance;
-- effective graph and derived predicates;
+- canonical Prolog facts and provenance;
+- derived predicates and view rules;
 - UI ontology and universal React renderer;
 - epoch builder;
 - query-specific search resolver;
 - atomic editing through `AddFact` and `DeleteFact`.
+
+## Architecture
+
+- [Architecture v0](docs/architecture-v0.md)
+- [ADR-0001: Canonical fact, provenance, and change model](docs/adr/0001-canonical-fact-model.md)
 
 ## Project tracking
 
