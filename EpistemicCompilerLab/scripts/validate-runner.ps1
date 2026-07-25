@@ -13,7 +13,9 @@ $requiredFiles = @(
     'scripts/test-ollama-model.ps1',
     'scripts/run-representation.ps1',
     'scripts/run-representation-baseline.ps1',
+    'scripts/run-representation-suite.ps1',
     'scripts/score-representation.ps1',
+    'scripts/show-representation-summary.ps1',
     'scripts/launch.ps1'
 )
 
@@ -46,15 +48,8 @@ if ($null -eq $compact.transitionDate) {
     throw 'Compact knowledge has no transition date.'
 }
 
-$parseTargets = @(
-    'scripts/ensure-ollama-cpu-profile.ps1',
-    'scripts/test-ollama-model.ps1',
-    'scripts/run-representation.ps1',
-    'scripts/run-representation-baseline.ps1',
-    'scripts/score-representation.ps1',
-    'scripts/validate-runner.ps1',
-    'scripts/launch.ps1'
-)
+$parseTargets = @($requiredFiles | Where-Object { $_ -like 'scripts/*.ps1' })
+$parseTargets += 'scripts/validate-runner.ps1'
 foreach ($relativePath in $parseTargets) {
     $path = Join-Path $labRoot $relativePath
     $tokens = $null
@@ -73,4 +68,4 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 7 PowerShell scripts.'
+Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 10 PowerShell scripts.'
