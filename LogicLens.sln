@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Ui", "src\LogicLe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Api", "src\LogicLens.Api\LogicLens.Api.csproj", "{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.State", "src\LogicLens.State\LogicLens.State.csproj", "{A1B2C3D4-E5F6-47A8-91B2-C3D4E5F60718}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.EpochCompiler", "tools\LogicLens.EpochCompiler\LogicLens.EpochCompiler.csproj", "{C2A29224-1A56-43EA-99D0-688492E3A8BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.OntologyCompiler", "tools\LogicLens.OntologyCompiler\LogicLens.OntologyCompiler.csproj", "{6E77ACCF-A86D-44F4-A23B-2B2C0B73E6AE}"
@@ -23,6 +25,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Protocol.Verification", "tests\LogicLens.Protocol.Verification\LogicLens.Protocol.Verification.csproj", "{65236C32-A3D4-4533-9BE2-2F3F42E83C61}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Ui.Verification", "tests\LogicLens.Ui.Verification\LogicLens.Ui.Verification.csproj", "{0497C968-A594-426D-91D6-F9F92E3686A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.State.Verification", "tests\LogicLens.State.Verification\LogicLens.State.Verification.csproj", "{B2C3D4E5-F607-48A9-A2B3-D4E5F6071829}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +54,10 @@ Global
 		{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{218D09FB-D2F3-4B1D-A15C-8EAA8590C553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-47A8-91B2-C3D4E5F60718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-47A8-91B2-C3D4E5F60718}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-47A8-91B2-C3D4E5F60718}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-47A8-91B2-C3D4E5F60718}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -74,6 +82,10 @@ Global
 		{0497C968-A594-426D-91D6-F9F92E3686A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0497C968-A594-426D-91D6-F9F92E3686A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0497C968-A594-426D-91D6-F9F92E3686A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2C3D4E5-F607-48A9-A2B3-D4E5F6071829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2C3D4E5-F607-48A9-A2B3-D4E5F6071829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2C3D4E5-F607-48A9-A2B3-D4E5F6071829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2C3D4E5-F607-48A9-A2B3-D4E5F6071829}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

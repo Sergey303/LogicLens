@@ -1,27 +1,39 @@
-name: Verify core
+name: Verify core and runtime state
 
 on:
   pull_request:
     paths:
       - "src/LogicLens.Core/**"
+      - "src/LogicLens.State/**"
       - "tests/LogicLens.Core.Verification/**"
+      - "tests/LogicLens.State.Verification/**"
       - "fixtures/zero-epoch/**"
+      - "docs/adr/0009-crash-safe-runtime-state-log.md"
+      - "LogicLens.sln"
       - ".github/workflows/verify-core.yml"
   push:
     branches:
       - main
     paths:
       - "src/LogicLens.Core/**"
+      - "src/LogicLens.State/**"
       - "tests/LogicLens.Core.Verification/**"
+      - "tests/LogicLens.State.Verification/**"
       - "fixtures/zero-epoch/**"
+      - "docs/adr/0009-crash-safe-runtime-state-log.md"
+      - "LogicLens.sln"
       - ".github/workflows/verify-core.yml"
 
 permissions:
   contents: read
 
+concurrency:
+  group: verify-core-state-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  verify:
-    runs-on: ubuntu-latest
+  core:
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:
@@ -61,7 +73,7 @@ jobs:
           echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Upload verification logs
+      - name: Upload core verification logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -72,6 +84,82 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Fail when verification failed
+      - name: Fail when core verification failed
         if: steps.core-verification.outputs.exit_code != '0'
         run: exit 1
+
+  runtime-state:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - windows-2025
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore runtime state verification
+        run: >-
+          dotnet restore
+          tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj
+
+      - name: Build runtime state verification
+        id: state-build
+        shell: bash
+        run: |
+          set +e
+          dotnet build \
+            tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj \
+            --configuration Release \
+            --no-restore \
+            > state-build.log 2>&1
+          exit_code=$?
+          cat state-build.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Verify ApplyDelta and crash recovery
+        id: state-verification
+        if: steps.state-build.outputs.exit_code == '0'
+        shell: bash
+        run: |
+          set +e
+          dotnet run \
+            --project tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj \
+            --configuration Release \
+            --no-build \
+            > state-verification.log 2>&1
+          exit_code=$?
+          cat state-verification.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload runtime state logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-state-${{ matrix.os }}
+          path: |
+            state-build.log
+            state-verification.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Enforce runtime state build
+        if: always()
+        shell: bash
+        run: test "${{ steps.state-build.outputs.exit_code }}" = "0"
+
+      - name: Enforce runtime state verification
+        if: steps.state-build.outputs.exit_code == '0'
+        shell: bash
+        run: test "${{ steps.state-verification.outputs.exit_code }}" = "0"
