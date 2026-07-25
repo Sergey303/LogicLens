@@ -1,0 +1,8 @@
+{
+  "model": "qwen2.5-coder:7b",
+  "message": {
+    "role": "assistant",
+    "content": "{\"notes\":\"offline adapter fixture\",\"files\":{\"rules/candidate_researcher_at_iis.pl\":\":- module(candidate_researcher_at_iis, [researcher_at_iis/2]).\\n:- use_module('../data/epoch_data.pl').\\n\\nresearcher_at_iis(Person, EvidenceFactIds) :-\\n    epoch_data:fact(ParticipantFact, Participation, 'http://fogid.net/o/participant', iri(Person)),\\n    epoch_data:fact(OrganizationFact, Participation, 'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis')),\\n    epoch_data:fact(RoleFact, Participation, 'http://fogid.net/o/role', literal(\\\"исследователь\\\", lang('ru'))),\\n    sort([ParticipantFact, OrganizationFact, RoleFact], EvidenceFactIds).\\n\",\"tests/candidate_researcher_at_iis_tests.pl\":\":- begin_tests(candidate_researcher_at_iis).\\n:- use_module('../rules/candidate_researcher_at_iis.pl').\\n\\ntest(expected_result) :-\\n    candidate_researcher_at_iis:researcher_at_iis('urn:logiclens:person:alex', Evidence),\\n    assertion(Evidence == ['f:sha256:67abb6c01dde5080956246e21c49cb00db0bf95376fa64213d04e4efe964271b','f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5','f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3']).\\n\\n:- end_tests(candidate_researcher_at_iis).\\n\",\"ui/researcher-at-iis.json\":\"{\\n  \\\"schemaVersion\\\": \\\"0.1\\\",\\n  \\\"bindings\\\": [\\n    {\\n      \\\"predicate\\\": \\\"urn:logiclens:derived:researcher-at-iis\\\",\\n      \\\"component\\\": \\\"Property\\\"\\n    }\\n  ]\\n}\\n\"}}"
+  },
+  "done": true
+}
