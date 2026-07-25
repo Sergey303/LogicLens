@@ -29,6 +29,8 @@ It does not include React, LogicLens epochs, UI Document generation, a web proxy
 - [`prolog/entry.pl`](prolog/entry.pl) — JSON CLI;
 - [`sources/materials.md`](sources/materials.md) — original fixture evidence;
 - [`tests/knowledge_tests.pl`](tests/knowledge_tests.pl) — regression tests;
+- [`cases/README.md`](cases/README.md) — benchmark-v0 contract and scoring;
+- [`cases/benchmark-v0.jsonl`](cases/benchmark-v0.jsonl) — fixed representation cases;
 - [`experiments/README.md`](experiments/README.md) — controlled comparison protocol.
 
 ## Windows setup
@@ -53,11 +55,12 @@ From the LogicLens repository root:
 pwsh EpistemicCompilerLab/scripts/doctor.ps1
 ```
 
-The doctor reports the executable and version, runs all Prolog tests and executes a JSON CLI smoke test.
+The doctor reports the executable and version, validates benchmark-v0, runs all Prolog tests and executes a JSON CLI smoke test.
 
 Individual commands:
 
 ```powershell
+pwsh EpistemicCompilerLab/scripts/validate-cases.ps1
 pwsh EpistemicCompilerLab/scripts/run-tests.ps1
 pwsh EpistemicCompilerLab/scripts/query.ps1 current-material b 20260810
 pwsh EpistemicCompilerLab/scripts/query.ps1 expand asd100500 evidence
