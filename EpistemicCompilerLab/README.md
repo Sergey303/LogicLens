@@ -62,9 +62,9 @@ Other deterministic actions:
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' runner-check
 ```
 
-## CPU-safe local-model baseline
+## CPU-safe local-model experiments
 
-The first GPU attempt on the development workstation failed while allocating a CUDA host buffer. The baseline therefore creates a separate Ollama profile with `num_gpu=0`, `num_ctx=2048` and `num_batch=64`. The source model remains unchanged.
+The first GPU attempt on the development workstation failed while allocating a CUDA host buffer. Experiments therefore create a separate Ollama profile with `num_gpu=0`, `num_ctx=2048` and `num_batch=64`. The source model remains unchanged.
 
 Check the derived profile and JSON response:
 
@@ -72,13 +72,19 @@ Check the derived profile and JSON response:
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' ollama-smoke 'qwen2.5-coder:7b'
 ```
 
-Run and score all nine Markdown cases:
+Run one representation and print failed-case diagnostics:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-baseline markdown 'qwen2.5-coder:7b'
 ```
 
-The command creates a timestamped JSONL run and summary under `experiments/model-runs/`. It prints both the base model and the derived execution model. Partial results are preserved and scored if a later model stage fails.
+Run a controlled suite over all five representations on one commit and execution profile:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-suite 'qwen2.5-coder:7b'
+```
+
+The suite stores one JSONL run and summary per mode plus `comparison.json` and `comparison.csv` under a timestamped directory in `experiments/model-runs/`. Results remain local and are ignored by Git until aggregate findings are reviewed and copied into the append-only ledger.
 
 Allowed modes are `markdown`, `compact-json`, `prolog-text`, `cli` and `cli-tails`.
 
