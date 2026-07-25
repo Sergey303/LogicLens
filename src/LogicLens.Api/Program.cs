@@ -15,9 +15,9 @@ if (!Path.IsPathRooted(prologOptions.EpochPath))
 {
     prologOptions = prologOptions with
     {
-        EpochPath = Path.Combine(
+        EpochPath = Path.GetFullPath(Path.Combine(
             builder.Environment.ContentRootPath,
-            prologOptions.EpochPath)
+            prologOptions.EpochPath))
     };
 }
 
@@ -169,4 +169,6 @@ app.MapGet(
 
 app.Run();
 
-public partial class Program;
+public partial class Program
+{
+}
