@@ -7,8 +7,7 @@ on:
       - "src/LogicLens.Prolog/**"
       - "tools/LogicLens.EpochCompiler/**"
       - "fixtures/zero-epoch/**"
-      - "epochs/epoch-000/data/epoch_data.pl"
-      - "epochs/epoch-000/tests/**"
+      - "epochs/epoch-000/**"
       - "LogicLens.sln"
       - ".github/workflows/verify-prolog-data.yml"
   push:
@@ -30,12 +29,12 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      COMPILER_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
@@ -47,6 +46,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox
           swipl --version
+
+      - name: Resolve pinned compiler commit
+        shell: bash
+        run: |
+          compiler_commit=$(python3 - <<'PY'
+          import json
+          with open('epochs/epoch-000/manifest.json', encoding='utf-8') as stream:
+              print(json.load(stream)['compilerCommit'])
+          PY
+          )
+          git cat-file -e "$compiler_commit^{commit}"
+          echo "COMPILER_COMMIT=$compiler_commit" >> "$GITHUB_ENV"
+
+      - name: Verify generator inputs match pinned compiler commit
+        run: |
+          git diff --exit-code "$COMPILER_COMMIT"..HEAD -- \
+            src/LogicLens.Core \
+            src/LogicLens.Prolog \
+            tools/LogicLens.EpochCompiler \
+            fixtures/zero-epoch
 
       - name: Restore
         run: dotnet restore LogicLens.sln
@@ -74,6 +93,18 @@ jobs:
 
       - name: Verify byte-identical generation
         run: diff --recursive --unified /tmp/epoch-a /tmp/epoch-b
+
+      - name: Verify committed generated package
+        run: |
+          diff --unified \
+            epochs/epoch-000/data/facts.generated.pl \
+            /tmp/epoch-a/data/facts.generated.pl
+          diff --unified \
+            epochs/epoch-000/data/origins.generated.pl \
+            /tmp/epoch-a/data/origins.generated.pl
+          diff --unified \
+            epochs/epoch-000/manifest.json \
+            /tmp/epoch-a/manifest.json
 
       - name: Add reviewed module and tests to generated package
         run: |
