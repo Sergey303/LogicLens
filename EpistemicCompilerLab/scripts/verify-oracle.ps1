@@ -46,7 +46,11 @@ foreach ($line in Get-Content -LiteralPath $caseFile -Encoding utf8) {
 
     $revision = [string] $case.query.arguments.revision
     $date = [string] $case.query.arguments.date
-    $result = Invoke-PrologJson @('current-material', $revision, $date)
+    $result = Invoke-PrologJson -CliArguments @(
+        'current-material',
+        $revision,
+        $date
+    )
 
     if ($result.status -ne $case.expectedStatus) {
         throw "Case '$($case.id)' expected status '$($case.expectedStatus)' but got '$($result.status)'."
@@ -68,7 +72,11 @@ foreach ($line in Get-Content -LiteralPath $caseFile -Encoding utf8) {
                 throw "Case '$($case.id)' requires unavailable tail '$($case.requiresTail)'."
             }
 
-            $tail = Invoke-PrologJson @('expand', $case.expectedMaterial, $case.requiresTail)
+            $tail = Invoke-PrologJson -CliArguments @(
+                'expand',
+                $case.expectedMaterial,
+                $case.requiresTail
+            )
             if ($tail.status -ne 'success') {
                 throw "Case '$($case.id)' could not open tail '$($case.requiresTail)'."
             }
