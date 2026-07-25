@@ -27,7 +27,6 @@ $runPath = Join-Path $runRoot ($baseName + '.jsonl')
 $summaryPath = Join-Path $runRoot ($baseName + '.summary.json')
 
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
-
 & (Join-Path $PSScriptRoot 'test-ollama-model.ps1') -Model $profileModel
 
 $runError = $null
@@ -50,6 +49,8 @@ if (-not (Test-Path -LiteralPath $runPath -PathType Leaf)) {
     -RunPath $runPath `
     -SummaryPath $summaryPath `
     -Force
+& (Join-Path $PSScriptRoot 'show-representation-summary.ps1') `
+    -SummaryPath $summaryPath
 
 Write-Host 'Representation baseline completed.'
 Write-Host "Base model: $Model"
