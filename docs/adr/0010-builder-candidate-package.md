@@ -1,6 +1,6 @@
 # ADR-0010: provider-neutral Builder candidate package
 
-- Status: Proposed
+- Status: Accepted
 - Linear: ENG-46, child of ENG-26
 - Depends on: ADR-0003, ADR-0007, ADR-0008
 - Scope: trusted input, isolation, validation and comparison for Builder candidates
@@ -129,7 +129,7 @@ A valid candidate package remains an artifact. This contract provides no command
 
 ## Verification
 
-ENG-46 must prove:
+ENG-46 proves:
 
 1. the valid fixture builds twice into byte-identical candidate packages and reports;
 2. the active package passes its own manifest and portable smoke verification first;
@@ -143,6 +143,8 @@ ENG-46 must prove:
 10. undeclared files are rejected;
 11. a proposal bound to another revision is rejected;
 12. accepted artifacts and logs are retained by CI.
+
+The accepted `Verify active epoch package` gate builds the fixture artifact, preserves its deterministic comparison report and executes nine positive and negative contract groups under pinned SWI-Prolog 9.0.4.
 
 ## Rejected alternatives
 
