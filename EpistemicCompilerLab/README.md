@@ -2,57 +2,45 @@
 
 `EpistemicCompilerLab/` is an independent research area inside the LogicLens repository.
 
-The main LogicLens project uses LLM and Prolog to build React views over graph data. This lab studies a different, more abstract problem: how a slow compound teacher system can compile documents and verified knowledge into representations that a fast local student model can query, understand and improve.
+The main LogicLens project uses LLM and Prolog to build React views over graph data. This lab studies a different problem: how a slow teacher can compile verified knowledge into representations that a fast local student model can query and improve.
 
 ## Research question
 
-Can a strong or slow teacher system improve a weak local LLM by choosing:
+Can a strong teacher improve a weak local LLM by choosing:
 
-- which knowledge to encode as facts, rules or external evidence;
-- which representation and language the student receives;
-- which optional knowledge tails the student should open;
-- which diagnostic question to ask after an error;
-- whether to fix a fact, rule, prompt, translation or training example?
+- which knowledge becomes facts, rules or evidence;
+- which representation the student receives;
+- which optional tails the student should open;
+- which diagnostic question follows an error;
+- whether to fix a fact, rule, prompt, translation or example?
 
-## MVP boundary
+## Boundary
 
-The executable lab contains repository-local sources, Prolog knowledge, short-lived SWI-Prolog CLI calls, JSON results, separate teacher/student prompts, optional evidence tails, regression tests and a local Ollama-compatible representation runner.
+The lab contains repository-local sources, Prolog knowledge, short-lived SWI-Prolog CLI calls, JSON results, teacher/student prompts, optional evidence tails, regression tests and a local Ollama representation runner.
 
 It does not include React, LogicLens epochs, UI Document generation, a web proxy, a persistent Prolog service, model training or production sandboxing.
 
 ## Structure
 
 - [`AGENTS.md`](AGENTS.md) — local work rules;
-- [`prompts/student.md`](prompts/student.md) — fast student contract;
-- [`prompts/teacher.md`](prompts/teacher.md) — slow teacher contract;
-- [`prolog/knowledge.pl`](prolog/knowledge.pl) — executable fixture knowledge;
-- [`prolog/entry.pl`](prolog/entry.pl) — JSON CLI;
-- [`sources/materials.md`](sources/materials.md) — original fixture evidence;
-- [`representations/knowledge.compact.json`](representations/knowledge.compact.json) — compact non-executable representation;
+- [`prolog/`](prolog/) — executable fixture knowledge and JSON CLI;
+- [`sources/`](sources/) — original fixture evidence;
+- [`representations/`](representations/) — alternative knowledge forms;
 - [`runner/README.md`](runner/README.md) — five-mode local-model experiment;
-- [`tests/knowledge_tests.pl`](tests/knowledge_tests.pl) — regression tests;
-- [`cases/README.md`](cases/README.md) — benchmark-v0 contract and scoring;
-- [`cases/benchmark-v0.jsonl`](cases/benchmark-v0.jsonl) — fixed representation cases;
-- [`experiments/README.md`](experiments/README.md) — controlled comparison protocol;
-- [`experiments/runs.jsonl`](experiments/runs.jsonl) — confirmed environment and experiment runs.
+- [`tests/`](tests/) — Prolog regression tests;
+- [`cases/`](cases/) — benchmark-v0 and scoring contract;
+- [`experiments/`](experiments/) — protocol and append-only run ledger.
 
 ## Windows setup
 
-Install the Windows 64-bit stable SWI-Prolog build from:
+Install the stable Windows x64 SWI-Prolog build from:
 
 `https://www.swi-prolog.org/download/stable`
 
-Open a new PowerShell window and verify:
+Then verify:
 
 ```powershell
 swipl --version
-```
-
-The repository scripts also search the registry and standard installation folders when `PATH` is not yet refreshed.
-
-For E2, start Ollama and list installed local models:
-
-```powershell
 ollama list
 ```
 
@@ -69,38 +57,31 @@ Update `main` and verify the deterministic lab:
 Other deterministic actions:
 
 ```powershell
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' doctor
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' tests
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' cases
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' oracle
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' runner-check
 ```
 
-Check that an installed Ollama model obeys the JSON contract:
+## CPU-safe local-model baseline
+
+The first GPU attempt on the development workstation failed while allocating a CUDA host buffer. The baseline therefore creates a separate Ollama profile with `num_gpu=0`, `num_ctx=2048` and `num_batch=64`. The source model remains unchanged.
+
+Check the derived profile and JSON response:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' ollama-smoke 'qwen2.5-coder:7b'
 ```
 
-Run and score all nine cases in one command:
+Run and score all nine Markdown cases:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-baseline markdown 'qwen2.5-coder:7b'
 ```
 
-The baseline command creates a timestamped JSONL run and summary under `EpistemicCompilerLab/experiments/model-runs/`. It scores preserved partial results even when one or more model stages fail.
+The command creates a timestamped JSONL run and summary under `experiments/model-runs/`. It prints both the base model and the derived execution model. Partial results are preserved and scored if a later model stage fails.
 
-Lower-level actions remain available:
+Allowed modes are `markdown`, `compact-json`, `prolog-text`, `cli` and `cli-tails`.
 
-```powershell
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-run markdown 'qwen2.5-coder:7b'
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-score '<absolute-jsonl-path>'
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query current-material b 20260810
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query expand asd100500 evidence
-```
-
-Allowed mode names are `markdown`, `compact-json`, `prolog-text`, `cli` and `cli-tails`.
-
-The doctor validates benchmark-v0, the representation-runner assets, the deterministic Prolog oracle, all PL-Unit tests and a JSON CLI smoke test. It does not require Ollama or run a model experiment.
+Lower-level `representation-run` expects an execution-model name, such as `epistemic-qwen2.5-coder-7b:cpu-v1`, rather than automatically creating a profile.
 
 `unknown` means the loaded knowledge is insufficient. It never means `false`.
