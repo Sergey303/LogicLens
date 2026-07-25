@@ -108,7 +108,9 @@ internal static class Program
             RequireValid(validator, fallback, facts, "generic fallback document");
             var fallbackMessages = fallback["diagnostics"]!
                 .AsArray()
-                .Select(static item => item!["message"]!.GetValue<string>())
+                .Select(static item => item!
+                    .AsObject()["message"]!
+                    .GetValue<string>())
                 .ToArray();
             Require(
                 fallbackMessages.Contains(
