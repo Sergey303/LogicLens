@@ -1,0 +1,96 @@
+name: Verify Prolog data
+
+on:
+  pull_request:
+    paths:
+      - "src/LogicLens.Core/**"
+      - "src/LogicLens.Prolog/**"
+      - "tools/LogicLens.EpochCompiler/**"
+      - "fixtures/zero-epoch/**"
+      - "epochs/epoch-000/data/epoch_data.pl"
+      - "epochs/epoch-000/tests/**"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-prolog-data.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/LogicLens.Core/**"
+      - "src/LogicLens.Prolog/**"
+      - "tools/LogicLens.EpochCompiler/**"
+      - "fixtures/zero-epoch/**"
+      - "epochs/epoch-000/**"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-prolog-data.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPILER_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install SWI-Prolog
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version
+
+      - name: Restore
+        run: dotnet restore LogicLens.sln
+
+      - name: Build
+        run: dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Generate epoch data twice
+        run: |
+          dotnet run \
+            --project tools/LogicLens.EpochCompiler/LogicLens.EpochCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/epoch-a \
+            --compiler-commit "$COMPILER_COMMIT"
+
+          dotnet run \
+            --project tools/LogicLens.EpochCompiler/LogicLens.EpochCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/epoch-b \
+            --compiler-commit "$COMPILER_COMMIT"
+
+      - name: Verify byte-identical generation
+        run: diff --recursive --unified /tmp/epoch-a /tmp/epoch-b
+
+      - name: Add reviewed module and tests to generated package
+        run: |
+          cp epochs/epoch-000/data/epoch_data.pl /tmp/epoch-a/data/epoch_data.pl
+          mkdir --parents /tmp/epoch-a/tests
+          cp epochs/epoch-000/tests/data_contract_tests.pl /tmp/epoch-a/tests/
+
+      - name: Load generated data and run SWI-Prolog tests
+        run: >-
+          swipl -q
+          -g "load_files('/tmp/epoch-a/tests/data_contract_tests.pl', [silent(true)]), run_tests, halt"
+          -t "halt(1)"
+
+      - name: Upload verified epoch data
+        uses: actions/upload-artifact@v4
+        with:
+          name: epoch-000-data
+          path: /tmp/epoch-a
+          if-no-files-found: error
+          retention-days: 7
