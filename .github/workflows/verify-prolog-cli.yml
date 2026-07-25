@@ -1,0 +1,129 @@
+name: Verify bounded Prolog CLI
+
+on:
+  pull_request:
+    paths:
+      - "contracts/prolog-cli-v0.schema.json"
+      - "epochs/epoch-000/**"
+      - "tests/prolog_cli_contract_test.py"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "data/Ontology.xml"
+      - ".github/workflows/verify-prolog-cli.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/prolog-cli-v0.schema.json"
+      - "epochs/epoch-000/**"
+      - "tests/prolog_cli_contract_test.py"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "data/Ontology.xml"
+      - ".github/workflows/verify-prolog-cli.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned SWI-Prolog and JSON Schema validator
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version | tee /tmp/swipl-version.txt
+          grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
+          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+
+      - name: Restore and build ontology compiler
+        run: |
+          dotnet restore LogicLens.sln
+          dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Generate ontology package
+        run: |
+          dotnet run \
+            --project tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/ontology-generated \
+            --compiler-commit "${GITHUB_SHA}"
+
+      - name: Assemble isolated epoch package
+        run: |
+          mkdir --parents /tmp/epoch-000/ontology
+          cp --recursive epochs/epoch-000/data /tmp/epoch-000/data
+          cp --recursive epochs/epoch-000/rules /tmp/epoch-000/rules
+          cp --recursive epochs/epoch-000/tests /tmp/epoch-000/tests
+          cp epochs/epoch-000/entry.pl /tmp/epoch-000/entry.pl
+          cp epochs/epoch-000/manifest.json /tmp/epoch-000/manifest.json
+          cp epochs/epoch-000/ontology/ontology_data.pl /tmp/epoch-000/ontology/
+          cp /tmp/ontology-generated/ontology.generated.pl /tmp/epoch-000/ontology/
+          cp /tmp/ontology-generated/manifest.json /tmp/epoch-000/ontology/
+
+      - name: Load epoch and run Prolog unit tests
+        id: prolog-tests
+        shell: bash
+        run: |
+          set +e
+          swipl -q \
+            -g "load_files([
+              '/tmp/epoch-000/tests/ontology_contract_tests.pl',
+              '/tmp/epoch-000/tests/generic_view_tests.pl',
+              '/tmp/epoch-000/tests/subgraph_tests.pl'
+            ], [silent(true)]), run_tests, halt" \
+            -t "halt(1)" \
+            > /tmp/prolog-unit-tests.log 2>&1
+          exit_code=$?
+          cat /tmp/prolog-unit-tests.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Run stdin stdout process contract tests
+        id: process-tests
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          python tests/prolog_cli_contract_test.py \
+            --epoch /tmp/epoch-000 \
+            --schema contracts/prolog-cli-v0.schema.json \
+            > /tmp/prolog-cli-contract.log 2>&1
+          exit_code=$?
+          cat /tmp/prolog-cli-contract.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload verification logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prolog-cli-verification
+          path: |
+            /tmp/swipl-version.txt
+            /tmp/prolog-unit-tests.log
+            /tmp/prolog-cli-contract.log
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Enforce all verification results
+        if: always()
+        run: |
+          test "${{ steps.prolog-tests.outputs.exit_code }}" = "0"
+          test "${{ steps.process-tests.outputs.exit_code }}" = "0"
