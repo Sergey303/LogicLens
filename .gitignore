@@ -7,6 +7,9 @@
 **/dist/
 **/coverage/
 
+# Prepared local runtime
+.logiclens/
+
 # Local environment overrides
 .env
 .env.*

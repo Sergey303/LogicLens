@@ -64,14 +64,22 @@ public sealed class UiDocumentSchemaValidator : IDisposable
         EvaluationResults result,
         ICollection<UiDocumentValidationError> errors)
     {
-        foreach (var pair in result.Errors.OrderBy(
-                     static pair => pair.Key,
-                     StringComparer.Ordinal))
+        if (result.Errors is { Count: > 0 } resultErrors)
         {
-            errors.Add(new UiDocumentValidationError(
-                "schema",
-                result.InstanceLocation.ToString(),
-                pair.Value));
+            foreach (var pair in resultErrors.OrderBy(
+                         static pair => pair.Key,
+                         StringComparer.Ordinal))
+            {
+                errors.Add(new UiDocumentValidationError(
+                    "schema",
+                    result.InstanceLocation.ToString(),
+                    pair.Value));
+            }
+        }
+
+        if (result.Details is null)
+        {
+            return;
         }
 
         foreach (var detail in result.Details)
