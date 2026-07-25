@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import sys
 import time
 import urllib.error
@@ -116,9 +115,10 @@ def main() -> int:
     files = validate_generated_files(generated, task)
 
     proposal_root = output / "proposal"
+    files_root = proposal_root / "files"
     for relative_path, content in files.items():
-        destination = (proposal_root / relative_path).resolve()
-        if proposal_root.resolve() not in destination.parents:
+        destination = (files_root / relative_path).resolve()
+        if files_root.resolve() not in destination.parents:
             raise OllamaAdapterError(f"generated path escaped proposal: {relative_path}")
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(normalize_text(content), encoding=UTF8, newline="\n")
@@ -328,7 +328,11 @@ def validate_identifier(value: str, context: str) -> None:
         not value
         or len(value) > 128
         or not value[0].isalnum()
-        or any(character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-" for character in value)
+        or any(
+            character
+            not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-"
+            for character in value
+        )
     ):
         raise OllamaAdapterError(f"{context} is invalid: {value!r}")
 
