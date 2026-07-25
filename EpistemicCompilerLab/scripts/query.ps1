@@ -8,14 +8,11 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-if (-not (Get-Command swipl -ErrorAction SilentlyContinue)) {
-    throw 'SWI-Prolog executable "swipl" was not found in PATH.'
-}
-
+$swipl = & (Join-Path $PSScriptRoot 'resolve-swipl.ps1') -Required
 $labRoot = Split-Path -Parent $PSScriptRoot
 $entryPoint = Join-Path $labRoot 'prolog/entry.pl'
 
-& swipl -q -s $entryPoint -- $Operation @Arguments
+& $swipl -q -s $entryPoint -- $Operation @Arguments
 
 if ($LASTEXITCODE -ne 0) {
     throw "SWI-Prolog exited with code $LASTEXITCODE."
