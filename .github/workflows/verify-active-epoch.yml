@@ -136,6 +136,16 @@ jobs:
             --fixture fixtures/builder-candidate/valid \
             | tee /tmp/builder-candidate-verification.log
 
+      - name: Stage builder candidate artifact
+        run: |
+          mkdir --parents /tmp/builder-candidate-artifact
+          cp --recursive \
+            /tmp/builder-candidate-package \
+            /tmp/builder-candidate-artifact/package
+          cp \
+            /tmp/builder-candidate-comparison.json \
+            /tmp/builder-candidate-artifact/comparison.json
+
       - name: Upload portable active epoch
         uses: actions/upload-artifact@v4
         with:
@@ -148,9 +158,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: logiclens-builder-candidate-fixture
-          path: |
-            /tmp/builder-candidate-package
-            /tmp/builder-candidate-comparison.json
+          path: /tmp/builder-candidate-artifact
           if-no-files-found: error
           retention-days: 30
 
