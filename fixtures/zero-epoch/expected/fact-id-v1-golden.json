@@ -1,0 +1,60 @@
+{
+  "encodingVersion": 1,
+  "cases": [
+    {
+      "subject": "urn:logiclens:authority:paper-author",
+      "predicate": "http://fogid.net/o/adoc",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:document:paper"
+      },
+      "canonicalBytesHex": "4c6f6769634c656e73466163740001000000000000002475726e3a6c6f6769636c656e733a617574686f726974793a70617065722d617574686f720000000000000017687474703a2f2f666f6769642e6e65742f6f2f61646f6301000000000000001c75726e3a6c6f6769636c656e733a646f63756d656e743a7061706572",
+      "factId": "f:sha256:582fcb389772b291cc3ad2e4b407fc84b8ba66bb7d23a775c71ce135a9b18761"
+    },
+    {
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "ru",
+        "lexical": "Алексей Ветров"
+      },
+      "canonicalBytesHex": "4c6f6769634c656e73466163740001000000000000001975726e3a6c6f6769636c656e733a706572736f6e3a616c65780000000000000017687474703a2f2f666f6769642e6e65742f6f2f6e616d650300000000000000027275000000000000001bd090d0bbd0b5d0bad181d0b5d0b920d092d0b5d182d180d0bed0b2",
+      "factId": "f:sha256:54e98ac97c4d7e3c953f2cd19a84bdfa2ce5b19af180762864da3b42e5d5b69d"
+    },
+    {
+      "subject": "urn:logiclens:student:study",
+      "predicate": "http://fogid.net/o/from-date",
+      "object": {
+        "kind": "literal",
+        "literalKind": "datatype",
+        "datatype": "http://www.w3.org/2001/XMLSchema#date",
+        "lexical": "2010-09-01"
+      },
+      "canonicalBytesHex": "4c6f6769634c656e73466163740001000000000000001b75726e3a6c6f6769636c656e733a73747564656e743a7374756479000000000000001c687474703a2f2f666f6769642e6e65742f6f2f66726f6d2d64617465040000000000000025687474703a2f2f7777772e77332e6f72672f323030312f584d4c536368656d612364617465000000000000000a323031302d30392d3031",
+      "factId": "f:sha256:238f6c6e82b7f18c30dfeeab73add225f27d2498473db0460cc4fbb091d3e2ab"
+    },
+    {
+      "subject": "urn:logiclens:org:lab",
+      "predicate": "urn:logiclens:test:related",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:org:archive"
+      },
+      "canonicalBytesHex": "4c6f6769634c656e73466163740001000000000000001575726e3a6c6f6769636c656e733a6f72673a6c6162000000000000001a75726e3a6c6f6769636c656e733a746573743a72656c6174656401000000000000001975726e3a6c6f6769636c656e733a6f72673a61726368697665",
+      "factId": "f:sha256:da7efc8f8b338f0359030c79558cc7f5d0b3202b35cc47372af32844ad53abae"
+    },
+    {
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "urn:logiclens:test:internal-code",
+      "object": {
+        "kind": "literal",
+        "literalKind": "plain",
+        "lexical": "A-17"
+      },
+      "canonicalBytesHex": "4c6f6769634c656e73466163740001000000000000001975726e3a6c6f6769636c656e733a706572736f6e3a616c6578000000000000002075726e3a6c6f6769636c656e733a746573743a696e7465726e616c2d636f6465020000000000000004412d3137",
+      "factId": "f:sha256:f42a98a731b7b5f90f2f8975f1bc8b7bf30b95f8c9dafac793b3ecedd6de8aeb"
+    }
+  ]
+}
