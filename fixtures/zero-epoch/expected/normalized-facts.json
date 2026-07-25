@@ -1,0 +1,379 @@
+{
+  "encodingVersion": 1,
+  "factCount": 29,
+  "facts": [
+    {
+      "factId": "f:sha256:582fcb389772b291cc3ad2e4b407fc84b8ba66bb7d23a775c71ce135a9b18761",
+      "subject": "urn:logiclens:authority:paper-author",
+      "predicate": "http://fogid.net/o/adoc",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:document:paper"
+      },
+      "origins": [
+        "origin:fixture-a:authority-paper-author"
+      ]
+    },
+    {
+      "factId": "f:sha256:4462f979698ea067c9e2c0f3845e961bf84728aa82ecb91448742cd1b3ff9bb0",
+      "subject": "urn:logiclens:authority:paper-author",
+      "predicate": "http://fogid.net/o/author",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:person:alex"
+      },
+      "origins": [
+        "origin:fixture-a:authority-paper-author"
+      ]
+    },
+    {
+      "factId": "f:sha256:283a697a5f34cc13f788e00197cb2457591a761f86e4c6f6d49664c9df03a55e",
+      "subject": "urn:logiclens:authority:paper-author",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/authority"
+      },
+      "origins": [
+        "origin:fixture-a:authority-paper-author"
+      ]
+    },
+    {
+      "factId": "f:sha256:f81df28476389bc05bee380595cf136b89d422aa35ad92fc6da43aba326698eb",
+      "subject": "urn:logiclens:document:paper",
+      "predicate": "http://fogid.net/o/description",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "ru",
+        "lexical": "Проверяемое представление логических данных"
+      },
+      "origins": [
+        "origin:fixture-b:document-paper"
+      ]
+    },
+    {
+      "factId": "f:sha256:84590c1d0661eedbedf32152d4b75e8d188c177ca5e61b241ca4a20e919457bd",
+      "subject": "urn:logiclens:document:paper",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "en",
+        "lexical": "Verified Logic Interfaces"
+      },
+      "origins": [
+        "origin:fixture-a:document-paper"
+      ]
+    },
+    {
+      "factId": "f:sha256:b58a487628f499c8768f6e530e11fb4279aa738c2e64177e8696284c6d0c5fc4",
+      "subject": "urn:logiclens:document:paper",
+      "predicate": "http://fogid.net/o/uri",
+      "object": {
+        "kind": "literal",
+        "literalKind": "plain",
+        "lexical": "https://example.invalid/paper"
+      },
+      "origins": [
+        "origin:fixture-a:document-paper"
+      ]
+    },
+    {
+      "factId": "f:sha256:a0500151e345f4cee7b8ee29f75384bbee0955a69a77bc8dc07d523a76ac62e0",
+      "subject": "urn:logiclens:document:paper",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/document"
+      },
+      "origins": [
+        "origin:fixture-a:document-paper",
+        "origin:fixture-b:document-paper"
+      ]
+    },
+    {
+      "factId": "f:sha256:f029d4013cf8b6c85378cc50d5dd04f412a79acefebb0b96511555261becb2af",
+      "subject": "urn:logiclens:org:archive",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "ru",
+        "lexical": "Архивная группа"
+      },
+      "origins": [
+        "origin:fixture-a:org-archive"
+      ]
+    },
+    {
+      "factId": "f:sha256:fbaaeb63d2f5b50fd1e1c74da265c4329bd52f9161e9e4de518c72972d1e81ed",
+      "subject": "urn:logiclens:org:archive",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/org-sys"
+      },
+      "origins": [
+        "origin:fixture-a:org-archive"
+      ]
+    },
+    {
+      "factId": "f:sha256:103c4643323d4734463d29f8b788e5f051b297f3c49735e7dad3dc341e4b3358",
+      "subject": "urn:logiclens:org:archive",
+      "predicate": "urn:logiclens:test:related",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:org:lab"
+      },
+      "origins": [
+        "origin:fixture-a:org-archive"
+      ]
+    },
+    {
+      "factId": "f:sha256:4d443df9cad85b24397455ca6d8978886715cc2897e0cdb0abb7763f8c9289d8",
+      "subject": "urn:logiclens:org:iis",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "en",
+        "lexical": "Institute of Informatics Systems"
+      },
+      "origins": [
+        "origin:fixture-a:org-iis"
+      ]
+    },
+    {
+      "factId": "f:sha256:d847fe3c41c1d7d4e5c9e169493566b134573029650d469e7d61d5338422c9e6",
+      "subject": "urn:logiclens:org:iis",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "ru",
+        "lexical": "Институт систем информатики"
+      },
+      "origins": [
+        "origin:fixture-a:org-iis"
+      ]
+    },
+    {
+      "factId": "f:sha256:c8acd1ea45635f06c522aa4c871024ca8890056560a7de1c14595404594a9e73",
+      "subject": "urn:logiclens:org:iis",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/org-sys"
+      },
+      "origins": [
+        "origin:fixture-a:org-iis"
+      ]
+    },
+    {
+      "factId": "f:sha256:b04851b70757db990e79f6a074ec6dce91148eb71691a366725666415588a936",
+      "subject": "urn:logiclens:org:lab",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "plain",
+        "lexical": "Logic Lab"
+      },
+      "origins": [
+        "origin:fixture-a:org-lab"
+      ]
+    },
+    {
+      "factId": "f:sha256:687e5bb3ded2721a02aa8692ab74053a3906c93ef140eec9c45cc13bc640c5f9",
+      "subject": "urn:logiclens:org:lab",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/org-sys"
+      },
+      "origins": [
+        "origin:fixture-a:org-lab"
+      ]
+    },
+    {
+      "factId": "f:sha256:da7efc8f8b338f0359030c79558cc7f5d0b3202b35cc47372af32844ad53abae",
+      "subject": "urn:logiclens:org:lab",
+      "predicate": "urn:logiclens:test:related",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:org:archive"
+      },
+      "origins": [
+        "origin:fixture-a:org-lab"
+      ]
+    },
+    {
+      "factId": "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5",
+      "subject": "urn:logiclens:participation:work",
+      "predicate": "http://fogid.net/o/in-org",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:org:iis"
+      },
+      "origins": [
+        "origin:fixture-a:participation-work"
+      ]
+    },
+    {
+      "factId": "f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3",
+      "subject": "urn:logiclens:participation:work",
+      "predicate": "http://fogid.net/o/participant",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:person:alex"
+      },
+      "origins": [
+        "origin:fixture-a:participation-work"
+      ]
+    },
+    {
+      "factId": "f:sha256:67abb6c01dde5080956246e21c49cb00db0bf95376fa64213d04e4efe964271b",
+      "subject": "urn:logiclens:participation:work",
+      "predicate": "http://fogid.net/o/role",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "ru",
+        "lexical": "исследователь"
+      },
+      "origins": [
+        "origin:fixture-a:participation-work"
+      ]
+    },
+    {
+      "factId": "f:sha256:681902c9a2d34fbc64bb898fe4594067db409d2839335ee98467e96bee2752df",
+      "subject": "urn:logiclens:participation:work",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/participation"
+      },
+      "origins": [
+        "origin:fixture-a:participation-work"
+      ]
+    },
+    {
+      "factId": "f:sha256:aa6939e02dd1f1bbb10158176a7f67794adeac8060325500f836dc55baacdee0",
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "http://fogid.net/o/comment",
+      "object": {
+        "kind": "literal",
+        "literalKind": "plain",
+        "lexical": "архивная запись"
+      },
+      "origins": [
+        "origin:fixture-a:person-alex"
+      ]
+    },
+    {
+      "factId": "f:sha256:4cc9eafc75d8adcefb5a634e80f564c4c44c5e81da100ed1861cd0397166dc2b",
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "en",
+        "lexical": "Alexey Vetrov"
+      },
+      "origins": [
+        "origin:fixture-a:person-alex"
+      ]
+    },
+    {
+      "factId": "f:sha256:54e98ac97c4d7e3c953f2cd19a84bdfa2ce5b19af180762864da3b42e5d5b69d",
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "http://fogid.net/o/name",
+      "object": {
+        "kind": "literal",
+        "literalKind": "language",
+        "language": "ru",
+        "lexical": "Алексей Ветров"
+      },
+      "origins": [
+        "origin:fixture-a:person-alex",
+        "origin:fixture-b:person-alex"
+      ]
+    },
+    {
+      "factId": "f:sha256:3242677a145c47ae3bc6037b8877beb244659c99fbbec00b87f8977ec60afaae",
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/person"
+      },
+      "origins": [
+        "origin:fixture-a:person-alex",
+        "origin:fixture-b:person-alex"
+      ]
+    },
+    {
+      "factId": "f:sha256:f42a98a731b7b5f90f2f8975f1bc8b7bf30b95f8c9dafac793b3ecedd6de8aeb",
+      "subject": "urn:logiclens:person:alex",
+      "predicate": "urn:logiclens:test:internal-code",
+      "object": {
+        "kind": "literal",
+        "literalKind": "plain",
+        "lexical": "A-17"
+      },
+      "origins": [
+        "origin:fixture-a:person-alex"
+      ]
+    },
+    {
+      "factId": "f:sha256:238f6c6e82b7f18c30dfeeab73add225f27d2498473db0460cc4fbb091d3e2ab",
+      "subject": "urn:logiclens:student:study",
+      "predicate": "http://fogid.net/o/from-date",
+      "object": {
+        "kind": "literal",
+        "literalKind": "datatype",
+        "datatype": "http://www.w3.org/2001/XMLSchema#date",
+        "lexical": "2010-09-01"
+      },
+      "origins": [
+        "origin:fixture-a:student-study"
+      ]
+    },
+    {
+      "factId": "f:sha256:dc9fc03281438f6392211a8c1d649b335031a75067c06438270cec98bd17c743",
+      "subject": "urn:logiclens:student:study",
+      "predicate": "http://fogid.net/o/learner",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:person:alex"
+      },
+      "origins": [
+        "origin:fixture-a:student-study"
+      ]
+    },
+    {
+      "factId": "f:sha256:7d5f4f25c4a067b148920e1d40b3231f2aa8d5513af26f4b5db7e1a70ca92524",
+      "subject": "urn:logiclens:student:study",
+      "predicate": "http://fogid.net/o/learning-org",
+      "object": {
+        "kind": "iri",
+        "value": "urn:logiclens:org:iis"
+      },
+      "origins": [
+        "origin:fixture-a:student-study"
+      ]
+    },
+    {
+      "factId": "f:sha256:d3800e0a4195a7e798b282de19167f264b45006b283433edd92ab790acea9b41",
+      "subject": "urn:logiclens:student:study",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": {
+        "kind": "iri",
+        "value": "http://fogid.net/o/student"
+      },
+      "origins": [
+        "origin:fixture-a:student-study"
+      ]
+    }
+  ]
+}
