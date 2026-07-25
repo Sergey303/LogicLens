@@ -74,25 +74,32 @@ Other deterministic actions:
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' cases
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' oracle
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' runner-check
+```
+
+Check that an installed Ollama model obeys the JSON contract:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' ollama-smoke 'qwen2.5-coder:7b'
+```
+
+Run and score all nine cases in one command:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-baseline markdown 'qwen2.5-coder:7b'
+```
+
+The baseline command creates a timestamped JSONL run and summary under `EpistemicCompilerLab/experiments/model-runs/`. It scores preserved partial results even when one or more model stages fail.
+
+Lower-level actions remain available:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-run markdown 'qwen2.5-coder:7b'
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-score '<absolute-jsonl-path>'
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query current-material b 20260810
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query expand asd100500 evidence
 ```
 
-Run one model and representation after replacing `<installed-model>` with an exact name from `ollama list`:
-
-```powershell
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-run markdown '<installed-model>'
-```
-
-Allowed mode names are `markdown`, `compact-json`, `prolog-text`, `cli` and `cli-tails`. An optional third positional argument sets an absolute output JSONL path.
-
-The runner prints the generated JSONL path. Score that file without editing it:
-
-```powershell
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-score '<absolute-jsonl-path>'
-```
-
-An optional second positional argument sets the summary JSON path.
+Allowed mode names are `markdown`, `compact-json`, `prolog-text`, `cli` and `cli-tails`.
 
 The doctor validates benchmark-v0, the representation-runner assets, the deterministic Prolog oracle, all PL-Unit tests and a JSON CLI smoke test. It does not require Ollama or run a model experiment.
 
