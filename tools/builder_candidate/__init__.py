@@ -47,3 +47,60 @@ _cli.FORBIDDEN_PROLOG_CALLS = re.compile(
     r")",
     re.IGNORECASE,
 )
+
+
+def _validate_prolog_file(path, content, kind, rule_paths) -> None:
+    """Validate candidate Prolog while allowing quoted ontology IRI data.
+
+    HTTP(S) strings are ordinary identifiers in LogicLens facts. Network access
+    remains forbidden by the closed predicate list above. File URLs, UNC paths,
+    absolute filesystem paths, unsafe directives and imports remain rejected.
+    """
+
+    text = _cli.decode_text(path, content)
+    lowered = text.lower()
+    if "file://" in lowered or "\\\\" in text:
+        raise _cli.CandidateError(
+            f"candidate Prolog contains an external filesystem path: {path}"
+        )
+    if re.search(
+        r"(?:^|[^A-Za-z0-9_])(?:[A-Za-z]:[\\/]|/(?:tmp|etc|home|var|usr)/)",
+        text,
+    ):
+        raise _cli.CandidateError(f"candidate Prolog contains an absolute path: {path}")
+
+    forbidden = _cli.FORBIDDEN_PROLOG_CALLS.search(text)
+    if forbidden:
+        raise _cli.CandidateError(
+            f"candidate Prolog uses forbidden call {forbidden.group(0)!r}: {path}"
+        )
+
+    directives = set(_cli.DIRECTIVE_NAME.findall(text))
+    unknown_directives = sorted(directives - _cli.ALLOWED_DIRECTIVES)
+    if unknown_directives:
+        raise _cli.CandidateError(
+            f"candidate Prolog uses unreviewed directives {unknown_directives}: {path}"
+        )
+
+    if kind == "rule":
+        if "module" not in directives:
+            raise _cli.CandidateError(f"candidate rule must declare a module: {path}")
+    elif "begin_tests" not in directives or "end_tests" not in directives:
+        raise _cli.CandidateError(f"candidate test must use begin_tests/end_tests: {path}")
+
+    allowed_rule_imports = {"'../data/epoch_data.pl'", '"../data/epoch_data.pl"'}
+    allowed_test_imports = {
+        f"'../rules/{rule_path.name}'" for rule_path in rule_paths
+    } | {
+        f'"../rules/{rule_path.name}"' for rule_path in rule_paths
+    }
+    allowed_imports = allowed_rule_imports if kind == "rule" else allowed_test_imports
+    for raw_import in _cli.USE_MODULE.findall(text):
+        normalized = "".join(raw_import.split())
+        if normalized not in allowed_imports:
+            raise _cli.CandidateError(
+                f"candidate Prolog import is not allowlisted: {raw_import!r} in {path}"
+            )
+
+
+_cli.validate_prolog_file = _validate_prolog_file
