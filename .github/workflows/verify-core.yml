@@ -39,7 +39,11 @@ jobs:
         run: dotnet restore LogicLens.sln
 
       - name: Build
-        run: dotnet build LogicLens.sln --configuration Release --no-restore
+        run: |
+          dotnet build LogicLens.sln \
+            --configuration Release \
+            --no-restore \
+            2>&1 | tee /tmp/core-build.log
 
       - name: Verify canonical facts and fixture
         id: core-verification
@@ -56,13 +60,15 @@ jobs:
           echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Upload verification log
+      - name: Upload verification logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: core-verification-log
-          path: core-verification.log
-          if-no-files-found: error
+          path: |
+            /tmp/core-build.log
+            core-verification.log
+          if-no-files-found: warn
           retention-days: 7
 
       - name: Fail when verification failed
