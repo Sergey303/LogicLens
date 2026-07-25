@@ -36,6 +36,22 @@ LogicLens is a research system for building stable and query-specific interfaces
 - [A0 architecture exit criteria](docs/verification/a0-exit-criteria.md)
 - [ENG-23 zero-epoch vertical slice plan](docs/plans/eng-23-zero-epoch-vertical-slice.md)
 
+## Run the zero epoch
+
+With Python 3.12+, .NET 8, Node.js 24, npm, SWI-Prolog 9.0.4 and Git available on `PATH`:
+
+```powershell
+python .\tools\run_zero_epoch.py
+```
+
+The command prepares a fresh portable epoch, builds the API and React renderer, starts both services, verifies the complete path and opens the entity page. See the [zero-epoch local runbook](docs/runbooks/zero-epoch-local-run.md).
+
+CI uses the same entry point in finite verification mode:
+
+```powershell
+python .\tools\run_zero_epoch.py --verify-only --no-browser
+```
+
 ## Current executable foundation
 
 ENG-30 adds the minimal .NET 8 canonical-fact foundation and a zero-dependency verifier.
