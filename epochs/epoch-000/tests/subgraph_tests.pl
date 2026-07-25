@@ -1,6 +1,7 @@
 :- begin_tests(bounded_subgraph).
 
 :- use_module('../rules/subgraph.pl').
+:- use_module(library(http/json)).
 
 
 person('urn:logiclens:person:alex').
@@ -55,10 +56,8 @@ test(rdf_type_is_visible_but_not_traversed) :-
     rdf_type(RdfType),
     member(Fact, Result.facts),
     Fact.predicate == RdfType,
-    assertion(\+ (
-        member(Node, Result.nodes),
-        Node.nodeId == 'http://fogid.net/o/person'
-    )).
+    !,
+    assertion(\+ node_with_id(Result, 'http://fogid.net/o/person')).
 
 
 test(depth_two_keeps_two_iis_occurrences_and_one_node) :-
@@ -82,22 +81,20 @@ test(unknown_relation_is_traversable) :-
     archive(Archive),
     default_options(1, Options),
     subgraph:subgraph(Lab, Options, Result),
-    assertion((
-        member(Node, Result.nodes),
-        Node.nodeId == Archive
-    )).
+    assertion(node_with_id(Result, Archive)).
 
 
 test(cycle_is_terminal_occurrence) :-
     lab(Lab),
     default_options(2, Options),
     subgraph:subgraph(Lab, Options, Result),
-    assertion((
-        member(Occurrence, Result.occurrences),
-        Occurrence.occurrenceId == 'o:sha256:f9196db5e8b7a1f53c9e709c38962a543c30feb9ff85e1a73e57eaaf85844280',
-        Occurrence.nodeId == Lab,
-        Occurrence.state == cycle
-    )).
+    occurrence_with_id(
+        Result,
+        'o:sha256:f9196db5e8b7a1f53c9e709c38962a543c30feb9ff85e1a73e57eaaf85844280',
+        Occurrence
+    ),
+    assertion(Occurrence.nodeId == Lab),
+    assertion(Occurrence.state == cycle).
 
 
 test(outgoing_mode_does_not_follow_incoming_participation) :-
@@ -125,6 +122,7 @@ test(incoming_mode_preserves_canonical_fact) :-
     subgraph:subgraph(Person, Options, Result),
     member(Fact, Result.facts),
     Fact.factId == 'f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3',
+    !,
     assertion(Fact.subject == 'urn:logiclens:participation:work'),
     assertion(Fact.predicate == 'http://fogid.net/o/participant'),
     assertion(Fact.object.kind == iri),
@@ -168,7 +166,9 @@ test(low_node_limit_selects_stable_subset) :-
     },
     subgraph:subgraph(Person, Options, First),
     subgraph:subgraph(Person, Options, Second),
-    assertion(First == Second),
+    compact_json(First, FirstJson),
+    compact_json(Second, SecondJson),
+    assertion(FirstJson == SecondJson),
     node_ids(First, NodeIds),
     assertion(NodeIds == [
         'urn:logiclens:authority:paper-author',
@@ -203,6 +203,18 @@ fact_ids(Result, FactIds) :-
     findall(FactId, (member(Fact, Result.facts), FactId = Fact.factId), FactIds).
 
 
+node_with_id(Result, NodeId) :-
+    member(Node, Result.nodes),
+    Node.nodeId == NodeId,
+    !.
+
+
+occurrence_with_id(Result, OccurrenceId, Occurrence) :-
+    member(Occurrence, Result.occurrences),
+    Occurrence.occurrenceId == OccurrenceId,
+    !.
+
+
 node_is(NodeId, Node) :-
     Node.nodeId == NodeId.
 
@@ -213,6 +225,13 @@ occurrence_is(NodeId, Occurrence) :-
 
 occurrence_ids(Occurrences, OccurrenceIds) :-
     findall(Id, (member(Occurrence, Occurrences), Id = Occurrence.occurrenceId), OccurrenceIds).
+
+
+compact_json(Dict, Json) :-
+    with_output_to(
+        string(Json),
+        json_write_dict(current_output, Dict, [width(0)])
+    ).
 
 
 :- end_tests(bounded_subgraph).
