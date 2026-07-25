@@ -78,7 +78,7 @@ public sealed class RuntimeStateStore : IDisposable
                 logPath,
                 FileMode.OpenOrCreate,
                 FileAccess.ReadWrite,
-                FileShare.Read,
+                FileShare.None,
                 bufferSize: 4096,
                 FileOptions.WriteThrough);
         }
