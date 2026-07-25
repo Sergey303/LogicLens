@@ -21,6 +21,7 @@ on:
       - "tools/build_epoch_candidate.py"
       - "tests/active_epoch_package_test.py"
       - "tests/builder_candidate_contract_test.py"
+      - "tests/builder_candidate_meta_call_test.py"
       - ".github/workflows/verify-active-epoch.yml"
   push:
     branches:
@@ -44,6 +45,7 @@ on:
       - "tools/build_epoch_candidate.py"
       - "tests/active_epoch_package_test.py"
       - "tests/builder_candidate_contract_test.py"
+      - "tests/builder_candidate_meta_call_test.py"
       - ".github/workflows/verify-active-epoch.yml"
 
 permissions:
@@ -139,6 +141,11 @@ jobs:
             --schema contracts/epoch-candidate-v0.schema.json \
             --fixture fixtures/builder-candidate/valid \
             2>&1 | tee /tmp/builder-candidate-verification.log
+          python tests/builder_candidate_meta_call_test.py \
+            --baseline /tmp/active-epoch-a \
+            --schema contracts/epoch-candidate-v0.schema.json \
+            --fixture fixtures/builder-candidate/valid \
+            2>&1 | tee -a /tmp/builder-candidate-verification.log
 
       - name: Stage builder candidate artifact
         run: |
