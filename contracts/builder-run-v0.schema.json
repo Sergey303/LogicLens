@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/builder-run-v0.schema.json",
+  "title": "LogicLens Builder run envelope v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "taskId",
+    "taskHash",
+    "oracleHash",
+    "basePackageHash",
+    "provider",
+    "metrics",
+    "proposalHash",
+    "candidateHash",
+    "candidatePackageHash",
+    "comparisonReportHash",
+    "validation"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "runId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "taskId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "taskHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+    "oracleHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+    "basePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "model"],
+      "properties": {
+        "kind": { "enum": ["fixture", "ollama", "codex", "other"] },
+        "name": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "model": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cliCalls", "manualFixes", "elapsedMs", "costUsd"],
+      "properties": {
+        "cliCalls": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "manualFixes": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "elapsedMs": {
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "costUsd": {
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "rawOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "bytes"],
+          "properties": {
+            "path": { "pattern": "^raw/[A-Za-z0-9._-]+$" },
+            "sha256": { "pattern": "^sha256:[0-9a-f]{64}$" },
+            "bytes": { "type": "integer", "minimum": 0 }
+          }
+        },
+        { "type": "null" }
+      ]
+    },
+    "proposalHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+    "candidateHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+    "candidatePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+    "comparisonReportHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate", "oracle"],
+      "properties": {
+        "candidate": { "const": "passed" },
+        "oracle": { "const": "passed" }
+      }
+    }
+  }
+}

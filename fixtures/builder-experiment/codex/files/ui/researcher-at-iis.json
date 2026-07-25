@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "0.1",
+  "bindings": [
+    {
+      "predicate": "urn:logiclens:derived:researcher-at-iis",
+      "component": "Property"
+    }
+  ]
+}
