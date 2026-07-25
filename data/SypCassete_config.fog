@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" dbid="SypCassete_cassette_1">
+  <sourcemeta rdf:about="SypCasseteconfig_1">
+    <foldername>0001</foldername>
+    <documentnumber>1245</documentnumber>
+  </sourcemeta>
+</rdf:RDF>

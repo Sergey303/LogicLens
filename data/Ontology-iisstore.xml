@@ -1,0 +1,33 @@
+﻿<Ontology xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" dbid="ontology_iis-iisstore-v1">
+    <Class rdf:about="http://fogid.net/o/iis-store-data">
+        <label xml:lang="ru">Хранилище ИСИ</label>
+        <label xml:lang="en">IIS Store</label>
+        <SubClassOf rdf:resource="http://fogid.net/o/sys-obj"/>
+    </Class>
+    <ObjectProperty rdf:about="http://fogid.net/o/iisstore" essential="yes" inline="true">
+        <label xml:lang="ru">хранится в</label>
+        <label xml:lang="en">stored in</label>
+        <inverse-label xml:lang="ru">хранимое</inverse-label>
+        <inverse-label xml:lang="en">stored in</inverse-label>
+        <domain rdf:resource="http://fogid.net/o/document"/>
+        <range rdf:resource="http://fogid.net/o/iis-store-data"/>
+    </ObjectProperty>
+    <DatatypeProperty rdf:about="http://fogid.net/o/uri" priority="c" essential="yes" inline="true">
+        <label xml:lang="ru">опубликован в</label>
+        <label xml:lang="en">published in</label>
+        <domain rdf:resource="http://fogid.net/o/iis-store-data"/>
+        <range rdf:resource="http://fogid.net/o/string"/>
+    </DatatypeProperty>
+    <DatatypeProperty rdf:about="http://fogid.net/o/originalname" priority="c" essential="yes" inline="true">
+        <label xml:lang="ru">оригинал</label>
+        <label xml:lang="en">original name</label>
+        <domain rdf:resource="http://fogid.net/o/iis-store-data"/>
+        <range rdf:resource="http://fogid.net/o/string"/>
+    </DatatypeProperty> 
+    <DatatypeProperty rdf:about="http://fogid.net/o/documenttype" priority="c" essential="yes" inline="true">
+        <label xml:lang="ru">тип документа</label>
+        <label xml:lang="en">content-type</label>
+        <domain rdf:resource="http://fogid.net/o/iis-store-data"/>
+        <range rdf:resource="http://fogid.net/o/string"/>
+    </DatatypeProperty>
+</Ontology>
