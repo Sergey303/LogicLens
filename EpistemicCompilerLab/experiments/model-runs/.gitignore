@@ -1,0 +1,4 @@
+*.jsonl
+*.summary.json
+!README.md
+!.gitignore
