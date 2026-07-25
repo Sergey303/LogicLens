@@ -63,8 +63,10 @@ if ($resolved) {
 if ($Required) {
     throw @'
 SWI-Prolog was not found in PATH, the Windows registry, or standard install folders.
-Install it with:
-  pwsh EpistemicCompilerLab/scripts/setup.ps1
+Install the Windows 64-bit stable build from:
+  https://www.swi-prolog.org/download/stable
+Then open a new PowerShell window and run:
+  swipl --version
 '@
 }
 
