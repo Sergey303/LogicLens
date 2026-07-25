@@ -3,6 +3,22 @@
   "technicalPredicates": [
     "urn:logiclens:test:internal-code"
   ],
+  "defaultTraversalPolicy": {
+    "visibleButNotFollowedPredicates": [
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+    ],
+    "followedUnknownIriPredicates": [
+      "urn:logiclens:test:related"
+    ],
+    "classResourcesMustNotAppearAsNeighbors": [
+      "http://fogid.net/o/person",
+      "http://fogid.net/o/org-sys",
+      "http://fogid.net/o/participation",
+      "http://fogid.net/o/student",
+      "http://fogid.net/o/document",
+      "http://fogid.net/o/authority"
+    ]
+  },
   "labelExpectations": [
     {
       "resource": "urn:logiclens:person:alex",
