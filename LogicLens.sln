@@ -4,7 +4,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Core", "src\LogicLens.Core\LogicLens.Core.csproj", "{8C7E57BE-2E42-4D5C-A6D5-A57F71220E16}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Prolog", "src\LogicLens.Prolog\LogicLens.Prolog.csproj", "{C05E742D-5917-47BC-8677-30AC7C578095}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.EpochCompiler", "tools\LogicLens.EpochCompiler\LogicLens.EpochCompiler.csproj", "{C2A29224-1A56-43EA-99D0-688492E3A8BD}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Core.Verification", "tests\LogicLens.Core.Verification\LogicLens.Core.Verification.csproj", "{594B06F7-C87B-4E41-A9A2-640DA678C799}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Prolog.Verification", "tests\LogicLens.Prolog.Verification\LogicLens.Prolog.Verification.csproj", "{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +22,22 @@ Global
 		{8C7E57BE-2E42-4D5C-A6D5-A57F71220E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C7E57BE-2E42-4D5C-A6D5-A57F71220E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C7E57BE-2E42-4D5C-A6D5-A57F71220E16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C05E742D-5917-47BC-8677-30AC7C578095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C05E742D-5917-47BC-8677-30AC7C578095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C05E742D-5917-47BC-8677-30AC7C578095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C05E742D-5917-47BC-8677-30AC7C578095}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

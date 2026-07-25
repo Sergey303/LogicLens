@@ -1,0 +1,15 @@
+{
+  "epoch": 0,
+  "stage": "data-generated",
+  "factContractVersion": "1",
+  "factIdEncodingVersion": 1,
+  "prologDataContractVersion": "1",
+  "compilerCommit": "a106945d2bd0153b5037c8363115142c3575af16",
+  "factCount": 29,
+  "originCount": 10,
+  "files": {
+    "data/facts.generated.pl": "sha256:ea21f86b06e6a445e8557dc69d10470751bb02a2f3dad58a5231ab2e20a26677",
+    "data/origins.generated.pl": "sha256:08e2b2dfdb76df5846d632e1c20cd9e8f386ecb55edb3f5bf2daace8cd33c7c5"
+  },
+  "dataHash": "sha256:b2ebcb0e07c6582664ea016c82429d7cd28a57f716d7e27ceabdc49ce4ece0ed"
+}
