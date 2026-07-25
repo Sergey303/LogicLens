@@ -87,6 +87,7 @@ jobs:
           cp epochs/epoch-000/tests/generic_view_tests.pl /tmp/epoch-000/tests/
           cp epochs/epoch-000/tests/occurrence_identity_tests.pl /tmp/epoch-000/tests/
           cp epochs/epoch-000/tests/subgraph_tests.pl /tmp/epoch-000/tests/
+          cp epochs/epoch-000/tests/cli_internal_tests.pl /tmp/epoch-000/tests/
 
           dotnet run \
             --project tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
@@ -96,7 +97,7 @@ jobs:
             --output /tmp/epoch-000/ontology \
             --compiler-commit "$COMPILER_COMMIT"
 
-      - name: Run SWI-Prolog data, view, identity and traversal tests
+      - name: Run SWI-Prolog data, view, identity, traversal and timeout tests
         id: plunit
         shell: bash
         run: |
@@ -106,7 +107,8 @@ jobs:
             '/tmp/epoch-000/tests/data_contract_tests.pl',
             '/tmp/epoch-000/tests/generic_view_tests.pl',
             '/tmp/epoch-000/tests/occurrence_identity_tests.pl',
-            '/tmp/epoch-000/tests/subgraph_tests.pl'
+            '/tmp/epoch-000/tests/subgraph_tests.pl',
+            '/tmp/epoch-000/tests/cli_internal_tests.pl'
             ], [silent(true)]), run_tests, halt" \
             -t "halt(1)" \
             > /tmp/traversal-plunit.log 2>&1
