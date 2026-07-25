@@ -6,7 +6,9 @@
 
 :- use_module('../data/epoch_data.pl').
 :- use_module('../ontology/ontology_data.pl').
+:- use_module(library(apply)).
 :- use_module(library(lists)).
+:- use_module(library(pairs)).
 
 
 name_predicate('http://fogid.net/o/name').
