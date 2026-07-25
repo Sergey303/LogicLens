@@ -1,0 +1,75 @@
+name: Verify universal React renderer
+
+on:
+  pull_request:
+    paths:
+      - "contracts/ui-document-v0.schema.json"
+      - "src/LogicLens.Web/**"
+      - ".github/workflows/verify-web-renderer.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/ui-document-v0.schema.json"
+      - "src/LogicLens.Web/**"
+      - ".github/workflows/verify-web-renderer.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: src/LogicLens.Web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+
+      - name: Install exact direct dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Verify dependency tree
+        run: npm ls --all
+
+      - name: Run universal renderer tests
+        run: npm test
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Reject domain-specific renderer branches
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          roots = [Path("src/rendering"), Path("src/model")]
+          pattern = re.compile(r"case\s+[\"'](?:Person|Organization|Document)[\"']")
+          failures = []
+          for root in roots:
+              for path in root.rglob("*.ts*"):
+                  if pattern.search(path.read_text(encoding="utf-8")):
+                      failures.append(str(path))
+          if failures:
+              raise SystemExit("Domain-specific branches found: " + ", ".join(failures))
+          PY
+
+      - name: Upload renderer bundle and generated lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: logiclens-web-renderer
+          path: |
+            src/LogicLens.Web/dist
+            src/LogicLens.Web/package-lock.json
+          if-no-files-found: error
+          retention-days: 14
