@@ -1,0 +1,462 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1c2430;
+  background: #f3f6f8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+a,
+summary {
+  touch-action: manipulation;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto minmax(18rem, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+  padding: 0.9rem clamp(1rem, 4vw, 3rem);
+  color: #f8fafc;
+  background: #14202b;
+  box-shadow: 0 0.15rem 0.8rem rgb(15 23 42 / 18%);
+}
+
+.brand {
+  align-self: center;
+  color: inherit;
+  font-size: 1.15rem;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.entity-selector {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) auto;
+  gap: 0.35rem 0.5rem;
+}
+
+.entity-selector label,
+.language-selector {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+}
+
+.entity-selector label {
+  grid-column: 1 / -1;
+}
+
+.entity-selector input,
+.language-selector select {
+  min-height: 2.35rem;
+  border: 1px solid #526275;
+  border-radius: 0.45rem;
+  color: #f8fafc;
+  background: #243241;
+}
+
+.entity-selector input {
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+}
+
+.entity-selector button {
+  border: 0;
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  color: #10202d;
+  background: #7dd3fc;
+  cursor: pointer;
+}
+
+.language-selector {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.language-selector select {
+  padding: 0.45rem 1.8rem 0.45rem 0.6rem;
+}
+
+.ui-document,
+.status-panel {
+  width: min(74rem, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.ui-document {
+  padding: 2rem 0 4rem;
+}
+
+.status-panel {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 2rem;
+  padding: 1rem 1.2rem;
+  border-radius: 0.65rem;
+  background: #ffffff;
+  box-shadow: 0 0.2rem 1rem rgb(15 23 42 / 8%);
+}
+
+.status-panel--error {
+  border-left: 0.3rem solid #b42318;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1.08;
+}
+
+.document-meta,
+.predicate-id,
+.artifact-kind,
+.value-metadata,
+.resource-id {
+  color: #617083;
+}
+
+.document-meta {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+}
+
+.page-diagnostics,
+.page-sections,
+.section-components {
+  display: grid;
+  gap: 1rem;
+}
+
+.page-diagnostics {
+  margin-bottom: 1rem;
+}
+
+.ui-section {
+  border: 1px solid #d7dee5;
+  border-radius: 0.8rem;
+  background: #ffffff;
+  box-shadow: 0 0.2rem 1rem rgb(15 23 42 / 6%);
+}
+
+section.ui-section {
+  padding: 1.15rem;
+}
+
+.ui-section > h2,
+.ui-section > summary {
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+
+.ui-section > h2 {
+  margin: 0 0 1rem;
+}
+
+.ui-section > summary {
+  padding: 1rem 1.15rem;
+  cursor: pointer;
+}
+
+.ui-section > summary + .section-body {
+  padding: 0 1.15rem 1.15rem;
+}
+
+.ui-section--technical {
+  border-style: dashed;
+  background: #f8fafc;
+}
+
+.ui-section--technical > summary::after {
+  content: "техническая";
+  margin-left: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  color: #475569;
+  background: #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.property {
+  padding: 0.95rem 1rem;
+  border-left: 0.3rem solid #64748b;
+  border-radius: 0.55rem;
+  background: #f8fafc;
+}
+
+.property--outgoing {
+  border-left-color: #0e7490;
+}
+
+.property--incoming {
+  border-left-color: #7c3aed;
+}
+
+.property--derived {
+  border-left-color: #a16207;
+}
+
+.property-header {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.property-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.direction-badge,
+.edit-affordance,
+.derived-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.14rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.direction-badge {
+  color: #334155;
+  background: #e2e8f0;
+}
+
+.edit-affordance {
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.derived-badge {
+  color: #854d0e;
+  background: #fef3c7;
+}
+
+.predicate-id {
+  margin: 0.25rem 0 0.7rem;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.75rem;
+}
+
+.property-values {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.property-value {
+  display: grid;
+  gap: 0.32rem;
+  min-width: 0;
+  padding: 0.7rem;
+  border-radius: 0.45rem;
+  background: #ffffff;
+}
+
+.value-primary,
+.resource-link {
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.resource-link {
+  color: #075985;
+}
+
+.resource-id {
+  overflow-wrap: anywhere;
+  font-size: 0.73rem;
+}
+
+.value-metadata {
+  display: block;
+}
+
+.source-details summary {
+  width: fit-content;
+  color: #475569;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.source-details dl,
+.occurrence-summary {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.2rem 0.7rem;
+  margin: 0.55rem 0 0;
+  font-size: 0.78rem;
+}
+
+.source-details dt,
+.occurrence-summary dt {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.source-details dd,
+.occurrence-summary dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.occurrence-summary {
+  margin-bottom: 0.8rem;
+  padding: 0.65rem;
+  border-radius: 0.45rem;
+  background: #eef2ff;
+}
+
+.text-block {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.raw-prolog {
+  min-width: 0;
+  padding: 0.9rem;
+  border-radius: 0.55rem;
+  color: #dbeafe;
+  background: #111827;
+}
+
+.raw-prolog h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 0.95rem;
+}
+
+.raw-prolog .artifact-kind {
+  margin: 0.2rem 0 0.65rem;
+  color: #93c5fd;
+  font-size: 0.75rem;
+}
+
+.raw-prolog pre {
+  max-width: 100%;
+  margin: 0;
+  overflow: auto;
+  white-space: pre;
+}
+
+.raw-prolog code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.82rem;
+}
+
+.diagnostic {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.8rem 0.95rem;
+  border-left: 0.3rem solid #64748b;
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.diagnostic--info {
+  border-left-color: #0369a1;
+}
+
+.diagnostic--warning {
+  border-left-color: #b45309;
+}
+
+.diagnostic--error {
+  border-left-color: #b42318;
+  background: #fff7f7;
+}
+
+@media (max-width: 760px) {
+  .app-toolbar {
+    position: static;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .entity-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .entity-selector label {
+    grid-column: auto;
+  }
+
+  .property-header {
+    display: grid;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #e5edf5;
+    background: #0f1720;
+  }
+
+  .status-panel,
+  .ui-section,
+  .diagnostic,
+  .property-value {
+    background: #18232f;
+  }
+
+  .ui-section,
+  .property {
+    border-color: #334155;
+  }
+
+  .ui-section--technical,
+  .property {
+    background: #131d27;
+  }
+
+  .predicate-id,
+  .artifact-kind,
+  .value-metadata,
+  .resource-id,
+  .source-details summary {
+    color: #a7b6c8;
+  }
+
+  .resource-link {
+    color: #7dd3fc;
+  }
+
+  .diagnostic--error {
+    background: #301b1b;
+  }
+}
