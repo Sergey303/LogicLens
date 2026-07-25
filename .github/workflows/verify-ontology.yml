@@ -1,0 +1,96 @@
+name: Verify ontology labels
+
+on:
+  pull_request:
+    paths:
+      - "data/Ontology.xml"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "epochs/epoch-000/ontology/**"
+      - "epochs/epoch-000/tests/ontology_contract_tests.pl"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-ontology.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "data/Ontology.xml"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "epochs/epoch-000/ontology/**"
+      - "epochs/epoch-000/tests/ontology_contract_tests.pl"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-ontology.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPILER_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install SWI-Prolog
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version
+
+      - name: Restore
+        run: dotnet restore LogicLens.sln
+
+      - name: Build
+        run: dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Generate ontology labels twice
+        run: |
+          dotnet run \
+            --project tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/ontology-a \
+            --compiler-commit "$COMPILER_COMMIT"
+
+          dotnet run \
+            --project tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/ontology-b \
+            --compiler-commit "$COMPILER_COMMIT"
+
+      - name: Verify byte-identical generation
+        run: diff --recursive --unified /tmp/ontology-a /tmp/ontology-b
+
+      - name: Add reviewed module and tests
+        run: |
+          cp epochs/epoch-000/ontology/ontology_data.pl /tmp/ontology-a/ontology_data.pl
+          mkdir --parents /tmp/ontology-a/tests
+          cp epochs/epoch-000/tests/ontology_contract_tests.pl /tmp/ontology-a/tests/
+          sed --in-place \
+            "s#../ontology/ontology_data.pl#../ontology_data.pl#" \
+            /tmp/ontology-a/tests/ontology_contract_tests.pl
+
+      - name: Load generated labels and run SWI-Prolog tests
+        run: >-
+          swipl -q
+          -g "load_files('/tmp/ontology-a/tests/ontology_contract_tests.pl', [silent(true)]), run_tests, halt"
+          -t "halt(1)"
+
+      - name: Upload verified ontology package
+        uses: actions/upload-artifact@v4
+        with:
+          name: epoch-000-ontology
+          path: /tmp/ontology-a
+          if-no-files-found: error
+          retention-days: 7
