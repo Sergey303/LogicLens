@@ -68,4 +68,4 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 10 PowerShell scripts.'
+Write-Host "Representation runner assets valid: compact JSON, 4 prompts, $($parseTargets.Count) PowerShell scripts."
