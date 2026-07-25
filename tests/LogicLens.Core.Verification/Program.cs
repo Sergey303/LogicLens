@@ -126,7 +126,11 @@ internal static class Program
         FogOriginContext context)
     {
         var key = (context.SourcePath, context.EntityId);
-        Check(catalog.TryGetValue(key, out var origin), $"Missing origin for {key}.");
+        if (!catalog.TryGetValue(key, out var origin))
+        {
+            throw new InvalidOperationException($"Missing origin for {key}.");
+        }
+
         Equal(context.SourceDbId, origin.SourceDbId, $"Source dbid for {key}");
         return origin;
     }
@@ -152,8 +156,12 @@ internal static class Program
             var recomputed = CanonicalFact.Create(subject, predicate, value);
 
             Equal(expectedFactId, recomputed.FactId, $"Expected FactId {expectedFactId}");
-            Check(actualById.TryGetValue(expectedFactId, out var actual),
-                $"Expected fact is missing: {expectedFactId}.");
+            if (!actualById.TryGetValue(expectedFactId, out var actual))
+            {
+                throw new InvalidOperationException(
+                    $"Expected fact is missing: {expectedFactId}.");
+            }
+
             Equal(subject, actual.Fact.Subject, $"Subject for {expectedFactId}");
             Equal(predicate, actual.Fact.Predicate, $"Predicate for {expectedFactId}");
             Equal(value, actual.Fact.Object, $"Object for {expectedFactId}");
@@ -283,7 +291,7 @@ internal static class Program
                      AppContext.BaseDirectory
                  })
         {
-            var directory = new DirectoryInfo(start);
+            DirectoryInfo? directory = new(start);
             while (directory is not null)
             {
                 if (File.Exists(Path.Combine(directory.FullName, "README.md"))
