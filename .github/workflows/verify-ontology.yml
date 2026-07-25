@@ -1,0 +1,127 @@
+name: Verify ontology labels and generic view
+
+on:
+  pull_request:
+    paths:
+      - "data/Ontology.xml"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "epochs/epoch-000/ontology/**"
+      - "epochs/epoch-000/rules/**"
+      - "epochs/epoch-000/tests/ontology_contract_tests.pl"
+      - "epochs/epoch-000/tests/generic_view_tests.pl"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-ontology.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "data/Ontology.xml"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "epochs/epoch-000/ontology/**"
+      - "epochs/epoch-000/rules/**"
+      - "epochs/epoch-000/tests/ontology_contract_tests.pl"
+      - "epochs/epoch-000/tests/generic_view_tests.pl"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-ontology.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPILER_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install SWI-Prolog
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version
+
+      - name: Restore
+        run: dotnet restore LogicLens.sln
+
+      - name: Build
+        run: dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Generate ontology labels twice
+        run: |
+          dotnet run \
+            --project tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/ontology-a \
+            --compiler-commit "$COMPILER_COMMIT"
+
+          dotnet run \
+            --project tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/ontology-b \
+            --compiler-commit "$COMPILER_COMMIT"
+
+      - name: Verify byte-identical generation
+        run: diff --recursive --unified /tmp/ontology-a /tmp/ontology-b
+
+      - name: Assemble temporary epoch
+        run: |
+          mkdir --parents /tmp/epoch-000/ontology /tmp/epoch-000/tests
+          cp --recursive epochs/epoch-000/data /tmp/epoch-000/data
+          cp --recursive epochs/epoch-000/rules /tmp/epoch-000/rules
+          cp /tmp/ontology-a/ontology.generated.pl /tmp/epoch-000/ontology/
+          cp /tmp/ontology-a/manifest.json /tmp/epoch-000/ontology/
+          cp epochs/epoch-000/ontology/ontology_data.pl /tmp/epoch-000/ontology/
+          cp epochs/epoch-000/tests/ontology_contract_tests.pl /tmp/epoch-000/tests/
+          cp epochs/epoch-000/tests/generic_view_tests.pl /tmp/epoch-000/tests/
+
+      - name: Load generated labels and run SWI-Prolog tests
+        id: swi-tests
+        shell: bash
+        run: |
+          set +e
+          swipl -q \
+            -g "load_files([
+            '/tmp/epoch-000/tests/ontology_contract_tests.pl',
+            '/tmp/epoch-000/tests/generic_view_tests.pl'
+            ], [silent(true)]), run_tests, halt" \
+            -t "halt(1)" \
+            > /tmp/generic-view-tests.log 2>&1
+          exit_code=$?
+          cat /tmp/generic-view-tests.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload SWI-Prolog test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generic-view-test-log
+          path: /tmp/generic-view-tests.log
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Fail when SWI-Prolog tests failed
+        if: steps.swi-tests.outputs.exit_code != '0'
+        run: exit 1
+
+      - name: Upload verified ontology package
+        if: steps.swi-tests.outputs.exit_code == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: epoch-000-ontology
+          path: /tmp/epoch-000/ontology
+          if-no-files-found: error
+          retention-days: 7
