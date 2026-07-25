@@ -57,7 +57,8 @@ material_solution(Revision, Date, Solution) :-
 
 material_result(Revision, Date, [], _{
     status:"unknown",
-    query:_{revision:Revision, date:Date}
+    query:_{revision:Revision, date:Date},
+    solutions:[]
 }).
 
 material_result(Revision, Date, Solutions, _{
