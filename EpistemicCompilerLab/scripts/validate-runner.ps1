@@ -11,6 +11,8 @@ $requiredFiles = @(
     'runner/prompts/finalize.md',
     'scripts/run-representation.ps1',
     'scripts/score-representation.ps1',
+    'scripts/test-ollama-model.ps1',
+    'scripts/run-representation-baseline.ps1',
     'scripts/launch.ps1'
 )
 
@@ -45,6 +47,8 @@ if ($null -eq $compact.transitionDate) {
 $parseTargets = @(
     'scripts/run-representation.ps1',
     'scripts/score-representation.ps1',
+    'scripts/test-ollama-model.ps1',
+    'scripts/run-representation-baseline.ps1',
     'scripts/validate-runner.ps1',
     'scripts/launch.ps1'
 )
@@ -66,4 +70,4 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 4 PowerShell scripts.'
+Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 6 PowerShell scripts.'
