@@ -10,7 +10,8 @@ $requiredFiles = @(
     'runner/prompts/tail-planner.md',
     'runner/prompts/finalize.md',
     'scripts/run-representation.ps1',
-    'scripts/score-representation.ps1'
+    'scripts/score-representation.ps1',
+    'scripts/launch.ps1'
 )
 
 foreach ($relativePath in $requiredFiles) {
@@ -44,7 +45,8 @@ if ($null -eq $compact.transitionDate) {
 $parseTargets = @(
     'scripts/run-representation.ps1',
     'scripts/score-representation.ps1',
-    'scripts/validate-runner.ps1'
+    'scripts/validate-runner.ps1',
+    'scripts/launch.ps1'
 )
 foreach ($relativePath in $parseTargets) {
     $path = Join-Path $labRoot $relativePath
@@ -64,4 +66,4 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 3 PowerShell scripts.'
+Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 4 PowerShell scripts.'
