@@ -1,0 +1,95 @@
+name: Verify universal React renderer
+
+on:
+  pull_request:
+    paths:
+      - "contracts/ui-document-v0.schema.json"
+      - "src/LogicLens.Web/**"
+      - ".github/workflows/verify-web-renderer.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/ui-document-v0.schema.json"
+      - "src/LogicLens.Web/**"
+      - ".github/workflows/verify-web-renderer.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-web-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: src/LogicLens.Web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: npm
+          cache-dependency-path: src/LogicLens.Web/package-lock.json
+
+      - name: Install committed dependency graph
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Verify dependency tree
+        run: npm ls --all
+
+      - name: Run universal renderer tests
+        run: npm test
+
+      - name: Build production bundle
+        id: web-build
+        shell: bash
+        run: |
+          set +e
+          npm run build > /tmp/web-build.log 2>&1
+          exit_code=$?
+          cat /tmp/web-build.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Reject domain-specific renderer branches
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          roots = [Path("src/rendering"), Path("src/model")]
+          pattern = re.compile(r"case\s+[\"'](?:Person|Organization|Document)[\"']")
+          failures = []
+          for root in roots:
+              for path in root.rglob("*.ts*"):
+                  if pattern.search(path.read_text(encoding="utf-8")):
+                      failures.append(str(path))
+          if failures:
+              raise SystemExit("Domain-specific branches found: " + ", ".join(failures))
+          PY
+
+      - name: Upload renderer bundle lockfile and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logiclens-web-renderer
+          path: |
+            src/LogicLens.Web/dist
+            src/LogicLens.Web/package-lock.json
+            /tmp/web-build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Enforce production build
+        if: always()
+        run: test "${{ steps.web-build.outputs.exit_code }}" = "0"

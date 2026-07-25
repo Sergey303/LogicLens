@@ -1,0 +1,23 @@
+# .NET build outputs
+**/bin/
+**/obj/
+
+# Node.js and web build outputs
+**/node_modules/
+**/dist/
+**/coverage/
+
+# Local environment overrides
+.env
+.env.*
+!.env.example
+
+# Editor and operating-system files
+.vs/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local verification artifacts
+*.log
