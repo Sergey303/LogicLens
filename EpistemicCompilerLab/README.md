@@ -16,14 +16,7 @@ Can a strong or slow teacher system improve a weak local LLM by choosing:
 
 ## MVP boundary
 
-The first executable slice contains:
-
-- repository-local sources and Prolog knowledge;
-- short-lived SWI-Prolog CLI calls;
-- JSON query results;
-- separate teacher and student prompts;
-- optional evidence and exception tails;
-- regression tests and experiment records.
+The first executable slice contains repository-local sources, Prolog knowledge, short-lived SWI-Prolog CLI calls, JSON results, separate teacher/student prompts, optional evidence tails and regression tests.
 
 It does not include React, LogicLens epochs, UI Document generation, a web proxy, a persistent Prolog service or production sandboxing.
 
@@ -38,18 +31,36 @@ It does not include React, LogicLens epochs, UI Document generation, a web proxy
 - [`tests/knowledge_tests.pl`](tests/knowledge_tests.pl) — regression tests;
 - [`experiments/README.md`](experiments/README.md) — controlled comparison protocol.
 
-## Run
+## Windows setup
+
+Install the Windows 64-bit stable build from:
+
+`https://www.swi-prolog.org/download/stable`
+
+Open a new PowerShell window and verify:
 
 ```powershell
-swipl -q -s EpistemicCompilerLab/prolog/entry.pl -- current-material b 20260810
-swipl -q -s EpistemicCompilerLab/prolog/entry.pl -- expand asd100500 evidence
-swipl -q -s EpistemicCompilerLab/tests/knowledge_tests.pl -g "run_tests,halt"
+swipl --version
 ```
 
-Or use the thin wrapper:
+The repository scripts also search the registry and standard installation folders when `PATH` is not yet refreshed.
+
+## Verify everything
+
+From the LogicLens repository root:
 
 ```powershell
+pwsh EpistemicCompilerLab/scripts/doctor.ps1
+```
+
+The doctor reports the executable and version, runs all Prolog tests and executes a JSON CLI smoke test.
+
+Individual commands:
+
+```powershell
+pwsh EpistemicCompilerLab/scripts/run-tests.ps1
 pwsh EpistemicCompilerLab/scripts/query.ps1 current-material b 20260810
+pwsh EpistemicCompilerLab/scripts/query.ps1 expand asd100500 evidence
 ```
 
 `unknown` means the loaded knowledge is insufficient. It never means `false`.
