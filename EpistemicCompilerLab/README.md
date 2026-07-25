@@ -31,7 +31,8 @@ It does not include React, LogicLens epochs, UI Document generation, a web proxy
 - [`tests/knowledge_tests.pl`](tests/knowledge_tests.pl) — regression tests;
 - [`cases/README.md`](cases/README.md) — benchmark-v0 contract and scoring;
 - [`cases/benchmark-v0.jsonl`](cases/benchmark-v0.jsonl) — fixed representation cases;
-- [`experiments/README.md`](experiments/README.md) — controlled comparison protocol.
+- [`experiments/README.md`](experiments/README.md) — controlled comparison protocol;
+- [`experiments/runs.jsonl`](experiments/runs.jsonl) — confirmed environment and experiment runs.
 
 ## Windows setup
 
@@ -63,10 +64,11 @@ Other actions:
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' doctor
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' tests
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' cases
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' oracle
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query current-material b 20260810
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' query expand asd100500 evidence
 ```
 
-The doctor reports the executable and version, validates benchmark-v0, runs all Prolog tests and executes a JSON CLI smoke test.
+The doctor validates benchmark-v0, executes its deterministic Prolog oracle, runs all PL-Unit tests and performs a JSON CLI smoke test.
 
 `unknown` means the loaded knowledge is insufficient. It never means `false`.
