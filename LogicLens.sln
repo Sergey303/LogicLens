@@ -8,6 +8,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Prolog", "src\Log
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.EpochCompiler", "tools\LogicLens.EpochCompiler\LogicLens.EpochCompiler.csproj", "{C2A29224-1A56-43EA-99D0-688492E3A8BD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.OntologyCompiler", "tools\LogicLens.OntologyCompiler\LogicLens.OntologyCompiler.csproj", "{6E77ACCF-A86D-44F4-A23B-2B2C0B73E6AE}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Core.Verification", "tests\LogicLens.Core.Verification\LogicLens.Core.Verification.csproj", "{594B06F7-C87B-4E41-A9A2-640DA678C799}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLens.Prolog.Verification", "tests\LogicLens.Prolog.Verification\LogicLens.Prolog.Verification.csproj", "{CB93B18B-8FD7-4EE2-AD9D-CC4734E5A24E}"
@@ -30,6 +32,10 @@ Global
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2A29224-1A56-43EA-99D0-688492E3A8BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E77ACCF-A86D-44F4-A23B-2B2C0B73E6AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E77ACCF-A86D-44F4-A23B-2B2C0B73E6AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E77ACCF-A86D-44F4-A23B-2B2C0B73E6AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E77ACCF-A86D-44F4-A23B-2B2C0B73E6AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{594B06F7-C87B-4E41-A9A2-640DA678C799}.Release|Any CPU.ActiveCfg = Release|Any CPU
