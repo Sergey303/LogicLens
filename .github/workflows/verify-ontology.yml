@@ -88,15 +88,37 @@ jobs:
           cp epochs/epoch-000/tests/generic_view_tests.pl /tmp/epoch-000/tests/
 
       - name: Load generated labels and run SWI-Prolog tests
-        run: >-
-          swipl -q
-          -g "load_files([
-          '/tmp/epoch-000/tests/ontology_contract_tests.pl',
-          '/tmp/epoch-000/tests/generic_view_tests.pl'
-          ], [silent(true)]), run_tests, halt"
-          -t "halt(1)"
+        id: swi-tests
+        shell: bash
+        run: |
+          set +e
+          swipl -q \
+            -g "load_files([
+            '/tmp/epoch-000/tests/ontology_contract_tests.pl',
+            '/tmp/epoch-000/tests/generic_view_tests.pl'
+            ], [silent(true)]), run_tests, halt" \
+            -t "halt(1)" \
+            > /tmp/generic-view-tests.log 2>&1
+          exit_code=$?
+          cat /tmp/generic-view-tests.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload SWI-Prolog test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generic-view-test-log
+          path: /tmp/generic-view-tests.log
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Fail when SWI-Prolog tests failed
+        if: steps.swi-tests.outputs.exit_code != '0'
+        run: exit 1
 
       - name: Upload verified ontology package
+        if: steps.swi-tests.outputs.exit_code == '0'
         uses: actions/upload-artifact@v4
         with:
           name: epoch-000-ontology
