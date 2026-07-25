@@ -1,0 +1,108 @@
+name: Verify active epoch package
+
+on:
+  pull_request:
+    paths:
+      - "contracts/prolog-cli-v0.schema.json"
+      - "data/Ontology.xml"
+      - "docs/adr/0008-active-epoch-package.md"
+      - "epochs/epoch-000/**"
+      - "fixtures/zero-epoch/**"
+      - "src/LogicLens.Core/**"
+      - "src/LogicLens.Prolog/**"
+      - "tools/LogicLens.EpochCompiler/**"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "tools/build_active_epoch.py"
+      - "tests/active_epoch_package_test.py"
+      - ".github/workflows/verify-active-epoch.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/prolog-cli-v0.schema.json"
+      - "data/Ontology.xml"
+      - "docs/adr/0008-active-epoch-package.md"
+      - "epochs/epoch-000/**"
+      - "fixtures/zero-epoch/**"
+      - "src/LogicLens.Core/**"
+      - "src/LogicLens.Prolog/**"
+      - "tools/LogicLens.EpochCompiler/**"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "tools/build_active_epoch.py"
+      - "tests/active_epoch_package_test.py"
+      - ".github/workflows/verify-active-epoch.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned SWI-Prolog
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version | tee /tmp/swipl-version.txt
+          grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
+
+      - name: Restore and build solution
+        run: |
+          dotnet restore LogicLens.sln
+          dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Build active epoch twice
+        run: |
+          mkdir --parents /tmp/active-epoch-a /tmp/active-epoch-b
+          python tools/build_active_epoch.py \
+            --repository-root . \
+            --output /tmp/active-epoch-a \
+            --engine-commit "$GITHUB_SHA" \
+            --no-build
+          python tools/build_active_epoch.py \
+            --repository-root . \
+            --output /tmp/active-epoch-b \
+            --engine-commit "$GITHUB_SHA" \
+            --no-build
+
+      - name: Verify determinism hashes and portable smoke commands
+        run: |
+          python tests/active_epoch_package_test.py \
+            --first /tmp/active-epoch-a \
+            --second /tmp/active-epoch-b \
+            --run-smoke \
+            | tee /tmp/active-epoch-verification.log
+
+      - name: Upload portable active epoch
+        uses: actions/upload-artifact@v4
+        with:
+          name: logiclens-active-epoch-000
+          path: /tmp/active-epoch-a
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload verification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-epoch-verification
+          path: |
+            /tmp/swipl-version.txt
+            /tmp/active-epoch-verification.log
+          if-no-files-found: warn
+          retention-days: 14
