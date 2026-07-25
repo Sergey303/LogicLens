@@ -64,6 +64,10 @@ foreach ($line in Get-Content -LiteralPath $RunPath -Encoding utf8) {
     $records.Add($record)
 }
 
+if ($records.Count -eq 0) {
+    throw "Run contains no records: $RunPath"
+}
+
 $missingCases = @($cases.Keys | Where-Object { $_ -notin $seen })
 if ($missingCases.Count -gt 0) {
     throw "Run is incomplete. Missing cases: $($missingCases -join ', ')"
@@ -75,6 +79,7 @@ $model = [string] $first.model
 $runId = [string] $first.runId
 $commit = [string] $first.commit
 $cliMode = $mode -in @('cli', 'cli-tails')
+$tailMode = $mode -eq 'cli-tails'
 $caseScores = [Collections.Generic.List[object]]::new()
 
 foreach ($record in $records) {
@@ -90,6 +95,7 @@ foreach ($record in $records) {
     $queryCorrect = $null
     $materialCorrect = $null
     $unknownCorrect = $null
+    $tailDecisionCorrect = $null
 
     if ($case.expectedAction -eq 'ask_user') {
         $actionCorrect = $final.action -eq 'ask_user'
@@ -124,23 +130,25 @@ foreach ($record in $records) {
     }
 
     $openedTails = @($record.openedTails)
-    if ($null -eq $case.requiresTail) {
-        $tailDecisionCorrect = $openedTails.Count -eq 0
-    }
-    else {
-        $matchingTails = @($openedTails | Where-Object {
-            $_.kind -eq $case.requiresTail -and
-            $_.entity -eq $case.tailEntity -and
-            $_.status -eq 'success'
-        })
-        $tailDecisionCorrect = $openedTails.Count -eq 1 -and $matchingTails.Count -eq 1
+    if ($tailMode) {
+        if ($null -eq $case.requiresTail) {
+            $tailDecisionCorrect = $openedTails.Count -eq 0
+        }
+        else {
+            $matchingTails = @($openedTails | Where-Object {
+                $_.kind -eq $case.requiresTail -and
+                $_.entity -eq $case.tailEntity -and
+                $_.status -eq 'success'
+            })
+            $tailDecisionCorrect = $openedTails.Count -eq 1 -and $matchingTails.Count -eq 1
+        }
     }
 
     $checks = [Collections.Generic.List[bool]]::new()
     $checks.Add($runnerOk)
     $checks.Add($actionCorrect)
     $checks.Add($statusCorrect)
-    $checks.Add($tailDecisionCorrect)
+    if ($null -ne $tailDecisionCorrect) { $checks.Add([bool] $tailDecisionCorrect) }
     if ($null -ne $clarificationCorrect) { $checks.Add([bool] $clarificationCorrect) }
     if ($null -ne $queryCorrect) { $checks.Add([bool] $queryCorrect) }
     if ($null -ne $materialCorrect) { $checks.Add([bool] $materialCorrect) }
@@ -198,6 +206,7 @@ $summary = [ordered]@{
         unknownCorrect = Count-True 'unknownCorrect'
         unknownApplicable = Count-Applicable 'unknownCorrect'
         tailDecisionCorrect = Count-True 'tailDecisionCorrect'
+        tailDecisionApplicable = Count-Applicable 'tailDecisionCorrect'
         totalCliCalls = (@($caseScores | ForEach-Object { $_.cliCalls }) | Measure-Object -Sum).Sum
         totalOpenedTails = (@($caseScores | ForEach-Object { $_.openedTails }) | Measure-Object -Sum).Sum
         promptEvalCount = (@($records | ForEach-Object { $_.usage.promptEvalCount }) | Measure-Object -Sum).Sum
@@ -213,7 +222,10 @@ $summary | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $SummaryPath -En
 
 Write-Host "Representation summary written: $SummaryPath"
 Write-Host "Passed: $($summary.metrics.passedCases)/$($summary.metrics.totalCases)"
-Write-Host "Status: $($summary.metrics.statusCorrect)/$($summary.metrics.totalCases); tails: $($summary.metrics.tailDecisionCorrect)/$($summary.metrics.totalCases)"
+Write-Host "Status: $($summary.metrics.statusCorrect)/$($summary.metrics.totalCases)"
 if ($cliMode) {
     Write-Host "Queries: $($summary.metrics.queryCorrect)/$($summary.metrics.queryApplicable); CLI calls: $($summary.metrics.totalCliCalls)"
+}
+if ($tailMode) {
+    Write-Host "Tails: $($summary.metrics.tailDecisionCorrect)/$($summary.metrics.tailDecisionApplicable); opened: $($summary.metrics.totalOpenedTails)"
 }
