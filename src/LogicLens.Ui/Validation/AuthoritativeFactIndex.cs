@@ -12,18 +12,22 @@ internal sealed record AuthoritativeFact(
 internal sealed class AuthoritativeFactIndex
 {
     private readonly IReadOnlyDictionary<string, AuthoritativeFact> facts;
+    private readonly string[] factIds;
 
     private AuthoritativeFactIndex(
         IReadOnlyDictionary<string, AuthoritativeFact> facts,
         IReadOnlySet<string> nodes)
     {
         this.facts = facts;
+        factIds = facts.Keys
+            .OrderBy(static factId => factId, StringComparer.Ordinal)
+            .ToArray();
         Nodes = nodes;
     }
 
     public IReadOnlySet<string> Nodes { get; }
 
-    public IReadOnlyCollection<string> FactIds => facts.Keys;
+    public IReadOnlyCollection<string> FactIds => factIds;
 
     public bool TryGet(string factId, out AuthoritativeFact fact) =>
         facts.TryGetValue(factId, out fact!);
