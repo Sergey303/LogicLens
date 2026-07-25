@@ -12,6 +12,7 @@ param(
         'representation-run',
         'representation-score',
         'representation-baseline',
+        'representation-suite',
         'query'
     )]
     [string] $Action = 'sync-doctor',
@@ -97,6 +98,13 @@ try {
             & (Join-Path $scriptsRoot 'run-representation-baseline.ps1') `
                 -Mode $Arguments[0] `
                 -Model $Arguments[1]
+        }
+        'representation-suite' {
+            if (-not $Arguments -or $Arguments.Count -ne 1) {
+                throw 'Usage: representation-suite <base-model>'
+            }
+            & (Join-Path $scriptsRoot 'run-representation-suite.ps1') `
+                -Model $Arguments[0]
         }
         'query' {
             if (-not $Arguments -or $Arguments.Count -eq 0) {
