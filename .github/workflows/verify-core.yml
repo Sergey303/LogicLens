@@ -113,15 +113,53 @@ jobs:
           tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj
 
       - name: Build runtime state verification
-        run: >-
-          dotnet build
-          tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj
-          --configuration Release
-          --no-restore
+        id: state-build
+        shell: bash
+        run: |
+          set +e
+          dotnet build \
+            tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj \
+            --configuration Release \
+            --no-restore \
+            > state-build.log 2>&1
+          exit_code=$?
+          cat state-build.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: Verify ApplyDelta and crash recovery
-        run: >-
-          dotnet run
-          --project tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj
-          --configuration Release
-          --no-build
+        id: state-verification
+        if: steps.state-build.outputs.exit_code == '0'
+        shell: bash
+        run: |
+          set +e
+          dotnet run \
+            --project tests/LogicLens.State.Verification/LogicLens.State.Verification.csproj \
+            --configuration Release \
+            --no-build \
+            > state-verification.log 2>&1
+          exit_code=$?
+          cat state-verification.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload runtime state logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-state-${{ matrix.os }}
+          path: |
+            state-build.log
+            state-verification.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Enforce runtime state build
+        if: always()
+        shell: bash
+        run: test "${{ steps.state-build.outputs.exit_code }}" = "0"
+
+      - name: Enforce runtime state verification
+        if: steps.state-build.outputs.exit_code == '0'
+        shell: bash
+        run: test "${{ steps.state-verification.outputs.exit_code }}" = "0"
