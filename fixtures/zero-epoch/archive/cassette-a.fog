@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:o="http://fogid.net/o/"
+    xmlns:test="urn:logiclens:test:"
+    dbid="logiclens-zero-epoch-a">
+
+  <o:person rdf:about="urn:logiclens:person:alex">
+    <o:name xml:lang="ru">Алексей Ветров</o:name>
+    <o:name xml:lang="en">Alexey Vetrov</o:name>
+    <o:comment>архивная запись</o:comment>
+    <test:internal-code>A-17</test:internal-code>
+  </o:person>
+
+  <o:org-sys rdf:about="urn:logiclens:org:iis">
+    <o:name xml:lang="ru">Институт систем информатики</o:name>
+    <o:name xml:lang="en">Institute of Informatics Systems</o:name>
+  </o:org-sys>
+
+  <o:org-sys rdf:about="urn:logiclens:org:lab">
+    <o:name>Logic Lab</o:name>
+    <test:related rdf:resource="urn:logiclens:org:archive" />
+  </o:org-sys>
+
+  <o:org-sys rdf:about="urn:logiclens:org:archive">
+    <o:name xml:lang="ru">Архивная группа</o:name>
+    <test:related rdf:resource="urn:logiclens:org:lab" />
+  </o:org-sys>
+
+  <o:participation rdf:about="urn:logiclens:participation:work">
+    <o:participant rdf:resource="urn:logiclens:person:alex" />
+    <o:in-org rdf:resource="urn:logiclens:org:iis" />
+    <o:role xml:lang="ru">исследователь</o:role>
+  </o:participation>
+
+  <o:student rdf:about="urn:logiclens:student:study">
+    <o:learner rdf:resource="urn:logiclens:person:alex" />
+    <o:learning-org rdf:resource="urn:logiclens:org:iis" />
+    <o:from-date rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-09-01</o:from-date>
+  </o:student>
+
+  <o:document rdf:about="urn:logiclens:document:paper">
+    <o:name xml:lang="en">Verified Logic Interfaces</o:name>
+    <o:uri>https://example.invalid/paper</o:uri>
+  </o:document>
+
+  <o:authority rdf:about="urn:logiclens:authority:paper-author">
+    <o:adoc rdf:resource="urn:logiclens:document:paper" />
+    <o:author rdf:resource="urn:logiclens:person:alex" />
+  </o:authority>
+
+</rdf:RDF>

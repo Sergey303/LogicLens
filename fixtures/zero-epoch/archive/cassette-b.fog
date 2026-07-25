@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:o="http://fogid.net/o/"
+    dbid="logiclens-zero-epoch-b">
+
+  <o:person rdf:about="urn:logiclens:person:alex">
+    <o:name xml:lang="ru">Алексей Ветров</o:name>
+  </o:person>
+
+  <o:document rdf:about="urn:logiclens:document:paper">
+    <o:description xml:lang="ru">Проверяемое представление логических данных</o:description>
+  </o:document>
+
+</rdf:RDF>
