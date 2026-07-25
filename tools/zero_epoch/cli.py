@@ -13,11 +13,17 @@ from pathlib import Path
 from .processes import (
     ManagedProcess,
     RunFailure,
+    executable_command,
     require_executable,
     run_checked,
     stop_all,
 )
-from .verification import validate_loopback_url, verify_vertical_slice, wait_for
+from .verification import (
+    require_port_not_listening,
+    validate_loopback_url,
+    verify_vertical_slice,
+    wait_for,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -56,6 +62,8 @@ def main() -> int:
     web = validate_loopback_url(web_origin, "web URL")
     if (api.hostname, api.port) == (web.hostname, web.port):
         raise RunFailure("API URL and web URL must use different loopback ports")
+    require_port_not_listening(api, "API URL")
+    require_port_not_listening(web, "web URL")
 
     work = (
         args.work_directory.resolve()
@@ -112,7 +120,7 @@ def main() -> int:
     )
     web_process = ManagedProcess(
         "LogicLens.Web",
-        [
+        executable_command(
             npm,
             "run",
             "dev",
@@ -122,7 +130,7 @@ def main() -> int:
             "--port",
             str(web.port),
             "--strictPort",
-        ],
+        ),
         cwd=root / "src" / "LogicLens.Web",
         env=web_environment,
         log_path=logs / "web.log",
@@ -205,10 +213,16 @@ def prepare(
 
     web_root = root / "src" / "LogicLens.Web"
     run_checked(
-        [npm, "ci", "--ignore-scripts", "--no-audit", "--no-fund"],
+        executable_command(
+            npm,
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund",
+        ),
         cwd=web_root,
     )
-    run_checked([npm, "run", "build"], cwd=web_root)
+    run_checked(executable_command(npm, "run", "build"), cwd=web_root)
 
     completed = subprocess.run(
         [git, "rev-parse", "HEAD"],
