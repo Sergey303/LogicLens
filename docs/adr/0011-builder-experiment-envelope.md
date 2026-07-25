@@ -1,6 +1,6 @@
 # ADR-0011: reproducible Builder experiment envelope
 
-- Status: Proposed
+- Status: Accepted
 - Linear: ENG-47, child of ENG-26
 - Depends on: ADR-0007, ADR-0008, ADR-0010
 - Scope: frozen tasks, provider workspaces, trusted oracle, run records and Qwen/Codex comparison
@@ -130,7 +130,7 @@ The second argument must contain the sorted FactIds for participant, organizatio
 
 ## Verification
 
-ENG-47 must prove:
+ENG-47 proves:
 
 1. preparing the same task twice yields byte-identical public workspaces;
 2. the provider workspace contains three deterministic evidence responses and no oracle;
@@ -147,6 +147,8 @@ ENG-47 must prove:
 13. non-loopback Ollama endpoints are rejected;
 14. the active package remains unchanged throughout successful and failed runs;
 15. workspace, both fixture runs and comparison report are retained as CI artifacts.
+
+The accepted `Verify active epoch package` gate executes all fifteen properties under pinned SWI-Prolog 9.0.4. It retains the public workspace, both fixture run directories and the aggregate comparison report for inspection. The independent one-command zero-epoch regression also passes with this tooling present.
 
 ## Rejected alternatives
 
