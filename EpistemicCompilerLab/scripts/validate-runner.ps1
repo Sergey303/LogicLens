@@ -9,10 +9,11 @@ $requiredFiles = @(
     'runner/prompts/planner.md',
     'runner/prompts/tail-planner.md',
     'runner/prompts/finalize.md',
-    'scripts/run-representation.ps1',
-    'scripts/score-representation.ps1',
+    'scripts/ensure-ollama-cpu-profile.ps1',
     'scripts/test-ollama-model.ps1',
+    'scripts/run-representation.ps1',
     'scripts/run-representation-baseline.ps1',
+    'scripts/score-representation.ps1',
     'scripts/launch.ps1'
 )
 
@@ -28,7 +29,8 @@ foreach ($relativePath in $requiredFiles) {
 
 $compactPath = Join-Path $labRoot 'representations/knowledge.compact.json'
 try {
-    $compact = Get-Content -LiteralPath $compactPath -Raw -Encoding utf8 | ConvertFrom-Json -Depth 50
+    $compact = Get-Content -LiteralPath $compactPath -Raw -Encoding utf8 |
+        ConvertFrom-Json -Depth 50
 }
 catch {
     throw "Invalid compact knowledge JSON: $($_.Exception.Message)"
@@ -45,10 +47,11 @@ if ($null -eq $compact.transitionDate) {
 }
 
 $parseTargets = @(
-    'scripts/run-representation.ps1',
-    'scripts/score-representation.ps1',
+    'scripts/ensure-ollama-cpu-profile.ps1',
     'scripts/test-ollama-model.ps1',
+    'scripts/run-representation.ps1',
     'scripts/run-representation-baseline.ps1',
+    'scripts/score-representation.ps1',
     'scripts/validate-runner.ps1',
     'scripts/launch.ps1'
 )
@@ -70,4 +73,4 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 6 PowerShell scripts.'
+Write-Host 'Representation runner assets valid: compact JSON, 4 prompts, 7 PowerShell scripts.'
