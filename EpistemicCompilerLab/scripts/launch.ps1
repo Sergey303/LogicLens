@@ -60,16 +60,29 @@ try {
             & (Join-Path $scriptsRoot 'validate-runner.ps1')
         }
         'representation-run' {
-            if (-not $Arguments -or $Arguments.Count -eq 0) {
-                throw 'Runner arguments are required, for example: representation-run -Mode markdown -Model qwen2.5:7b'
+            if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
+                throw 'Usage: representation-run <mode> <model> [absolute-output-path]'
             }
-            & (Join-Path $scriptsRoot 'run-representation.ps1') @Arguments
+
+            $runParameters = @{
+                Mode = $Arguments[0]
+                Model = $Arguments[1]
+            }
+            if ($Arguments.Count -eq 3) {
+                $runParameters.OutputPath = $Arguments[2]
+            }
+            & (Join-Path $scriptsRoot 'run-representation.ps1') @runParameters
         }
         'representation-score' {
-            if (-not $Arguments -or $Arguments.Count -eq 0) {
-                throw 'Scorer arguments are required, for example: representation-score -RunPath <file.jsonl>'
+            if (-not $Arguments -or $Arguments.Count -lt 1 -or $Arguments.Count -gt 2) {
+                throw 'Usage: representation-score <run-jsonl-path> [summary-json-path]'
             }
-            & (Join-Path $scriptsRoot 'score-representation.ps1') @Arguments
+
+            $scoreParameters = @{ RunPath = $Arguments[0] }
+            if ($Arguments.Count -eq 2) {
+                $scoreParameters.SummaryPath = $Arguments[1]
+            }
+            & (Join-Path $scriptsRoot 'score-representation.ps1') @scoreParameters
         }
         'query' {
             if (-not $Arguments -or $Arguments.Count -eq 0) {
