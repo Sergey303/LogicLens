@@ -5,31 +5,29 @@ param(
 
     [string] $ProfileModel,
 
+    [string] $OllamaUri = 'http://127.0.0.1:11434',
+
     [int] $NumCtx = 2048,
 
     [int] $NumBatch = 64
 )
 
 $ErrorActionPreference = 'Stop'
+$ollamaBase = $OllamaUri.TrimEnd('/')
 
 if ([string]::IsNullOrWhiteSpace($ProfileModel)) {
     $safeBase = $BaseModel -replace '[^A-Za-z0-9_.-]', '-'
     $ProfileModel = "epistemic-$safeBase`:cpu-v1"
 }
 
-$tagsJson = & ollama list --json 2>$null
-if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($tagsJson)) {
-    $installed = @($tagsJson | ConvertFrom-Json | ForEach-Object { [string] $_.name })
+try {
+    $tags = Invoke-RestMethod -Method Get -Uri "$ollamaBase/api/tags"
 }
-else {
-    $installed = @(
-        & ollama list |
-            Select-Object -Skip 1 |
-            ForEach-Object { ($_ -split '\s+')[0] } |
-            Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-    )
+catch {
+    throw "Ollama is not reachable at $ollamaBase. $($_.Exception.Message)"
 }
 
+$installed = @($tags.models | ForEach-Object { [string] $_.name })
 if ($BaseModel -notin $installed) {
     throw "Base Ollama model '$BaseModel' is not installed. Available: $($installed -join ', ')"
 }
