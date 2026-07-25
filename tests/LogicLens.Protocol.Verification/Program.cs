@@ -43,6 +43,10 @@ internal static class Program
             }
 
             Equal(5, count, "Golden vector count");
+            ExpectThrows<ArgumentOutOfRangeException>(() => OccurrenceIdV1.Encode(
+                "urn:test:root",
+                [new OccurrenceStep("f:sha256:test", (OccurrenceDirection)0xff)]));
+
             Console.WriteLine("LogicLens.Protocol verification passed.");
             return 0;
         }
@@ -109,6 +113,22 @@ internal static class Program
 
         throw new DirectoryNotFoundException(
             "Could not locate the LogicLens repository root.");
+    }
+
+    private static void ExpectThrows<TException>(Action action)
+        where TException : Exception
+    {
+        try
+        {
+            action();
+        }
+        catch (TException)
+        {
+            return;
+        }
+
+        throw new InvalidOperationException(
+            $"Expected exception {typeof(TException).Name} was not thrown.");
     }
 
     private static void Equal<T>(T expected, T actual, string context)
