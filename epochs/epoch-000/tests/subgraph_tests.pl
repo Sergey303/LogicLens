@@ -1,6 +1,7 @@
 :- begin_tests(bounded_subgraph).
 
 :- use_module('../rules/subgraph.pl').
+:- use_module(library(apply)).
 
 
 person('urn:logiclens:person:alex').
@@ -89,9 +90,14 @@ test(rdf_type_is_visible_but_class_is_not_traversed) :-
     subgraph:build_subgraph(
         Person, 1, 1, both, Labels, Limits, Result, _
     ),
-    assertion(\+ member(Node, Result.nodes), Node.id == PersonType),
-    assertion(member(Fact, Result.facts),
-        Fact.predicate == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type').
+    assertion(\+ (
+        member(Node, Result.nodes),
+        Node.id == PersonType
+    )),
+    assertion((
+        member(Fact, Result.facts),
+        Fact.predicate == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+    )).
 
 
 test(two_node_cycle_creates_terminal_cycle_occurrence) :-
