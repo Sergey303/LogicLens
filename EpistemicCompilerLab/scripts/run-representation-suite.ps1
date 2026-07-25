@@ -67,7 +67,7 @@ foreach ($mode in $modes) {
     $summary = Get-Content -LiteralPath $summaryPath -Raw -Encoding utf8 |
         ConvertFrom-Json -Depth 100
     $metrics = $summary.metrics
-    $rows.Add([ordered]@{
+    $row = [pscustomobject][ordered]@{
         mode = $mode
         passedCases = $metrics.passedCases
         totalCases = $metrics.totalCases
@@ -86,7 +86,8 @@ foreach ($mode in $modes) {
         runPath = $runPath
         summaryPath = $summaryPath
         runError = $runError
-    })
+    }
+    $rows.Add($row)
 
     if ($null -ne $runError) {
         $failures.Add("${mode}: $runError")
