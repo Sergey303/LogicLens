@@ -105,6 +105,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
         run: |
+          set -o pipefail
           python tools/run_zero_epoch.py \
             --verify-only \
             --no-browser \
