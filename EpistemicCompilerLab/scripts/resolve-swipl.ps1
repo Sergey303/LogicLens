@@ -28,13 +28,15 @@ foreach ($registryPath in $registryPaths) {
 
     $properties = Get-ItemProperty $registryPath
     foreach ($propertyName in @('home', 'Home')) {
-        $home = $properties.$propertyName
-        if ([string]::IsNullOrWhiteSpace($home)) {
+        # PowerShell variable names are case-insensitive. Do not use $home:
+        # it conflicts with the read-only automatic variable $HOME.
+        $installRoot = $properties.$propertyName
+        if ([string]::IsNullOrWhiteSpace($installRoot)) {
             continue
         }
 
-        $candidates.Add((Join-Path $home 'bin\swipl.exe'))
-        $candidates.Add((Join-Path $home 'swipl.exe'))
+        $candidates.Add((Join-Path $installRoot 'bin\swipl.exe'))
+        $candidates.Add((Join-Path $installRoot 'swipl.exe'))
     }
 }
 
