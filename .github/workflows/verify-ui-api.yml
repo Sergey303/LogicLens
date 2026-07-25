@@ -62,8 +62,11 @@ jobs:
 
       - name: Restore and build solution
         run: |
-          dotnet restore LogicLens.sln
-          dotnet build LogicLens.sln --configuration Release --no-restore
+          dotnet restore LogicLens.sln 2>&1 | tee /tmp/ui-build.log
+          dotnet build LogicLens.sln \
+            --configuration Release \
+            --no-restore \
+            2>&1 | tee -a /tmp/ui-build.log
 
       - name: Verify UI Document contract and negative cases
         run: |
@@ -110,6 +113,7 @@ jobs:
           name: ui-api-verification
           path: |
             /tmp/swipl-version.txt
+            /tmp/ui-build.log
             /tmp/ui-document-verification.log
             /tmp/ui-api-contract.log
             /tmp/logiclens-api.log
