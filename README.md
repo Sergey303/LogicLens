@@ -27,6 +27,8 @@ LogicLens is a research system for building stable and query-specific interfaces
 - [ADR-0002: Layered subgraphs and repeated-path occurrences](docs/adr/0002-layered-subgraphs-and-occurrences.md)
 - [ADR-0003: Minimal trusted UI Document](docs/adr/0003-minimal-ui-document.md)
 - [UI Document v0 JSON Schema](contracts/ui-document-v0.schema.json)
+- [A0 architecture exit criteria](docs/verification/a0-exit-criteria.md)
+- [ENG-23 zero-epoch vertical slice plan](docs/plans/eng-23-zero-epoch-vertical-slice.md)
 
 ## Project tracking
 
