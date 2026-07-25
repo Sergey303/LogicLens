@@ -39,14 +39,25 @@ public sealed class CanonicalGraphBuilder
                 $"FactId collision detected for '{fact.FactId}'.");
         }
 
-        if (origin.EntityId != fact.Subject)
+        if (!StringComparer.Ordinal.Equals(origin.EntityId, fact.Subject))
         {
             throw new InvalidOperationException(
                 $"Origin '{origin.OriginId}' belongs to '{origin.EntityId}', " +
                 $"but the fact subject is '{fact.Subject}'.");
         }
 
-        existing.Origins[origin.OriginId] = origin;
+        if (existing.Origins.TryGetValue(origin.OriginId, out var previousOrigin))
+        {
+            if (previousOrigin != origin)
+            {
+                throw new InvalidOperationException(
+                    $"OriginId '{origin.OriginId}' identifies different origin metadata.");
+            }
+
+            return;
+        }
+
+        existing.Origins.Add(origin.OriginId, origin);
     }
 
     public CanonicalGraph Build()
