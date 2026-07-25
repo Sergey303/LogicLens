@@ -8,8 +8,10 @@ param(
         'cases',
         'oracle',
         'runner-check',
+        'ollama-smoke',
         'representation-run',
         'representation-score',
+        'representation-baseline',
         'query'
     )]
     [string] $Action = 'sync-doctor',
@@ -41,7 +43,6 @@ try {
             if ($LASTEXITCODE -ne 0) {
                 throw "git pull failed with code $LASTEXITCODE."
             }
-
             & (Join-Path $scriptsRoot 'doctor.ps1')
         }
         'doctor' {
@@ -59,11 +60,16 @@ try {
         'runner-check' {
             & (Join-Path $scriptsRoot 'validate-runner.ps1')
         }
+        'ollama-smoke' {
+            if (-not $Arguments -or $Arguments.Count -ne 1) {
+                throw 'Usage: ollama-smoke <model>'
+            }
+            & (Join-Path $scriptsRoot 'test-ollama-model.ps1') -Model $Arguments[0]
+        }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
                 throw 'Usage: representation-run <mode> <model> [absolute-output-path]'
             }
-
             $runParameters = @{
                 Mode = $Arguments[0]
                 Model = $Arguments[1]
@@ -77,18 +83,24 @@ try {
             if (-not $Arguments -or $Arguments.Count -lt 1 -or $Arguments.Count -gt 2) {
                 throw 'Usage: representation-score <run-jsonl-path> [summary-json-path]'
             }
-
             $scoreParameters = @{ RunPath = $Arguments[0] }
             if ($Arguments.Count -eq 2) {
                 $scoreParameters.SummaryPath = $Arguments[1]
             }
             & (Join-Path $scriptsRoot 'score-representation.ps1') @scoreParameters
         }
+        'representation-baseline' {
+            if (-not $Arguments -or $Arguments.Count -ne 2) {
+                throw 'Usage: representation-baseline <mode> <model>'
+            }
+            & (Join-Path $scriptsRoot 'run-representation-baseline.ps1') `
+                -Mode $Arguments[0] `
+                -Model $Arguments[1]
+        }
         'query' {
             if (-not $Arguments -or $Arguments.Count -eq 0) {
                 throw 'Query arguments are required, for example: query current-material b 20260810'
             }
-
             & (Join-Path $scriptsRoot 'query.ps1') @Arguments
         }
     }
