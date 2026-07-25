@@ -94,6 +94,7 @@ jobs:
 
       - name: Compile and unit-test runner modules
         run: |
+          set -o pipefail
           python -m py_compile \
             tools/run_zero_epoch.py \
             tools/zero_epoch/__init__.py \
@@ -101,7 +102,8 @@ jobs:
             tools/zero_epoch/verification.py \
             tools/zero_epoch/cli.py \
             tests/zero_epoch_runner_unit_test.py
-          python tests/zero_epoch_runner_unit_test.py
+          python tests/zero_epoch_runner_unit_test.py 2>&1 \
+            | tee /tmp/zero-epoch-runner-unit.log
 
       - name: Run the documented zero-epoch command
         env:
@@ -130,6 +132,7 @@ jobs:
           name: logiclens-zero-epoch-local-run
           path: |
             /tmp/swipl-version.txt
+            /tmp/zero-epoch-runner-unit.log
             /tmp/zero-epoch-run.log
             .logiclens/zero-epoch/active-epoch-000/manifest.json
             .logiclens/zero-epoch/logs
