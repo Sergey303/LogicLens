@@ -4,27 +4,16 @@
   "title": "LogicLens UI Document v0",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "epoch", "revision", "page", "diagnostics"],
+  "required": ["schemaVersion", "epoch", "revision", "context", "page", "diagnostics"],
   "properties": {
-    "schemaVersion": {
-      "const": "0.1"
-    },
-    "epoch": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "revision": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "page": {
-      "$ref": "#/$defs/page"
-    },
+    "schemaVersion": { "const": "0.1" },
+    "epoch": { "type": "integer", "minimum": 0 },
+    "revision": { "type": "integer", "minimum": 0 },
+    "context": { "$ref": "#/$defs/documentContext" },
+    "page": { "$ref": "#/$defs/page" },
     "diagnostics": {
       "type": "array",
-      "items": {
-        "$ref": "#/$defs/diagnostic"
-      },
+      "items": { "$ref": "#/$defs/diagnostic" },
       "maxItems": 100
     }
   },
@@ -39,26 +28,41 @@
       "minLength": 1,
       "maxLength": 256
     },
+    "documentContext": {
+      "oneOf": [
+        { "$ref": "#/$defs/entityContext" },
+        { "$ref": "#/$defs/queryContext" }
+      ]
+    },
+    "entityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "entityId"],
+      "properties": {
+        "kind": { "const": "entity" },
+        "entityId": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "queryContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "requestId"],
+      "properties": {
+        "kind": { "const": "query" },
+        "requestId": { "$ref": "#/$defs/identifier" }
+      }
+    },
     "page": {
       "type": "object",
       "additionalProperties": false,
       "required": ["kind", "id", "title", "sections"],
       "properties": {
-        "kind": {
-          "const": "page"
-        },
-        "id": {
-          "$ref": "#/$defs/componentId"
-        },
-        "title": {
-          "type": "string",
-          "maxLength": 2048
-        },
+        "kind": { "const": "page" },
+        "id": { "$ref": "#/$defs/componentId" },
+        "title": { "type": "string", "maxLength": 2048 },
         "sections": {
           "type": "array",
-          "items": {
-            "$ref": "#/$defs/section"
-          },
+          "items": { "$ref": "#/$defs/section" },
           "maxItems": 200
         }
       }
@@ -68,42 +72,63 @@
       "additionalProperties": false,
       "required": ["kind", "id", "title", "presentation", "components"],
       "properties": {
-        "kind": {
-          "const": "section"
-        },
-        "id": {
-          "$ref": "#/$defs/componentId"
-        },
-        "title": {
-          "type": "string",
-          "maxLength": 2048
-        },
+        "kind": { "const": "section" },
+        "id": { "$ref": "#/$defs/componentId" },
+        "title": { "type": "string", "maxLength": 2048 },
         "presentation": {
           "enum": ["default", "collapsed", "technical"]
         },
+        "occurrence": { "$ref": "#/$defs/occurrenceContext" },
         "components": {
           "type": "array",
-          "items": {
-            "$ref": "#/$defs/component"
-          },
+          "items": { "$ref": "#/$defs/component" },
           "maxItems": 1000
+        }
+      }
+    },
+    "occurrenceContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "occurrenceId",
+        "nodeId",
+        "depth",
+        "parentOccurrenceId",
+        "viaFactId",
+        "direction",
+        "state"
+      ],
+      "properties": {
+        "occurrenceId": { "$ref": "#/$defs/identifier" },
+        "nodeId": { "$ref": "#/$defs/identifier" },
+        "depth": { "type": "integer", "minimum": 0 },
+        "parentOccurrenceId": {
+          "oneOf": [
+            { "$ref": "#/$defs/identifier" },
+            { "type": "null" }
+          ]
+        },
+        "viaFactId": {
+          "oneOf": [
+            { "$ref": "#/$defs/identifier" },
+            { "type": "null" }
+          ]
+        },
+        "direction": {
+          "enum": ["root", "outgoing", "incoming"]
+        },
+        "state": {
+          "enum": ["expanded", "boundary", "cycle_reference", "limited"]
         }
       }
     },
     "component": {
       "oneOf": [
-        {
-          "$ref": "#/$defs/property"
-        },
-        {
-          "$ref": "#/$defs/textBlock"
-        },
-        {
-          "$ref": "#/$defs/rawProlog"
-        },
-        {
-          "$ref": "#/$defs/diagnostic"
-        }
+        { "$ref": "#/$defs/section" },
+        { "$ref": "#/$defs/property" },
+        { "$ref": "#/$defs/textBlock" },
+        { "$ref": "#/$defs/rawProlog" },
+        { "$ref": "#/$defs/diagnostic" }
       ]
     },
     "property": {
@@ -111,27 +136,16 @@
       "additionalProperties": false,
       "required": ["kind", "id", "predicate", "label", "direction", "values"],
       "properties": {
-        "kind": {
-          "const": "property"
-        },
-        "id": {
-          "$ref": "#/$defs/componentId"
-        },
-        "predicate": {
-          "$ref": "#/$defs/identifier"
-        },
-        "label": {
-          "type": "string",
-          "maxLength": 2048
-        },
+        "kind": { "const": "property" },
+        "id": { "$ref": "#/$defs/componentId" },
+        "predicate": { "$ref": "#/$defs/identifier" },
+        "label": { "type": "string", "maxLength": 2048 },
         "direction": {
           "enum": ["outgoing", "incoming", "derived"]
         },
         "values": {
           "type": "array",
-          "items": {
-            "$ref": "#/$defs/value"
-          },
+          "items": { "$ref": "#/$defs/value" },
           "minItems": 1,
           "maxItems": 1000
         }
@@ -139,25 +153,27 @@
     },
     "value": {
       "oneOf": [
-        {
-          "$ref": "#/$defs/textValue"
-        },
-        {
-          "$ref": "#/$defs/resourceLinkValue"
-        }
+        { "$ref": "#/$defs/textValue" },
+        { "$ref": "#/$defs/resourceLinkValue" }
       ]
     },
     "textValue": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "text", "language", "datatype", "editable", "source"],
+      "required": [
+        "kind",
+        "text",
+        "literalKind",
+        "language",
+        "datatype",
+        "editable",
+        "source"
+      ],
       "properties": {
-        "kind": {
-          "const": "text"
-        },
-        "text": {
-          "type": "string",
-          "maxLength": 100000
+        "kind": { "const": "text" },
+        "text": { "type": "string", "maxLength": 100000 },
+        "literalKind": {
+          "enum": ["plain", "language", "datatype"]
         },
         "language": {
           "type": ["string", "null"],
@@ -167,63 +183,107 @@
           "type": ["string", "null"],
           "maxLength": 1024
         },
-        "editable": {
-          "type": "boolean"
+        "editable": { "type": "boolean" },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "literalKind": { "const": "plain" } },
+            "required": ["literalKind"]
+          },
+          "then": {
+            "properties": {
+              "language": { "type": "null" },
+              "datatype": { "type": "null" }
+            }
+          }
         },
-        "source": {
-          "$ref": "#/$defs/source"
-        }
-      }
+        {
+          "if": {
+            "properties": { "literalKind": { "const": "language" } },
+            "required": ["literalKind"]
+          },
+          "then": {
+            "properties": {
+              "language": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "datatype": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "literalKind": { "const": "datatype" } },
+            "required": ["literalKind"]
+          },
+          "then": {
+            "properties": {
+              "language": { "type": "null" },
+              "datatype": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              }
+            }
+          }
+        },
+        { "$ref": "#/$defs/derivedValuesAreReadOnly" }
+      ]
     },
     "resourceLinkValue": {
       "type": "object",
       "additionalProperties": false,
       "required": ["kind", "targetId", "label", "editable", "source"],
       "properties": {
-        "kind": {
-          "const": "resourceLink"
+        "kind": { "const": "resourceLink" },
+        "targetId": { "$ref": "#/$defs/identifier" },
+        "label": { "type": "string", "maxLength": 2048 },
+        "editable": { "type": "boolean" },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "allOf": [
+        { "$ref": "#/$defs/derivedValuesAreReadOnly" }
+      ]
+    },
+    "derivedValuesAreReadOnly": {
+      "if": {
+        "properties": {
+          "source": {
+            "properties": {
+              "kind": { "const": "derived" }
+            },
+            "required": ["kind"]
+          }
         },
-        "targetId": {
-          "$ref": "#/$defs/identifier"
-        },
-        "label": {
-          "type": "string",
-          "maxLength": 2048
-        },
-        "editable": {
-          "type": "boolean"
-        },
-        "source": {
-          "$ref": "#/$defs/source"
+        "required": ["source"]
+      },
+      "then": {
+        "properties": {
+          "editable": { "const": false }
         }
       }
     },
     "source": {
       "oneOf": [
-        {
-          "$ref": "#/$defs/baseSource"
-        },
-        {
-          "$ref": "#/$defs/derivedSource"
-        }
+        { "$ref": "#/$defs/baseSource" },
+        { "$ref": "#/$defs/derivedSource" }
       ]
     },
     "baseSource": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "factId", "origins"],
+      "required": ["kind", "fact", "origins"],
       "properties": {
-        "kind": {
-          "const": "base"
-        },
-        "factId": {
-          "$ref": "#/$defs/identifier"
-        },
+        "kind": { "const": "base" },
+        "fact": { "$ref": "#/$defs/canonicalFact" },
         "origins": {
           "type": "array",
-          "items": {
-            "$ref": "#/$defs/identifier"
-          },
+          "items": { "$ref": "#/$defs/identifier" },
+          "minItems": 1,
           "uniqueItems": true,
           "maxItems": 1000
         }
@@ -234,40 +294,124 @@
       "additionalProperties": false,
       "required": ["kind", "ruleId", "evidenceFactIds"],
       "properties": {
-        "kind": {
-          "const": "derived"
-        },
-        "ruleId": {
-          "$ref": "#/$defs/identifier"
-        },
+        "kind": { "const": "derived" },
+        "ruleId": { "$ref": "#/$defs/identifier" },
         "evidenceFactIds": {
           "type": "array",
-          "items": {
-            "$ref": "#/$defs/identifier"
-          },
+          "items": { "$ref": "#/$defs/identifier" },
+          "minItems": 1,
           "uniqueItems": true,
           "maxItems": 10000
         }
       }
+    },
+    "canonicalFact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["factId", "subject", "predicate", "object"],
+      "properties": {
+        "factId": { "$ref": "#/$defs/identifier" },
+        "subject": { "$ref": "#/$defs/identifier" },
+        "predicate": { "$ref": "#/$defs/identifier" },
+        "object": { "$ref": "#/$defs/factObject" }
+      }
+    },
+    "factObject": {
+      "oneOf": [
+        { "$ref": "#/$defs/iriObject" },
+        { "$ref": "#/$defs/literalObject" }
+      ]
+    },
+    "iriObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "resourceId"],
+      "properties": {
+        "kind": { "const": "iri" },
+        "resourceId": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "literalObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "lexical",
+        "literalKind",
+        "language",
+        "datatype"
+      ],
+      "properties": {
+        "kind": { "const": "literal" },
+        "lexical": { "type": "string", "maxLength": 100000 },
+        "literalKind": {
+          "enum": ["plain", "language", "datatype"]
+        },
+        "language": {
+          "type": ["string", "null"],
+          "maxLength": 64
+        },
+        "datatype": {
+          "type": ["string", "null"],
+          "maxLength": 1024
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "literalKind": { "const": "plain" } },
+            "required": ["literalKind"]
+          },
+          "then": {
+            "properties": {
+              "language": { "type": "null" },
+              "datatype": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "literalKind": { "const": "language" } },
+            "required": ["literalKind"]
+          },
+          "then": {
+            "properties": {
+              "language": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "datatype": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "literalKind": { "const": "datatype" } },
+            "required": ["literalKind"]
+          },
+          "then": {
+            "properties": {
+              "language": { "type": "null" },
+              "datatype": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              }
+            }
+          }
+        }
+      ]
     },
     "textBlock": {
       "type": "object",
       "additionalProperties": false,
       "required": ["kind", "id", "text"],
       "properties": {
-        "kind": {
-          "const": "textBlock"
-        },
-        "id": {
-          "$ref": "#/$defs/componentId"
-        },
-        "text": {
-          "type": "string",
-          "maxLength": 100000
-        },
-        "source": {
-          "$ref": "#/$defs/source"
-        }
+        "kind": { "const": "textBlock" },
+        "id": { "$ref": "#/$defs/componentId" },
+        "text": { "type": "string", "maxLength": 100000 },
+        "source": { "$ref": "#/$defs/source" }
       }
     },
     "rawProlog": {
@@ -275,20 +419,10 @@
       "additionalProperties": false,
       "required": ["kind", "id", "title", "code", "artifactKind"],
       "properties": {
-        "kind": {
-          "const": "rawProlog"
-        },
-        "id": {
-          "$ref": "#/$defs/componentId"
-        },
-        "title": {
-          "type": "string",
-          "maxLength": 2048
-        },
-        "code": {
-          "type": "string",
-          "maxLength": 500000
-        },
+        "kind": { "const": "rawProlog" },
+        "id": { "$ref": "#/$defs/componentId" },
+        "title": { "type": "string", "maxLength": 2048 },
+        "code": { "type": "string", "maxLength": 500000 },
         "artifactKind": {
           "enum": ["query", "data", "view", "rule", "diagnostic"]
         }
@@ -299,19 +433,12 @@
       "additionalProperties": false,
       "required": ["kind", "id", "severity", "message"],
       "properties": {
-        "kind": {
-          "const": "diagnostic"
-        },
-        "id": {
-          "$ref": "#/$defs/componentId"
-        },
+        "kind": { "const": "diagnostic" },
+        "id": { "$ref": "#/$defs/componentId" },
         "severity": {
           "enum": ["info", "warning", "error"]
         },
-        "message": {
-          "type": "string",
-          "maxLength": 10000
-        }
+        "message": { "type": "string", "maxLength": 10000 }
       }
     }
   }
