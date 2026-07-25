@@ -6,7 +6,6 @@ on:
       - "src/LogicLens.Core/**"
       - "tests/LogicLens.Core.Verification/**"
       - "fixtures/zero-epoch/**"
-      - "LogicLens.sln"
       - ".github/workflows/verify-core.yml"
   push:
     branches:
@@ -15,7 +14,6 @@ on:
       - "src/LogicLens.Core/**"
       - "tests/LogicLens.Core.Verification/**"
       - "fixtures/zero-epoch/**"
-      - "LogicLens.sln"
       - ".github/workflows/verify-core.yml"
 
 permissions:
@@ -35,12 +33,15 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Restore
-        run: dotnet restore LogicLens.sln
+      - name: Restore core verification
+        run: >-
+          dotnet restore
+          tests/LogicLens.Core.Verification/LogicLens.Core.Verification.csproj
 
-      - name: Build
+      - name: Build core verification
         run: |
-          dotnet build LogicLens.sln \
+          dotnet build \
+            tests/LogicLens.Core.Verification/LogicLens.Core.Verification.csproj \
             --configuration Release \
             --no-restore \
             2>&1 | tee /tmp/core-build.log
