@@ -27,9 +27,7 @@ $ErrorActionPreference = 'Stop'
 if (-not (Test-Path $RepoRoot -PathType Container)) {
     throw "LogicLens repository was not found: $RepoRoot"
 }
-
-$gitDirectory = Join-Path $RepoRoot '.git'
-if (-not (Test-Path $gitDirectory)) {
+if (-not (Test-Path (Join-Path $RepoRoot '.git'))) {
     throw "The directory is not a Git checkout: $RepoRoot"
 }
 
@@ -62,13 +60,16 @@ try {
         }
         'ollama-smoke' {
             if (-not $Arguments -or $Arguments.Count -ne 1) {
-                throw 'Usage: ollama-smoke <model>'
+                throw 'Usage: ollama-smoke <base-model>'
             }
-            & (Join-Path $scriptsRoot 'test-ollama-model.ps1') -Model $Arguments[0]
+            $profileModel = & (Join-Path $scriptsRoot 'ensure-ollama-cpu-profile.ps1') `
+                -BaseModel $Arguments[0] |
+                Select-Object -Last 1
+            & (Join-Path $scriptsRoot 'test-ollama-model.ps1') -Model $profileModel
         }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
-                throw 'Usage: representation-run <mode> <model> [absolute-output-path]'
+                throw 'Usage: representation-run <mode> <execution-model> [absolute-output-path]'
             }
             $runParameters = @{
                 Mode = $Arguments[0]
@@ -91,7 +92,7 @@ try {
         }
         'representation-baseline' {
             if (-not $Arguments -or $Arguments.Count -ne 2) {
-                throw 'Usage: representation-baseline <mode> <model>'
+                throw 'Usage: representation-baseline <mode> <base-model>'
             }
             & (Join-Path $scriptsRoot 'run-representation-baseline.ps1') `
                 -Mode $Arguments[0] `
