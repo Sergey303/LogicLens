@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "0.1",
+  "candidateId": "fixture-codex-researcher-at-iis",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "base": {
+    "epoch": 0,
+    "revision": 0
+  },
+  "provider": {
+    "kind": "fixture",
+    "name": "codex-fixture",
+    "model": "codex",
+    "runId": "fixture-codex"
+  },
+  "uiContractVersion": "0.1",
+  "cliProtocolVersion": "0.1",
+  "metrics": {
+    "cliCalls": 2,
+    "manualFixes": 1,
+    "elapsedMs": 900,
+    "costUsd": 0
+  },
+  "files": [
+    {
+      "path": "rules/candidate_researcher_at_iis.pl",
+      "kind": "rule"
+    },
+    {
+      "path": "tests/candidate_researcher_at_iis_tests.pl",
+      "kind": "test"
+    },
+    {
+      "path": "ui/researcher-at-iis.json",
+      "kind": "ui"
+    }
+  ],
+  "notes": "Deterministic Codex-shaped fixture; not a real model run."
+}
