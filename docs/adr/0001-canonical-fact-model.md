@@ -34,22 +34,44 @@ origin(OriginId, Origin).
 
 ### 2. Fact IDs are deterministic
 
-`FactId` is derived from the canonical encoding of `(Subject, Predicate, Object)`.
-
-Conceptually:
+`FactId` is derived from the canonical encoding of `(Subject, Predicate, Object)`:
 
 ```text
-FactId = sha256(canonical(Subject, Predicate, Object))
+FactId = "f:sha256:" + lowercaseHex(sha256(CanonicalFactBytes))
 ```
 
-This gives:
+Canonical bytes use LogicLens encoding version 1, not Prolog source text, JSON formatting, or `write_canonical/1` output.
 
-- idempotent import;
-- stable links from UI documents and proof evidence;
-- deterministic replay;
-- natural duplicate elimination.
+Each field is UTF-8 encoded and preceded by its byte length as an unsigned big-endian 64-bit integer. The stream is:
 
-The exact textual encoding and hash representation must be covered by golden tests before implementation is considered complete.
+```text
+ASCII "LogicLensFact\0"
+version byte 0x01
+field(Subject)
+field(Predicate)
+object tag
+object fields
+```
+
+Object tags:
+
+```text
+0x01: IRI       -> field(Resource)
+0x02: plain     -> field(Lexical)
+0x03: language  -> field(lowercaseLanguageTag), field(Lexical)
+0x04: datatype  -> field(Datatype), field(Lexical)
+```
+
+Rules:
+
+- prefixes are expanded before hashing;
+- resource and datatype identifiers are hashed exactly as imported after prefix expansion;
+- lexical literal text is not trimmed, case-folded, or Unicode-normalized;
+- language tags are lowercased;
+- no locale-sensitive conversion is allowed;
+- a future incompatible encoding increments the version byte.
+
+This custom encoding is deliberately simple to reproduce in C#, Prolog tests, and other tools. Golden byte and hash vectors are required.
 
 ### 3. Subjects and predicates are resource identifiers; objects are tagged
 
@@ -84,32 +106,35 @@ Source-specific deletion is intentionally outside the first version. `DeleteFact
 
 ### 5. Active state and history are separate
 
-The active graph is materialized as `fact/4`. Changes are additionally appended to a journal:
+The active graph is materialized as `fact/4`. State-changing deltas are additionally appended to a journal:
 
 ```prolog
-change(ChangeId, Revision, Actor, Timestamp, Operations).
+change(ChangeId, BeforeRevision, AfterRevision, Actor, Timestamp, Operations).
 ```
 
-where operations contain only:
+Operations contain only:
 
 ```prolog
 add(FactId, Subject, Predicate, Object).
 delete(FactId).
 ```
 
-The active graph may be updated immediately after a successful atomic write. On restart it can be reconstructed from the epoch snapshot plus the ordered journal.
+The active graph may be updated immediately after a successful durable write. On restart it can be reconstructed from the epoch snapshot plus the ordered journal.
+
+Accepted commands also have an idempotency receipt keyed by `CommandId`. Receipt persistence and crash-safe ordering are specified by ENG-24 rather than by the fact model.
 
 ### 6. Editing API
 
 ```text
 ApplyDelta(
+    CommandId,
     ExpectedRevision,
     AddFact[],
     DeleteFact[]
 )
 ```
 
-`AddFact` carries `(Subject, Predicate, Object)`. The server computes `FactId`.
+`AddFact` carries `(Subject, Predicate, Object)`. The server canonicalizes it and computes `FactId`.
 
 `DeleteFact` carries `FactId` and, for optimistic concurrency diagnostics, may also carry the triple last seen by the client.
 
@@ -120,12 +145,15 @@ DeleteFact(oldFactId)
 AddFact(subject, newPredicate, newObject)
 ```
 
-The whole delta succeeds or fails. The revision increments once.
+The whole state-changing delta succeeds or fails. Its revision increments exactly once.
 
-### 7. Add and delete semantics
+### 7. Add, delete, and no-op semantics
 
 - Adding a triple already present is an idempotent no-op.
-- Deleting an absent `FactId` is an idempotent no-op only when the request uses the current revision; with a stale revision the entire delta is rejected.
+- Deleting an absent `FactId` is an idempotent no-op only when the request uses the current revision; with a stale revision the entire command is rejected.
+- A command containing only no-op operations is accepted, returns the unchanged revision, and does not append a state-change journal entry.
+- The command result is stored as an idempotency receipt, so retrying the same `CommandId` returns the original result.
+- Reusing a `CommandId` with different content is rejected.
 - Deleting a fact removes it from the active graph but does not alter archived FOG files.
 - Re-adding the same triple restores the same deterministic `FactId`.
 - Exact duplicate facts cannot exist in the active graph.
@@ -165,15 +193,19 @@ The exact archival fields may expand, but the `fact/4` contract does not change.
 ## Invariants
 
 1. At most one active `fact/4` exists for a normalized triple.
-2. `FactId` is a pure deterministic function of the normalized triple.
+2. `FactId` is a pure deterministic function of the canonical triple encoding.
 3. Every active fact has at least one origin.
 4. A derived result cannot be edited as a base fact.
-5. An applied delta changes the revision exactly once.
-6. A failed delta changes neither graph, journal, nor revision.
-7. Replaying a snapshot and journal yields the same active graph and revision.
-8. React never invents `FactId`; it receives it from the server.
+5. A state-changing delta changes the revision exactly once.
+6. A no-op command leaves the revision and state-change journal unchanged.
+7. A failed command changes neither graph, journal, revision, nor accepted-command receipts.
+8. Replaying a snapshot and journal yields the same active graph and revision.
+9. React never invents `FactId`; it receives it from the server.
+10. The same `CommandId` cannot represent two different requests.
 
 ## JSON boundary
+
+Canonical fact:
 
 ```json
 {
@@ -190,26 +222,29 @@ The exact archival fields may expand, but the `fact/4` contract does not change.
 }
 ```
 
-Add operation:
+Apply delta:
 
 ```json
 {
-  "subject": "person:1",
-  "predicate": "fog:name",
-  "object": {
-    "kind": "literal",
-    "lexical": "Иван Иванов",
-    "literalKind": "language",
-    "language": "ru"
-  }
-}
-```
-
-Delete operation:
-
-```json
-{
-  "factId": "f:sha256:..."
+  "commandId": "01J35Y7P5P7K8QY9FJ0N8W2M4C",
+  "expectedRevision": 17,
+  "delete": [
+    {
+      "factId": "f:sha256:old"
+    }
+  ],
+  "add": [
+    {
+      "subject": "person:1",
+      "predicate": "fog:name",
+      "object": {
+        "kind": "literal",
+        "lexical": "Иван Иванов",
+        "literalKind": "language",
+        "language": "ru"
+      }
+    }
+  ]
 }
 ```
 
@@ -217,14 +252,17 @@ Delete operation:
 
 1. Import the same triple from two documents: one fact, two origins.
 2. Import the same triple twice from one document: one fact, one deduplicated origin.
-3. Add an existing triple: no new fact, journal records either a no-op result or no operation according to the final API policy.
-4. Delete a fact with two origins: the visible triple disappears as a whole.
-5. Re-add the deleted triple: the same deterministic `FactId` returns.
-6. Replace a literal: old fact absent, new fact present, one revision increment.
-7. Replace a predicate: old fact absent, new fact present, one revision increment.
-8. Apply a stale delta: no graph, journal, or revision changes.
-9. Rebuild from snapshot and journal: byte-order-independent equality of the normalized graph.
-10. Produce a derived result: every evidence ID resolves to an active base fact.
+3. Hash fixed canonical byte vectors in two implementations and receive identical IDs.
+4. Add an existing triple: no new fact, unchanged revision, stored idempotency result.
+5. Delete a fact with two origins: the visible triple disappears as a whole.
+6. Re-add the deleted triple: the same deterministic `FactId` returns.
+7. Replace a literal: old fact absent, new fact present, one revision increment.
+8. Replace a predicate: old fact absent, new fact present, one revision increment.
+9. Apply a stale delta: no graph, journal, receipt, or revision changes.
+10. Retry an accepted `CommandId`: return the original result without reapplying.
+11. Reuse a `CommandId` with different content: reject the request.
+12. Rebuild from snapshot and journal: byte-order-independent equality of the normalized graph.
+13. Produce a derived result: every evidence ID resolves to an active base fact.
 
 ## Rejected alternatives
 
@@ -236,6 +274,14 @@ Rejected for v0 because it exposes archival multiplicity as editable data and ma
 
 Rejected as the primary API because the client already receives a stable `FactId`; using it avoids normalization differences and improves concurrency diagnostics.
 
+### Prolog term text as canonical hash input
+
+Rejected because quoting, escaping, implementation versions, and formatting can change. Fact identity must not depend on a Prolog printer.
+
+### Canonical JSON as hash input
+
+Rejected for v0 because cross-language canonical JSON adds rules and dependencies not otherwise needed by the data model.
+
 ### Negative facts as the active model
 
 Rejected for v0. Tombstones are useful in an overlay system, but LogicLens currently owns the active Prolog model after one-time import. A materialized graph plus append-only journal is simpler. Epoch creation provides compaction.
@@ -245,5 +291,6 @@ Rejected for v0. Tombstones are useful in an overlay system, but LogicLens curre
 - The first version is a graph editor, not an archival assertion editor.
 - Duplicate FOG occurrences remain inspectable through origins but are not separately editable.
 - The effective graph requires no extra duplicate-elimination layer.
+- Fact IDs remain stable across file order, Prolog formatting, and repeated imports.
 - Epoch snapshots can be compact and deterministic.
 - Later source-specific editing can add an assertion-occurrence layer without changing UI facts or derived predicate contracts.
