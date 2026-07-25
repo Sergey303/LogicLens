@@ -76,6 +76,7 @@ jobs:
 
       - name: Install pinned SWI-Prolog and JSON Schema validator
         run: |
+          set -o pipefail
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox
           swipl --version | tee /tmp/swipl-version.txt
@@ -112,29 +113,32 @@ jobs:
 
       - name: Verify determinism hashes and portable smoke commands
         run: |
+          set -o pipefail
           python tests/active_epoch_package_test.py \
             --first /tmp/active-epoch-a \
             --second /tmp/active-epoch-b \
             --run-smoke \
-            | tee /tmp/active-epoch-verification.log
+            2>&1 | tee /tmp/active-epoch-verification.log
 
       - name: Build provider-neutral candidate fixture
         run: |
+          set -o pipefail
           python tools/build_epoch_candidate.py \
             --baseline /tmp/active-epoch-a \
             --proposal fixtures/builder-candidate/valid \
             --schema contracts/epoch-candidate-v0.schema.json \
             --output /tmp/builder-candidate-package \
             --report /tmp/builder-candidate-comparison.json \
-            | tee /tmp/builder-candidate-build.log
+            2>&1 | tee /tmp/builder-candidate-build.log
 
       - name: Verify candidate isolation determinism and rejection cases
         run: |
+          set -o pipefail
           python tests/builder_candidate_contract_test.py \
             --baseline /tmp/active-epoch-a \
             --schema contracts/epoch-candidate-v0.schema.json \
             --fixture fixtures/builder-candidate/valid \
-            | tee /tmp/builder-candidate-verification.log
+            2>&1 | tee /tmp/builder-candidate-verification.log
 
       - name: Stage builder candidate artifact
         run: |
