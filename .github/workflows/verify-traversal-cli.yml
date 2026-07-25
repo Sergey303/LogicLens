@@ -1,0 +1,150 @@
+name: Verify traversal and Prolog CLI
+
+on:
+  pull_request:
+    paths:
+      - "contracts/prolog-cli-v0.schema.json"
+      - "src/LogicLens.Protocol/**"
+      - "tests/LogicLens.Protocol.Verification/**"
+      - "tests/prolog_cli/**"
+      - "fixtures/zero-epoch/**"
+      - "epochs/epoch-000/**"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-traversal-cli.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/prolog-cli-v0.schema.json"
+      - "src/LogicLens.Protocol/**"
+      - "tests/LogicLens.Protocol.Verification/**"
+      - "tests/prolog_cli/**"
+      - "fixtures/zero-epoch/**"
+      - "epochs/epoch-000/**"
+      - "tools/LogicLens.OntologyCompiler/**"
+      - "LogicLens.sln"
+      - ".github/workflows/verify-traversal-cli.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      COMPILER_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned SWI-Prolog runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version | tee /tmp/swipl-version.log
+          grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.log
+
+      - name: Install JSON Schema validator
+        run: python -m pip install --disable-pip-version-check jsonschema==4.23.0
+
+      - name: Restore
+        run: dotnet restore LogicLens.sln
+
+      - name: Build
+        run: dotnet build LogicLens.sln --configuration Release --no-restore
+
+      - name: Verify OccurrenceId v1 in C#
+        run: >-
+          dotnet run
+          --project tests/LogicLens.Protocol.Verification/LogicLens.Protocol.Verification.csproj
+          --configuration Release
+          --no-build
+
+      - name: Assemble temporary epoch-000
+        run: |
+          mkdir --parents /tmp/epoch-000
+          cp epochs/epoch-000/manifest.json /tmp/epoch-000/manifest.json
+          cp --recursive epochs/epoch-000/data /tmp/epoch-000/data
+          cp --recursive epochs/epoch-000/rules /tmp/epoch-000/rules
+          cp --recursive epochs/epoch-000/cli /tmp/epoch-000/cli
+          cp epochs/epoch-000/entry.pl /tmp/epoch-000/entry.pl
+          mkdir --parents /tmp/epoch-000/ontology /tmp/epoch-000/tests
+          cp epochs/epoch-000/ontology/ontology_data.pl /tmp/epoch-000/ontology/
+          cp epochs/epoch-000/tests/data_contract_tests.pl /tmp/epoch-000/tests/
+          cp epochs/epoch-000/tests/generic_view_tests.pl /tmp/epoch-000/tests/
+          cp epochs/epoch-000/tests/occurrence_identity_tests.pl /tmp/epoch-000/tests/
+          cp epochs/epoch-000/tests/subgraph_tests.pl /tmp/epoch-000/tests/
+
+          dotnet run \
+            --project tools/LogicLens.OntologyCompiler/LogicLens.OntologyCompiler.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --output /tmp/epoch-000/ontology \
+            --compiler-commit "$COMPILER_COMMIT"
+
+      - name: Run SWI-Prolog data, view, identity and traversal tests
+        id: plunit
+        shell: bash
+        run: |
+          set +e
+          swipl -q \
+            -g "load_files([
+            '/tmp/epoch-000/tests/data_contract_tests.pl',
+            '/tmp/epoch-000/tests/generic_view_tests.pl',
+            '/tmp/epoch-000/tests/occurrence_identity_tests.pl',
+            '/tmp/epoch-000/tests/subgraph_tests.pl'
+            ], [silent(true)]), run_tests, halt" \
+            -t "halt(1)" \
+            > /tmp/traversal-plunit.log 2>&1
+          exit_code=$?
+          cat /tmp/traversal-plunit.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Fail when plunit failed
+        if: steps.plunit.outputs.exit_code != '0'
+        run: exit 1
+
+      - name: Run external stdin stdout CLI contract tests
+        id: cli
+        shell: bash
+        run: |
+          set +e
+          python tests/prolog_cli/run_cli_contract_tests.py \
+            --entry /tmp/epoch-000/entry.pl \
+            --schema contracts/prolog-cli-v0.schema.json \
+            > /tmp/prolog-cli-contract.log 2>&1
+          exit_code=$?
+          cat /tmp/prolog-cli-contract.log
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Fail when CLI contract tests failed
+        if: steps.cli.outputs.exit_code != '0'
+        run: exit 1
+
+      - name: Upload verification logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traversal-cli-verification
+          path: |
+            /tmp/swipl-version.log
+            /tmp/traversal-plunit.log
+            /tmp/prolog-cli-contract.log
+          if-no-files-found: warn
+          retention-days: 7
