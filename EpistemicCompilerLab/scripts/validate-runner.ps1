@@ -90,4 +90,13 @@ if ($LASTEXITCODE -ne 0) {
     throw "Python parse failed for scripts/invoke_codex_json.py with code $LASTEXITCODE."
 }
 
+$smokePath = Join-Path $labRoot 'scripts/test-codex-cli.ps1'
+$smokeSource = Get-Content -LiteralPath $smokePath -Raw -Encoding utf8
+if (-not $smokeSource.Contains('"status": {"type": "string", "const": "ok"}')) {
+    throw 'Codex smoke status schema must include an explicit string type.'
+}
+if (-not $smokeSource.Contains('"value": {"type": "integer", "const": 42}')) {
+    throw 'Codex smoke value schema must include an explicit integer type.'
+}
+
 Write-Host "Runner assets valid: benchmark v1, Ollama, Codex CLI and planner v1 scripts."
