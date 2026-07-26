@@ -42,9 +42,7 @@ def raw_root_from_argv(argv: list[str]) -> Path:
         value = argv[index + 1]
     except (ValueError, IndexError) as exc:
         raise base.OllamaAdapterError("diagnostic adapter requires --output") from exc
-    root = Path(value).resolve() / "raw"
-    root.mkdir(parents=True, exist_ok=True)
-    return root
+    return Path(value).resolve() / "raw"
 
 
 def call_ollama_with_http_diagnostics(
@@ -86,6 +84,7 @@ def call_ollama_with_http_diagnostics(
             "body": decoded,
         }
         if RAW_ROOT is not None:
+            RAW_ROOT.mkdir(parents=True, exist_ok=True)
             (RAW_ROOT / "provider-error.json").write_bytes(
                 base.canonical_json_bytes(diagnostic)
             )
