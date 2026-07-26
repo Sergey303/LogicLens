@@ -19,7 +19,7 @@ class AdapterError(RuntimeError):
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", required=True)
+    parser.add_argument("--model")
     parser.add_argument("--working-directory", required=True, type=Path)
     parser.add_argument("--schema", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
@@ -96,10 +96,14 @@ def main() -> int:
         raise AdapterError("output and events paths must be new")
     command = [
         executable, "exec", "--ephemeral", "--json", "--sandbox", "read-only",
-        "--ignore-user-config", "--ignore-rules", "--model", args.model,
+        "--ignore-user-config", "--ignore-rules",
+    ]
+    if args.model:
+        command.extend(["--model", args.model])
+    command.extend([
         "--cd", str(workdir), "--output-schema", str(schema),
         "--output-last-message", str(output),
-    ]
+    ])
     prompt = sys.stdin.read()
     if not prompt.strip():
         raise AdapterError("provider prompt is empty")
@@ -133,6 +137,7 @@ def main() -> int:
         raise AdapterError("Codex final response must be a JSON object")
     print(f"Codex JSON response: {output}")
     print(f"Codex events: {events}")
+    print(f"Codex model selection: {args.model or 'account default'}")
     return 0
 
 
