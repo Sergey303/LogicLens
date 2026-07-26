@@ -4,11 +4,14 @@ param()
 $ErrorActionPreference = 'Stop'
 $labRoot = Split-Path -Parent $PSScriptRoot
 $requiredFiles = @(
+    'cases/benchmark-v1.jsonl',
+    'cases/BENCHMARK_V1.md',
     'representations/knowledge.compact.json',
     'runner/prompts/direct.md',
     'runner/prompts/planner.md',
     'runner/prompts/tail-planner.md',
     'runner/prompts/finalize.md',
+    'scripts/validate-benchmark-v1.ps1',
     'scripts/ensure-ollama-cpu-profile.ps1',
     'scripts/test-ollama-model.ps1',
     'scripts/run-representation.ps1',
@@ -68,4 +71,4 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host "Representation runner assets valid: compact JSON, 4 prompts, $($parseTargets.Count) PowerShell scripts."
+Write-Host "Representation runner assets valid: compact JSON, benchmark v1, 4 prompts, $($parseTargets.Count) PowerShell scripts."
