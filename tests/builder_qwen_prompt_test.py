@@ -54,14 +54,19 @@ def main() -> int:
         "epoch_data:fact(FactIdA, Subject, PredicateIriA, iri(ResourceIri))",
         'literal("text", lang(\'ru\'))',
         ":- begin_tests(ModuleName).",
+        "test(test_name) :-",
+        "Never write `:- test(...)`.",
         '"schemaVersion": "0.1"',
         '"bindings"',
         "# Final mandatory constraints — apply these after reading all evidence",
         "Every `.pl` file is SWI-Prolog source, never Perl.",
+        "A test case is an ordinary clause: `test(name) :- Goal.`",
     )
     missing = [text for text in required if text not in rendered]
     if missing:
         raise VerificationError(f"Qwen prompt is missing required boundaries: {missing}")
+    if ":- test(test_name)" in rendered:
+        raise VerificationError("Qwen prompt demonstrates a plunit test as a directive")
     if "oracle" in rendered.lower():
         raise VerificationError("trusted oracle leaked into Qwen prompt")
     if request.get("model") != "qwen2.5-coder:7b":
@@ -76,15 +81,19 @@ def main() -> int:
 
     evidence_position = rendered.find("# Frozen evidence")
     final_position = rendered.find("# Final mandatory constraints")
+    test_clause_position = rendered.rfind("Never write `:- test(...)`.")
     if evidence_position < 0 or final_position <= evidence_position:
         raise VerificationError("final mandatory constraints do not follow evidence")
+    if test_clause_position <= final_position:
+        raise VerificationError("late constraints lost the plunit test-clause boundary")
 
     print("ok 1 - Qwen prompt fixes SWI-Prolog versus Perl boundary")
     print("ok 2 - Qwen prompt carries fact, plunit and UI contracts")
     print("ok 3 - final constraints follow public evidence")
-    print("ok 4 - reviewed Ollama context window is explicit")
-    print("ok 5 - hidden oracle remains excluded")
-    print("1..5")
+    print("ok 4 - plunit test cases remain clauses, never directives")
+    print("ok 5 - reviewed Ollama context window is explicit")
+    print("ok 6 - hidden oracle remains excluded")
+    print("1..6")
     return 0
 
 
