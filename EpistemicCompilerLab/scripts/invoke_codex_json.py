@@ -39,16 +39,44 @@ def count_tool_calls(events: str) -> int:
             event = json.loads(line)
         except json.JSONDecodeError as exc:
             raise AdapterError("Codex --json output is not valid JSONL") from exc
-        if not isinstance(event, dict):
-            raise AdapterError("Codex event must be a JSON object")
-        item = event.get("item")
+        item = event.get("item") if isinstance(event, dict) else None
         if (
-            event.get("type") in {"item.started", "item.completed"}
+            isinstance(event, dict)
+            and event.get("type") in {"item.started", "item.completed"}
             and isinstance(item, dict)
             and item.get("type") in FORBIDDEN
         ):
             count += 1
     return count
+
+
+def failure_details(events: str) -> str:
+    details: list[str] = []
+    for line in events.splitlines():
+        if not line.strip():
+            continue
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(event, dict):
+            continue
+        kind = event.get("type")
+        item = event.get("item")
+        if kind in {"turn.failed", "thread.error", "error"}:
+            value = event.get("error") or event.get("message") or event
+            details.append(json.dumps(value, ensure_ascii=False))
+        elif (
+            kind in {"item.started", "item.completed"}
+            and isinstance(item, dict)
+            and item.get("type") == "error"
+        ):
+            value = item.get("message") or item.get("error") or item
+            details.append(json.dumps(value, ensure_ascii=False))
+    if details:
+        return " | ".join(details[-5:])
+    tail = events.strip()[-2000:]
+    return f"JSONL tail: {tail}" if tail else "no JSONL diagnostic events"
 
 
 def main() -> int:
@@ -108,8 +136,11 @@ def main() -> int:
         raise AdapterError("Codex CLI output exceeded the audit limit")
     events.write_bytes(event_bytes)
     if completed.returncode != 0:
+        stderr = completed.stderr.strip() or "no stderr"
+        structured = failure_details(completed.stdout)
         raise AdapterError(
-            f"Codex CLI failed with exit {completed.returncode}: {completed.stderr[-2000:]}"
+            f"Codex CLI failed with exit {completed.returncode}; "
+            f"structured={structured}; stderr={stderr[-2000:]}"
         )
     if not output.is_file():
         raise AdapterError("Codex CLI did not write the final response")
