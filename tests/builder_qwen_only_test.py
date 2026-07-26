@@ -34,8 +34,10 @@ def main() -> int:
         "import-run",
         "qwen-only-summary.json",
         "--context-tokens",
+        "--output-tokens",
         '"contextTokens": args.context_tokens',
-        'adapter_status == "context-limited"',
+        '"outputTokens": args.output_tokens',
+        '"context-limited", "output-limited"',
         'return 1 if status == "infrastructure-failed" else 0',
         'return "rejected"',
         'return "passed"',
@@ -53,30 +55,43 @@ def main() -> int:
         raise VerificationError("Qwen-only runner must invoke one Ollama adapter path")
 
     runner = load_runner(runner_path)
+    runner.validate_context_tokens(16_384)
+    runner.validate_output_tokens(2_048)
+    for invalid in (True, 255, 8_193):
+        try:
+            runner.validate_output_tokens(invalid)
+        except runner.QwenOnlyRunError:
+            pass
+        else:
+            raise VerificationError(f"invalid output token budget was accepted: {invalid!r}")
+
     with tempfile.TemporaryDirectory(prefix="logiclens-qwen-status-") as temporary:
         provider = Path(temporary) / "provider"
         raw = provider / "raw"
         raw.mkdir(parents=True)
-        (raw / "adapter-result.json").write_text(
-            json.dumps(
-                {
-                    "schemaVersion": "0.1",
-                    "status": "context-limited",
-                    "contextTokens": 16_384,
-                    "promptEvalCount": 16_000,
-                }
-            ),
-            encoding="utf-8",
-        )
-        if runner.read_adapter_failure_status(provider) != "context-limited":
-            raise VerificationError("context-limited adapter result was not recognized")
+
+        for status in ("context-limited", "output-limited", "invalid-json"):
+            (raw / "adapter-result.json").write_text(
+                json.dumps(
+                    {
+                        "schemaVersion": "0.1",
+                        "status": status,
+                        "contextTokens": 16_384,
+                        "outputTokens": 2_048,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            if runner.read_adapter_failure_status(provider) != status:
+                raise VerificationError(f"{status} adapter result was not recognized")
 
     print("ok 1 - Qwen-only runner has preparation and trusted import stages")
-    print("ok 2 - reviewed context window is passed and recorded")
-    print("ok 3 - context-limited responses are infrastructure failures")
-    print("ok 4 - ordinary rejection remains a measured result")
-    print("ok 5 - no Codex adapter or artifact path is present")
-    print("1..5")
+    print("ok 2 - reviewed context and output budgets are passed and recorded")
+    print("ok 3 - context/output-limited responses are infrastructure failures")
+    print("ok 4 - invalid JSON remains a preserved measured rejection")
+    print("ok 5 - ordinary candidate rejection remains a measured result")
+    print("ok 6 - no Codex adapter or artifact path is present")
+    print("1..6")
     return 0
 
 
