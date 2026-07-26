@@ -21,6 +21,9 @@ MAX_RESPONSE_BYTES = 10 * 1024 * 1024
 DEFAULT_CONTEXT_TOKENS = 16_384
 MIN_CONTEXT_TOKENS = 4_096
 MAX_CONTEXT_TOKENS = 32_768
+DEFAULT_OUTPUT_TOKENS = 2_048
+MIN_OUTPUT_TOKENS = 256
+MAX_OUTPUT_TOKENS = 8_192
 REQUIRED_RESPONSE_RESERVE = 512
 
 
@@ -46,6 +49,12 @@ def parse_args() -> argparse.Namespace:
         help="reviewed Ollama context window for the complete frozen request",
     )
     parser.add_argument(
+        "--output-tokens",
+        type=int,
+        default=DEFAULT_OUTPUT_TOKENS,
+        help="reviewed maximum number of tokens for the structured response",
+    )
+    parser.add_argument(
         "--response-file",
         type=Path,
         help="offline deterministic Ollama API response used only for verification",
@@ -67,6 +76,7 @@ def main() -> int:
     if args.timeout_seconds <= 0 or args.timeout_seconds > 1800:
         raise OllamaAdapterError("timeout-seconds must be between 0 and 1800")
     validate_context_tokens(args.context_tokens)
+    validate_output_tokens(args.output_tokens)
     if args.manual_fixes < 0:
         raise OllamaAdapterError("manual-fixes cannot be negative")
     if args.elapsed_ms is not None and args.response_file is None:
@@ -107,6 +117,7 @@ def main() -> int:
         prompt,
         evidence,
         args.context_tokens,
+        args.output_tokens,
     )
     raw_root = output / "raw"
     raw_root.mkdir(parents=True)
@@ -134,8 +145,9 @@ def main() -> int:
 
     response = decode_json(raw_response, "Ollama response")
     ensure_prompt_not_context_limited(response, args.context_tokens, raw_root)
+    ensure_generation_complete(response, args.output_tokens, raw_root)
     model_content = extract_content(response)
-    generated = decode_json(model_content.encode(UTF8), "Ollama message content")
+    generated = decode_model_json(model_content, response, raw_root)
     files = validate_generated_files(generated, task)
 
     proposal_root = output / "proposal"
@@ -187,6 +199,7 @@ def main() -> int:
     print(f"Ollama proposal prepared: {args.run_id}")
     print(f"Model: {args.model}")
     print(f"Context tokens: {args.context_tokens}")
+    print(f"Output tokens: {args.output_tokens}")
     print(f"Files: {len(files)}")
     print(f"Elapsed ms: {proposal['metrics']['elapsedMs']}")
     print(f"Proposal: {proposal_root}")
@@ -200,17 +213,16 @@ def build_request(
     prompt: str,
     evidence: list[dict[str, Any]],
     context_tokens: int = DEFAULT_CONTEXT_TOKENS,
+    output_tokens: int = DEFAULT_OUTPUT_TOKENS,
 ) -> dict[str, Any]:
     validate_context_tokens(context_tokens)
+    validate_output_tokens(output_tokens)
     expected_paths = [
         task["candidate"]["rulePath"],
         task["candidate"]["testPath"],
         task["candidate"]["uiPath"],
     ]
-    response_shape = {
-        "notes": "optional short note",
-        "files": {path: f"complete UTF-8 content for {path}" for path in expected_paths},
-    }
+    response_schema = build_response_schema(expected_paths)
     final_constraints = build_final_constraints(task, expected_paths)
     user_content = (
         prompt
@@ -218,25 +230,27 @@ def build_request(
         + json.dumps(task, ensure_ascii=False, indent=2)
         + "\n\n# Frozen evidence\n"
         + json.dumps(evidence, ensure_ascii=False, indent=2)
-        + "\n\n# Required JSON response shape\n"
-        + json.dumps(response_shape, ensure_ascii=False, indent=2)
+        + "\n\n# Exact JSON response schema\n"
+        + json.dumps(response_schema, ensure_ascii=False, indent=2)
         + "\n\n"
         + final_constraints
     )
     return {
         "model": model,
         "stream": False,
-        "format": "json",
+        "format": response_schema,
         "options": {
             "temperature": 0,
             "num_ctx": context_tokens,
+            "num_predict": output_tokens,
         },
         "messages": [
             {
                 "role": "system",
                 "content": (
                     "You produce untrusted LogicLens candidate files. Follow the frozen "
-                    "task exactly. Never emit commands, secrets, absolute paths, or extra files."
+                    "task and exact JSON schema. Never emit commands, secrets, absolute "
+                    "paths, extra files, Markdown fences, or text outside the JSON object."
                 ),
             },
             {
@@ -244,6 +258,36 @@ def build_request(
                 "content": user_content,
             },
         ],
+    }
+
+
+def build_response_schema(expected_paths: list[str]) -> dict[str, Any]:
+    if len(expected_paths) != 3 or len(set(expected_paths)) != 3:
+        raise OllamaAdapterError("structured response requires three distinct file paths")
+    file_properties = {
+        path: {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262_144,
+        }
+        for path in expected_paths
+    }
+    return {
+        "type": "object",
+        "properties": {
+            "notes": {
+                "type": "string",
+                "maxLength": 4_096,
+            },
+            "files": {
+                "type": "object",
+                "properties": file_properties,
+                "required": expected_paths,
+                "additionalProperties": False,
+            },
+        },
+        "required": ["files"],
+        "additionalProperties": False,
     }
 
 
@@ -262,7 +306,9 @@ def build_final_constraints(task: dict[str, Any], expected_paths: list[str]) -> 
         "`:- test(...)`.\n"
         f"5. UI JSON uses schemaVersion 0.1 and binds exactly "
         f"{candidate['uiPredicate']} to trusted component {candidate['uiComponent']}.\n"
-        "6. Return exactly one JSON object in the required response shape, with no "
+        "6. Escape every newline, tab, quote, and backslash inside file-content JSON "
+        "strings. Complete and close every string, object, and brace.\n"
+        "7. Return exactly one JSON object matching the exact schema above, with no "
         "Markdown fences and no extra top-level fields."
     )
 
@@ -277,18 +323,24 @@ def validate_context_tokens(value: int) -> None:
         )
 
 
+def validate_output_tokens(value: int) -> None:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise OllamaAdapterError("output-tokens must be an integer")
+    if value < MIN_OUTPUT_TOKENS or value > MAX_OUTPUT_TOKENS:
+        raise OllamaAdapterError(
+            f"output-tokens must be between {MIN_OUTPUT_TOKENS} and "
+            f"{MAX_OUTPUT_TOKENS}"
+        )
+
+
 def ensure_prompt_not_context_limited(
     response: dict[str, Any],
     context_tokens: int,
     raw_root: Path,
 ) -> None:
-    prompt_eval_count = response.get("prompt_eval_count")
+    prompt_eval_count = optional_nonnegative_int(response, "prompt_eval_count")
     if prompt_eval_count is None:
         return
-    if isinstance(prompt_eval_count, bool) or not isinstance(prompt_eval_count, int):
-        raise OllamaAdapterError("Ollama prompt_eval_count must be an integer")
-    if prompt_eval_count < 0:
-        raise OllamaAdapterError("Ollama prompt_eval_count cannot be negative")
     available_for_response = context_tokens - prompt_eval_count
     if available_for_response >= REQUIRED_RESPONSE_RESERVE:
         return
@@ -301,12 +353,116 @@ def ensure_prompt_not_context_limited(
         "requiredResponseReserve": REQUIRED_RESPONSE_RESERVE,
         "availableResponseTokens": available_for_response,
     }
-    (raw_root / "adapter-result.json").write_bytes(canonical_json_bytes(diagnostic))
+    write_adapter_result(raw_root, diagnostic)
     raise OllamaAdapterError(
         "Ollama prompt reached the reviewed context limit; raw response was preserved; "
         f"context-tokens={context_tokens}; prompt-eval-count={prompt_eval_count}; "
         f"required-response-reserve={REQUIRED_RESPONSE_RESERVE}"
     )
+
+
+def ensure_generation_complete(
+    response: dict[str, Any],
+    output_tokens: int,
+    raw_root: Path,
+) -> None:
+    done = response.get("done")
+    if done is not None and not isinstance(done, bool):
+        raise OllamaAdapterError("Ollama done must be a boolean")
+    done_reason = response.get("done_reason")
+    if done_reason is not None and not isinstance(done_reason, str):
+        raise OllamaAdapterError("Ollama done_reason must be a string")
+    eval_count = optional_nonnegative_int(response, "eval_count")
+
+    reached_budget = eval_count is not None and eval_count >= output_tokens
+    output_limited = done is False or done_reason == "length" or (
+        done_reason is None and reached_budget
+    )
+    if not output_limited:
+        return
+
+    diagnostic = response_diagnostic(
+        response,
+        status="output-limited",
+        output_tokens=output_tokens,
+    )
+    diagnostic["reachedOutputBudget"] = reached_budget
+    write_adapter_result(raw_root, diagnostic)
+    raise OllamaAdapterError(
+        "Ollama generation reached the reviewed output limit; raw response was preserved; "
+        f"output-tokens={output_tokens}; eval-count={eval_count}; "
+        f"done-reason={done_reason!r}"
+    )
+
+
+def decode_model_json(
+    content: str,
+    response: dict[str, Any],
+    raw_root: Path,
+) -> dict[str, Any]:
+    try:
+        encoded = content.encode(UTF8)
+        value = json.loads(content)
+    except (UnicodeEncodeError, json.JSONDecodeError) as exc:
+        diagnostic = response_diagnostic(response, status="invalid-json")
+        diagnostic["contentBytes"] = len(content.encode(UTF8, errors="replace"))
+        diagnostic["jsonError"] = str(exc)
+        if isinstance(exc, json.JSONDecodeError):
+            diagnostic["jsonErrorLine"] = exc.lineno
+            diagnostic["jsonErrorColumn"] = exc.colno
+            diagnostic["jsonErrorPosition"] = exc.pos
+        write_adapter_result(raw_root, diagnostic)
+        raise OllamaAdapterError(
+            f"Ollama message content is not valid UTF-8 JSON: {exc}"
+        ) from exc
+    if not isinstance(value, dict):
+        diagnostic = response_diagnostic(response, status="invalid-json")
+        diagnostic["contentBytes"] = len(encoded)
+        diagnostic["jsonError"] = "top-level JSON value is not an object"
+        write_adapter_result(raw_root, diagnostic)
+        raise OllamaAdapterError("Ollama message content must be a JSON object")
+    return value
+
+
+def response_diagnostic(
+    response: dict[str, Any],
+    *,
+    status: str,
+    output_tokens: int | None = None,
+) -> dict[str, Any]:
+    diagnostic: dict[str, Any] = {
+        "schemaVersion": "0.1",
+        "status": status,
+    }
+    for source, target in (
+        ("done", "done"),
+        ("done_reason", "doneReason"),
+        ("prompt_eval_count", "promptEvalCount"),
+        ("eval_count", "evalCount"),
+    ):
+        value = response.get(source)
+        if isinstance(value, (bool, int, str)) and not (
+            isinstance(value, bool) and source in {"prompt_eval_count", "eval_count"}
+        ):
+            diagnostic[target] = value
+    if output_tokens is not None:
+        diagnostic["outputTokens"] = output_tokens
+    return diagnostic
+
+
+def write_adapter_result(raw_root: Path, value: dict[str, Any]) -> None:
+    (raw_root / "adapter-result.json").write_bytes(canonical_json_bytes(value))
+
+
+def optional_nonnegative_int(response: dict[str, Any], name: str) -> int | None:
+    value = response.get(name)
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise OllamaAdapterError(f"Ollama {name} must be an integer")
+    if value < 0:
+        raise OllamaAdapterError(f"Ollama {name} cannot be negative")
+    return value
 
 
 def validate_loopback_endpoint(value: str) -> str:
