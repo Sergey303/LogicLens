@@ -77,6 +77,10 @@ foreach ($relativePath in $parseTargets) {
 }
 
 $pythonPath = Join-Path $labRoot 'scripts/invoke_codex_json.py'
+$pythonSource = Get-Content -LiteralPath $pythonPath -Raw -Encoding utf8
+if ($pythonSource.Contains('--ask-for-approval')) {
+    throw 'Codex exec adapter contains the unsupported --ask-for-approval argument.'
+}
 $pythonCheck = @'
 import ast, pathlib, sys
 ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
