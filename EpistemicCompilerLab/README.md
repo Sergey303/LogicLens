@@ -16,7 +16,7 @@ Can a strong teacher improve a weak local LLM by choosing:
 
 ## Boundary
 
-The lab contains repository-local sources, Prolog knowledge, short-lived SWI-Prolog CLI calls, JSON results, teacher/student prompts, optional evidence tails, regression tests and a local Ollama representation runner.
+The lab contains repository-local sources, Prolog knowledge, short-lived SWI-Prolog CLI calls, JSON results, teacher/student prompts, optional evidence tails, regression tests and local Ollama/Codex adapters.
 
 It does not include React, LogicLens epochs, UI Document generation, a web proxy, a persistent Prolog service, model training or production sandboxing.
 
@@ -44,6 +44,7 @@ Then verify:
 ```powershell
 swipl --version
 ollama list
+codex --version
 ```
 
 ## Run from any directory
@@ -72,30 +73,32 @@ V0 is preserved exactly as the first five-mode baseline. It revealed that Prolog
 
 V1 separates material selection, clarification, explanation and exception inspection. A teacher frame contains normalized intent and only values present in the question. Hidden expected plans are used solely for validation and scoring. They cannot introduce revision, date, entity or tail kind absent from that frame.
 
-## CPU-safe local-model experiments
+## Local providers
 
-The first GPU attempt on the development workstation failed while allocating a CUDA host buffer. Experiments therefore create a separate Ollama profile with `num_gpu=0`, `num_ctx=2048` and `num_batch=64`. The source model remains unchanged.
-
-Check the derived profile and JSON response:
+Ollama experiments use a derived CPU-safe profile with `num_gpu=0`, `num_ctx=2048` and `num_batch=64`. The source model remains unchanged.
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' ollama-smoke 'qwen2.5-coder:7b'
 ```
 
-Run one v0 representation and print failed-case diagnostics:
+The Codex adapter reuses the proven pattern from merged branch `feature/eng-48-codex-cli-run`: prompt through stdin, ephemeral session, read-only sandbox, no approvals, ignored user config/project rules, strict JSON Schema, retained JSONL events and rejection of all tool calls. Pass an explicit model identifier available to the authenticated CLI:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' codex-smoke 'gpt-5.6'
+```
+
+Run one historical v0 representation:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-baseline markdown 'qwen2.5-coder:7b'
 ```
 
-Run the historical v0 suite over all five representations:
+Run the historical v0 five-mode suite:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-suite 'qwen2.5-coder:7b'
 ```
 
 The suite stores one JSONL run and summary per mode plus `comparison.json` and `comparison.csv` under a timestamped directory in `experiments/model-runs/`. Results remain local and are ignored by Git until aggregate findings are reviewed and copied into the append-only ledger.
-
-Allowed v0 modes are `markdown`, `compact-json`, `prolog-text`, `cli` and `cli-tails`.
 
 `unknown` means the loaded knowledge is insufficient. It never means `false`.
