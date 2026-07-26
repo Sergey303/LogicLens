@@ -41,6 +41,7 @@ def main() -> int:
         task,
         prompt,
         [{"name": "public-evidence.json", "content": {"response": {}}}],
+        16_384,
     )
     rendered = "\n".join(
         message["content"] for message in request["messages"]
@@ -55,6 +56,8 @@ def main() -> int:
         ":- begin_tests(ModuleName).",
         '"schemaVersion": "0.1"',
         '"bindings"',
+        "# Final mandatory constraints — apply these after reading all evidence",
+        "Every `.pl` file is SWI-Prolog source, never Perl.",
     )
     missing = [text for text in required if text not in rendered]
     if missing:
@@ -65,13 +68,23 @@ def main() -> int:
         raise VerificationError("Qwen model identity was not retained")
     if request.get("format") != "json":
         raise VerificationError("Ollama JSON response mode changed unexpectedly")
-    if request.get("options", {}).get("temperature") != 0:
+    options = request.get("options", {})
+    if options.get("temperature") != 0:
         raise VerificationError("Qwen request is not deterministic")
+    if options.get("num_ctx") != 16_384:
+        raise VerificationError("Qwen request lost the reviewed context window")
+
+    evidence_position = rendered.find("# Frozen evidence")
+    final_position = rendered.find("# Final mandatory constraints")
+    if evidence_position < 0 or final_position <= evidence_position:
+        raise VerificationError("final mandatory constraints do not follow evidence")
 
     print("ok 1 - Qwen prompt fixes SWI-Prolog versus Perl boundary")
     print("ok 2 - Qwen prompt carries fact, plunit and UI contracts")
-    print("ok 3 - hidden oracle remains excluded")
-    print("1..3")
+    print("ok 3 - final constraints follow public evidence")
+    print("ok 4 - reviewed Ollama context window is explicit")
+    print("ok 5 - hidden oracle remains excluded")
+    print("1..5")
     return 0
 
 
