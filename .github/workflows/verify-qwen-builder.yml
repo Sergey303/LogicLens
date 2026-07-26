@@ -1,0 +1,51 @@
+name: Verify Qwen-only Builder path
+
+on:
+  pull_request:
+    paths:
+      - "experiments/builder/eng-26-researcher-at-iis/prompt.md"
+      - "tools/run_builder_ollama.py"
+      - "tools/run_builder_qwen_only.py"
+      - "tests/builder_qwen_prompt_test.py"
+      - "tests/builder_qwen_only_test.py"
+      - ".github/workflows/verify-qwen-builder.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "experiments/builder/eng-26-researcher-at-iis/prompt.md"
+      - "tools/run_builder_ollama.py"
+      - "tools/run_builder_qwen_only.py"
+      - "tests/builder_qwen_prompt_test.py"
+      - "tests/builder_qwen_only_test.py"
+      - ".github/workflows/verify-qwen-builder.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-qwen-builder-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify prompt and Qwen-only orchestration
+        run: |
+          python -m py_compile \
+            tools/run_builder_ollama.py \
+            tools/run_builder_qwen_only.py \
+            tests/builder_qwen_prompt_test.py \
+            tests/builder_qwen_only_test.py
+          python tests/builder_qwen_prompt_test.py
+          python tests/builder_qwen_only_test.py
