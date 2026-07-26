@@ -22,25 +22,29 @@ Choose a new empty output directory for every attempt:
 python .\tools\run_builder_qwen_only.py `
   --output .\artifacts\builder\qwen-attempt-001 `
   --qwen-model qwen2.5-coder:7b `
-  --context-tokens 16384
+  --context-tokens 16384 `
+  --output-tokens 2048
 ```
 
-`16384` is the reviewed default and may be omitted. The explicit form is useful
-when recording a real experiment. The accepted range is `4096..32768`.
+`16384` context tokens and `2048` output tokens are the reviewed defaults and
+may be omitted. The accepted ranges are `4096..32768` and `256..8192`.
 
 The runner:
 
 1. builds a fresh portable active epoch;
 2. prepares the frozen public Builder workspace;
 3. calls only the loopback Ollama adapter;
-4. sends `options.num_ctx` explicitly instead of relying on Ollama's smaller
-   machine default;
-5. preserves the raw request and raw model response;
-6. imports a syntactically valid proposal through the unchanged trusted
+4. sends `options.num_ctx` and `options.num_predict` explicitly;
+5. sends an exact JSON Schema in Ollama `format`, requiring exactly the three
+   task-declared file keys and string contents;
+6. repeats the schema and short mandatory language, file, test and UI contract
+   after all public evidence;
+7. preserves the raw request and raw model response;
+8. imports a syntactically valid proposal through the unchanged trusted
    candidate validator and hidden oracle;
-7. writes `qwen-only-summary.json` with the selected context size.
+9. writes `qwen-only-summary.json` with both reviewed token budgets.
 
-## Why context size is explicit
+## Why both token budgets are explicit
 
 The frozen ENG-26 request is much larger than Ollama's common default context.
 A real earlier run retained a roughly 28,000-character request but reported
@@ -48,25 +52,39 @@ A real earlier run retained a roughly 28,000-character request but reported
 including the SWI-Prolog-not-Perl contract, and Qwen repeated its earlier Perl
 answer.
 
-The adapter now does both of the following:
+A later full-context run returned malformed JSON with an unterminated file
+content string. The output log alone could not distinguish a generation limit
+from incorrect escaping. The adapter therefore now:
 
-- places the complete reviewed context window in `options.num_ctx`;
-- repeats a short mandatory language, file, test and UI contract after all
-  public evidence and the required JSON response shape.
+- supplies an exact JSON Schema instead of generic JSON mode;
+- fixes the maximum generated token count explicitly;
+- checks Ollama completion metadata;
+- records structured diagnostics without modifying the model response.
 
 If the reported prompt token count leaves fewer than 512 reviewed tokens for
 the answer, the adapter preserves the response, writes
 `raw/adapter-result.json` with `status: context-limited`, and fails the run as an
-infrastructure problem. Such a result is not counted as model rejection.
+infrastructure problem.
+
+If Ollama reports an output-length stop, the adapter writes
+`status: output-limited` with `done_reason`, `eval_count`, and the reviewed
+output budget. This is also an infrastructure failure.
+
+If `message.content` is malformed JSON, the raw response is preserved and the
+adapter writes `status: invalid-json` with completion metadata, content byte
+length, and JSON line, column and character position. The adapter never closes
+strings, inserts braces, repairs escaping, or otherwise changes model output.
+Malformed JSON remains a measured model rejection.
 
 ## Result states
 
 - `passed`: the proposal passed candidate validation and the hidden oracle;
-- `rejected`: Qwen received the reviewed prompt and returned a preserved
+- `rejected`: Qwen received the reviewed request and returned a preserved
   response, but adapter validation, candidate validation, or the hidden oracle
   rejected it;
 - `infrastructure-failed`: preparation failed, no provider response was
-  preserved, or the prompt reached the configured context limit.
+  preserved, the prompt reached the configured context boundary, or generation
+  reached the reviewed output limit.
 
 A genuine rejection is a measured model result and returns exit code `0`.
 Infrastructure failure returns a non-zero exit code.
@@ -86,9 +104,9 @@ qwen-attempt-001/
   qwen-only-summary.json
 ```
 
-Do not edit or reuse an existing attempt directory. Keep rejected and
-context-limited raw responses as evidence and run the next attempt in a new
-directory.
+Do not edit or reuse an existing attempt directory. Keep rejected,
+context-limited and output-limited raw responses as evidence and run the next
+attempt in a new directory.
 
 ## Prompt boundary for the 7B model
 
@@ -114,6 +132,6 @@ test(case_name) :-
 is an ordinary clause and must not be written as `:- test(...)`. The trusted
 validator deliberately keeps `test` outside its directive allowlist.
 
-These instructions clarify the programming-language and file contracts only.
-They do not expose the hidden oracle, bypass validation, or provide
-provider-specific acceptance exceptions.
+These instructions clarify the programming-language, file and transport
+contracts only. They do not expose the hidden oracle, bypass validation, or
+provide provider-specific acceptance exceptions.
