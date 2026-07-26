@@ -81,10 +81,10 @@ Ollama experiments use a derived CPU-safe profile with `num_gpu=0`, `num_ctx=204
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' ollama-smoke 'qwen2.5-coder:7b'
 ```
 
-The Codex adapter reuses the proven pattern from merged branch `feature/eng-48-codex-cli-run`: prompt through stdin, ephemeral session, read-only sandbox, no approvals, ignored user config/project rules, strict JSON Schema, retained JSONL events and rejection of all tool calls. Pass an explicit model identifier available to the authenticated CLI:
+The Codex adapter reuses the proven pattern from merged branch `feature/eng-48-codex-cli-run`: prompt through stdin, ephemeral execution, read-only sandbox, ignored user config/project rules, strict JSON Schema, retained JSONL events and rejection of all tool calls. Omit the model during the smoke test so the authenticated ChatGPT session selects its current supported default. Pass an explicit identifier only for a reviewed reproducible experiment after verifying that the account supports it.
 
 ```powershell
-& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' codex-smoke 'gpt-5.6'
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' codex-smoke
 ```
 
 Run one historical v0 representation:
