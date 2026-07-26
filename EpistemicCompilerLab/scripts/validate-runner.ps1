@@ -11,9 +11,15 @@ $requiredFiles = @(
     'runner/prompts/planner.md',
     'runner/prompts/tail-planner.md',
     'runner/prompts/finalize.md',
+    'runner/prompts/planner-v1-raw.md',
+    'runner/prompts/planner-v1-frame.md',
     'scripts/validate-benchmark-v1.ps1',
     'scripts/ensure-ollama-cpu-profile.ps1',
     'scripts/test-ollama-model.ps1',
+    'scripts/invoke_codex_json.py',
+    'scripts/test-codex-cli.ps1',
+    'scripts/run-planner-v1.ps1',
+    'scripts/score-planner-v1.ps1',
     'scripts/run-representation.ps1',
     'scripts/run-representation-baseline.ps1',
     'scripts/run-representation-suite.ps1',
@@ -62,7 +68,6 @@ foreach ($relativePath in $parseTargets) {
         [ref] $tokens,
         [ref] $errors
     )
-
     if (@($errors).Count -gt 0) {
         $messages = @($errors | ForEach-Object {
             "line $($_.Extent.StartLineNumber): $($_.Message)"
@@ -71,4 +76,14 @@ foreach ($relativePath in $parseTargets) {
     }
 }
 
-Write-Host "Representation runner assets valid: compact JSON, benchmark v1, 4 prompts, $($parseTargets.Count) PowerShell scripts."
+$pythonPath = Join-Path $labRoot 'scripts/invoke_codex_json.py'
+$pythonCheck = @'
+import ast, pathlib, sys
+ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+'@
+$pythonCheck | python - $pythonPath
+if ($LASTEXITCODE -ne 0) {
+    throw "Python parse failed for scripts/invoke_codex_json.py with code $LASTEXITCODE."
+}
+
+Write-Host "Runner assets valid: benchmark v1, Ollama, Codex CLI and planner v1 scripts."
