@@ -175,6 +175,40 @@ def main() -> int:
         if envelope["validation"] != {"candidate": "passed", "oracle": "passed"}:
             raise VerificationError("offline Ollama run did not pass both validations")
 
+        invalid_response = read_json(args.response)
+        invalid_message = invalid_response.get("message")
+        if not isinstance(invalid_message, dict):
+            raise VerificationError("fixture response is missing message")
+        invalid_content = json.loads(invalid_message.get("content", ""))
+        if not isinstance(invalid_content, dict):
+            raise VerificationError("fixture message content must be a JSON object")
+        invalid_content["files"] = {"unexpected.txt": "invalid candidate"}
+        invalid_message["content"] = json.dumps(invalid_content, ensure_ascii=False)
+        invalid_response_path = temporary_root / "invalid-response.json"
+        invalid_response_path.write_text(
+            json.dumps(invalid_response, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        invalid_output = temporary_root / "invalid-output"
+        invalid_run = run(
+            [
+                str(root() / "tools" / "run_builder_ollama.py"),
+                "--workspace",
+                str(workspace),
+                "--output",
+                str(invalid_output),
+                "--run-id",
+                "invalid-files",
+                "--response-file",
+                str(invalid_response_path),
+            ]
+        )
+        failure(invalid_run, "expected=")
+        failure(invalid_run, "actual=")
+        retained_output = invalid_output / "raw" / "provider-output.json"
+        if retained_output.read_bytes() != invalid_response_path.read_bytes():
+            raise VerificationError("invalid provider response was not retained verbatim")
+
         bad_endpoint = run(
             [
                 str(root() / "tools" / "run_builder_ollama.py"),
@@ -192,8 +226,9 @@ def main() -> int:
 
     print("ok 1 - offline Ollama response to trusted run")
     print("ok 2 - oracle excluded from provider request")
-    print("ok 3 - non-loopback endpoint rejected")
-    print("1..3")
+    print("ok 3 - invalid response retained with path diagnostics")
+    print("ok 4 - non-loopback endpoint rejected")
+    print("1..4")
     return 0
 
 
