@@ -13,6 +13,11 @@ $temporary = Join-Path ([IO.Path]::GetTempPath()) (
 New-Item -ItemType Directory -Path $temporary -Force | Out-Null
 
 try {
+    $codexVersion = (& codex --version 2>&1 | Select-Object -First 1).ToString().Trim()
+    if ($LASTEXITCODE -ne 0) {
+        throw "Could not read Codex CLI version."
+    }
+
     $schemaPath = Join-Path $temporary 'schema.json'
     $outputPath = Join-Path $temporary 'response.json'
     $eventsPath = Join-Path $temporary 'events.jsonl'
@@ -55,7 +60,8 @@ Do not inspect files, run commands, call tools or include Markdown.
             Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
     ).Count
     Write-Host "Codex CLI smoke passed: $Model"
-    Write-Host 'Execution verified: ephemeral, read-only, no approvals, no tools'
+    Write-Host "CLI version: $codexVersion"
+    Write-Host 'Execution verified: ephemeral, non-interactive, read-only, no tool events'
     Write-Host "Audit events: $eventCount"
 }
 finally {
