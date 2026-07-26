@@ -10,6 +10,11 @@ import sys
 from pathlib import Path
 
 
+DEFAULT_CONTEXT_TOKENS = 16_384
+MIN_CONTEXT_TOKENS = 4_096
+MAX_CONTEXT_TOKENS = 32_768
+
+
 class QwenOnlyRunError(RuntimeError):
     pass
 
@@ -19,6 +24,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--qwen-model", default="qwen2.5-coder:7b")
     parser.add_argument("--qwen-timeout-seconds", type=float, default=300.0)
+    parser.add_argument(
+        "--context-tokens",
+        type=int,
+        default=DEFAULT_CONTEXT_TOKENS,
+        help="Ollama context window passed to the Qwen Builder adapter",
+    )
     return parser.parse_args()
 
 
@@ -32,6 +43,7 @@ def main() -> int:
         raise QwenOnlyRunError(
             "qwen-timeout-seconds must be between 0 and 1800"
         )
+    validate_context_tokens(args.context_tokens)
 
     repository = Path(__file__).resolve().parents[1]
     output = args.output.resolve()
@@ -88,6 +100,7 @@ def main() -> int:
         run_output=run_output,
         model=args.qwen_model,
         timeout_seconds=args.qwen_timeout_seconds,
+        context_tokens=args.context_tokens,
     )
     summary = {
         "schemaVersion": "0.1",
@@ -96,6 +109,7 @@ def main() -> int:
             "runId": "qwen-run-001",
             "kind": "ollama",
             "model": args.qwen_model,
+            "contextTokens": args.context_tokens,
             "status": status,
         },
     }
@@ -107,6 +121,7 @@ def main() -> int:
     )
 
     print(f"Qwen-only Builder result: {status}")
+    print(f"Context tokens: {args.context_tokens}")
     print(f"Summary: {summary_path}")
     return 1 if status == "infrastructure-failed" else 0
 
@@ -120,6 +135,7 @@ def run_qwen(
     run_output: Path,
     model: str,
     timeout_seconds: float,
+    context_tokens: int,
 ) -> str:
     adapter_exit = run_optional(
         [
@@ -135,11 +151,20 @@ def run_qwen(
             model,
             "--timeout-seconds",
             str(timeout_seconds),
+            "--context-tokens",
+            str(context_tokens),
         ],
         repository,
     )
     raw_output = provider / "raw" / "provider-output.json"
     if adapter_exit != 0:
+        adapter_status = read_adapter_failure_status(provider)
+        if adapter_status == "context-limited":
+            print(
+                "qwen-run-001: provider response was preserved but the prompt "
+                "reached the configured context limit"
+            )
+            return "infrastructure-failed"
         if raw_output.is_file():
             print("qwen-run-001: provider response was preserved and rejected")
             return "rejected"
@@ -180,6 +205,32 @@ def run_qwen(
         print("qwen-run-001: candidate was rejected by trusted validation or oracle")
         return "rejected"
     return "infrastructure-failed"
+
+
+def read_adapter_failure_status(provider: Path) -> str | None:
+    path = provider / "raw" / "adapter-result.json"
+    if not path.is_file():
+        return None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise QwenOnlyRunError(f"cannot read adapter result {path}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise QwenOnlyRunError(f"adapter result must be a JSON object: {path}")
+    status = value.get("status")
+    if not isinstance(status, str) or not status:
+        raise QwenOnlyRunError(f"adapter result has no status: {path}")
+    return status
+
+
+def validate_context_tokens(value: int) -> None:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise QwenOnlyRunError("context-tokens must be an integer")
+    if value < MIN_CONTEXT_TOKENS or value > MAX_CONTEXT_TOKENS:
+        raise QwenOnlyRunError(
+            f"context-tokens must be between {MIN_CONTEXT_TOKENS} and "
+            f"{MAX_CONTEXT_TOKENS}"
+        )
 
 
 def require_clean_output(path: Path) -> None:
