@@ -16,6 +16,7 @@ from typing import Any
 from active_epoch.hashing import canonical_json_bytes
 from run_builder_ollama import (
     MAX_RESPONSE_BYTES,
+    OllamaAdapterError,
     UTF8,
     build_request,
     normalize_text,
@@ -152,6 +153,10 @@ def main() -> int:
 
     if len(raw_response) > MAX_RESPONSE_BYTES:
         raise CodexAdapterError("Codex final response exceeds the reviewed size limit")
+    (raw_root / "provider-output.json").write_bytes(raw_response)
+    if event_bytes:
+        (raw_root / "events.jsonl").write_bytes(event_bytes)
+
     generated = decode_json(raw_response, "Codex final response")
     files = validate_generated_files(generated, task)
     if hash_tree(workspace) != workspace_before:
@@ -195,9 +200,6 @@ def main() -> int:
         "notes": generated.get("notes", ""),
     }
     (proposal_root / "proposal.json").write_bytes(canonical_json_bytes(proposal))
-    (raw_root / "provider-output.json").write_bytes(raw_response)
-    if event_bytes:
-        (raw_root / "events.jsonl").write_bytes(event_bytes)
 
     print(f"Codex proposal prepared: {args.run_id}")
     print(f"Model: {args.model}")
@@ -357,6 +359,6 @@ def decode_json(content: bytes, context: str) -> dict[str, Any]:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except (CodexAdapterError, OSError, json.JSONDecodeError) as exc:
+    except (CodexAdapterError, OllamaAdapterError, OSError, json.JSONDecodeError) as exc:
         print(f"Codex Builder adapter failed: {exc}", file=sys.stderr)
         raise SystemExit(1) from exc
