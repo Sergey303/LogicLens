@@ -1,6 +1,6 @@
 # Builder provider experiment runbook
 
-This runbook prepares one frozen task, runs local Qwen through Ollama or imports a Codex proposal, validates both through the same trusted pipeline, and compares successful runs.
+This runbook prepares one frozen task, runs local Qwen through Ollama and Codex through the Codex CLI, validates both through the same trusted pipeline, and compares successful runs.
 
 The commands do not activate an epoch.
 
@@ -126,7 +126,7 @@ python .\tools\builder_experiment.py import-run `
   --run-id codex-run-001
 ```
 
-A raw Codex transcript may be passed through `--raw-output <file>` when a stable export is available. Never place credentials or API keys in that file.
+Trusted import retains the final Codex response as raw provider evidence. The separate JSONL event stream remains beside the provider proposal for audit and must never contain credentials or API keys.
 
 ## 4. Compare successful runs
 
