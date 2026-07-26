@@ -762,11 +762,11 @@ def run_process(
     context: str,
     stdin_text: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
+    stdin_bytes = stdin_text.encode(UTF8) if stdin_text is not None else None
     try:
         completed = subprocess.run(
             command,
-            input=stdin_text,
-            text=True,
+            input=stdin_bytes,
             capture_output=True,
             cwd=cwd,
             check=False,
@@ -774,17 +774,31 @@ def run_process(
         )
     except subprocess.TimeoutExpired as exc:
         raise ExperimentError(f"{context} exceeded the reviewed timeout") from exc
-    output_bytes = len(completed.stdout.encode(UTF8)) + len(
-        completed.stderr.encode(UTF8)
-    )
-    if output_bytes > MAX_PROCESS_OUTPUT_BYTES:
+
+    stdout_bytes = completed.stdout or b""
+    stderr_bytes = completed.stderr or b""
+    if not isinstance(stdout_bytes, bytes) or not isinstance(stderr_bytes, bytes):
+        raise ExperimentError(f"{context} returned non-binary process output")
+    if len(stdout_bytes) + len(stderr_bytes) > MAX_PROCESS_OUTPUT_BYTES:
         raise ExperimentError(f"{context} exceeded the process output limit")
-    if completed.returncode != 0:
+    try:
+        stdout = stdout_bytes.decode(UTF8)
+        stderr = stderr_bytes.decode(UTF8)
+    except UnicodeDecodeError as exc:
+        raise ExperimentError(f"{context} returned output that is not valid UTF-8") from exc
+
+    decoded = subprocess.CompletedProcess(
+        completed.args,
+        completed.returncode,
+        stdout,
+        stderr,
+    )
+    if decoded.returncode != 0:
         raise ExperimentError(
-            f"{context} failed with exit {completed.returncode}: "
-            f"stdout={completed.stdout[-2000:]!r}, stderr={completed.stderr[-2000:]!r}"
+            f"{context} failed with exit {decoded.returncode}: "
+            f"stdout={decoded.stdout[-2000:]!r}, stderr={decoded.stderr[-2000:]!r}"
         )
-    return completed
+    return decoded
 
 
 def validate_json(value: Any, schema_path: Path, context: str) -> None:

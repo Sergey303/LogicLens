@@ -273,8 +273,7 @@ def call_codex(
     try:
         completed = subprocess.run(
             command,
-            input=prompt,
-            text=True,
+            input=prompt.encode(UTF8),
             capture_output=True,
             cwd=workspace,
             check=False,
@@ -282,18 +281,26 @@ def call_codex(
         )
     except subprocess.TimeoutExpired as exc:
         raise CodexAdapterError("Codex CLI exceeded the reviewed timeout") from exc
-    event_bytes = completed.stdout.encode(UTF8)
-    error_bytes = completed.stderr.encode(UTF8)
+
+    event_bytes = completed.stdout or b""
+    error_bytes = completed.stderr or b""
+    if not isinstance(event_bytes, bytes) or not isinstance(error_bytes, bytes):
+        raise CodexAdapterError("Codex CLI returned non-binary process output")
     if len(event_bytes) + len(error_bytes) > MAX_EVENT_BYTES:
         raise CodexAdapterError("Codex CLI output exceeds the reviewed size limit")
+    try:
+        events = event_bytes.decode(UTF8)
+        errors = error_bytes.decode(UTF8)
+    except UnicodeDecodeError as exc:
+        raise CodexAdapterError("Codex CLI output is not valid UTF-8") from exc
     if completed.returncode != 0:
         raise CodexAdapterError(
             f"Codex CLI failed with exit {completed.returncode}: "
-            f"{completed.stderr[-2000:]}"
+            f"{errors[-2000:]}"
         )
     if not final_path.is_file():
         raise CodexAdapterError("Codex CLI did not write the final response")
-    tool_calls = count_tool_calls(completed.stdout)
+    tool_calls = count_tool_calls(events)
     if tool_calls:
         raise CodexAdapterError(
             "Codex invoked tools even though the frozen provider run forbids them"

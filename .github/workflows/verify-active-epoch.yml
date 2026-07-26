@@ -34,6 +34,7 @@ on:
       - "tests/builder_candidate_contract_test.py"
       - "tests/builder_candidate_meta_call_test.py"
       - "tests/builder_experiment_contract_test.py"
+      - "tests/builder_process_encoding_test.py"
       - "tests/builder_ollama_adapter_test.py"
       - "tests/builder_codex_adapter_test.py"
       - ".github/workflows/verify-active-epoch.yml"
@@ -72,6 +73,7 @@ on:
       - "tests/builder_candidate_contract_test.py"
       - "tests/builder_candidate_meta_call_test.py"
       - "tests/builder_experiment_contract_test.py"
+      - "tests/builder_process_encoding_test.py"
       - "tests/builder_ollama_adapter_test.py"
       - "tests/builder_codex_adapter_test.py"
       - ".github/workflows/verify-active-epoch.yml"
@@ -228,6 +230,8 @@ jobs:
             --qwen-fixture fixtures/builder-experiment/qwen \
             --codex-fixture fixtures/builder-experiment/codex \
             2>&1 | tee /tmp/builder-experiment-verification.log
+          python tests/builder_process_encoding_test.py \
+            2>&1 | tee -a /tmp/builder-experiment-verification.log
           python tests/builder_ollama_adapter_test.py \
             --baseline /tmp/active-epoch-a \
             --task "$task" \
