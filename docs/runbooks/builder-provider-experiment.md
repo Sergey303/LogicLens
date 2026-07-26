@@ -27,6 +27,19 @@ python .\tools\run_builder_provider_pair.py `
 
 The command builds one baseline, prepares one frozen workspace, runs Qwen through loopback Ollama, runs Codex through `codex exec`, imports both proposals through the same trusted validator and hidden oracle, and writes the comparison. It never activates a candidate.
 
+A provider rejection is a valid measured outcome, not an infrastructure failure. The runner preserves the raw response, still runs the other provider, and writes `provider-pair-summary.json`. It writes `provider-comparison.json` only when both proposals pass trusted import and the hidden oracle. A failure before any provider response is preserved remains an infrastructure failure and returns a non-zero exit code.
+
+To continue an already preserved Qwen rejection without generating a second Qwen response, reuse that exact output directory:
+
+```powershell
+python .\tools\run_builder_provider_pair.py `
+  --output .\artifacts\builder\eng-48-real-pair-004 `
+  --codex-model gpt-5.6 `
+  --resume-after-qwen-rejection
+```
+
+Resume mode requires the existing `active-epoch`, frozen `workspace`, and `qwen-provider/raw/provider-output.json`. It refuses a Qwen proposal/run or any pre-existing Codex/comparison/summary target, so it cannot overwrite earlier evidence.
+
 The Codex adapter runs with an ephemeral session, read-only sandbox, no approvals, no user configuration, no project rules, and a strict output schema. The complete provider input is passed through stdin, so Windows command-line length does not truncate it. Any Codex tool invocation or frozen-workspace change rejects the run.
 
 ## 1. Build the active baseline
