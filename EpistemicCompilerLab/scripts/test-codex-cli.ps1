@@ -29,8 +29,8 @@ try {
   "additionalProperties": false,
   "required": ["status", "value"],
   "properties": {
-    "status": {"const": "ok"},
-    "value": {"const": 42}
+    "status": {"type": "string", "const": "ok"},
+    "value": {"type": "integer", "const": 42}
   }
 }
 '@ | Set-Content -LiteralPath $schemaPath -Encoding utf8
