@@ -6,6 +6,7 @@ param(
         'doctor',
         'tests',
         'cases',
+        'cases-v1',
         'oracle',
         'runner-check',
         'ollama-smoke',
@@ -52,6 +53,9 @@ try {
         }
         'cases' {
             & (Join-Path $scriptsRoot 'validate-cases.ps1')
+        }
+        'cases-v1' {
+            & (Join-Path $scriptsRoot 'validate-benchmark-v1.ps1')
         }
         'oracle' {
             & (Join-Path $scriptsRoot 'verify-oracle.ps1')
