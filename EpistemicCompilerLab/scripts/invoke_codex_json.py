@@ -76,8 +76,6 @@ def main() -> int:
         "--json",
         "--sandbox",
         "read-only",
-        "--ask-for-approval",
-        "never",
         "--ignore-user-config",
         "--ignore-rules",
         "--model",
