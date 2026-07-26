@@ -74,10 +74,14 @@ try {
             & (Join-Path $scriptsRoot 'test-ollama-model.ps1') -Model $profileModel
         }
         'codex-smoke' {
-            if (-not $Arguments -or $Arguments.Count -ne 1) {
-                throw 'Usage: codex-smoke <explicit-model>'
+            if ($Arguments -and $Arguments.Count -gt 1) {
+                throw 'Usage: codex-smoke [explicit-model]'
             }
-            & (Join-Path $scriptsRoot 'test-codex-cli.ps1') -Model $Arguments[0]
+            $codexParameters = @{}
+            if ($Arguments -and $Arguments.Count -eq 1) {
+                $codexParameters.Model = $Arguments[0]
+            }
+            & (Join-Path $scriptsRoot 'test-codex-cli.ps1') @codexParameters
         }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
