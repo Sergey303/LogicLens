@@ -110,6 +110,8 @@ def main() -> int:
                     "offline-qwen",
                     "--model",
                     "qwen2.5-coder:7b",
+                    "--context-tokens",
+                    "16384",
                     "--response-file",
                     str(args.response),
                     "--elapsed-ms",
@@ -132,13 +134,19 @@ def main() -> int:
             "costUsd": 0,
         }:
             raise VerificationError("adapter proposal metrics are incorrect")
-        request_text = (adapter_output / "raw" / "request.json").read_text(
-            encoding="utf-8"
-        )
+        request = read_json(adapter_output / "raw" / "request.json")
+        request_text = json.dumps(request, ensure_ascii=False)
         if "oracle" in request_text.lower():
             raise VerificationError("trusted oracle leaked into Ollama request")
         if "127.0.0.1" in request_text or "localhost" in request_text:
             raise VerificationError("machine endpoint leaked into retained request")
+        if request.get("options", {}).get("num_ctx") != 16_384:
+            raise VerificationError("reviewed context window was not retained")
+        user_content = request.get("messages", [{}, {}])[1].get("content", "")
+        if user_content.find("# Final mandatory constraints") <= user_content.find(
+            "# Frozen evidence"
+        ):
+            raise VerificationError("final constraints do not follow evidence")
 
         run_output = temporary_root / "run"
         success(
@@ -209,6 +217,46 @@ def main() -> int:
         if retained_output.read_bytes() != invalid_response_path.read_bytes():
             raise VerificationError("invalid provider response was not retained verbatim")
 
+        limited_response = read_json(args.response)
+        limited_response["prompt_eval_count"] = 16_000
+        limited_response_path = temporary_root / "limited-response.json"
+        limited_response_path.write_text(
+            json.dumps(limited_response, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        limited_output = temporary_root / "limited-output"
+        limited_run = run(
+            [
+                str(root() / "tools" / "run_builder_ollama.py"),
+                "--workspace",
+                str(workspace),
+                "--output",
+                str(limited_output),
+                "--run-id",
+                "context-limited",
+                "--context-tokens",
+                "16384",
+                "--response-file",
+                str(limited_response_path),
+            ]
+        )
+        failure(limited_run, "context limit")
+        limited_raw = limited_output / "raw" / "provider-output.json"
+        if limited_raw.read_bytes() != limited_response_path.read_bytes():
+            raise VerificationError("context-limited response was not retained verbatim")
+        adapter_result = read_json(limited_output / "raw" / "adapter-result.json")
+        if adapter_result != {
+            "schemaVersion": "0.1",
+            "status": "context-limited",
+            "contextTokens": 16_384,
+            "promptEvalCount": 16_000,
+            "requiredResponseReserve": 512,
+            "availableResponseTokens": 384,
+        }:
+            raise VerificationError(
+                f"unexpected context-limit diagnostic: {adapter_result}"
+            )
+
         bad_endpoint = run(
             [
                 str(root() / "tools" / "run_builder_ollama.py"),
@@ -225,10 +273,11 @@ def main() -> int:
         failure(bad_endpoint, "loopback")
 
     print("ok 1 - offline Ollama response to trusted run")
-    print("ok 2 - oracle excluded from provider request")
+    print("ok 2 - oracle excluded and context window retained")
     print("ok 3 - invalid response retained with path diagnostics")
-    print("ok 4 - non-loopback endpoint rejected")
-    print("1..4")
+    print("ok 4 - context-limited response retained and classified")
+    print("ok 5 - non-loopback endpoint rejected")
+    print("1..5")
     return 0
 
 
