@@ -1,0 +1,11 @@
+{
+  "protocolVersion": "0.1",
+  "requestId": "epoch-000-entity-view",
+  "command": "entity-view",
+  "epoch": 0,
+  "revision": 0,
+  "options": {
+    "entityId": "urn:logiclens:person:alex",
+    "language": "ru"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "stage": "ontology-generated",
+  "ontologyLabelContractVersion": "1",
+  "compilerCommit": "c64a3e96c3b12d449b5d6368b50922b2ef0c7be6",
+  "sourcePath": "data/Ontology.xml",
+  "sourceDbId": "ontology_iis-v6",
+  "termCount": 101,
+  "labelCount": 242,
+  "priorityCount": 51,
+  "files": {
+    "ontology.generated.pl": "sha256:49e89bad7a332d2364bb9ee065dd07fbbcc89807a5c1d07ff6083973685ad6c5"
+  },
+  "packageHash": "sha256:7cc0863c4d7e4d2f320725113c7f635202a9ed5652214f64c0b3e4ef77691ca7"
+}

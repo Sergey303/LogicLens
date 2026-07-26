@@ -1,0 +1,13 @@
+{
+  "protocolVersion": "0.1",
+  "requestId": "epoch-000-subgraph",
+  "command": "subgraph",
+  "epoch": 0,
+  "revision": 0,
+  "options": {
+    "rootId": "urn:logiclens:person:alex",
+    "depth": 2,
+    "direction": "both",
+    "language": "ru"
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/prolog-cli-v0.schema.json",
+  "title": "LogicLens Prolog CLI v0",
+  "oneOf": [
+    { "$ref": "#/$defs/request" },
+    { "$ref": "#/$defs/successResponse" },
+    { "$ref": "#/$defs/errorResponse" }
+  ],
+  "$defs": {
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "reportedRequestId": {
+      "oneOf": [
+        { "$ref": "#/$defs/requestId" },
+        { "type": "null" }
+      ]
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "command": {
+      "enum": ["health", "inspect-facts", "entity-view", "subgraph"]
+    },
+    "reportedCommand": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        { "type": "null" }
+      ]
+    },
+    "safeNonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "boundedPositiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "factLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxFacts": { "$ref": "#/$defs/boundedPositiveInteger" },
+        "maxOutputBytes": { "$ref": "#/$defs/boundedPositiveInteger" },
+        "timeoutMs": { "$ref": "#/$defs/boundedPositiveInteger" }
+      }
+    },
+    "traversalLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxNodes": { "$ref": "#/$defs/boundedPositiveInteger" },
+        "maxFacts": { "$ref": "#/$defs/boundedPositiveInteger" },
+        "maxOccurrences": { "$ref": "#/$defs/boundedPositiveInteger" },
+        "maxPathLength": { "$ref": "#/$defs/boundedPositiveInteger" },
+        "maxOutputBytes": { "$ref": "#/$defs/boundedPositiveInteger" },
+        "timeoutMs": { "$ref": "#/$defs/boundedPositiveInteger" }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocolVersion", "requestId", "command", "epoch", "revision", "options"],
+      "properties": {
+        "protocolVersion": { "const": "0.1" },
+        "requestId": { "$ref": "#/$defs/requestId" },
+        "command": { "$ref": "#/$defs/command" },
+        "epoch": { "$ref": "#/$defs/safeNonNegativeInteger" },
+        "revision": { "$ref": "#/$defs/safeNonNegativeInteger" },
+        "options": { "type": "object" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "command": { "const": "health" } },
+            "required": ["command"]
+          },
+          "then": {
+            "properties": { "options": { "$ref": "#/$defs/healthOptions" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "command": { "const": "inspect-facts" } },
+            "required": ["command"]
+          },
+          "then": {
+            "properties": { "options": { "$ref": "#/$defs/inspectFactsOptions" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "command": { "const": "entity-view" } },
+            "required": ["command"]
+          },
+          "then": {
+            "properties": { "options": { "$ref": "#/$defs/entityViewOptions" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "command": { "const": "subgraph" } },
+            "required": ["command"]
+          },
+          "then": {
+            "properties": { "options": { "$ref": "#/$defs/subgraphOptions" } }
+          }
+        }
+      ]
+    },
+    "healthOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 0
+    },
+    "inspectFactsOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entityId"],
+      "properties": {
+        "entityId": { "$ref": "#/$defs/identifier" },
+        "limits": { "$ref": "#/$defs/factLimits" }
+      }
+    },
+    "entityViewOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entityId"],
+      "properties": {
+        "entityId": { "$ref": "#/$defs/identifier" },
+        "language": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "includeRawProlog": { "type": "boolean" },
+        "limits": { "$ref": "#/$defs/factLimits" }
+      }
+    },
+    "subgraphOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rootId", "depth", "direction"],
+      "properties": {
+        "rootId": { "$ref": "#/$defs/identifier" },
+        "depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "direction": { "enum": ["outgoing", "incoming", "both"] },
+        "language": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "limits": { "$ref": "#/$defs/traversalLimits" }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "severity": { "enum": ["info", "warning", "error"] },
+        "message": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "context": {
+          "type": "object",
+          "maxProperties": 100
+        }
+      }
+    },
+    "successResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocolVersion",
+        "requestId",
+        "command",
+        "status",
+        "epoch",
+        "revision",
+        "result",
+        "diagnostics"
+      ],
+      "properties": {
+        "protocolVersion": { "const": "0.1" },
+        "requestId": { "$ref": "#/$defs/requestId" },
+        "command": { "$ref": "#/$defs/command" },
+        "status": { "const": "ok" },
+        "epoch": { "$ref": "#/$defs/safeNonNegativeInteger" },
+        "revision": { "$ref": "#/$defs/safeNonNegativeInteger" },
+        "result": { "type": "object" },
+        "diagnostics": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/diagnostic" },
+          "maxItems": 1000
+        }
+      }
+    },
+    "errorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocolVersion",
+        "requestId",
+        "command",
+        "status",
+        "epoch",
+        "revision",
+        "error",
+        "diagnostics"
+      ],
+      "properties": {
+        "protocolVersion": { "const": "0.1" },
+        "requestId": { "$ref": "#/$defs/reportedRequestId" },
+        "command": { "$ref": "#/$defs/reportedCommand" },
+        "status": { "const": "error" },
+        "epoch": { "$ref": "#/$defs/safeNonNegativeInteger" },
+        "revision": { "$ref": "#/$defs/safeNonNegativeInteger" },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "message", "details"],
+          "properties": {
+            "code": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "message": {
+              "type": "string",
+              "maxLength": 10000
+            },
+            "details": {
+              "type": "object",
+              "maxProperties": 100
+            }
+          }
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/diagnostic" },
+          "maxItems": 1000
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "builder-workspace",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "taskHash": "sha256:246ca47b30a7b80ef78ff23ecc4a47d643ba3d1589cf5011daa1ce8538f3be95",
+  "oracleHash": "sha256:e4831d5bfb058819f2b2ae90adc8897260a56c4c8f48b9b0f0d8aebe87711943",
+  "base": {
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:faf335e6063ce6515c857f14339ba505584863d31fdaf63977718e7052c1f24b"
+  },
+  "contracts": {
+    "candidate": "0.1",
+    "cli": "0.1",
+    "ui": "0.1"
+  },
+  "files": {
+    "task.json": "sha256:bb7a11fa83c986982a69b919b43876750acced1999e0926081a69b764a0f8a57",
+    "prompt.md": "sha256:68a26819dc984ae0139c292390f723fffeab02850586248d80f6fc01abca2ae3",
+    "contracts/epoch-candidate-v0.schema.json": "sha256:ceacbb9e54988fb97937a9ba071bce1dd4f83708e45793f6c5a5f48fced6b8e8",
+    "evidence/01-person-subgraph.json": "sha256:a9a31db9fd0d2f077ef8cb8806dfb1b255880a12a15e071810ba6afe6467bba3",
+    "evidence/02-participation-facts.json": "sha256:01aeaf78c60da4e7e103dda51e98fce28daa7e48aad0ce5300540feff828aa3d",
+    "evidence/03-organization-facts.json": "sha256:d552c32651d4d630e0d9b8c41eca5a2d5af6ac552d66b96fccf5b5d06c3644f7"
+  }
+}
