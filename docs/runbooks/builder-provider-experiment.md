@@ -1,6 +1,6 @@
 # Builder provider experiment runbook
 
-This runbook prepares one frozen task, runs local Qwen through Ollama or imports a Codex proposal, validates both through the same trusted pipeline, and compares successful runs.
+This runbook prepares one frozen task, runs local Qwen through Ollama and Codex through the Codex CLI, validates both through the same trusted pipeline, and compares successful runs.
 
 The commands do not activate an epoch.
 
@@ -11,8 +11,23 @@ The commands do not activate an epoch.
 - SWI-Prolog 9.0.4
 - Git
 - for Qwen: local Ollama with `qwen2.5-coder:7b`
+- for Codex: Codex CLI installed, `codex login` completed, and an explicit available model identifier
 
 Run commands from the repository root.
+
+## Fast path: run the real pair with one command
+
+Choose a new empty output directory and pass the exact Codex model identifier used for the experiment:
+
+```powershell
+python .\tools\run_builder_provider_pair.py `
+  --output .\artifacts\builder\eng-48-real-pair `
+  --codex-model gpt-5.6
+```
+
+The command builds one baseline, prepares one frozen workspace, runs Qwen through loopback Ollama, runs Codex through `codex exec`, imports both proposals through the same trusted validator and hidden oracle, and writes the comparison. It never activates a candidate.
+
+The Codex adapter runs with an ephemeral session, read-only sandbox, no approvals, no user configuration, no project rules, and a strict output schema. The complete provider input is passed through stdin, so Windows command-line length does not truncate it. Any Codex tool invocation or frozen-workspace change rejects the run.
 
 ## 1. Build the active baseline
 
@@ -81,31 +96,21 @@ A successful import means both candidate validation and the hidden oracle passed
 
 ## 3B. Produce and import the Codex proposal
 
-Give Codex the contents of the frozen workspace directory. It must create only:
+Run Codex non-interactively against the same frozen workspace. The model identifier is required so the retained provider metadata cannot silently follow a changing local default:
 
-```text
-codex-provider/
-  proposal.json
-  files/
-    rules/candidate_researcher_at_iis.pl
-    tests/candidate_researcher_at_iis_tests.pl
-    ui/researcher-at-iis.json
+```powershell
+python .\tools\run_builder_codex.py `
+  --workspace .\artifacts\builder\workspace `
+  --output .\artifacts\builder\codex-provider `
+  --run-id codex-run-001 `
+  --model gpt-5.6
 ```
 
-Use this provider metadata in `proposal.json`:
+Use an actually available model and retain its exact identifier. The adapter writes only the three task-declared proposal files, preserves the final JSON response and Codex JSONL events, records elapsed time, and leaves unknown subscription cost absent so trusted import represents it as `null`.
 
-```json
-{
-  "kind": "codex",
-  "name": "codex",
-  "model": "<actual model identifier>",
-  "runId": "codex-run-001"
-}
-```
+Do not copy `oracle.json` into the Codex workspace. Do not edit the task or evidence after the workspace is prepared. The adapter rejects a Codex run that invokes tools or changes any frozen-workspace byte.
 
-Do not copy `oracle.json` into the Codex workspace. Do not edit the task or evidence after the workspace is prepared.
-
-When the proposal is ready:
+Import the proposal:
 
 ```powershell
 python .\tools\builder_experiment.py import-run `
@@ -115,12 +120,13 @@ python .\tools\builder_experiment.py import-run `
   --candidate-schema .\contracts\epoch-candidate-v0.schema.json `
   --run-schema .\contracts\builder-run-v0.schema.json `
   --workspace .\artifacts\builder\workspace `
-  --proposal .\artifacts\builder\codex-provider `
+  --proposal .\artifacts\builder\codex-provider\proposal `
+  --raw-output .\artifacts\builder\codex-provider\raw\provider-output.json `
   --output .\artifacts\builder\codex-run-001 `
   --run-id codex-run-001
 ```
 
-A raw Codex transcript may be passed through `--raw-output <file>` when a stable export is available. Never place credentials or API keys in that file.
+Trusted import retains the final Codex response as raw provider evidence. The separate JSONL event stream remains beside the provider proposal for audit and must never contain credentials or API keys.
 
 ## 4. Compare successful runs
 
