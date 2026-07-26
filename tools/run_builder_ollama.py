@@ -18,6 +18,10 @@ from active_epoch.hashing import canonical_json_bytes
 
 UTF8 = "utf-8"
 MAX_RESPONSE_BYTES = 10 * 1024 * 1024
+DEFAULT_CONTEXT_TOKENS = 16_384
+MIN_CONTEXT_TOKENS = 4_096
+MAX_CONTEXT_TOKENS = 32_768
+REQUIRED_RESPONSE_RESERVE = 512
 
 
 class OllamaAdapterError(RuntimeError):
@@ -35,6 +39,12 @@ def parse_args() -> argparse.Namespace:
         default="http://127.0.0.1:11434/api/chat",
     )
     parser.add_argument("--timeout-seconds", type=float, default=300.0)
+    parser.add_argument(
+        "--context-tokens",
+        type=int,
+        default=DEFAULT_CONTEXT_TOKENS,
+        help="reviewed Ollama context window for the complete frozen request",
+    )
     parser.add_argument(
         "--response-file",
         type=Path,
@@ -56,6 +66,7 @@ def main() -> int:
         raise OllamaAdapterError("model must be a non-empty string up to 256 characters")
     if args.timeout_seconds <= 0 or args.timeout_seconds > 1800:
         raise OllamaAdapterError("timeout-seconds must be between 0 and 1800")
+    validate_context_tokens(args.context_tokens)
     if args.manual_fixes < 0:
         raise OllamaAdapterError("manual-fixes cannot be negative")
     if args.elapsed_ms is not None and args.response_file is None:
@@ -90,7 +101,13 @@ def main() -> int:
     if not evidence:
         raise OllamaAdapterError("workspace contains no evidence")
 
-    request_payload = build_request(args.model, task, prompt, evidence)
+    request_payload = build_request(
+        args.model,
+        task,
+        prompt,
+        evidence,
+        args.context_tokens,
+    )
     raw_root = output / "raw"
     raw_root.mkdir(parents=True)
     (raw_root / "request.json").write_bytes(canonical_json_bytes(request_payload))
@@ -116,6 +133,7 @@ def main() -> int:
     (raw_root / "provider-output.json").write_bytes(raw_response)
 
     response = decode_json(raw_response, "Ollama response")
+    ensure_prompt_not_context_limited(response, args.context_tokens, raw_root)
     model_content = extract_content(response)
     generated = decode_json(model_content.encode(UTF8), "Ollama message content")
     files = validate_generated_files(generated, task)
@@ -168,6 +186,7 @@ def main() -> int:
 
     print(f"Ollama proposal prepared: {args.run_id}")
     print(f"Model: {args.model}")
+    print(f"Context tokens: {args.context_tokens}")
     print(f"Files: {len(files)}")
     print(f"Elapsed ms: {proposal['metrics']['elapsedMs']}")
     print(f"Proposal: {proposal_root}")
@@ -180,7 +199,9 @@ def build_request(
     task: dict[str, Any],
     prompt: str,
     evidence: list[dict[str, Any]],
+    context_tokens: int = DEFAULT_CONTEXT_TOKENS,
 ) -> dict[str, Any]:
+    validate_context_tokens(context_tokens)
     expected_paths = [
         task["candidate"]["rulePath"],
         task["candidate"]["testPath"],
@@ -190,6 +211,7 @@ def build_request(
         "notes": "optional short note",
         "files": {path: f"complete UTF-8 content for {path}" for path in expected_paths},
     }
+    final_constraints = build_final_constraints(task, expected_paths)
     user_content = (
         prompt
         + "\n\n# Frozen task.json\n"
@@ -198,7 +220,8 @@ def build_request(
         + json.dumps(evidence, ensure_ascii=False, indent=2)
         + "\n\n# Required JSON response shape\n"
         + json.dumps(response_shape, ensure_ascii=False, indent=2)
-        + "\n\nReturn exactly one JSON object and no Markdown fences."
+        + "\n\n"
+        + final_constraints
     )
     return {
         "model": model,
@@ -206,6 +229,7 @@ def build_request(
         "format": "json",
         "options": {
             "temperature": 0,
+            "num_ctx": context_tokens,
         },
         "messages": [
             {
@@ -221,6 +245,65 @@ def build_request(
             },
         ],
     }
+
+
+def build_final_constraints(task: dict[str, Any], expected_paths: list[str]) -> str:
+    candidate = task["candidate"]
+    return (
+        "# Final mandatory constraints — apply these after reading all evidence\n"
+        "1. Every `.pl` file is SWI-Prolog source, never Perl. Do not emit "
+        "`#!/usr/bin/perl`, `use strict`, `use warnings`, `sub`, `my`, or Perl `=>`.\n"
+        f"2. Return exactly these file keys: {json.dumps(expected_paths, ensure_ascii=False)}.\n"
+        f"3. Export {candidate['module']}:{candidate['predicate']}/{candidate['arity']} "
+        "and use `epoch_data:fact/4` with evidence FactIds from the public evidence.\n"
+        "4. Tests are executable SWI-Prolog plunit tests.\n"
+        f"5. UI JSON uses schemaVersion 0.1 and binds exactly "
+        f"{candidate['uiPredicate']} to trusted component {candidate['uiComponent']}.\n"
+        "6. Return exactly one JSON object in the required response shape, with no "
+        "Markdown fences and no extra top-level fields."
+    )
+
+
+def validate_context_tokens(value: int) -> None:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise OllamaAdapterError("context-tokens must be an integer")
+    if value < MIN_CONTEXT_TOKENS or value > MAX_CONTEXT_TOKENS:
+        raise OllamaAdapterError(
+            f"context-tokens must be between {MIN_CONTEXT_TOKENS} and "
+            f"{MAX_CONTEXT_TOKENS}"
+        )
+
+
+def ensure_prompt_not_context_limited(
+    response: dict[str, Any],
+    context_tokens: int,
+    raw_root: Path,
+) -> None:
+    prompt_eval_count = response.get("prompt_eval_count")
+    if prompt_eval_count is None:
+        return
+    if isinstance(prompt_eval_count, bool) or not isinstance(prompt_eval_count, int):
+        raise OllamaAdapterError("Ollama prompt_eval_count must be an integer")
+    if prompt_eval_count < 0:
+        raise OllamaAdapterError("Ollama prompt_eval_count cannot be negative")
+    available_for_response = context_tokens - prompt_eval_count
+    if available_for_response >= REQUIRED_RESPONSE_RESERVE:
+        return
+
+    diagnostic = {
+        "schemaVersion": "0.1",
+        "status": "context-limited",
+        "contextTokens": context_tokens,
+        "promptEvalCount": prompt_eval_count,
+        "requiredResponseReserve": REQUIRED_RESPONSE_RESERVE,
+        "availableResponseTokens": available_for_response,
+    }
+    (raw_root / "adapter-result.json").write_bytes(canonical_json_bytes(diagnostic))
+    raise OllamaAdapterError(
+        "Ollama prompt reached the reviewed context limit; raw response was preserved; "
+        f"context-tokens={context_tokens}; prompt-eval-count={prompt_eval_count}; "
+        f"required-response-reserve={REQUIRED_RESPONSE_RESERVE}"
+    )
 
 
 def validate_loopback_endpoint(value: str) -> str:
