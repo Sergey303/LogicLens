@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Invoke Codex CLI as a no-tools, schema-constrained JSON provider."""
-
 from __future__ import annotations
 
 import argparse
@@ -30,19 +29,27 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def count_tool_calls(events: str) -> int:
-    count = 0
+def parse_events(events: str) -> list[dict]:
+    parsed: list[dict] = []
     for line in events.splitlines():
         if not line.strip():
             continue
         try:
-            event = json.loads(line)
+            value = json.loads(line)
         except json.JSONDecodeError as exc:
             raise AdapterError("Codex --json output is not valid JSONL") from exc
-        item = event.get("item") if isinstance(event, dict) else None
+        if not isinstance(value, dict):
+            raise AdapterError("Codex event must be a JSON object")
+        parsed.append(value)
+    return parsed
+
+
+def count_tool_calls(events: str) -> int:
+    count = 0
+    for event in parse_events(events):
+        item = event.get("item")
         if (
-            isinstance(event, dict)
-            and event.get("type") in {"item.started", "item.completed"}
+            event.get("type") in {"item.started", "item.completed"}
             and isinstance(item, dict)
             and item.get("type") in FORBIDDEN
         ):
@@ -52,27 +59,18 @@ def count_tool_calls(events: str) -> int:
 
 def failure_details(events: str) -> str:
     details: list[str] = []
-    for line in events.splitlines():
-        if not line.strip():
-            continue
-        try:
-            event = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if not isinstance(event, dict):
-            continue
+    try:
+        parsed = parse_events(events)
+    except AdapterError:
+        tail = events.strip()[-2000:]
+        return f"non-JSONL stdout tail: {tail}" if tail else "no stdout diagnostics"
+    for event in parsed:
         kind = event.get("type")
         item = event.get("item")
         if kind in {"turn.failed", "thread.error", "error"}:
-            value = event.get("error") or event.get("message") or event
-            details.append(json.dumps(value, ensure_ascii=False))
-        elif (
-            kind in {"item.started", "item.completed"}
-            and isinstance(item, dict)
-            and item.get("type") == "error"
-        ):
-            value = item.get("message") or item.get("error") or item
-            details.append(json.dumps(value, ensure_ascii=False))
+            details.append(json.dumps(event.get("error") or event.get("message") or event, ensure_ascii=False))
+        elif kind in {"item.started", "item.completed"} and isinstance(item, dict) and item.get("type") == "error":
+            details.append(json.dumps(item.get("message") or item.get("error") or item, ensure_ascii=False))
     if details:
         return " | ".join(details[-5:])
     tail = events.strip()[-2000:]
@@ -96,37 +94,19 @@ def main() -> int:
     events.parent.mkdir(parents=True, exist_ok=True)
     if output.exists() or events.exists():
         raise AdapterError("output and events paths must be new")
-
     command = [
-        executable,
-        "exec",
-        "--ephemeral",
-        "--json",
-        "--sandbox",
-        "read-only",
-        "--ignore-user-config",
-        "--ignore-rules",
-        "--model",
-        args.model,
-        "--cd",
-        str(workdir),
-        "--output-schema",
-        str(schema),
-        "--output-last-message",
-        str(output),
+        executable, "exec", "--ephemeral", "--json", "--sandbox", "read-only",
+        "--ignore-user-config", "--ignore-rules", "--model", args.model,
+        "--cd", str(workdir), "--output-schema", str(schema),
+        "--output-last-message", str(output),
     ]
     prompt = sys.stdin.read()
     if not prompt.strip():
         raise AdapterError("provider prompt is empty")
     try:
         completed = subprocess.run(
-            command,
-            input=prompt,
-            text=True,
-            capture_output=True,
-            cwd=workdir,
-            check=False,
-            timeout=args.timeout_seconds,
+            command, input=prompt, text=True, capture_output=True,
+            cwd=workdir, check=False, timeout=args.timeout_seconds,
         )
     except subprocess.TimeoutExpired as exc:
         raise AdapterError("Codex CLI exceeded the timeout") from exc
@@ -137,10 +117,9 @@ def main() -> int:
     events.write_bytes(event_bytes)
     if completed.returncode != 0:
         stderr = completed.stderr.strip() or "no stderr"
-        structured = failure_details(completed.stdout)
         raise AdapterError(
             f"Codex CLI failed with exit {completed.returncode}; "
-            f"structured={structured}; stderr={stderr[-2000:]}"
+            f"structured={failure_details(completed.stdout)}; stderr={stderr[-2000:]}"
         )
     if not output.is_file():
         raise AdapterError("Codex CLI did not write the final response")
