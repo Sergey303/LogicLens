@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "files"
+  ],
+  "properties": {
+    "notes": {
+      "type": "string"
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rules/candidate_researcher_at_iis.pl",
+        "tests/candidate_researcher_at_iis_tests.pl",
+        "ui/researcher-at-iis.json"
+      ],
+      "properties": {
+        "rules/candidate_researcher_at_iis.pl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "tests/candidate_researcher_at_iis_tests.pl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "ui/researcher-at-iis.json": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        }
+      }
+    }
+  }
+}
