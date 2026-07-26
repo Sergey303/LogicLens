@@ -11,11 +11,12 @@ $temporary = Join-Path ([IO.Path]::GetTempPath()) (
     'epistemic-codex-' + [Guid]::NewGuid().ToString('N')
 )
 New-Item -ItemType Directory -Path $temporary -Force | Out-Null
+$passed = $false
 
 try {
     $codexVersion = (& codex --version 2>&1 | Select-Object -First 1).ToString().Trim()
     if ($LASTEXITCODE -ne 0) {
-        throw "Could not read Codex CLI version."
+        throw 'Could not read Codex CLI version.'
     }
 
     $schemaPath = Join-Path $temporary 'schema.json'
@@ -46,7 +47,7 @@ Do not inspect files, run commands, call tools or include Markdown.
         --events $eventsPath `
         --timeout-seconds $TimeoutSeconds
     if ($LASTEXITCODE -ne 0) {
-        throw "Codex adapter failed with code $LASTEXITCODE."
+        throw "Codex adapter failed with code $LASTEXITCODE. Diagnostics: $temporary"
     }
 
     $response = Get-Content -LiteralPath $outputPath -Raw -Encoding utf8 |
@@ -63,7 +64,13 @@ Do not inspect files, run commands, call tools or include Markdown.
     Write-Host "CLI version: $codexVersion"
     Write-Host 'Execution verified: ephemeral, non-interactive, read-only, no tool events'
     Write-Host "Audit events: $eventCount"
+    $passed = $true
 }
 finally {
-    Remove-Item -LiteralPath $temporary -Recurse -Force -ErrorAction SilentlyContinue
+    if ($passed) {
+        Remove-Item -LiteralPath $temporary -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    else {
+        Write-Warning "Codex smoke diagnostics preserved: $temporary"
+    }
 }
