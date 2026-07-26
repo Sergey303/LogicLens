@@ -91,6 +91,10 @@ def main() -> int:
         raise OllamaAdapterError("workspace contains no evidence")
 
     request_payload = build_request(args.model, task, prompt, evidence)
+    raw_root = output / "raw"
+    raw_root.mkdir(parents=True)
+    (raw_root / "request.json").write_bytes(canonical_json_bytes(request_payload))
+
     started = time.monotonic()
     if args.response_file is not None:
         response_path = args.response_file.resolve()
@@ -109,6 +113,8 @@ def main() -> int:
 
     if len(raw_response) > MAX_RESPONSE_BYTES:
         raise OllamaAdapterError("Ollama response exceeds the reviewed size limit")
+    (raw_root / "provider-output.json").write_bytes(raw_response)
+
     response = decode_json(raw_response, "Ollama response")
     model_content = extract_content(response)
     generated = decode_json(model_content.encode(UTF8), "Ollama message content")
@@ -159,11 +165,6 @@ def main() -> int:
         "notes": generated.get("notes", ""),
     }
     (proposal_root / "proposal.json").write_bytes(canonical_json_bytes(proposal))
-
-    raw_root = output / "raw"
-    raw_root.mkdir(parents=True, exist_ok=True)
-    (raw_root / "provider-output.json").write_bytes(raw_response)
-    (raw_root / "request.json").write_bytes(canonical_json_bytes(request_payload))
 
     print(f"Ollama proposal prepared: {args.run_id}")
     print(f"Model: {args.model}")
@@ -278,8 +279,12 @@ def validate_generated_files(
         task["candidate"]["testPath"],
         task["candidate"]["uiPath"],
     }
-    if set(generated["files"]) != expected:
-        raise OllamaAdapterError("model response files do not exactly match the frozen task")
+    actual = set(generated["files"])
+    if actual != expected:
+        raise OllamaAdapterError(
+            "model response files do not exactly match the frozen task; "
+            f"expected={preview_paths(expected)}; actual={preview_paths(actual)}"
+        )
 
     result: dict[Path, str] = {}
     for raw_path, content in generated["files"].items():
@@ -292,6 +297,13 @@ def validate_generated_files(
             raise OllamaAdapterError(f"generated file is too large: {raw_path}")
         result[path] = content
     return result
+
+
+def preview_paths(paths: set[str]) -> str:
+    ordered = sorted(paths)
+    shown = [path[:200] for path in ordered[:20]]
+    suffix = f" (+{len(ordered) - len(shown)} more)" if len(ordered) > len(shown) else ""
+    return json.dumps(shown, ensure_ascii=False) + suffix
 
 
 def normalize_text(value: str) -> str:
