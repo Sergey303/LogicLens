@@ -67,12 +67,20 @@ def main() -> int:
     if files.get("required") != paths or files.get("additionalProperties") is not False:
         raise VerificationError("exact file contract was weakened")
 
+    with tempfile.TemporaryDirectory(prefix="logiclens-ollama-preflight-") as temporary:
+        output = Path(temporary) / "provider"
+        raw = compat.raw_root_from_argv(["--output", str(output)])
+        if raw != output.resolve() / "raw":
+            raise VerificationError("diagnostic raw path was computed incorrectly")
+        if output.exists():
+            raise VerificationError("diagnostic preflight created the provider output")
+
     server = ThreadingHTTPServer(("127.0.0.1", 0), ErrorHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     try:
         with tempfile.TemporaryDirectory(prefix="logiclens-ollama-http-") as temporary:
-            compat.RAW_ROOT = Path(temporary)
+            compat.RAW_ROOT = Path(temporary) / "raw"
             endpoint = f"http://127.0.0.1:{server.server_port}/api/chat"
             try:
                 compat.call_ollama_with_http_diagnostics(endpoint, b"{}", 5.0)
@@ -82,13 +90,13 @@ def main() -> int:
             else:
                 raise VerificationError("HTTP 400 unexpectedly succeeded")
             result = json.loads(
-                (Path(temporary) / "adapter-result.json").read_text(encoding="utf-8")
+                (compat.RAW_ROOT / "adapter-result.json").read_text(encoding="utf-8")
             )
             if result.get("status") != "http-error" or result.get("statusCode") != 400:
                 raise VerificationError(f"unexpected diagnostic: {result}")
             if result.get("error") != "invalid grammar: diagnostic body retained":
                 raise VerificationError("structured Ollama error was not retained")
-            if not (Path(temporary) / "provider-error.json").is_file():
+            if not (compat.RAW_ROOT / "provider-error.json").is_file():
                 raise VerificationError("provider-error.json was not written")
     finally:
         server.shutdown()
@@ -103,9 +111,10 @@ def main() -> int:
         raise VerificationError("compatibility wrapper references Codex")
 
     print("ok 1 - grammar-safe schema keeps exact paths without length bounds")
-    print("ok 2 - HTTP 400 body and status are retained")
-    print("ok 3 - Qwen-only wrapper selects diagnostic adapter without Codex")
-    print("1..3")
+    print("ok 2 - diagnostic preflight leaves provider output absent")
+    print("ok 3 - HTTP 400 body and status are retained")
+    print("ok 4 - Qwen-only wrapper selects diagnostic adapter without Codex")
+    print("1..4")
     return 0
 
 
