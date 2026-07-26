@@ -42,6 +42,7 @@ def main() -> int:
         prompt,
         [{"name": "public-evidence.json", "content": {"response": {}}}],
         16_384,
+        2_048,
     )
     rendered = "\n".join(
         message["content"] for message in request["messages"]
@@ -58,9 +59,11 @@ def main() -> int:
         "Never write `:- test(...)`.",
         '"schemaVersion": "0.1"',
         '"bindings"',
+        "# Exact JSON response schema",
         "# Final mandatory constraints — apply these after reading all evidence",
         "Every `.pl` file is SWI-Prolog source, never Perl.",
         "A test case is an ordinary clause: `test(name) :- Goal.`",
+        "Escape every newline, tab, quote, and backslash",
     )
     missing = [text for text in required if text not in rendered]
     if missing:
@@ -71,29 +74,59 @@ def main() -> int:
         raise VerificationError("trusted oracle leaked into Qwen prompt")
     if request.get("model") != "qwen2.5-coder:7b":
         raise VerificationError("Qwen model identity was not retained")
-    if request.get("format") != "json":
-        raise VerificationError("Ollama JSON response mode changed unexpectedly")
+
+    response_schema = request.get("format")
+    if not isinstance(response_schema, dict):
+        raise VerificationError("Ollama request does not use a JSON Schema")
+    if response_schema.get("type") != "object":
+        raise VerificationError("structured response schema is not an object")
+    if response_schema.get("additionalProperties") is not False:
+        raise VerificationError("structured response schema allows extra top-level fields")
+    files_schema = response_schema.get("properties", {}).get("files")
+    if not isinstance(files_schema, dict):
+        raise VerificationError("structured response schema has no files object")
+    expected_paths = [
+        task["candidate"]["rulePath"],
+        task["candidate"]["testPath"],
+        task["candidate"]["uiPath"],
+    ]
+    if files_schema.get("required") != expected_paths:
+        raise VerificationError("structured response schema lost exact file keys")
+    if files_schema.get("additionalProperties") is not False:
+        raise VerificationError("structured response schema allows extra files")
+    properties = files_schema.get("properties")
+    if not isinstance(properties, dict) or set(properties) != set(expected_paths):
+        raise VerificationError("structured response schema file properties are incorrect")
+    if any(item.get("type") != "string" for item in properties.values()):
+        raise VerificationError("structured response schema file values are not strings")
+
     options = request.get("options", {})
     if options.get("temperature") != 0:
         raise VerificationError("Qwen request is not deterministic")
     if options.get("num_ctx") != 16_384:
         raise VerificationError("Qwen request lost the reviewed context window")
+    if options.get("num_predict") != 2_048:
+        raise VerificationError("Qwen request lost the reviewed output budget")
 
     evidence_position = rendered.find("# Frozen evidence")
+    schema_position = rendered.find("# Exact JSON response schema")
     final_position = rendered.find("# Final mandatory constraints")
     test_clause_position = rendered.rfind("Never write `:- test(...)`.")
-    if evidence_position < 0 or final_position <= evidence_position:
-        raise VerificationError("final mandatory constraints do not follow evidence")
+    if evidence_position < 0 or schema_position <= evidence_position:
+        raise VerificationError("exact JSON schema does not follow evidence")
+    if final_position <= schema_position:
+        raise VerificationError("final mandatory constraints do not follow the JSON schema")
     if test_clause_position <= final_position:
         raise VerificationError("late constraints lost the plunit test-clause boundary")
 
     print("ok 1 - Qwen prompt fixes SWI-Prolog versus Perl boundary")
     print("ok 2 - Qwen prompt carries fact, plunit and UI contracts")
-    print("ok 3 - final constraints follow public evidence")
-    print("ok 4 - plunit test cases remain clauses, never directives")
-    print("ok 5 - reviewed Ollama context window is explicit")
-    print("ok 6 - hidden oracle remains excluded")
-    print("1..6")
+    print("ok 3 - exact structured-output schema follows public evidence")
+    print("ok 4 - final constraints follow the response schema")
+    print("ok 5 - plunit test cases remain clauses, never directives")
+    print("ok 6 - reviewed context and output budgets are explicit")
+    print("ok 7 - hidden oracle remains excluded")
+    print("1..7")
     return 0
 
 
