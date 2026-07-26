@@ -8,8 +8,11 @@ $version = (& $swipl --version 2>&1 | Out-String).Trim()
 
 Write-Host "SWI-Prolog: $swipl"
 Write-Host "Version: $version"
-Write-Host 'Validating benchmark cases...'
+Write-Host 'Validating benchmark v0...'
 & (Join-Path $PSScriptRoot 'validate-cases.ps1')
+
+Write-Host 'Validating benchmark v1 teacher frames...'
+& (Join-Path $PSScriptRoot 'validate-benchmark-v1.ps1')
 
 Write-Host 'Validating representation runner...'
 & (Join-Path $PSScriptRoot 'validate-runner.ps1')
