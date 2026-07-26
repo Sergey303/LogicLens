@@ -257,8 +257,6 @@ def call_codex(
         "--json",
         "--sandbox",
         "read-only",
-        "--ask-for-approval",
-        "never",
         "--ignore-user-config",
         "--ignore-rules",
         "--model",
