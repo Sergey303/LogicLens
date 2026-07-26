@@ -10,6 +10,7 @@ param(
         'oracle',
         'runner-check',
         'ollama-smoke',
+        'codex-smoke',
         'representation-run',
         'representation-score',
         'representation-baseline',
@@ -71,6 +72,12 @@ try {
                 -BaseModel $Arguments[0] |
                 Select-Object -Last 1
             & (Join-Path $scriptsRoot 'test-ollama-model.ps1') -Model $profileModel
+        }
+        'codex-smoke' {
+            if (-not $Arguments -or $Arguments.Count -ne 1) {
+                throw 'Usage: codex-smoke <explicit-model>'
+            }
+            & (Join-Path $scriptsRoot 'test-codex-cli.ps1') -Model $Arguments[0]
         }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
