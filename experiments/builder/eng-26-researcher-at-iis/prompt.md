@@ -35,7 +35,15 @@ predicate_name(Person, EvidenceFactIds) :-
 
 The example above defines syntax only. Select the real predicates, resources, variables and evidence from the frozen task and public evidence. Do not copy placeholder identifiers into the candidate.
 
-The test file must be executable SWI-Prolog plunit source:
+The test file must be executable SWI-Prolog plunit source.
+
+Only these test-file lines are directives and start with `:-`:
+
+- `:- begin_tests(ModuleName).`
+- `:- use_module('../rules/candidate_researcher_at_iis.pl').`
+- `:- end_tests(ModuleName).`
+
+A plunit test case is an ordinary clause. It starts with `test(...)`, **without** `:-`. Never write `:- test(...)`.
 
 ```prolog
 :- begin_tests(ModuleName).

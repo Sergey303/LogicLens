@@ -20,7 +20,7 @@ Choose a new empty output directory for every attempt:
 
 ```powershell
 python .\tools\run_builder_qwen_only.py `
-  --output .\artifacts\builder\eng-55-qwen-001 `
+  --output .\artifacts\builder\qwen-attempt-001 `
   --qwen-model qwen2.5-coder:7b `
   --context-tokens 16384
 ```
@@ -51,8 +51,8 @@ answer.
 The adapter now does both of the following:
 
 - places the complete reviewed context window in `options.num_ctx`;
-- repeats a short mandatory language, file and UI contract after all public
-  evidence and the required JSON response shape.
+- repeats a short mandatory language, file, test and UI contract after all
+  public evidence and the required JSON response shape.
 
 If the reported prompt token count leaves fewer than 512 reviewed tokens for
 the answer, the adapter preserves the response, writes
@@ -74,7 +74,7 @@ Infrastructure failure returns a non-zero exit code.
 ## Artifacts
 
 ```text
-eng-55-qwen-001/
+qwen-attempt-001/
   active-epoch/
   workspace/
   qwen-provider/
@@ -97,6 +97,22 @@ Perl. It also supplies syntax-only contracts for `epoch_data:fact/4`, `iri/1`,
 language literals, `sort/2`, plunit, and the trusted UI binding shape. A compact
 version of the same mandatory constraints is placed at the end of the provider
 request so it remains visible after the evidence.
+
+For plunit, distinguish directives from test cases:
+
+```prolog
+:- begin_tests(module_name).
+:- use_module('../rules/candidate_rule.pl').
+
+test(case_name) :-
+    assertion(true).
+
+:- end_tests(module_name).
+```
+
+`begin_tests/1`, `use_module/1`, and `end_tests/1` are directives. A test case
+is an ordinary clause and must not be written as `:- test(...)`. The trusted
+validator deliberately keeps `test` outside its directive allowlist.
 
 These instructions clarify the programming-language and file contracts only.
 They do not expose the hidden oracle, bypass validation, or provide
