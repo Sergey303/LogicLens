@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][string] $Model,
+    [string] $Model,
     [int] $TimeoutSeconds = 180
 )
 
@@ -39,13 +39,18 @@ try {
 Return exactly one JSON object with status "ok" and value 42.
 Do not inspect files, run commands, call tools or include Markdown.
 '@
-    $prompt | python $adapter `
-        --model $Model `
-        --working-directory $labRoot `
-        --schema $schemaPath `
-        --output $outputPath `
-        --events $eventsPath `
-        --timeout-seconds $TimeoutSeconds
+    $adapterArguments = @(
+        $adapter,
+        '--working-directory', $labRoot,
+        '--schema', $schemaPath,
+        '--output', $outputPath,
+        '--events', $eventsPath,
+        '--timeout-seconds', $TimeoutSeconds
+    )
+    if (-not [string]::IsNullOrWhiteSpace($Model)) {
+        $adapterArguments += @('--model', $Model)
+    }
+    $prompt | python @adapterArguments
     if ($LASTEXITCODE -ne 0) {
         throw "Codex adapter failed with code $LASTEXITCODE. Diagnostics: $temporary"
     }
@@ -60,7 +65,13 @@ Do not inspect files, run commands, call tools or include Markdown.
         Get-Content -LiteralPath $eventsPath -Encoding utf8 |
             Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
     ).Count
-    Write-Host "Codex CLI smoke passed: $Model"
+    $selection = if ([string]::IsNullOrWhiteSpace($Model)) {
+        'account default'
+    }
+    else {
+        $Model
+    }
+    Write-Host "Codex CLI smoke passed: $selection"
     Write-Host "CLI version: $codexVersion"
     Write-Host 'Execution verified: ephemeral, non-interactive, read-only, no tool events'
     Write-Host "Audit events: $eventCount"
