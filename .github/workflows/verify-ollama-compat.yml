@@ -1,0 +1,36 @@
+name: Verify Ollama HTTP diagnostics
+
+on:
+  pull_request:
+    paths:
+      - "tools/run_builder_ollama_compat.py"
+      - "tools/run_builder_qwen_only_compat.py"
+      - "tests/builder_ollama_compat_test.py"
+      - ".github/workflows/verify-ollama-compat.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/run_builder_ollama_compat.py"
+      - "tools/run_builder_qwen_only_compat.py"
+      - "tests/builder_ollama_compat_test.py"
+      - ".github/workflows/verify-ollama-compat.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify grammar-safe schema and HTTP diagnostics
+        run: |
+          python -m py_compile \
+            tools/run_builder_ollama_compat.py \
+            tools/run_builder_qwen_only_compat.py \
+            tests/builder_ollama_compat_test.py
+          python tests/builder_ollama_compat_test.py
