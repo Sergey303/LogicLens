@@ -37,6 +37,7 @@ on:
       - "tests/builder_process_encoding_test.py"
       - "tests/builder_ollama_adapter_test.py"
       - "tests/builder_codex_adapter_test.py"
+      - "tests/builder_provider_pair_test.py"
       - ".github/workflows/verify-active-epoch.yml"
   push:
     branches:
@@ -76,6 +77,7 @@ on:
       - "tests/builder_process_encoding_test.py"
       - "tests/builder_ollama_adapter_test.py"
       - "tests/builder_codex_adapter_test.py"
+      - "tests/builder_provider_pair_test.py"
       - ".github/workflows/verify-active-epoch.yml"
 
 permissions:
@@ -247,6 +249,8 @@ jobs:
             --candidate-schema contracts/epoch-candidate-v0.schema.json \
             --run-schema contracts/builder-run-v0.schema.json \
             --response fixtures/builder-experiment/codex-response.json \
+            2>&1 | tee -a /tmp/builder-experiment-verification.log
+          python tests/builder_provider_pair_test.py \
             2>&1 | tee -a /tmp/builder-experiment-verification.log
 
       - name: Stage builder candidate artifact
