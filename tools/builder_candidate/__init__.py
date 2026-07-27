@@ -48,6 +48,81 @@ _cli.FORBIDDEN_PROLOG_CALLS = re.compile(
     re.IGNORECASE,
 )
 
+_PLUNIT_EVENT = re.compile(
+    r"^\s*(?P<directive>:-\s*)?"
+    r"(?P<kind>begin_tests|end_tests|test)\s*"
+    r"\(\s*(?P<name>[a-z][A-Za-z0-9_]*)",
+    re.MULTILINE,
+)
+
+
+def _validate_plunit_structure(path, text: str) -> None:
+    """Require every candidate PlUnit suite to contain registered test clauses."""
+
+    active_suite: str | None = None
+    active_test_count = 0
+    suite_count = 0
+
+    for match in _PLUNIT_EVENT.finditer(text):
+        kind = match.group("kind")
+        name = match.group("name")
+        is_directive = match.group("directive") is not None
+
+        if kind == "begin_tests":
+            if not is_directive:
+                raise _cli.CandidateError(
+                    f"candidate begin_tests must be a directive: {path}"
+                )
+            if active_suite is not None:
+                raise _cli.CandidateError(
+                    f"candidate PlUnit suites cannot be nested: {path}"
+                )
+            active_suite = name
+            active_test_count = 0
+            suite_count += 1
+            continue
+
+        if kind == "test":
+            if is_directive:
+                raise _cli.CandidateError(
+                    f"candidate PlUnit test must be an ordinary clause: {path}"
+                )
+            if active_suite is None:
+                raise _cli.CandidateError(
+                    f"candidate PlUnit test is outside begin_tests/end_tests: {path}"
+                )
+            active_test_count += 1
+            continue
+
+        if not is_directive:
+            raise _cli.CandidateError(
+                f"candidate end_tests must be a directive: {path}"
+            )
+        if active_suite is None:
+            raise _cli.CandidateError(
+                f"candidate end_tests has no matching begin_tests: {path}"
+            )
+        if name != active_suite:
+            raise _cli.CandidateError(
+                f"candidate end_tests({name}) does not match "
+                f"begin_tests({active_suite}): {path}"
+            )
+        if active_test_count == 0:
+            raise _cli.CandidateError(
+                f"candidate PlUnit suite {active_suite!r} has no registered tests: {path}"
+            )
+        active_suite = None
+        active_test_count = 0
+
+    if active_suite is not None:
+        raise _cli.CandidateError(
+            f"candidate begin_tests({active_suite}) has no matching end_tests: {path}"
+        )
+    if suite_count == 0:
+        raise _cli.CandidateError(
+            f"candidate test must contain a PlUnit suite: {path}"
+        )
+
 
 def _validate_prolog_file(path, content, kind, rule_paths) -> None:
     """Validate candidate Prolog while allowing quoted ontology IRI data.
@@ -85,8 +160,12 @@ def _validate_prolog_file(path, content, kind, rule_paths) -> None:
     if kind == "rule":
         if "module" not in directives:
             raise _cli.CandidateError(f"candidate rule must declare a module: {path}")
-    elif "begin_tests" not in directives or "end_tests" not in directives:
-        raise _cli.CandidateError(f"candidate test must use begin_tests/end_tests: {path}")
+    else:
+        if "begin_tests" not in directives or "end_tests" not in directives:
+            raise _cli.CandidateError(
+                f"candidate test must use begin_tests/end_tests: {path}"
+            )
+        _validate_plunit_structure(path, text)
 
     allowed_rule_imports = {"'../data/epoch_data.pl'", '"../data/epoch_data.pl"'}
     allowed_test_imports = {
