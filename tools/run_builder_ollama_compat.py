@@ -13,6 +13,7 @@ import run_builder_ollama as base
 
 RAW_ROOT: Path | None = None
 HTTP_ERROR_BODY_LIMIT = 64 * 1024
+_ORIGINAL_BUILD_FINAL_CONSTRAINTS = base.build_final_constraints
 
 
 def grammar_safe_response_schema(expected_paths: list[str]) -> dict[str, Any]:
@@ -34,6 +35,34 @@ def grammar_safe_response_schema(expected_paths: list[str]) -> dict[str, Any]:
         "required": ["files"],
         "additionalProperties": False,
     }
+
+
+def final_constraints_with_task_acceptance(
+    task: dict[str, Any],
+    expected_paths: list[str],
+) -> str:
+    """Repeat public task acceptance after evidence and the response schema."""
+    base_constraints = _ORIGINAL_BUILD_FINAL_CONSTRAINTS(task, expected_paths)
+    acceptance = task.get("acceptance")
+    if (
+        not isinstance(acceptance, list)
+        or not acceptance
+        or any(not isinstance(item, str) or not item.strip() for item in acceptance)
+    ):
+        raise base.OllamaAdapterError(
+            "frozen task acceptance must be a non-empty list of strings"
+        )
+    reminders = "\n".join(f"- {item}" for item in acceptance)
+    return (
+        base_constraints
+        + "\n"
+        + "8. `epoch_data:fact/4` is ordered exactly as "
+        + "`fact(FactId, Subject, Predicate, Object)`; never swap Subject and Object.\n"
+        + "9. Every test file must contain at least one ordinary `test(...)` clause "
+        + "between `begin_tests` and `end_tests`; never close an empty suite.\n\n"
+        + "# Task acceptance reminders — apply literally after evidence\n"
+        + reminders
+    )
 
 
 def raw_root_from_argv(argv: list[str]) -> Path:
@@ -105,6 +134,7 @@ def main() -> int:
     global RAW_ROOT
     RAW_ROOT = raw_root_from_argv(sys.argv[1:])
     base.build_response_schema = grammar_safe_response_schema
+    base.build_final_constraints = final_constraints_with_task_acceptance
     base.call_ollama = call_ollama_with_http_diagnostics
     return base.main()
 

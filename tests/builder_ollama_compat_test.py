@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline checks for ENG-61 grammar-safe schema and HTTP error retention."""
+"""Offline checks for grammar-safe schema, prompt reminders and HTTP diagnostics."""
 from __future__ import annotations
 
 import importlib.util
@@ -67,6 +67,34 @@ def main() -> int:
     if files.get("required") != paths or files.get("additionalProperties") is not False:
         raise VerificationError("exact file contract was weakened")
 
+    task_path = (
+        repository
+        / "experiments"
+        / "builder"
+        / "eng-26-researcher-at-iis"
+        / "task.json"
+    )
+    task = json.loads(task_path.read_text(encoding="utf-8"))
+    constraints = compat.final_constraints_with_task_acceptance(task, paths)
+    acceptance_header = "# Task acceptance reminders — apply literally after evidence"
+    required_prompt_boundaries = (
+        "`fact(FactId, Subject, Predicate, Object)`; never swap Subject and Object.",
+        "at least one ordinary `test(...)` clause between `begin_tests` and `end_tests`",
+        acceptance_header,
+        "epoch_data:fact(FParticipant, Participation, 'http://fogid.net/o/participant', iri(Person))",
+        "epoch_data:fact(FOrganization, Participation, 'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis'))",
+        "epoch_data:fact(FRole, Participation, 'http://fogid.net/o/role', literal('исследователь', lang('ru')))",
+        "Do not put Person or urn:logiclens:org:iis in the Subject position",
+        "Place at least one ordinary test(...) clause after begin_tests/use_module and before end_tests",
+    )
+    missing = [item for item in required_prompt_boundaries if item not in constraints]
+    if missing:
+        raise VerificationError(f"late task acceptance reminders are incomplete: {missing}")
+    if constraints.rfind(acceptance_header) <= constraints.find(
+        "# Final mandatory constraints"
+    ):
+        raise VerificationError("task acceptance reminders do not follow final constraints")
+
     with tempfile.TemporaryDirectory(prefix="logiclens-ollama-preflight-") as temporary:
         output = Path(temporary) / "provider"
         raw = compat.raw_root_from_argv(["--output", str(output)])
@@ -111,10 +139,12 @@ def main() -> int:
         raise VerificationError("compatibility wrapper references Codex")
 
     print("ok 1 - grammar-safe schema keeps exact paths without length bounds")
-    print("ok 2 - diagnostic preflight leaves provider output absent")
-    print("ok 3 - HTTP 400 body and status are retained")
-    print("ok 4 - Qwen-only wrapper selects diagnostic adapter without Codex")
-    print("1..4")
+    print("ok 2 - task acceptance is repeated late with exact fact direction")
+    print("ok 3 - late PlUnit reminder requires a non-empty open suite")
+    print("ok 4 - diagnostic preflight leaves provider output absent")
+    print("ok 5 - HTTP 400 body and status are retained")
+    print("ok 6 - Qwen-only wrapper selects diagnostic adapter without Codex")
+    print("1..6")
     return 0
 
 
