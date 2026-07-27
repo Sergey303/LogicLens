@@ -5,14 +5,20 @@ on:
     paths:
       - "tools/run_builder_ollama_compat.py"
       - "tools/run_builder_qwen_only_compat.py"
+      - "tools/build_epoch_candidate_utf8_compat.py"
+      - "tools/builder_experiment_utf8_compat.py"
       - "tests/builder_ollama_compat_test.py"
+      - "tests/builder_utf8_compat_test.py"
       - ".github/workflows/verify-ollama-compat.yml"
   push:
     branches: [main]
     paths:
       - "tools/run_builder_ollama_compat.py"
       - "tools/run_builder_qwen_only_compat.py"
+      - "tools/build_epoch_candidate_utf8_compat.py"
+      - "tools/builder_experiment_utf8_compat.py"
       - "tests/builder_ollama_compat_test.py"
+      - "tests/builder_utf8_compat_test.py"
       - ".github/workflows/verify-ollama-compat.yml"
 
 permissions:
@@ -27,10 +33,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Verify grammar-safe schema and HTTP diagnostics
+      - name: Install focused validator dependency
+        run: python -m pip install "jsonschema==4.23.0"
+      - name: Verify grammar-safe schema, HTTP diagnostics and UTF-8 validator transport
         run: |
           python -m py_compile \
             tools/run_builder_ollama_compat.py \
             tools/run_builder_qwen_only_compat.py \
-            tests/builder_ollama_compat_test.py
+            tools/build_epoch_candidate_utf8_compat.py \
+            tools/builder_experiment_utf8_compat.py \
+            tests/builder_ollama_compat_test.py \
+            tests/builder_utf8_compat_test.py
           python tests/builder_ollama_compat_test.py
+          python tests/builder_utf8_compat_test.py
