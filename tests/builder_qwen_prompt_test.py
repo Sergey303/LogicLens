@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Verify the frozen Builder prompt is explicit enough for local Qwen 7B."""
-
 from __future__ import annotations
 
 import importlib.util
@@ -53,9 +52,20 @@ def main() -> int:
         "#!/usr/bin/perl",
         "use strict",
         "epoch_data:fact(FactIdA, Subject, PredicateIriA, iri(ResourceIri))",
-        'literal("text", lang(\'ru\'))',
+        "epoch_data:fact(FactId, Subject, Predicate, Object)",
+        "epoch_data:fact(FParticipant, Participation,",
+        "'http://fogid.net/o/participant', iri(Person))",
+        "epoch_data:fact(FOrganization, Participation,",
+        "'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis'))",
+        "epoch_data:fact(FRole, Participation,",
+        "literal('исследователь', lang('ru'))",
+        "Do not reverse these edges.",
+        "Do not put `Person` or `urn:logiclens:org:iis` in the Subject position",
+        "literal(\"text\", lang('ru'))",
         ":- begin_tests(ModuleName).",
         "test(test_name) :-",
+        "At least one `test(...)` clause must appear after `begin_tests/use_module`",
+        "Closing the suite before the test creates an empty invalid suite.",
         "Never write `:- test(...)`.",
         '"schemaVersion": "0.1"',
         '"bindings"',
@@ -64,6 +74,8 @@ def main() -> int:
         "Every `.pl` file is SWI-Prolog source, never Perl.",
         "A test case is an ordinary clause: `test(name) :- Goal.`",
         "Escape every newline, tab, quote, and backslash",
+        "Interpret epoch_data:fact/4 exactly as fact(FactId, Subject, Predicate, Object)",
+        "Place at least one ordinary test(...) clause after begin_tests/use_module and before end_tests",
     )
     missing = [text for text in required if text not in rendered]
     if missing:
@@ -74,6 +86,19 @@ def main() -> int:
         raise VerificationError("trusted oracle leaked into Qwen prompt")
     if request.get("model") != "qwen2.5-coder:7b":
         raise VerificationError("Qwen model identity was not retained")
+
+    if rendered.count("fact(FactId, Subject, Predicate, Object)") < 2:
+        raise VerificationError("fact tuple direction is not repeated across prompt and task")
+    if rendered.count("Participation") < 6:
+        raise VerificationError("shared participation subject is not explicit enough")
+
+    prompt_begin = rendered.find(":- begin_tests(ModuleName).")
+    prompt_test = rendered.find("test(test_name) :-", prompt_begin)
+    prompt_end = rendered.find(":- end_tests(ModuleName).", prompt_test)
+    if min(prompt_begin, prompt_test, prompt_end) < 0 or not (
+        prompt_begin < prompt_test < prompt_end
+    ):
+        raise VerificationError("prompt does not place a test inside the PlUnit suite")
 
     response_schema = request.get("format")
     if not isinstance(response_schema, dict):
@@ -120,13 +145,14 @@ def main() -> int:
         raise VerificationError("late constraints lost the plunit test-clause boundary")
 
     print("ok 1 - Qwen prompt fixes SWI-Prolog versus Perl boundary")
-    print("ok 2 - Qwen prompt carries fact, plunit and UI contracts")
-    print("ok 3 - exact structured-output schema follows public evidence")
-    print("ok 4 - final constraints follow the response schema")
-    print("ok 5 - plunit test cases remain clauses, never directives")
-    print("ok 6 - reviewed context and output budgets are explicit")
-    print("ok 7 - hidden oracle remains excluded")
-    print("1..7")
+    print("ok 2 - exact fact tuple direction and shared subject are explicit")
+    print("ok 3 - task-specific participant, in-org and role patterns are present")
+    print("ok 4 - PlUnit example keeps a non-empty test inside suite boundaries")
+    print("ok 5 - exact structured-output schema follows public evidence")
+    print("ok 6 - final constraints follow the response schema")
+    print("ok 7 - reviewed context and output budgets are explicit")
+    print("ok 8 - hidden oracle remains excluded")
+    print("1..8")
     return 0
 
 
