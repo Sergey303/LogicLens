@@ -60,7 +60,7 @@ def main() -> int:
         "epoch_data:fact(FRole, Participation,",
         "literal('исследователь', lang('ru'))",
         "Do not reverse these edges.",
-        "Do not put `Person` or `urn:logiclens:org:iis` in the Subject position",
+        "put `Person` or `urn:logiclens:org:iis` in the Subject position",
         "literal(\"text\", lang('ru'))",
         ":- begin_tests(ModuleName).",
         "test(test_name) :-",
