@@ -3,6 +3,7 @@ name: Verify zero-epoch local run
 on:
   pull_request:
     paths:
+      - ".gitignore"
       - "contracts/**"
       - "data/Ontology.xml"
       - "epochs/epoch-000/**"
@@ -28,6 +29,7 @@ on:
     branches:
       - main
     paths:
+      - ".gitignore"
       - "contracts/**"
       - "data/Ontology.xml"
       - "epochs/epoch-000/**"
@@ -84,6 +86,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Verify repository hygiene
+        run: python tests/repository_hygiene_test.py
 
       - name: Install pinned SWI-Prolog
         run: |
