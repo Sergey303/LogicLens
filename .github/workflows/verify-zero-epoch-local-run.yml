@@ -3,6 +3,7 @@ name: Verify zero-epoch local run
 on:
   pull_request:
     paths:
+      - ".gitignore"
       - "contracts/**"
       - "data/Ontology.xml"
       - "epochs/epoch-000/**"
@@ -28,6 +29,7 @@ on:
     branches:
       - main
     paths:
+      - ".gitignore"
       - "contracts/**"
       - "data/Ontology.xml"
       - "epochs/epoch-000/**"
@@ -85,6 +87,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Verify repository hygiene
+        run: python tests/repository_hygiene_test.py
+
       - name: Install pinned SWI-Prolog
         run: |
           sudo apt-get update
@@ -131,6 +136,7 @@ jobs:
         with:
           name: logiclens-zero-epoch-local-run
           path: |
+            ${{ runner.temp }}/tracked-python-bytecode.txt
             /tmp/swipl-version.txt
             /tmp/zero-epoch-runner-unit.log
             /tmp/zero-epoch-run.log

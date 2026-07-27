@@ -7,6 +7,10 @@
 **/dist/
 **/coverage/
 
+# Python bytecode
+**/__pycache__/
+*.py[cod]
+
 # Prepared local runtime
 .logiclens/
 
