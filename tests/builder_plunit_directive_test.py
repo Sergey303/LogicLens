@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify plunit test cases stay clauses under the trusted candidate boundary."""
+"""Verify plunit tests remain clauses and registered inside non-empty suites."""
 
 from __future__ import annotations
 
@@ -9,6 +9,16 @@ from pathlib import Path
 
 class VerificationError(AssertionError):
     pass
+
+
+def require_rejected(cli, path: Path, rule_paths: list[Path], source: str, text: str) -> None:
+    try:
+        cli.validate_prolog_file(path, source.encode("utf-8"), "test", rule_paths)
+    except cli.CandidateError as exc:
+        if text not in str(exc):
+            raise VerificationError(f"unexpected validator diagnostic: {exc}") from exc
+    else:
+        raise VerificationError(f"trusted validator accepted invalid PlUnit source: {text}")
 
 
 def main() -> int:
@@ -34,24 +44,70 @@ def main() -> int:
     ).encode("utf-8")
     cli.validate_prolog_file(path, valid, "test", rule_paths)
 
-    invalid = (
+    directive_test = (
         ":- begin_tests(candidate_member).\n"
         ":- use_module('../rules/candidate_member.pl').\n"
         ":- test(is_member).\n"
         ":- end_tests(candidate_member).\n"
-    ).encode("utf-8")
-    try:
-        cli.validate_prolog_file(path, invalid, "test", rule_paths)
-    except cli.CandidateError as exc:
-        if "unreviewed directives ['test']" not in str(exc):
-            raise VerificationError(f"unexpected directive diagnostic: {exc}") from exc
-    else:
-        raise VerificationError("trusted validator accepted :- test(...)")
+    )
+    require_rejected(
+        cli,
+        path,
+        rule_paths,
+        directive_test,
+        "unreviewed directives ['test']",
+    )
+
+    qwen_empty_suite = (
+        ":- begin_tests(candidate_member).\n"
+        ":- use_module('../rules/candidate_member.pl').\n"
+        ":- end_tests(candidate_member).\n"
+        "test(is_member) :- assertion(true).\n"
+    )
+    require_rejected(
+        cli,
+        path,
+        rule_paths,
+        qwen_empty_suite,
+        "has no registered tests",
+    )
+
+    outside_before_suite = (
+        "test(is_member) :- assertion(true).\n"
+        ":- begin_tests(candidate_member).\n"
+        ":- use_module('../rules/candidate_member.pl').\n"
+        "test(second) :- assertion(true).\n"
+        ":- end_tests(candidate_member).\n"
+    )
+    require_rejected(
+        cli,
+        path,
+        rule_paths,
+        outside_before_suite,
+        "outside begin_tests/end_tests",
+    )
+
+    mismatched_suite = (
+        ":- begin_tests(candidate_member).\n"
+        ":- use_module('../rules/candidate_member.pl').\n"
+        "test(is_member) :- assertion(true).\n"
+        ":- end_tests(other_suite).\n"
+    )
+    require_rejected(
+        cli,
+        path,
+        rule_paths,
+        mismatched_suite,
+        "does not match begin_tests",
+    )
 
     print("ok 1 - ordinary plunit test clause remains accepted")
     print("ok 2 - test is absent from the trusted directive allowlist")
     print("ok 3 - :- test(...) remains rejected as unreviewed")
-    print("1..3")
+    print("ok 4 - a suite closed before its test is rejected as empty")
+    print("ok 5 - test clauses outside a suite are rejected")
+    print("ok 6 - mismatched begin_tests/end_tests names are rejected")
+    print("1..6")
     return 0
 
 
