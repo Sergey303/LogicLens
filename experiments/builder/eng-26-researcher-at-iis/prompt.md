@@ -21,6 +21,28 @@ my
 
 Use ordinary SWI-Prolog clauses, atoms, variables, lists, module declarations and plunit tests.
 
+## Exact fact tuple direction
+
+Read every evidence fact and every `epoch_data:fact/4` call in this exact order:
+
+```prolog
+epoch_data:fact(FactId, Subject, Predicate, Object)
+```
+
+For this task, one shared participation resource is the **Subject** of all three required facts. The person, IIS organization and Russian role literal are Objects:
+
+```prolog
+epoch_data:fact(FParticipant, Participation,
+                'http://fogid.net/o/participant', iri(Person)),
+epoch_data:fact(FOrganization, Participation,
+                'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis')),
+epoch_data:fact(FRole, Participation,
+                'http://fogid.net/o/role',
+                literal('исследователь', lang('ru')))
+```
+
+Do not reverse these edges. In particular, do not put `Person` or `urn:logiclens:org:iis` in the Subject position of the `participant` or `in-org` facts.
+
 The rule file must follow this structural contract:
 
 ```prolog
@@ -44,6 +66,8 @@ Only these test-file lines are directives and start with `:-`:
 - `:- end_tests(ModuleName).`
 
 A plunit test case is an ordinary clause. It starts with `test(...)`, **without** `:-`. Never write `:- test(...)`.
+
+At least one `test(...)` clause must appear after `begin_tests/use_module` and before `end_tests`. Closing the suite before the test creates an empty invalid suite.
 
 ```prolog
 :- begin_tests(ModuleName).
