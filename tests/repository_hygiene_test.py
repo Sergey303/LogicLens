@@ -2,6 +2,7 @@
 """Fail when generated Python bytecode is tracked by Git."""
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -30,6 +31,15 @@ def main() -> int:
         if "/__pycache__/" in f"/{path}"
         or path.endswith((".pyc", ".pyo"))
     )
+
+    report_root = Path(os.environ.get("RUNNER_TEMP", repository / ".logiclens"))
+    report_root.mkdir(parents=True, exist_ok=True)
+    report = report_root / "tracked-python-bytecode.txt"
+    report.write_text(
+        "\n".join(generated) + ("\n" if generated else "<none>\n"),
+        encoding="utf-8",
+    )
+
     if generated:
         joined = "\n".join(f"- {path}" for path in generated)
         raise VerificationError(f"generated Python bytecode is tracked:\n{joined}")
