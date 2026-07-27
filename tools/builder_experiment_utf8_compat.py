@@ -6,6 +6,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 import builder_experiment.cli as base
 
@@ -20,6 +21,9 @@ class ExperimentRejected(RuntimeError):
 
 class ExperimentInfrastructureError(RuntimeError):
     """Raised when validation cannot produce a model verdict."""
+
+
+_ORIGINAL_RUN_ORACLE = base.run_oracle
 
 
 def classify_candidate_exit(returncode: int) -> str:
@@ -95,9 +99,7 @@ def run_candidate_builder_utf8(
         ) from exc
 
     status = classify_candidate_exit(completed.returncode)
-    detail = (
-        f"stdout={stdout[-2000:]!r}, stderr={stderr[-2000:]!r}"
-    )
+    detail = f"stdout={stdout[-2000:]!r}, stderr={stderr[-2000:]!r}"
     if status == "rejected":
         raise ExperimentRejected(f"trusted candidate validator rejected: {detail}")
     if status == "infrastructure-failed":
@@ -110,8 +112,24 @@ def run_candidate_builder_utf8(
         )
 
 
+def run_oracle_classified(*args: Any, **kwargs: Any) -> None:
+    """Map a completed hidden-oracle mismatch to the model-rejection exit class."""
+    try:
+        _ORIGINAL_RUN_ORACLE(*args, **kwargs)
+    except base.ExperimentError as exc:
+        message = str(exc)
+        if message.startswith("trusted hidden oracle failed with exit "):
+            raise ExperimentRejected(
+                f"trusted hidden oracle rejected the candidate: {message}"
+            ) from exc
+        raise ExperimentInfrastructureError(
+            f"trusted hidden oracle could not produce a verdict: {message}"
+        ) from exc
+
+
 def main() -> int:
     base.run_candidate_builder = run_candidate_builder_utf8
+    base.run_oracle = run_oracle_classified
     try:
         return base.main()
     except ExperimentRejected as exc:

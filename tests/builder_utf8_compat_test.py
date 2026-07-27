@@ -80,6 +80,36 @@ def main() -> int:
                 f"candidate exit {exit_code} classified as {actual}, expected {expected}"
             )
 
+    def oracle_mismatch(*_args, **_kwargs) -> None:
+        raise experiment.base.ExperimentError(
+            "trusted hidden oracle failed with exit 1: stdout='', stderr=''"
+        )
+
+    experiment._ORIGINAL_RUN_ORACLE = oracle_mismatch
+    try:
+        experiment.run_oracle_classified()
+    except experiment.ExperimentRejected as exc:
+        if "hidden oracle rejected" not in str(exc):
+            raise VerificationError(f"unexpected oracle rejection message: {exc}") from exc
+    else:
+        raise VerificationError("hidden-oracle mismatch was not classified as rejection")
+
+    def oracle_transport_failure(*_args, **_kwargs) -> None:
+        raise experiment.base.ExperimentError(
+            "trusted hidden oracle returned output that is not valid UTF-8"
+        )
+
+    experiment._ORIGINAL_RUN_ORACLE = oracle_transport_failure
+    try:
+        experiment.run_oracle_classified()
+    except experiment.ExperimentInfrastructureError as exc:
+        if "could not produce a verdict" not in str(exc):
+            raise VerificationError(
+                f"unexpected oracle infrastructure message: {exc}"
+            ) from exc
+    else:
+        raise VerificationError("oracle transport failure was not infrastructure failure")
+
     qwen = load_module(
         "run_builder_qwen_only_compat_tested",
         tools / "run_builder_qwen_only_compat.py",
@@ -126,10 +156,12 @@ def main() -> int:
     print("ok 1 - validator process output is decoded as strict UTF-8")
     print("ok 2 - invalid process encoding is infrastructure failure")
     print("ok 3 - candidate rejection uses dedicated exit code 2")
-    print("ok 4 - Qwen import distinguishes rejection from infrastructure failure")
-    print("ok 5 - compatibility wrappers select diagnostic transport entries")
-    print("ok 6 - no Codex path is present")
-    print("1..6")
+    print("ok 4 - hidden-oracle mismatch is measured rejection")
+    print("ok 5 - hidden-oracle transport failure remains infrastructure failure")
+    print("ok 6 - Qwen import distinguishes rejection from infrastructure failure")
+    print("ok 7 - compatibility wrappers select diagnostic transport entries")
+    print("ok 8 - no Codex path is present")
+    print("1..8")
     return 0
 
 
