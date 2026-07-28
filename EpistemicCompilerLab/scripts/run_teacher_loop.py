@@ -239,8 +239,9 @@ def main() -> int:
         (root / "knowledge.pl").write_text(current_prolog, encoding="utf-8")
         train = run_split(root, "train", cases, args, current_prompt, current_prolog)
         dev = run_split(root, "dev", cases, args, current_prompt, current_prolog)
-        summary = epoch_summary(epoch, "accepted", current_prompt, current_prolog, train, dev, candidate, [])
-        epochs.append(summary)
+        epochs.append(epoch_summary(
+            epoch, "accepted", current_prompt, current_prolog, train, dev, candidate, []
+        ))
 
         new_key = score_key(train, dev, candidate_size(current_prompt, current_prolog))
         best_key = score_key(best["train"], best["dev"], candidate_size(best["prompt"], best["prolog"]))
@@ -258,12 +259,28 @@ def main() -> int:
         if no_improve >= 2:
             break
 
-    holdout_root = output / "holdout-final"
-    holdout_root.mkdir()
-    (holdout_root / "student-prompt.md").write_text(best["prompt"], encoding="utf-8")
-    (holdout_root / "knowledge.pl").write_text(best["prolog"], encoding="utf-8")
-    holdout = run_split(holdout_root, "holdout", cases, args, best["prompt"], best["prolog"])
+    baseline_holdout_root = output / "holdout-baseline"
+    baseline_holdout_root.mkdir()
+    (baseline_holdout_root / "student-prompt.md").write_text(baseline_prompt, encoding="utf-8")
+    (baseline_holdout_root / "knowledge.pl").write_text(baseline_prolog, encoding="utf-8")
+    baseline_holdout = run_split(
+        baseline_holdout_root, "holdout", cases, args, baseline_prompt, baseline_prolog
+    )
 
+    if best["epoch"] == 0:
+        selected_holdout = baseline_holdout
+        selected_holdout_root = baseline_holdout_root
+    else:
+        selected_holdout_root = output / "holdout-selected"
+        selected_holdout_root.mkdir()
+        (selected_holdout_root / "student-prompt.md").write_text(best["prompt"], encoding="utf-8")
+        (selected_holdout_root / "knowledge.pl").write_text(best["prolog"], encoding="utf-8")
+        selected_holdout = run_split(
+            selected_holdout_root, "holdout", cases, args, best["prompt"], best["prolog"]
+        )
+
+    baseline_holdout_passed = int(baseline_holdout["metrics"]["passedCases"])
+    selected_holdout_passed = int(selected_holdout["metrics"]["passedCases"])
     summary = {
         "schemaVersion": 1,
         "kind": "codex-qwen-teacher-loop-pilot",
@@ -278,10 +295,12 @@ def main() -> int:
         "baseline": epochs[0],
         "bestTrain": best["train"]["metrics"],
         "bestDev": best["dev"]["metrics"],
-        "holdout": holdout["metrics"],
+        "baselineHoldout": baseline_holdout["metrics"],
+        "selectedHoldout": selected_holdout["metrics"],
+        "holdoutDeltaCases": selected_holdout_passed - baseline_holdout_passed,
         "generalizationGapCases": (
             int(best["train"]["metrics"]["passedCases"])
-            - int(holdout["metrics"]["passedCases"])
+            - selected_holdout_passed
         ),
         "epochs": epochs,
         "methodologyLimit": "18-case engineering pilot; not publication-grade without the declared extension.",
@@ -309,7 +328,9 @@ def main() -> int:
         "bestEpoch": best["epoch"],
         "train": best["train"]["metrics"]["passedCases"],
         "dev": best["dev"]["metrics"]["passedCases"],
-        "holdout": holdout["metrics"]["passedCases"],
+        "baselineHoldout": baseline_holdout_passed,
+        "selectedHoldout": selected_holdout_passed,
+        "holdoutDelta": selected_holdout_passed - baseline_holdout_passed,
         "artifact": str(output) + ".zip",
     }, ensure_ascii=False))
     print("[CGR_ARTIFACT_TITLE] Codex-Qwen teacher loop pilot")
