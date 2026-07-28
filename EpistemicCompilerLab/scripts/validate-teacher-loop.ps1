@@ -79,11 +79,15 @@ $pythonFiles = @(
     'scripts/teacher_loop_teacher.py',
     'scripts/run_teacher_loop.py'
 )
+$pythonCheck = @'
+import ast, pathlib, sys
+ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+'@
 foreach ($relative in $pythonFiles) {
     $path = Join-Path $labRoot $relative
-    python -m py_compile $path
+    $pythonCheck | python - $path
     if ($LASTEXITCODE -ne 0) {
-        throw "Python compilation failed for $relative with code $LASTEXITCODE."
+        throw "Python parse failed for $relative with code $LASTEXITCODE."
     }
 }
 
