@@ -17,6 +17,8 @@ Rules:
 - Never include benchmark case IDs, full benchmark questions, split names, scorer fields or expected-output tables in either candidate file.
 - Do not encode question-specific lookup tables.
 - Do not invent facts absent from source evidence.
+- Keep domain dates and material-selection rules in Prolog, never in the student instruction.
+- Do not add free-form comments to candidate Prolog; use executable predicates and data only.
 - Preserve the Prolog module name and exported predicates.
 - A prompt edit may clarify parsing, statuses, required fields and use of the representation.
 - A Prolog edit may only make the source-grounded representation easier to interpret while preserving the verified domain semantics.
