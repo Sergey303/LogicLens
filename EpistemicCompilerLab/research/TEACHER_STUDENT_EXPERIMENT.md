@@ -17,7 +17,7 @@ This is prompt/representation optimization, not model training.
 
 Codex receives source evidence, the current prompt and Prolog representation, full labeled TRAIN diagnostics, and aggregate DEV metrics. It never receives DEV questions or labels during optimization. HOLDOUT is not evaluated until a winning epoch has been selected and is never sent to Codex.
 
-The student receives only the candidate prompt, candidate Prolog text and one question. Expected values never enter the student request.
+The student receives only the candidate prompt, candidate Prolog text and one question. Expected values never enter the student request. Every epoch uses the same closed Ollama response schema, output-token budget and scoring code so transport syntax is not an optimized variable.
 
 ## Fixed pilot split
 
@@ -40,16 +40,17 @@ Do not compare a combined edit with a single-factor edit as if the causal factor
 2. Store raw Qwen output before scoring.
 3. Select the current best candidate by DEV exact accuracy, then TRAIN exact accuracy, then smaller total candidate bytes.
 4. Give Codex TRAIN diagnostics and DEV aggregate metrics.
-5. Validate the returned candidate against the permitted track, anti-memorization checks, Prolog syntax and the fixed regression suite.
+5. Validate the returned candidate against the permitted track, exact declared file changes, anti-memorization checks, Prolog syntax and the fixed regression suite.
 6. Evaluate an accepted candidate as the next epoch.
-7. Stop at the epoch budget, on `stop`, or after two accepted epochs without DEV improvement.
-8. Evaluate HOLDOUT exactly once on the selected best candidate.
+7. Stop at the epoch budget, on a validated `stop`, or after two accepted epochs without DEV improvement.
+8. After model selection, evaluate HOLDOUT once on the frozen baseline and once on the selected candidate. Neither result is returned to Codex.
 
 ## Primary measurements
 
 - exact case accuracy on TRAIN, DEV and HOLDOUT;
 - action, status, material and clarification-field accuracy;
-- generalization gap: TRAIN accuracy minus HOLDOUT accuracy;
+- selected-minus-baseline HOLDOUT delta;
+- generalization gap: TRAIN accuracy minus selected HOLDOUT accuracy;
 - improvement over epoch 0;
 - best epoch and epochs-to-best.
 
@@ -61,7 +62,7 @@ Do not compare a combined edit with a single-factor edit as if the causal factor
 - accepted and rejected candidates;
 - prompt bytes, Prolog bytes and total representation bytes;
 - candidate change type and short hypothesis;
-- tool-event audit and runner errors.
+- tool-event audit, output-limit events and runner errors.
 
 ## Publication-grade extension
 
@@ -73,7 +74,7 @@ Before claiming general improvement:
 - repeat the complete experiment at least three times because the account-default Codex teacher may vary;
 - report mean, standard deviation, confidence intervals and every failed/rejected epoch;
 - include a static-rule baseline and direct-Codex upper bound;
-- freeze hashes for source evidence, cases, prompts, Prolog baseline, model tags and scripts;
+- freeze hashes for source evidence, cases, response schemas, prompts, Prolog baseline, model tags and scripts;
 - predeclare the primary metric and stopping rule;
 - keep a never-touched final holdout or external replication set.
 
