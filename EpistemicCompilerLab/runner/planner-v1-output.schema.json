@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "plan", "askField"],
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["query", "ask_user"]
+    },
+    "plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation", "arguments"],
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": ["current-material", "expand"]
+          },
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["revision", "date", "entity", "kind"],
+            "properties": {
+              "revision": {"type": ["string", "null"]},
+              "date": {"type": ["integer", "null"]},
+              "entity": {"type": ["string", "null"]},
+              "kind": {"type": ["string", "null"]}
+            }
+          }
+        }
+      }
+    },
+    "askField": {
+      "type": ["string", "null"]
+    }
+  }
+}
