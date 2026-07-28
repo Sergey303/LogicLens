@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/candidate-promotion-plan-v0.schema.json",
+  "title": "LogicLens Builder candidate promotion plan v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "planId",
+    "review",
+    "source",
+    "target",
+    "changes",
+    "rollback",
+    "intent",
+    "evidence",
+    "checks",
+    "promotionPlanHash"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "stage": { "const": "candidate-promotion-plan" },
+    "planId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewId", "reviewHash", "decision"],
+      "properties": {
+        "reviewId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "reviewHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "decision": { "const": "recommend" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "taskId",
+        "baseEpoch",
+        "baseRevision",
+        "basePackageHash",
+        "candidateHash",
+        "candidatePackageHash"
+      ],
+      "properties": {
+        "candidateId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "taskId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "baseEpoch": { "type": "integer", "minimum": 0 },
+        "baseRevision": { "type": "integer", "minimum": 0 },
+        "basePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidateHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidatePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch", "revision", "mode", "plannedRevisionHash"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 0 },
+        "revision": { "type": "integer", "minimum": 1 },
+        "mode": { "const": "additive-revision" },
+        "plannedRevisionHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["addedFiles", "modifiedActiveFiles", "removedActiveFiles"],
+      "properties": {
+        "addedFiles": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "sha256", "bytes"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(rules/[A-Za-z0-9._-]+\\.pl|tests/[A-Za-z0-9._-]+\\.pl|ui/[A-Za-z0-9._-]+\\.json)$"
+              },
+              "kind": { "enum": ["rule", "test", "ui"] },
+              "sha256": { "pattern": "^sha256:[0-9a-f]{64}$" },
+              "bytes": { "type": "integer", "minimum": 1, "maximum": 1048576 }
+            }
+          }
+        },
+        "modifiedActiveFiles": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "removedActiveFiles": {
+          "type": "array",
+          "maxItems": 0
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch", "revision", "packageHash"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 0 },
+        "revision": { "type": "integer", "minimum": 0 },
+        "packageHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest", "activePointerUpdate", "apply"],
+      "properties": {
+        "manifest": { "const": "planned-only" },
+        "activePointerUpdate": { "const": "not-performed" },
+        "apply": { "const": "not-performed" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewFileHash", "candidateManifestFileHash"],
+      "properties": {
+        "reviewFileHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidateManifestFileHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewRecommended",
+        "reviewHashVerified",
+        "candidateIdentityConsistent",
+        "candidateFilesVerified",
+        "additiveOnly",
+        "rollbackPinned"
+      ],
+      "properties": {
+        "reviewRecommended": { "const": true },
+        "reviewHashVerified": { "const": true },
+        "candidateIdentityConsistent": { "const": true },
+        "candidateFilesVerified": { "const": true },
+        "additiveOnly": { "const": true },
+        "rollbackPinned": { "const": true }
+      }
+    },
+    "promotionPlanHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}
