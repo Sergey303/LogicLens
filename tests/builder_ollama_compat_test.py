@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline checks for grammar-safe schema, prompt reminders and HTTP diagnostics."""
+"""Offline checks for structured selection, deterministic rendering and HTTP diagnostics."""
 from __future__ import annotations
 
 import importlib.util
@@ -53,6 +53,45 @@ class ErrorHandler(BaseHTTPRequestHandler):
         return
 
 
+def public_evidence(compat):
+    facts = [
+        {
+            "factId": "f:participant",
+            "subject": "urn:logiclens:participation:work",
+            "predicate": compat.PARTICIPANT_PREDICATE,
+            "object": {"kind": "iri", "value": "urn:logiclens:person:alex"},
+        },
+        {
+            "factId": "f:organization",
+            "subject": "urn:logiclens:participation:work",
+            "predicate": compat.ORGANIZATION_PREDICATE,
+            "object": {"kind": "iri", "value": "urn:logiclens:org:iis"},
+        },
+        {
+            "factId": "f:role",
+            "subject": "urn:logiclens:participation:work",
+            "predicate": compat.ROLE_PREDICATE,
+            "object": {
+                "kind": "literal",
+                "literalKind": "language",
+                "lexical": "исследователь",
+                "language": "ru",
+            },
+        },
+    ]
+    return [{"name": "public.json", "content": {"response": {"result": {"facts": facts}}}}]
+
+
+def expect_adapter_error(compat, action, text: str):
+    try:
+        action()
+    except compat.base.OllamaAdapterError as exc:
+        if text not in str(exc):
+            raise VerificationError(f"unexpected adapter error: {exc}") from exc
+    else:
+        raise VerificationError(f"expected adapter error containing {text!r}")
+
+
 def main() -> int:
     repository = Path(__file__).resolve().parents[1]
     compat = load_module(
@@ -63,37 +102,144 @@ def main() -> int:
     schema = compat.grammar_safe_response_schema(paths)
     if contains_length_keyword(schema):
         raise VerificationError("grammar-safe schema retained length bounds")
-    files = schema["properties"]["files"]
-    if files.get("required") != paths or files.get("additionalProperties") is not False:
-        raise VerificationError("exact file contract was weakened")
+    if "files" in schema.get("properties", {}):
+        raise VerificationError("structured schema still asks Qwen for free-form files")
+    selection_schema = schema.get("properties", {}).get("selection")
+    if not isinstance(selection_schema, dict):
+        raise VerificationError("structured schema has no selection object")
+    if selection_schema.get("required") != list(compat.SELECTION_KEYS):
+        raise VerificationError("structured schema lost exact selection keys")
+    if selection_schema.get("additionalProperties") is not False:
+        raise VerificationError("structured schema allows extra selection fields")
 
-    task_path = (
+    task_root = (
         repository
         / "experiments"
         / "builder"
         / "eng-26-researcher-at-iis"
-        / "task.json"
     )
-    task = json.loads(task_path.read_text(encoding="utf-8"))
-    constraints = compat.final_constraints_with_task_acceptance(task, paths)
-    acceptance_header = "# Task acceptance reminders — apply literally after evidence"
-    required_prompt_boundaries = (
-        "`fact(FactId, Subject, Predicate, Object)`; never swap Subject and Object.",
-        "at least one ordinary `test(...)` clause between `begin_tests` and `end_tests`",
-        acceptance_header,
-        "epoch_data:fact(FParticipant, Participation, 'http://fogid.net/o/participant', iri(Person))",
-        "epoch_data:fact(FOrganization, Participation, 'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis'))",
-        "epoch_data:fact(FRole, Participation, 'http://fogid.net/o/role', literal('исследователь', lang('ru')))",
-        "Do not put Person or urn:logiclens:org:iis in the Subject position",
-        "Place at least one ordinary test(...) clause after begin_tests/use_module and before end_tests",
-    )
-    missing = [item for item in required_prompt_boundaries if item not in constraints]
-    if missing:
-        raise VerificationError(f"late task acceptance reminders are incomplete: {missing}")
-    if constraints.rfind(acceptance_header) <= constraints.find(
-        "# Final mandatory constraints"
+    task = json.loads((task_root / "task.json").read_text(encoding="utf-8"))
+    prompt = (task_root / "prompt.md").read_text(encoding="utf-8")
+    for expected in (
+        "When that schema asks for a `selection` object",
+        "Do not write the Prolog, PlUnit or UI files yourself",
+        "one identical participation Subject",
     ):
-        raise VerificationError("task acceptance reminders do not follow final constraints")
+        if expected not in prompt:
+            raise VerificationError(f"frozen prompt is missing {expected!r}")
+
+    constraints = compat.final_constraints_with_task_acceptance(task, paths)
+    required_constraints = (
+        "Do not write Prolog or UI source",
+        "do not return a `files` object",
+        "participantFactId",
+        "organizationFactId",
+        "roleFactId",
+        "Copy each FactId exactly from the public evidence",
+        "one identical Subject participation resource",
+        "trusted adapter will render the three task-declared files deterministically",
+        "# Task acceptance reminders — apply literally after evidence",
+    )
+    missing = [item for item in required_constraints if item not in constraints]
+    if missing:
+        raise VerificationError(f"structured final constraints are incomplete: {missing}")
+
+    compat.PUBLIC_FACTS = compat.collect_public_facts(public_evidence(compat))
+    generated = {
+        "notes": "selected from public evidence",
+        "selection": {
+            "participantFactId": "f:participant",
+            "organizationFactId": "f:organization",
+            "roleFactId": "f:role",
+        },
+    }
+    with tempfile.TemporaryDirectory(prefix="logiclens-structured-render-") as temporary:
+        compat.RAW_ROOT = Path(temporary) / "raw"
+        files = compat.compile_structured_candidate_files(generated, task)
+        rule_path = Path(task["candidate"]["rulePath"])
+        test_path = Path(task["candidate"]["testPath"])
+        ui_path = Path(task["candidate"]["uiPath"])
+        if set(files) != {rule_path, test_path, ui_path}:
+            raise VerificationError("renderer did not produce exactly the task-declared files")
+
+        rule = files[rule_path]
+        for expected in (
+            "epoch_data:fact(FParticipant, Participation",
+            "'http://fogid.net/o/participant', iri(Person))",
+            "'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis'))",
+            "literal('исследователь', lang('ru'))",
+            "sort([FParticipant, FOrganization, FRole], EvidenceFactIds)",
+        ):
+            if expected not in rule:
+                raise VerificationError(f"rendered rule is missing {expected!r}")
+
+        test = files[test_path]
+        begin = test.find(":- begin_tests(")
+        ordinary_test = test.find("test(selected_public_evidence) :-")
+        end = test.find(":- end_tests(")
+        if min(begin, ordinary_test, end) < 0 or not begin < ordinary_test < end:
+            raise VerificationError("renderer placed the PlUnit test outside the suite")
+        if ":- test(" in test:
+            raise VerificationError("renderer emitted a test directive")
+        if "researcher_at_iis('urn:logiclens:person:alex', EvidenceFactIds)" not in test:
+            raise VerificationError("renderer lost the selected public person")
+
+        ui = json.loads(files[ui_path])
+        if ui != {
+            "schemaVersion": "0.1",
+            "bindings": [
+                {
+                    "predicate": task["candidate"]["uiPredicate"],
+                    "component": task["candidate"]["uiComponent"],
+                }
+            ],
+        }:
+            raise VerificationError("renderer produced an invalid UI binding")
+        diagnostic = json.loads(
+            (compat.RAW_ROOT / "semantic-selection.json").read_text(encoding="utf-8")
+        )
+        if diagnostic.get("selection") != generated["selection"]:
+            raise VerificationError("semantic selection was not retained")
+
+    expect_adapter_error(
+        compat,
+        lambda: compat.compile_structured_candidate_files(
+            {
+                "selection": {
+                    "participantFactId": "f:missing",
+                    "organizationFactId": "f:organization",
+                    "roleFactId": "f:role",
+                }
+            },
+            task,
+        ),
+        "absent from public evidence",
+    )
+    expect_adapter_error(
+        compat,
+        lambda: compat.compile_structured_candidate_files(
+            {
+                "selection": {
+                    "participantFactId": "f:participant",
+                    "organizationFactId": "f:participant",
+                    "roleFactId": "f:role",
+                }
+            },
+            task,
+        ),
+        "must be distinct",
+    )
+
+    mismatched = public_evidence(compat)
+    mismatched[0]["content"]["response"]["result"]["facts"][2]["subject"] = (
+        "urn:logiclens:participation:other"
+    )
+    compat.PUBLIC_FACTS = compat.collect_public_facts(mismatched)
+    expect_adapter_error(
+        compat,
+        lambda: compat.compile_structured_candidate_files(generated, task),
+        "do not share one subject",
+    )
 
     with tempfile.TemporaryDirectory(prefix="logiclens-ollama-preflight-") as temporary:
         output = Path(temporary) / "provider"
@@ -110,20 +256,16 @@ def main() -> int:
         with tempfile.TemporaryDirectory(prefix="logiclens-ollama-http-") as temporary:
             compat.RAW_ROOT = Path(temporary) / "raw"
             endpoint = f"http://127.0.0.1:{server.server_port}/api/chat"
-            try:
-                compat.call_ollama_with_http_diagnostics(endpoint, b"{}", 5.0)
-            except compat.base.OllamaAdapterError as exc:
-                if "diagnostic body retained" not in str(exc):
-                    raise VerificationError("HTTP error body missing from exception") from exc
-            else:
-                raise VerificationError("HTTP 400 unexpectedly succeeded")
+            expect_adapter_error(
+                compat,
+                lambda: compat.call_ollama_with_http_diagnostics(endpoint, b"{}", 5.0),
+                "diagnostic body retained",
+            )
             result = json.loads(
                 (compat.RAW_ROOT / "adapter-result.json").read_text(encoding="utf-8")
             )
             if result.get("status") != "http-error" or result.get("statusCode") != 400:
                 raise VerificationError(f"unexpected diagnostic: {result}")
-            if result.get("error") != "invalid grammar: diagnostic body retained":
-                raise VerificationError("structured Ollama error was not retained")
             if not (compat.RAW_ROOT / "provider-error.json").is_file():
                 raise VerificationError("provider-error.json was not written")
     finally:
@@ -138,13 +280,14 @@ def main() -> int:
     if "codex" in qwen_wrapper.lower():
         raise VerificationError("compatibility wrapper references Codex")
 
-    print("ok 1 - grammar-safe schema keeps exact paths without length bounds")
-    print("ok 2 - task acceptance is repeated late with exact fact direction")
-    print("ok 3 - late PlUnit reminder requires a non-empty open suite")
-    print("ok 4 - diagnostic preflight leaves provider output absent")
-    print("ok 5 - HTTP 400 body and status are retained")
-    print("ok 6 - Qwen-only wrapper selects diagnostic adapter without Codex")
-    print("1..6")
+    print("ok 1 - Qwen returns three semantic FactIds instead of source files")
+    print("ok 2 - selected FactIds are checked against public evidence")
+    print("ok 3 - deterministic renderer creates valid rule, PlUnit and UI files")
+    print("ok 4 - unknown, duplicate and cross-subject selections are rejected")
+    print("ok 5 - selected semantic values are retained for audit")
+    print("ok 6 - HTTP error body and status are retained")
+    print("ok 7 - Qwen-only wrapper remains free of Codex")
+    print("1..7")
     return 0
 
 
