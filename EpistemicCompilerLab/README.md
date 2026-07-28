@@ -96,13 +96,13 @@ Run the paired Codex planner-v1 experiment:
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' planner-v1-codex-pair
 ```
 
-Run the local Codex→Qwen optimization pilot. Defaults are combined prompt+Prolog, three teacher epochs and `qwen2.5-coder:7b`:
+Run the local Codex→Qwen optimization pilot. Safe defaults are combined prompt+Prolog, one teacher epoch and `qwen2.5-coder:7b`:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' teacher-loop
 ```
 
-Ablation examples:
+Longer ablation examples:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' teacher-loop prompt 3
