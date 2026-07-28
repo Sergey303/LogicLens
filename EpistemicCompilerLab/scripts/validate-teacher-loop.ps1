@@ -4,10 +4,13 @@ param()
 $ErrorActionPreference = 'Stop'
 $labRoot = Split-Path -Parent $PSScriptRoot
 $casePath = Join-Path $labRoot 'cases/teacher-loop-pilot-v0.jsonl'
-$schemaPath = Join-Path $labRoot 'runner/teacher-candidate.schema.json'
+$teacherSchemaPath = Join-Path $labRoot 'runner/teacher-candidate.schema.json'
+$studentSchemaPath = Join-Path $labRoot 'runner/student-answer.schema.json'
 $required = @(
     'research/TEACHER_STUDENT_EXPERIMENT.md',
     'runner/prompts/teacher-optimize.md',
+    'runner/teacher-candidate.schema.json',
+    'runner/student-answer.schema.json',
     'scripts/teacher_loop_eval.py',
     'scripts/teacher_loop_teacher.py',
     'scripts/run_teacher_loop.py',
@@ -59,19 +62,37 @@ foreach ($case in $cases) {
     }
 }
 
-$schemaRaw = Get-Content -LiteralPath $schemaPath -Raw -Encoding utf8
-if ($schemaRaw -match '"(minLength|maxLength|pattern|minimum|maximum)"') {
+$teacherSchemaRaw = Get-Content -LiteralPath $teacherSchemaPath -Raw -Encoding utf8
+if ($teacherSchemaRaw -match '"(minLength|maxLength|pattern|minimum|maximum)"') {
     throw 'Teacher candidate schema uses a non-conservative Structured Outputs keyword.'
 }
-$schema = $schemaRaw | ConvertFrom-Json -Depth 30
-if ($schema.type -ne 'object' -or $schema.additionalProperties -ne $false) {
+$teacherSchema = $teacherSchemaRaw | ConvertFrom-Json -Depth 30
+if ($teacherSchema.type -ne 'object' -or $teacherSchema.additionalProperties -ne $false) {
     throw 'Teacher candidate schema must be a closed object.'
 }
-$requiredNames = @('decision', 'changeType', 'hypothesis', 'studentPrompt', 'prologKnowledge', 'expectedEffect', 'risk')
-foreach ($name in $requiredNames) {
-    if ($name -notin @($schema.required)) {
+$teacherRequired = @('decision', 'changeType', 'hypothesis', 'studentPrompt', 'prologKnowledge', 'expectedEffect', 'risk')
+foreach ($name in $teacherRequired) {
+    if ($name -notin @($teacherSchema.required)) {
         throw "Teacher candidate schema does not require '$name'."
     }
+}
+
+$studentSchema = Get-Content -LiteralPath $studentSchemaPath -Raw -Encoding utf8 |
+    ConvertFrom-Json -Depth 30
+if ($studentSchema.type -ne 'object' -or $studentSchema.additionalProperties -ne $false) {
+    throw 'Student answer schema must be a closed object.'
+}
+$studentRequired = @('action', 'status', 'material', 'askField', 'answerRu')
+foreach ($name in $studentRequired) {
+    if ($name -notin @($studentSchema.required)) {
+        throw "Student answer schema does not require '$name'."
+    }
+}
+if (@($studentSchema.properties.action.enum) -join ',' -ne 'answer,ask_user') {
+    throw 'Student answer schema action enum changed.'
+}
+if (@($studentSchema.properties.status.enum) -join ',' -ne 'success,unknown,need_user') {
+    throw 'Student answer schema status enum changed.'
 }
 
 $pythonFiles = @(
@@ -103,5 +124,5 @@ if (@($errors).Count -gt 0) {
 }
 
 $caseHash = (Get-FileHash -LiteralPath $casePath -Algorithm SHA256).Hash.ToLowerInvariant()
-Write-Host "Teacher loop assets valid: 18 cases (6/6/6), closed schema, Python and PowerShell parse."
+Write-Host "Teacher loop assets valid: 18 cases (6/6/6), fixed student schema, closed teacher schema, Python and PowerShell parse."
 Write-Host "Frozen pilot cases SHA256: $caseHash"
