@@ -21,29 +21,19 @@
       "enum": ["prompt", "prolog", "combined", "no_change"]
     },
     "hypothesis": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 600
+      "type": "string"
     },
     "studentPrompt": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 10000
+      "type": "string"
     },
     "prologKnowledge": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 16000
+      "type": "string"
     },
     "expectedEffect": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 600
+      "type": "string"
     },
     "risk": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 600
+      "type": "string"
     }
   }
 }
