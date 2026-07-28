@@ -30,7 +30,8 @@ It does not include React, LogicLens epochs, UI Document generation, a web proxy
 - [`tests/`](tests/) — Prolog regression tests;
 - [`cases/benchmark-v0.jsonl`](cases/benchmark-v0.jsonl) — immutable first comparison;
 - [`cases/benchmark-v1.jsonl`](cases/benchmark-v1.jsonl) — teacher-frame contract;
-- [`cases/BENCHMARK_V1.md`](cases/BENCHMARK_V1.md) — v1 rationale and semantics;
+- [`cases/teacher-loop-pilot-v0.jsonl`](cases/teacher-loop-pilot-v0.jsonl) — frozen 6/6/6 optimization pilot;
+- [`research/TEACHER_STUDENT_EXPERIMENT.md`](research/TEACHER_STUDENT_EXPERIMENT.md) — measurement and article protocol;
 - [`experiments/`](experiments/) — protocol and append-only run ledger.
 
 ## Windows setup
@@ -73,6 +74,8 @@ V0 is preserved exactly as the first five-mode baseline. It revealed that Prolog
 
 V1 separates material selection, clarification, explanation and exception inspection. A teacher frame contains normalized intent and only values present in the question. Hidden expected plans are used solely for validation and scoring. They cannot introduce revision, date, entity or tail kind absent from that frame.
 
+The teacher-loop pilot has 18 material-selection and clarification questions: 6 TRAIN, 6 DEV and 6 HOLDOUT. Codex receives labeled TRAIN diagnostics and aggregate DEV metrics. HOLDOUT is evaluated once after selecting the best epoch and never enters the teacher prompt.
+
 ## Local providers
 
 Ollama experiments use a derived CPU-safe profile with `num_gpu=0`, `num_ctx=2048` and `num_batch=64`. The source model remains unchanged.
@@ -87,13 +90,27 @@ The Codex adapter uses stdin, ephemeral execution, a read-only sandbox, ignored 
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' codex-smoke
 ```
 
-Run the paired Codex planner-v1 experiment. It asks the same nine questions first as raw text and then with a teacher frame, stores per-case responses/events and writes independently scored `comparison.json` and `comparison.csv`.
+Run the paired Codex planner-v1 experiment:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' planner-v1-codex-pair
 ```
 
-The pair runner also creates a sibling `.zip` and prints the ChatGptRunner `[CGR_ARTIFACT]` marker. The `Attach output` action therefore includes the complete run automatically under `artifacts/`; no manual ZIP attachment is needed.
+Run the local Codex→Qwen optimization pilot. Defaults are combined prompt+Prolog, three teacher epochs and `qwen2.5-coder:7b`:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' teacher-loop
+```
+
+Ablation examples:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' teacher-loop prompt 3
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' teacher-loop prolog 3
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' teacher-loop combined 3 'qwen2.5-coder:7b'
+```
+
+The teacher loop stores every Qwen response, Codex candidate, validation result, epoch metric, selected candidate and final holdout result. It creates a sibling ZIP and prints the ChatGptRunner `[CGR_ARTIFACT]` marker, so `Attach output` includes the full run automatically.
 
 Run one historical v0 Ollama representation:
 
