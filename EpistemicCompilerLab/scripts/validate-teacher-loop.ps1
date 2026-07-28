@@ -59,8 +59,11 @@ foreach ($case in $cases) {
     }
 }
 
-$schema = Get-Content -LiteralPath $schemaPath -Raw -Encoding utf8 |
-    ConvertFrom-Json -Depth 30
+$schemaRaw = Get-Content -LiteralPath $schemaPath -Raw -Encoding utf8
+if ($schemaRaw -match '"(minLength|maxLength|pattern|minimum|maximum)"') {
+    throw 'Teacher candidate schema uses a non-conservative Structured Outputs keyword.'
+}
+$schema = $schemaRaw | ConvertFrom-Json -Depth 30
 if ($schema.type -ne 'object' -or $schema.additionalProperties -ne $false) {
     throw 'Teacher candidate schema must be a closed object.'
 }
@@ -95,6 +98,6 @@ if (@($errors).Count -gt 0) {
     throw "PowerShell parse errors in run-teacher-loop.ps1: $(@($errors.Message) -join '; ')"
 }
 
-$holdoutHash = (Get-FileHash -LiteralPath $casePath -Algorithm SHA256).Hash.ToLowerInvariant()
+$caseHash = (Get-FileHash -LiteralPath $casePath -Algorithm SHA256).Hash.ToLowerInvariant()
 Write-Host "Teacher loop assets valid: 18 cases (6/6/6), closed schema, Python and PowerShell parse."
-Write-Host "Frozen pilot cases SHA256: $holdoutHash"
+Write-Host "Frozen pilot cases SHA256: $caseHash"
