@@ -8,7 +8,7 @@ Do not modify the main LogicLens application, its React renderer, epochs, UI Doc
 
 ## Current scope
 
-The current task is E2: compare one weak local model across controlled knowledge representations after the deterministic SWI-Prolog MVP and benchmark oracle have passed.
+The current task is E4: run a controlled local Codex→Qwen teacher loop after the deterministic SWI-Prolog MVP, representation comparison and benchmark-v1 planner experiments.
 
 Do not add a web proxy, persistent service, authentication layer, model training or production sandbox unless a later task explicitly requires it.
 
@@ -37,20 +37,34 @@ A successful Prolog proof establishes a consequence of loaded facts and rules. I
 
 ### Teacher
 
-- reproduces the student's error;
+- reproduces the student's TRAIN error;
+- receives only aggregate DEV metrics;
+- never receives HOLDOUT questions, answers or diagnostics;
 - locates the earliest faulty layer before editing;
 - checks original evidence;
-- makes the smallest coherent change;
-- adds a regression test;
-- records model, prompt, commit and metrics.
+- makes the smallest coherent change allowed by the current track;
+- does not encode case IDs or full benchmark questions into candidates;
+- records a short testable hypothesis, expected effect and risk;
+- stops when no safe reusable improvement is supported.
+
+### Trusted evaluator
+
+- stores raw model output before scoring;
+- validates change-track isolation and anti-memorization rules;
+- runs Prolog regression tests for every candidate;
+- selects the best epoch by DEV, then TRAIN, then smaller candidate size;
+- evaluates HOLDOUT exactly once after model selection;
+- preserves rejected candidates and runner failures as experiment evidence.
 
 ## Benchmark isolation
 
-- Never include `expectedAction`, `expectedStatus`, `expectedMaterial`, `expectedField`, `requiresTail` or `tailEntity` in a model prompt.
-- Use expected benchmark fields only in deterministic validation and scoring after the model response is stored.
-- Keep questions, model settings and scoring fixed while changing one representation.
+- Never include expected benchmark fields in a student prompt.
+- Use expected fields only in deterministic validation and scoring after the student response is stored.
+- Teacher optimization may use labeled TRAIN cases, but never DEV or HOLDOUT case content.
+- Keep questions, model settings and scoring fixed while changing one factor.
 - Preserve raw model responses; do not repair them before scoring.
-- Treat malformed model JSON, bad query translation and unnecessary tails as experiment results.
+- Treat malformed JSON, invalid candidates and regression failures as experiment results.
+- Do not claim publication-grade improvement from the 18-case engineering pilot.
 
 ## User launch convention
 
@@ -68,10 +82,11 @@ The launcher validates the checkout, enters `D:\projects\ChatPilotGroup\LogicLen
 
 - Prefer explicit predicates and small modules.
 - Keep source evidence addressable from derived facts.
-- Do not mix changes to knowledge, prompts and model settings in one experiment unless their interaction is being measured.
+- Do not mix changes to knowledge, prompts and model settings outside the declared combined ablation.
 - Run the `tests` launcher action before accepting a knowledge change.
 - Use the `doctor` launcher action to verify deterministic assets and the CLI smoke test.
 - Use `runner-check` before a model experiment.
 - Preserve JSON CLI statuses and field meanings.
 - Keep generated model outputs under `EpistemicCompilerLab/experiments/model-runs/`; they are ignored by Git by default.
 - Record only reviewed aggregate findings in append-only `experiments/runs.jsonl`.
+- Emit `[CGR_ARTIFACT]` for complete run packages instead of pasting large logs.
