@@ -69,7 +69,15 @@ $rows = @(
 $csvPath = Join-Path $OutputRoot 'comparison.csv'
 $rows | Export-Csv -LiteralPath $csvPath -NoTypeInformation -Encoding utf8
 $rows | Format-Table -AutoSize
+
+$artifactPath = "$OutputRoot.zip"
+if (Test-Path -LiteralPath $artifactPath) { Remove-Item -LiteralPath $artifactPath -Force }
+Compress-Archive -Path (Join-Path $OutputRoot '*') -DestinationPath $artifactPath -Force
+
 Write-Host "Codex planner v1 pair completed: $OutputRoot"
 Write-Host "Model selection: $selection"
 Write-Host "Comparison JSON: $comparisonPath"
 Write-Host "Comparison CSV: $csvPath"
+Write-Host "Artifact ZIP: $artifactPath"
+Write-Output '[CGR_ARTIFACT_TITLE] Epistemic Compiler planner-v1 Codex pair'
+Write-Output ("[CGR_ARTIFACT] {0}" -f $artifactPath)
