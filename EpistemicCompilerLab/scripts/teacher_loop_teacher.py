@@ -103,6 +103,38 @@ def _run_prolog_tests(
         return completed.returncode == 0, output
 
 
+def _prolog_snapshot(prolog_text: str, swipl: str, timeout: int) -> tuple[bool, str]:
+    program = r"""
+:- use_module('./knowledge').
+snapshot :-
+    findall(material(R,D,M,P),
+        (member(R,[a,b,c]), member(D,[20260630,20260701,20260810]), current_material(R,D,M,P)),
+        Materials0),
+    msort(Materials0, Materials),
+    findall(expansion(E,K,Ref,S), expansion(E,K,Ref,S), Expansions0),
+    msort(Expansions0, Expansions),
+    findall(payload(Ref,P), expansion_payload(Ref,P), Payloads0),
+    msort(Payloads0, Payloads),
+    findall(source(A,S), assertion_source(A,S), Sources0),
+    msort(Sources0, Sources),
+    write_canonical(snapshot(Materials,Expansions,Payloads,Sources)), nl.
+"""
+    with tempfile.TemporaryDirectory(prefix="epistemic-snapshot-") as temporary:
+        root = Path(temporary)
+        (root / "knowledge.pl").write_text(prolog_text, encoding="utf-8")
+        (root / "snapshot.pl").write_text(program, encoding="utf-8")
+        completed = subprocess.run(
+            [swipl, "-q", "-s", "snapshot.pl", "-g", "snapshot,halt"],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=timeout,
+        )
+        output = (completed.stdout + "\n" + completed.stderr).strip()
+        return completed.returncode == 0, output
+
+
 def validate_candidate(
     candidate: dict[str, Any],
     track: str,
@@ -154,6 +186,17 @@ def validate_candidate(
         errors.append("candidate Prolog contains free-form comments")
     if ":- module(epistemic_compiler_knowledge" not in prolog:
         errors.append("Prolog module contract is missing")
+
+    if not errors and prolog_changed:
+        current_ok, current_snapshot = _prolog_snapshot(current_prolog, swipl, timeout)
+        candidate_ok, candidate_snapshot = _prolog_snapshot(prolog, swipl, timeout)
+        if not current_ok:
+            errors.append(f"current Prolog snapshot failed: {current_snapshot[-2000:]}")
+        elif not candidate_ok:
+            errors.append(f"candidate Prolog snapshot failed: {candidate_snapshot[-2000:]}")
+        elif candidate_snapshot != current_snapshot:
+            errors.append("candidate Prolog changed verified knowledge semantics or provenance")
+
     if not errors:
         passed, output = _run_prolog_tests(prolog, lab_root, swipl, timeout)
         if not passed:
