@@ -81,24 +81,30 @@ Ollama experiments use a derived CPU-safe profile with `num_gpu=0`, `num_ctx=204
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' ollama-smoke 'qwen2.5-coder:7b'
 ```
 
-The Codex adapter reuses the proven pattern from merged branch `feature/eng-48-codex-cli-run`: prompt through stdin, ephemeral execution, read-only sandbox, ignored user config/project rules, strict JSON Schema, retained JSONL events and rejection of all tool calls. Omit the model during the smoke test so the authenticated ChatGPT session selects its current supported default. Pass an explicit identifier only for a reviewed reproducible experiment after verifying that the account supports it.
+The Codex adapter uses stdin, ephemeral execution, a read-only sandbox, ignored user config/project rules, strict JSON Schema, retained JSONL events and rejection of all tool calls. Omit the model so the authenticated ChatGPT session selects its supported default. Pass an explicit identifier only after verifying account support.
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' codex-smoke
 ```
 
-Run one historical v0 representation:
+Run the paired Codex planner-v1 experiment. It asks the same nine questions first as raw text and then with a teacher frame, stores per-case responses/events and writes independently scored `comparison.json` and `comparison.csv`.
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' planner-v1-codex-pair
+```
+
+Run one historical v0 Ollama representation:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-baseline markdown 'qwen2.5-coder:7b'
 ```
 
-Run the historical v0 five-mode suite:
+Run the historical v0 five-mode Ollama suite:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' representation-suite 'qwen2.5-coder:7b'
 ```
 
-The suite stores one JSONL run and summary per mode plus `comparison.json` and `comparison.csv` under a timestamped directory in `experiments/model-runs/`. Results remain local and are ignored by Git until aggregate findings are reviewed and copied into the append-only ledger.
+Generated runs live under timestamped directories in `experiments/model-runs/`. They remain local and ignored by Git until aggregate findings are reviewed and copied into the append-only ledger.
 
 `unknown` means the loaded knowledge is insufficient. It never means `false`.
