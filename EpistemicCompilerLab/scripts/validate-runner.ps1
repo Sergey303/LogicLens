@@ -13,12 +13,15 @@ $requiredFiles = @(
     'runner/prompts/finalize.md',
     'runner/prompts/planner-v1-raw.md',
     'runner/prompts/planner-v1-frame.md',
+    'runner/planner-v1-output.schema.json',
     'scripts/validate-benchmark-v1.ps1',
     'scripts/ensure-ollama-cpu-profile.ps1',
     'scripts/test-ollama-model.ps1',
     'scripts/invoke_codex_json.py',
     'scripts/test-codex-cli.ps1',
     'scripts/run-planner-v1.ps1',
+    'scripts/run-planner-v1-codex.ps1',
+    'scripts/run-planner-v1-codex-pair.ps1',
     'scripts/score-planner-v1.ps1',
     'scripts/run-representation.ps1',
     'scripts/run-representation-baseline.ps1',
@@ -38,23 +41,30 @@ foreach ($relativePath in $requiredFiles) {
     }
 }
 
-$compactPath = Join-Path $labRoot 'representations/knowledge.compact.json'
-try {
-    $compact = Get-Content -LiteralPath $compactPath -Raw -Encoding utf8 |
-        ConvertFrom-Json -Depth 50
-}
-catch {
-    throw "Invalid compact knowledge JSON: $($_.Exception.Message)"
+function Read-Json([string] $RelativePath) {
+    $path = Join-Path $labRoot $RelativePath
+    try { return Get-Content -LiteralPath $path -Raw -Encoding utf8 | ConvertFrom-Json -Depth 80 }
+    catch { throw "Invalid JSON in ${RelativePath}: $($_.Exception.Message)" }
 }
 
+$compact = Read-Json 'representations/knowledge.compact.json'
 if ($compact.schemaVersion -ne 1) {
     throw "Unsupported compact knowledge schemaVersion '$($compact.schemaVersion)'."
 }
-if (@($compact.supportedRevisions).Count -eq 0) {
-    throw 'Compact knowledge has no supported revisions.'
+if (@($compact.supportedRevisions).Count -eq 0) { throw 'Compact knowledge has no supported revisions.' }
+if ($null -eq $compact.transitionDate) { throw 'Compact knowledge has no transition date.' }
+
+$plannerSchema = Read-Json 'runner/planner-v1-output.schema.json'
+if ($plannerSchema.type -ne 'object' -or $plannerSchema.additionalProperties -ne $false) {
+    throw 'Planner v1 output schema must be a closed object.'
 }
-if ($null -eq $compact.transitionDate) {
-    throw 'Compact knowledge has no transition date.'
+foreach ($name in @('action', 'plan', 'askField')) {
+    if ($name -notin @($plannerSchema.required)) { throw "Planner schema does not require '$name'." }
+}
+$arguments = $plannerSchema.properties.plan.items.properties.arguments
+foreach ($name in @('revision', 'date', 'entity', 'kind')) {
+    if ($name -notin @($arguments.required)) { throw "Planner arguments do not require '$name'." }
+    if ($null -eq $arguments.properties.$name.type) { throw "Planner argument '$name' has no explicit type." }
 }
 
 $parseTargets = @($requiredFiles | Where-Object { $_ -like 'scripts/*.ps1' })
@@ -64,9 +74,7 @@ foreach ($relativePath in $parseTargets) {
     $tokens = $null
     $errors = $null
     [void] [System.Management.Automation.Language.Parser]::ParseFile(
-        $path,
-        [ref] $tokens,
-        [ref] $errors
+        $path, [ref] $tokens, [ref] $errors
     )
     if (@($errors).Count -gt 0) {
         $messages = @($errors | ForEach-Object {
@@ -99,4 +107,4 @@ if (-not $smokeSource.Contains('"value": {"type": "integer", "const": 42}')) {
     throw 'Codex smoke value schema must include an explicit integer type.'
 }
 
-Write-Host "Runner assets valid: benchmark v1, Ollama, Codex CLI and planner v1 scripts."
+Write-Host "Runner assets valid: benchmark v1, Ollama, Codex CLI and planner pair scripts."
