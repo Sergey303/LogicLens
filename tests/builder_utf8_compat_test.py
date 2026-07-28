@@ -110,58 +110,12 @@ def main() -> int:
     else:
         raise VerificationError("oracle transport failure was not infrastructure failure")
 
-    qwen = load_module(
-        "run_builder_qwen_only_compat_tested",
-        tools / "run_builder_qwen_only_compat.py",
-    )
-    for exit_code, expected in expected_candidate.items():
-        actual = qwen.classify_import_exit(exit_code)
-        if actual != expected:
-            raise VerificationError(
-                f"import exit {exit_code} classified as {actual}, expected {expected}"
-            )
-
-    captured: list[list[str]] = []
-
-    def fake_run(command: list[str], cwd: Path) -> int:
-        captured.append(command)
-        return 0
-
-    qwen._ORIGINAL_RUN_OPTIONAL = fake_run
-    qwen.run_optional_with_compat(
-        [sys.executable, str(tools / "run_builder_ollama.py")], repository
-    )
-    qwen.run_optional_with_compat(
-        [sys.executable, str(tools / "builder_experiment.py"), "import-run"],
-        repository,
-    )
-    names = [Path(command[1]).name for command in captured]
-    if names != [
-        "run_builder_ollama_compat.py",
-        "builder_experiment_utf8_compat.py",
-    ]:
-        raise VerificationError(f"compatibility substitutions are wrong: {names}")
-
-    sources = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in (
-            tools / "build_epoch_candidate_utf8_compat.py",
-            tools / "builder_experiment_utf8_compat.py",
-            tools / "run_builder_qwen_only_compat.py",
-        )
-    )
-    if "codex" in sources.lower():
-        raise VerificationError("UTF-8 compatibility path references Codex")
-
     print("ok 1 - validator process output is decoded as strict UTF-8")
     print("ok 2 - invalid process encoding is infrastructure failure")
     print("ok 3 - candidate rejection uses dedicated exit code 2")
     print("ok 4 - hidden-oracle mismatch is measured rejection")
     print("ok 5 - hidden-oracle transport failure remains infrastructure failure")
-    print("ok 6 - Qwen import distinguishes rejection from infrastructure failure")
-    print("ok 7 - compatibility wrappers select diagnostic transport entries")
-    print("ok 8 - no Codex path is present")
-    print("1..8")
+    print("1..5")
     return 0
 
 

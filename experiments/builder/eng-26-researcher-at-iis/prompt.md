@@ -25,7 +25,7 @@ my
 =>
 ```
 
-Use ordinary SWI-Prolog clauses, atoms, variables, lists, module declarations and plunit tests.
+Use ordinary SWI-Prolog clauses, atoms, variables, strings, lists, module declarations and plunit tests.
 
 ## Exact fact tuple direction
 
@@ -44,8 +44,10 @@ epoch_data:fact(FOrganization, Participation,
                 'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis')),
 epoch_data:fact(FRole, Participation,
                 'http://fogid.net/o/role',
-                literal('исследователь', lang('ru')))
+                literal("исследователь", lang('ru')))
 ```
+
+The lexical value of a language literal is a SWI-Prolog string in double quotes. It is not a single-quoted atom.
 
 Do not reverse these edges. In particular, do not put `Person` or `urn:logiclens:org:iis` in the Subject position of the `participant` or `in-org` facts.
 
