@@ -14,6 +14,7 @@ $required = @(
     'scripts/teacher_loop_eval.py',
     'scripts/teacher_loop_teacher.py',
     'scripts/run_teacher_loop.py',
+    'scripts/test_teacher_loop_offline.py',
     'scripts/run-teacher-loop.ps1'
 )
 
@@ -88,17 +89,18 @@ foreach ($name in $studentRequired) {
         throw "Student answer schema does not require '$name'."
     }
 }
-if (@($studentSchema.properties.action.enum) -join ',' -ne 'answer,ask_user') {
+if ((@($studentSchema.properties.action.enum) -join ',') -ne 'answer,ask_user') {
     throw 'Student answer schema action enum changed.'
 }
-if (@($studentSchema.properties.status.enum) -join ',' -ne 'success,unknown,need_user') {
+if ((@($studentSchema.properties.status.enum) -join ',') -ne 'success,unknown,need_user') {
     throw 'Student answer schema status enum changed.'
 }
 
 $pythonFiles = @(
     'scripts/teacher_loop_eval.py',
     'scripts/teacher_loop_teacher.py',
-    'scripts/run_teacher_loop.py'
+    'scripts/run_teacher_loop.py',
+    'scripts/test_teacher_loop_offline.py'
 )
 $pythonCheck = @'
 import ast, pathlib, sys
@@ -123,6 +125,14 @@ if (@($errors).Count -gt 0) {
     throw "PowerShell parse errors in run-teacher-loop.ps1: $(@($errors.Message) -join '; ')"
 }
 
+$swipl = & (Join-Path $PSScriptRoot 'resolve-swipl.ps1') -Required
+python (Join-Path $labRoot 'scripts/test_teacher_loop_offline.py') `
+    --lab-root $labRoot `
+    --swipl $swipl
+if ($LASTEXITCODE -ne 0) {
+    throw "Teacher-loop offline regressions failed with code $LASTEXITCODE."
+}
+
 $caseHash = (Get-FileHash -LiteralPath $casePath -Algorithm SHA256).Hash.ToLowerInvariant()
-Write-Host "Teacher loop assets valid: 18 cases (6/6/6), fixed student schema, closed teacher schema, Python and PowerShell parse."
+Write-Host "Teacher loop assets valid: 18 cases (6/6/6), fixed student schema, closed teacher schema, offline regressions passed."
 Write-Host "Frozen pilot cases SHA256: $caseHash"
