@@ -3,7 +3,7 @@ param(
     [ValidateSet('prompt', 'prolog', 'combined')]
     [string] $Track = 'combined',
     [ValidateRange(0, 10)]
-    [int] $Epochs = 3,
+    [int] $Epochs = 1,
     [string] $BaseModel = 'qwen2.5-coder:7b',
     [int] $Seed = 42,
     [string] $CodexModel,
