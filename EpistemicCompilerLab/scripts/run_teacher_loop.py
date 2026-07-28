@@ -281,7 +281,7 @@ def main() -> int:
         "bestDev": best["dev"]["metrics"],
         "holdout": holdout["metrics"],
         "generalizationGapCases": (
-            int(best["train"]["metrics"]["passedCases"]
+            int(best["train"]["metrics"]["passedCases"])
             - int(holdout["metrics"]["passedCases"])
         ),
         "epochs": epochs,
