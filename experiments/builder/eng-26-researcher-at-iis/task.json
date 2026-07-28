@@ -52,7 +52,7 @@
     "Use only the provider-neutral epoch candidate v0 files declared by the task.",
     "Export candidate_researcher_at_iis:researcher_at_iis/2.",
     "Interpret epoch_data:fact/4 exactly as fact(FactId, Subject, Predicate, Object); never swap Subject and Object.",
-    "Use one shared Participation subject for all three conditions: epoch_data:fact(FParticipant, Participation, 'http://fogid.net/o/participant', iri(Person)); epoch_data:fact(FOrganization, Participation, 'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis')); epoch_data:fact(FRole, Participation, 'http://fogid.net/o/role', literal('исследователь', lang('ru'))).",
+    "Use one shared Participation subject for all three conditions: epoch_data:fact(FParticipant, Participation, 'http://fogid.net/o/participant', iri(Person)); epoch_data:fact(FOrganization, Participation, 'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis')); epoch_data:fact(FRole, Participation, 'http://fogid.net/o/role', literal(\"исследователь\", lang('ru'))). The language-literal lexical value is a double-quoted SWI-Prolog string; never use the atom form literal('исследователь', lang('ru')).",
     "Do not put Person or urn:logiclens:org:iis in the Subject position of participant or in-org facts.",
     "Return the three supporting FactId values sorted with ordinal Prolog term order.",
     "Place at least one ordinary test(...) clause after begin_tests/use_module and before end_tests; an empty PlUnit suite is invalid.",

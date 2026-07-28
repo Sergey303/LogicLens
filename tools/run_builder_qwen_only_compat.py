@@ -17,7 +17,9 @@ REJECTED_EXIT = 2
 def run_optional_with_compat(command: list[str], cwd: Path) -> int:
     updated = list(command)
     replacements = {
-        "run_builder_ollama.py": "run_builder_ollama_compat.py",
+        # The literal layer delegates to run_builder_ollama_compat.py and changes
+        # only language-literal lexical values from Prolog atoms to strings.
+        "run_builder_ollama.py": "run_builder_ollama_literal_compat.py",
         "builder_experiment.py": "builder_experiment_utf8_compat.py",
     }
     for index, argument in enumerate(updated):

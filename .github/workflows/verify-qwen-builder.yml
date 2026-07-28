@@ -4,26 +4,36 @@ on:
   pull_request:
     paths:
       - "experiments/builder/eng-26-researcher-at-iis/prompt.md"
+      - "experiments/builder/eng-26-researcher-at-iis/task.json"
       - "tools/run_builder_ollama.py"
+      - "tools/run_builder_ollama_compat.py"
+      - "tools/run_builder_ollama_literal_compat.py"
       - "tools/run_builder_qwen_only.py"
+      - "tools/run_builder_qwen_only_compat.py"
       - "tools/builder_candidate/**"
       - "tests/builder_qwen_prompt_test.py"
       - "tests/builder_qwen_only_test.py"
       - "tests/builder_plunit_directive_test.py"
       - "tests/builder_ollama_structured_output_test.py"
+      - "tests/builder_ollama_literal_compat_test.py"
       - ".github/workflows/verify-qwen-builder.yml"
   push:
     branches:
       - main
     paths:
       - "experiments/builder/eng-26-researcher-at-iis/prompt.md"
+      - "experiments/builder/eng-26-researcher-at-iis/task.json"
       - "tools/run_builder_ollama.py"
+      - "tools/run_builder_ollama_compat.py"
+      - "tools/run_builder_ollama_literal_compat.py"
       - "tools/run_builder_qwen_only.py"
+      - "tools/run_builder_qwen_only_compat.py"
       - "tools/builder_candidate/**"
       - "tests/builder_qwen_prompt_test.py"
       - "tests/builder_qwen_only_test.py"
       - "tests/builder_plunit_directive_test.py"
       - "tests/builder_ollama_structured_output_test.py"
+      - "tests/builder_ollama_literal_compat_test.py"
       - ".github/workflows/verify-qwen-builder.yml"
 
 permissions:
@@ -53,7 +63,10 @@ jobs:
         run: |
           python -m py_compile \
             tools/run_builder_ollama.py \
+            tools/run_builder_ollama_compat.py \
+            tools/run_builder_ollama_literal_compat.py \
             tools/run_builder_qwen_only.py \
+            tools/run_builder_qwen_only_compat.py \
             tests/builder_qwen_prompt_test.py \
             tests/builder_plunit_directive_test.py \
             tests/builder_ollama_structured_output_test.py \
