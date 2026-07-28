@@ -61,4 +61,18 @@ jobs:
       - name: Verify deterministic overlay and SWI-Prolog runtime
         env:
           PYTHONPATH: tools
-        run: python tests/candidate_activation_overlay_ci_test.py
+        run: |
+          set +e
+          python tests/candidate_activation_overlay_ci_test.py > overlay-test.log 2>&1
+          exit_code=$?
+          cat overlay-test.log
+          exit "$exit_code"
+
+      - name: Upload focused overlay test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-activation-overlay-test-log
+          path: overlay-test.log
+          if-no-files-found: error
+          retention-days: 14
