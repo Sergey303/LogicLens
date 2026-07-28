@@ -93,6 +93,8 @@ Run the paired Codex planner-v1 experiment. It asks the same nine questions firs
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' planner-v1-codex-pair
 ```
 
+The pair runner also creates a sibling `.zip` and prints the ChatGptRunner `[CGR_ARTIFACT]` marker. The `Attach output` action therefore includes the complete run automatically under `artifacts/`; no manual ZIP attachment is needed.
+
 Run one historical v0 Ollama representation:
 
 ```powershell
