@@ -212,12 +212,6 @@ def main() -> int:
             ))
             continue
 
-        if candidate["decision"] == "stop":
-            epochs.append(epoch_summary(
-                epoch, "teacher_stop", best["prompt"], best["prolog"], None, None, candidate, []
-            ))
-            break
-
         accepted, errors = validate_candidate(
             candidate,
             args.track,
@@ -233,6 +227,11 @@ def main() -> int:
                 epoch, "rejected", best["prompt"], best["prolog"], None, None, candidate, errors
             ))
             continue
+        if candidate["decision"] == "stop":
+            epochs.append(epoch_summary(
+                epoch, "teacher_stop", best["prompt"], best["prolog"], None, None, candidate, []
+            ))
+            break
 
         current_prompt = candidate["studentPrompt"]
         current_prolog = candidate["prologKnowledge"]
