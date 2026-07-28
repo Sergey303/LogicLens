@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -141,6 +142,10 @@ def validate_candidate(
     memorization = _contains_memorization(prompt + "\n" + prolog, cases)
     if memorization:
         errors.append(memorization)
+    if re.search(r"\b2026\b|30\s+июня|1\s+июля|10\s+августа", prompt.lower()):
+        errors.append("student prompt contains domain dates; facts must remain in Prolog")
+    if re.search(r"(?m)^\s*%|/\*", prolog):
+        errors.append("candidate Prolog contains free-form comments")
     if ":- module(epistemic_compiler_knowledge" not in prolog:
         errors.append("Prolog module contract is missing")
     if not errors:
