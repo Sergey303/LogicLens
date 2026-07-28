@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/candidate-activation-readiness-v0.schema.json",
+  "title": "LogicLens Builder candidate activation readiness v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "assessmentId",
+    "status",
+    "source",
+    "target",
+    "observedRuntime",
+    "checks",
+    "blockers",
+    "intent",
+    "assessmentHash"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "stage": { "const": "candidate-activation-readiness" },
+    "assessmentId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "status": { "enum": ["ready", "blocked"] },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planId",
+        "promotionPlanHash",
+        "candidateHash",
+        "candidatePackageHash",
+        "basePackageHash"
+      ],
+      "properties": {
+        "planId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "promotionPlanHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidateHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidatePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "basePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch", "revision"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 0 },
+        "revision": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "observedRuntime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "loadedEpoch",
+        "loadedRevision",
+        "candidateModules",
+        "candidateExports"
+      ],
+      "properties": {
+        "loadedEpoch": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "loadedRevision": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "candidateModules": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "candidateExports": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planVerified",
+        "baselineVerified",
+        "candidateFilesVerified",
+        "targetRevisionRepresented",
+        "candidateRuleLoaded",
+        "candidatePredicateExposed"
+      ],
+      "properties": {
+        "planVerified": { "type": "boolean" },
+        "baselineVerified": { "type": "boolean" },
+        "candidateFilesVerified": { "type": "boolean" },
+        "targetRevisionRepresented": { "type": "boolean" },
+        "candidateRuleLoaded": { "type": "boolean" },
+        "candidatePredicateExposed": { "type": "boolean" }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message", "remediation"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,63}$"
+          },
+          "message": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "remediation": { "type": "string", "minLength": 1, "maxLength": 1000 }
+        }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["staging", "apply", "activePointerUpdate"],
+      "properties": {
+        "staging": { "const": "not-performed" },
+        "apply": { "const": "not-performed" },
+        "activePointerUpdate": { "const": "not-performed" }
+      }
+    },
+    "assessmentHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}
