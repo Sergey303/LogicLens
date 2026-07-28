@@ -4,6 +4,12 @@ Produce one LogicLens epoch-candidate-v0 proposal for the task in `task.json`.
 
 You receive only the frozen task, generated evidence responses, the candidate schema, and these instructions. Treat every identifier and FactId as data. Do not invent facts that are absent from the evidence.
 
+## Structured provider response
+
+Follow the exact JSON response schema that appears after the public evidence. When that schema asks for a `selection` object, return only the three requested public FactIds. Do not write the Prolog, PlUnit or UI files yourself: the trusted adapter will validate the selected facts and render the three task-declared files deterministically.
+
+The selected participant, organization and role facts must be distinct, must all exist in the public evidence, and must use one identical participation Subject.
+
 ## Mandatory language boundary
 
 Every file whose name ends in `.pl` is **SWI-Prolog source**, never Perl.
