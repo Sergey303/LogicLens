@@ -36,6 +36,7 @@ MODULE_RE = re.compile(
 EXPORT_RE = re.compile(r"\b([a-z][A-Za-z0-9_]*)\s*/\s*([0-9]+)\b")
 LOADED_EPOCH_RE = re.compile(r"\bloaded_epoch\s*\(\s*([0-9]+)\s*\)\s*\.")
 LOADED_REVISION_RE = re.compile(r"\bloaded_revision\s*\(\s*([0-9]+)\s*\)\s*\.")
+ENTRY_HANDLER_RE = re.compile(r"\b([a-z][A-Za-z0-9_]*)\s*:\s*handle_request\s*\(")
 
 
 class ActivationReadinessError(RuntimeError):
@@ -160,8 +161,9 @@ def create_assessment(
 
     modules, exports, rule_paths = candidate_interfaces(candidate_root, verified_files)
     runtime_sources = read_runtime_sources(runtime, rule_paths)
-    loaded_epoch = unique_integer(runtime_sources.values(), LOADED_EPOCH_RE)
-    loaded_revision = unique_integer(runtime_sources.values(), LOADED_REVISION_RE)
+    handler_source = entry_handler_source(runtime_sources)
+    loaded_epoch = unique_integer([handler_source], LOADED_EPOCH_RE)
+    loaded_revision = unique_integer([handler_source], LOADED_REVISION_RE)
     target_epoch = required_nonnegative_int(target, "epoch")
     target_revision = required_nonnegative_int(target, "revision")
 
@@ -269,7 +271,9 @@ def candidate_interfaces(
         text = root.joinpath(*relative.parts).read_text(encoding=UTF8)
         match = MODULE_RE.search(text)
         if match is None:
-            raise ActivationReadinessError(f"candidate rule has no module declaration: {relative}")
+            raise ActivationReadinessError(
+                f"candidate rule has no module declaration: {relative}"
+            )
         module = match.group(1)
         modules.add(module)
         for name, arity in EXPORT_RE.findall(match.group(2)):
@@ -295,6 +299,36 @@ def read_runtime_sources(
     if not result:
         raise ActivationReadinessError("runtime tree contains no trusted Prolog sources")
     return result
+
+
+def entry_handler_source(runtime_sources: dict[PurePosixPath, str]) -> str:
+    entry_path = PurePosixPath("entry.pl")
+    entry = runtime_sources.get(entry_path)
+    if entry is None:
+        raise ActivationReadinessError("runtime tree is missing entry.pl")
+    handlers = set(ENTRY_HANDLER_RE.findall(entry))
+    if len(handlers) != 1:
+        raise ActivationReadinessError(
+            "entry.pl must select exactly one reviewed handle_request module"
+        )
+    module = next(iter(handlers))
+    module_path = PurePosixPath("rules") / f"{module}.pl"
+    source = runtime_sources.get(module_path)
+    if source is None:
+        raise ActivationReadinessError(
+            f"entry.pl handler module is missing from runtime: {module_path}"
+        )
+    declaration = MODULE_RE.search(source)
+    if declaration is None or declaration.group(1) != module:
+        raise ActivationReadinessError(
+            f"entry.pl handler module declaration differs: {module_path}"
+        )
+    exports = {f"{name}/{arity}" for name, arity in EXPORT_RE.findall(declaration.group(2))}
+    if "handle_request/3" not in exports:
+        raise ActivationReadinessError(
+            f"entry.pl handler does not export handle_request/3: {module_path}"
+        )
+    return source
 
 
 def unique_integer(values: Any, pattern: re.Pattern[str]) -> int | None:
@@ -371,9 +405,13 @@ def validate_status_consistency(record: dict[str, Any]) -> None:
     ready = all(value is True for value in checks.values())
     if record.get("status") == "ready":
         if not ready or blockers != []:
-            raise ActivationReadinessError("ready assessment contains failed checks or blockers")
+            raise ActivationReadinessError(
+                "ready assessment contains failed checks or blockers"
+            )
     elif ready or not isinstance(blockers, list) or not blockers:
-        raise ActivationReadinessError("blocked assessment must contain failed checks and blockers")
+        raise ActivationReadinessError(
+            "blocked assessment must contain failed checks and blockers"
+        )
 
 
 def compute_assessment_hash(record: dict[str, Any]) -> str:
