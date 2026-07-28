@@ -11,6 +11,7 @@ param(
         'runner-check',
         'ollama-smoke',
         'codex-smoke',
+        'planner-v1-codex-pair',
         'representation-run',
         'representation-score',
         'representation-baseline',
@@ -26,14 +27,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-
 if (-not (Test-Path $RepoRoot -PathType Container)) {
     throw "LogicLens repository was not found: $RepoRoot"
 }
 if (-not (Test-Path (Join-Path $RepoRoot '.git'))) {
     throw "The directory is not a Git checkout: $RepoRoot"
 }
-
 $scriptsRoot = Join-Path $RepoRoot 'EpistemicCompilerLab\scripts'
 
 Push-Location $RepoRoot
@@ -41,9 +40,7 @@ try {
     switch ($Action) {
         'sync-doctor' {
             & git pull --ff-only
-            if ($LASTEXITCODE -ne 0) {
-                throw "git pull failed with code $LASTEXITCODE."
-            }
+            if ($LASTEXITCODE -ne 0) { throw "git pull failed with code $LASTEXITCODE." }
             & (Join-Path $scriptsRoot 'doctor.ps1')
         }
         'doctor' {
@@ -69,8 +66,7 @@ try {
                 throw 'Usage: ollama-smoke <base-model>'
             }
             $profileModel = & (Join-Path $scriptsRoot 'ensure-ollama-cpu-profile.ps1') `
-                -BaseModel $Arguments[0] |
-                Select-Object -Last 1
+                -BaseModel $Arguments[0] | Select-Object -Last 1
             & (Join-Path $scriptsRoot 'test-ollama-model.ps1') -Model $profileModel
         }
         'codex-smoke' {
@@ -78,22 +74,23 @@ try {
                 throw 'Usage: codex-smoke [explicit-model]'
             }
             $codexParameters = @{}
-            if ($Arguments -and $Arguments.Count -eq 1) {
-                $codexParameters.Model = $Arguments[0]
-            }
+            if ($Arguments -and $Arguments.Count -eq 1) { $codexParameters.Model = $Arguments[0] }
             & (Join-Path $scriptsRoot 'test-codex-cli.ps1') @codexParameters
+        }
+        'planner-v1-codex-pair' {
+            if ($Arguments -and $Arguments.Count -gt 1) {
+                throw 'Usage: planner-v1-codex-pair [explicit-model]'
+            }
+            $pairParameters = @{}
+            if ($Arguments -and $Arguments.Count -eq 1) { $pairParameters.Model = $Arguments[0] }
+            & (Join-Path $scriptsRoot 'run-planner-v1-codex-pair.ps1') @pairParameters
         }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
                 throw 'Usage: representation-run <mode> <execution-model> [absolute-output-path]'
             }
-            $runParameters = @{
-                Mode = $Arguments[0]
-                Model = $Arguments[1]
-            }
-            if ($Arguments.Count -eq 3) {
-                $runParameters.OutputPath = $Arguments[2]
-            }
+            $runParameters = @{ Mode = $Arguments[0]; Model = $Arguments[1] }
+            if ($Arguments.Count -eq 3) { $runParameters.OutputPath = $Arguments[2] }
             & (Join-Path $scriptsRoot 'run-representation.ps1') @runParameters
         }
         'representation-score' {
@@ -101,9 +98,7 @@ try {
                 throw 'Usage: representation-score <run-jsonl-path> [summary-json-path]'
             }
             $scoreParameters = @{ RunPath = $Arguments[0] }
-            if ($Arguments.Count -eq 2) {
-                $scoreParameters.SummaryPath = $Arguments[1]
-            }
+            if ($Arguments.Count -eq 2) { $scoreParameters.SummaryPath = $Arguments[1] }
             & (Join-Path $scriptsRoot 'score-representation.ps1') @scoreParameters
         }
         'representation-baseline' {
@@ -111,15 +106,13 @@ try {
                 throw 'Usage: representation-baseline <mode> <base-model>'
             }
             & (Join-Path $scriptsRoot 'run-representation-baseline.ps1') `
-                -Mode $Arguments[0] `
-                -Model $Arguments[1]
+                -Mode $Arguments[0] -Model $Arguments[1]
         }
         'representation-suite' {
             if (-not $Arguments -or $Arguments.Count -ne 1) {
                 throw 'Usage: representation-suite <base-model>'
             }
-            & (Join-Path $scriptsRoot 'run-representation-suite.ps1') `
-                -Model $Arguments[0]
+            & (Join-Path $scriptsRoot 'run-representation-suite.ps1') -Model $Arguments[0]
         }
         'query' {
             if (-not $Arguments -or $Arguments.Count -eq 0) {
