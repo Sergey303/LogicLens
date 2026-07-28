@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/candidate-activation-overlay-v0.schema.json",
+  "title": "LogicLens Builder candidate activation overlay v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "overlayId",
+    "status",
+    "source",
+    "target",
+    "derivedBinding",
+    "changes",
+    "files",
+    "checks",
+    "intent",
+    "overlayHash"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "stage": { "const": "candidate-activation-overlay" },
+    "overlayId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "status": { "const": "prepared" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assessmentId",
+        "assessmentHash",
+        "promotionPlanHash",
+        "candidateHash",
+        "candidatePackageHash",
+        "basePackageHash"
+      ],
+      "properties": {
+        "assessmentId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "assessmentHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "promotionPlanHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidateHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidatePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "basePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch", "revision"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 0 },
+        "revision": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "derivedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "predicateIri", "module", "predicate", "arity"],
+      "properties": {
+        "command": { "const": "derived-query" },
+        "predicateIri": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "module": { "type": "string", "pattern": "^[a-z][A-Za-z0-9_]*$" },
+        "predicate": { "type": "string", "pattern": "^[a-z][A-Za-z0-9_]*$" },
+        "arity": { "const": 2 }
+      }
+    },
+    "changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replacedFiles", "addedFiles", "modifiedActiveFiles", "removedActiveFiles"],
+      "properties": {
+        "replacedFiles": {
+          "const": ["entry.pl"]
+        },
+        "addedFiles": {
+          "const": ["rules/revision_runtime.pl"]
+        },
+        "modifiedActiveFiles": {
+          "const": []
+        },
+        "removedActiveFiles": {
+          "const": []
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "operation", "sha256", "bytes"],
+        "properties": {
+          "path": { "enum": ["entry.pl", "rules/revision_runtime.pl"] },
+          "operation": { "enum": ["replace", "add"] },
+          "sha256": { "pattern": "^sha256:[0-9a-f]{64}$" },
+          "bytes": { "type": "integer", "minimum": 1, "maximum": 1048576 }
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assessmentVerified",
+        "knownBlockersMatched",
+        "candidateIdentityConsistent",
+        "candidateInterfaceReviewed",
+        "overlayAllowlistEnforced",
+        "activePackageUntouched"
+      ],
+      "properties": {
+        "assessmentVerified": { "const": true },
+        "knownBlockersMatched": { "const": true },
+        "candidateIdentityConsistent": { "const": true },
+        "candidateInterfaceReviewed": { "const": true },
+        "overlayAllowlistEnforced": { "const": true },
+        "activePackageUntouched": { "const": true }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["staging", "apply", "activePointerUpdate"],
+      "properties": {
+        "staging": { "const": "not-performed" },
+        "apply": { "const": "not-performed" },
+        "activePointerUpdate": { "const": "not-performed" }
+      }
+    },
+    "overlayHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}
