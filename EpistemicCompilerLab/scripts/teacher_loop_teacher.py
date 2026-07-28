@@ -118,6 +118,8 @@ def validate_candidate(
     prolog = str(candidate.get("prologKnowledge") or "")
     decision = candidate.get("decision")
     change_type = candidate.get("changeType")
+    prompt_changed = prompt != current_prompt
+    prolog_changed = prolog != current_prolog
 
     if decision == "stop" and change_type != "no_change":
         errors.append("stop decision must use no_change")
@@ -130,10 +132,14 @@ def validate_candidate(
     }[track]
     if change_type not in allowed:
         errors.append(f"changeType '{change_type}' is forbidden for track '{track}'")
-    if track == "prompt" and prolog != current_prolog:
-        errors.append("prompt-only candidate changed Prolog")
-    if track == "prolog" and prompt != current_prompt:
-        errors.append("prolog-only candidate changed prompt")
+    observed = {
+        (True, False): "prompt",
+        (False, True): "prolog",
+        (True, True): "combined",
+        (False, False): "no_change",
+    }[(prompt_changed, prolog_changed)]
+    if change_type != observed:
+        errors.append(f"declared changeType '{change_type}' does not match observed '{observed}'")
     if not prompt.strip() or len(prompt) > 10000:
         errors.append("student prompt is empty or too large")
     if not prolog.strip() or len(prolog) > 16000:
