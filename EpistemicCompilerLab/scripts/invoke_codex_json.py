@@ -104,13 +104,23 @@ def main() -> int:
         "--cd", str(workdir), "--output-schema", str(schema),
         "--output-last-message", str(output),
     ])
-    prompt = sys.stdin.read()
+    try:
+        prompt = sys.stdin.buffer.read().decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise AdapterError("provider prompt stdin is not valid UTF-8") from exc
     if not prompt.strip():
         raise AdapterError("provider prompt is empty")
     try:
         completed = subprocess.run(
-            command, input=prompt, text=True, capture_output=True,
-            cwd=workdir, check=False, timeout=args.timeout_seconds,
+            command,
+            input=prompt,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            capture_output=True,
+            cwd=workdir,
+            check=False,
+            timeout=args.timeout_seconds,
         )
     except subprocess.TimeoutExpired as exc:
         raise AdapterError("Codex CLI exceeded the timeout") from exc
