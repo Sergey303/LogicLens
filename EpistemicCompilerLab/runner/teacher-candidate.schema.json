@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision",
+    "changeType",
+    "hypothesis",
+    "studentPrompt",
+    "prologKnowledge",
+    "expectedEffect",
+    "risk"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": ["revise", "stop"]
+    },
+    "changeType": {
+      "type": "string",
+      "enum": ["prompt", "prolog", "combined", "no_change"]
+    },
+    "hypothesis": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600
+    },
+    "studentPrompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10000
+    },
+    "prologKnowledge": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16000
+    },
+    "expectedEffect": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600
+    },
+    "risk": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600
+    }
+  }
+}
