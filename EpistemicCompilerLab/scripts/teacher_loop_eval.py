@@ -8,6 +8,11 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+LAB_ROOT = Path(__file__).resolve().parents[1]
+STUDENT_SCHEMA = json.loads(
+    (LAB_ROOT / "runner" / "student-answer.schema.json").read_text(encoding="utf-8")
+)
+
 
 def load_cases(path: Path) -> list[dict[str, Any]]:
     return [
@@ -79,7 +84,7 @@ def evaluate(
         payload = {
             "model": model,
             "stream": False,
-            "format": "json",
+            "format": STUDENT_SCHEMA,
             "keep_alive": "10m",
             "messages": [
                 {"role": "system", "content": student_prompt},
@@ -95,12 +100,15 @@ def evaluate(
         try:
             response = _post_json(endpoint, payload, timeout)
             raw = str(response["message"]["content"])
-            parsed = json.loads(raw)
             usage = {
                 "promptEvalCount": response.get("prompt_eval_count"),
                 "evalCount": response.get("eval_count"),
                 "totalDurationNs": response.get("total_duration"),
+                "doneReason": response.get("done_reason"),
             }
+            if response.get("done_reason") == "length":
+                raise RuntimeError("Ollama output reached the fixed 256-token limit")
+            parsed = json.loads(raw)
         except Exception as exc:
             error = str(exc)
         elapsed_ms = int((time.perf_counter() - started) * 1000)
@@ -130,6 +138,7 @@ def evaluate(
         "materialCorrect": count("materialCorrect"),
         "askFieldCorrect": count("askFieldCorrect"),
         "runnerErrors": sum(1 for r in records if r["runnerError"]),
+        "outputLimited": sum(1 for r in records if r["usage"].get("doneReason") == "length"),
         "elapsedMs": sum(r["elapsedMs"] for r in records),
         "promptEvalCount": sum(int(r["usage"].get("promptEvalCount") or 0) for r in records),
         "evalCount": sum(int(r["usage"].get("evalCount") or 0) for r in records),
