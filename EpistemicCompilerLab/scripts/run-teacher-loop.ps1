@@ -50,4 +50,14 @@ if ($LASTEXITCODE -ne 0) {
     throw "Teacher loop failed with code $LASTEXITCODE. Artifacts remain under $outputRoot"
 }
 
+$summaryPath = Join-Path $outputRoot 'summary.json'
+$summary = Get-Content -LiteralPath $summaryPath -Raw -Encoding utf8 | ConvertFrom-Json -Depth 50
+$teacherEpochs = @($summary.epochs | Where-Object { [int] $_.epoch -gt 0 })
+$nonInfrastructureResults = @(
+    $teacherEpochs | Where-Object { $_.status -ne 'teacher_error' }
+)
+if ($Epochs -gt 0 -and $teacherEpochs.Count -gt 0 -and $nonInfrastructureResults.Count -eq 0) {
+    throw "All teacher epochs failed in infrastructure before a candidate result. Artifact preserved: $outputRoot.zip"
+}
+
 Write-Host "Teacher loop completed: $outputRoot"
