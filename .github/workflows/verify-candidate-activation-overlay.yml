@@ -49,6 +49,8 @@ jobs:
           sudo apt-get install -qq --yes --no-install-recommends swi-prolog-nox
 
       - name: Compile overlay and readiness modules
+        env:
+          PYTHONPATH: tools
         run: |
           python -m py_compile \
             tools/build_builder_candidate_activation_overlay.py \
@@ -57,4 +59,6 @@ jobs:
             tests/candidate_activation_overlay_ci_test.py
 
       - name: Verify deterministic overlay and SWI-Prolog runtime
+        env:
+          PYTHONPATH: tools
         run: python tests/candidate_activation_overlay_ci_test.py
