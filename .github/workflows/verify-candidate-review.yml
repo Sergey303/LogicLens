@@ -1,0 +1,51 @@
+name: Verify candidate review contract
+
+on:
+  pull_request:
+    paths:
+      - "contracts/builder-run-v0.schema.json"
+      - "contracts/candidate-review-v0.schema.json"
+      - "docs/adr/0012-reviewed-builder-candidate-recommendation.md"
+      - "tools/review_builder_candidate.py"
+      - "tests/candidate_review_contract_test.py"
+      - ".github/workflows/verify-candidate-review.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/builder-run-v0.schema.json"
+      - "contracts/candidate-review-v0.schema.json"
+      - "docs/adr/0012-reviewed-builder-candidate-recommendation.md"
+      - "tools/review_builder_candidate.py"
+      - "tests/candidate_review_contract_test.py"
+      - ".github/workflows/verify-candidate-review.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-candidate-review-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned JSON Schema validator
+        run: python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+
+      - name: Verify reviewed candidate recommendation contract
+        run: |
+          python -m py_compile \
+            tools/review_builder_candidate.py \
+            tests/candidate_review_contract_test.py
+          python tests/candidate_review_contract_test.py

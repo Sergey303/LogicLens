@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/candidate-review-v0.schema.json",
+  "title": "LogicLens reviewed Builder candidate recommendation v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "reviewId",
+    "decision",
+    "reviewer",
+    "reason",
+    "subject",
+    "metrics",
+    "evidence",
+    "checks",
+    "activation",
+    "reviewHash"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "stage": { "const": "candidate-review" },
+    "reviewId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "decision": { "enum": ["recommend", "reject"] },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "const": "human" },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+        }
+      }
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 2000,
+      "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f]+$"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runId",
+        "taskId",
+        "provider",
+        "taskHash",
+        "oracleHash",
+        "basePackageHash",
+        "proposalHash",
+        "candidateHash",
+        "candidatePackageHash",
+        "comparisonReportHash"
+      ],
+      "properties": {
+        "runId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "taskId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "provider": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name", "model"],
+          "properties": {
+            "kind": { "enum": ["fixture", "ollama", "codex", "other"] },
+            "name": { "type": "string", "minLength": 1, "maxLength": 256 },
+            "model": { "type": "string", "minLength": 1, "maxLength": 256 }
+          }
+        },
+        "taskHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "oracleHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "basePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "proposalHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidateHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidatePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "comparisonReportHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cliCalls", "manualFixes", "elapsedMs", "costUsd"],
+      "properties": {
+        "cliCalls": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "manualFixes": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "elapsedMs": {
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "costUsd": {
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runEnvelopeFileHash",
+        "comparisonReportFileHash",
+        "candidateManifestFileHash"
+      ],
+      "properties": {
+        "runEnvelopeFileHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "comparisonReportFileHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidateManifestFileHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identityConsistent",
+        "baselineConsistent",
+        "candidateValidationPassed",
+        "oracleValidationPassed",
+        "comparisonValidationsPassed",
+        "runtimeOutputsEqual",
+        "activeFilesUnchanged"
+      ],
+      "properties": {
+        "identityConsistent": { "const": true },
+        "baselineConsistent": { "const": true },
+        "candidateValidationPassed": { "const": true },
+        "oracleValidationPassed": { "const": true },
+        "comparisonValidationsPassed": { "const": true },
+        "runtimeOutputsEqual": { "const": true },
+        "activeFilesUnchanged": { "const": true }
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "const": "not-performed" }
+      }
+    },
+    "reviewHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}
