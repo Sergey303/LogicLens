@@ -1,0 +1,78 @@
+name: Verify candidate activation overlay
+
+on:
+  pull_request:
+    paths:
+      - "contracts/candidate-activation-overlay-v0.schema.json"
+      - "docs/adr/0015-reviewed-builder-activation-overlay.md"
+      - "tools/build_builder_candidate_activation_overlay.py"
+      - "tools/assess_builder_candidate_activation_readiness.py"
+      - "tests/candidate_activation_overlay_test.py"
+      - "tests/candidate_activation_overlay_ci_test.py"
+      - ".github/workflows/verify-candidate-activation-overlay.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/candidate-activation-overlay-v0.schema.json"
+      - "docs/adr/0015-reviewed-builder-activation-overlay.md"
+      - "tools/build_builder_candidate_activation_overlay.py"
+      - "tools/assess_builder_candidate_activation_readiness.py"
+      - "tests/candidate_activation_overlay_test.py"
+      - "tests/candidate_activation_overlay_ci_test.py"
+      - ".github/workflows/verify-candidate-activation-overlay.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-candidate-activation-overlay-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+          sudo apt-get update -qq
+          sudo apt-get install -qq --yes --no-install-recommends swi-prolog-nox
+
+      - name: Compile overlay and readiness modules
+        env:
+          PYTHONPATH: tools
+        run: |
+          python -m py_compile \
+            tools/build_builder_candidate_activation_overlay.py \
+            tools/assess_builder_candidate_activation_readiness.py \
+            tests/candidate_activation_overlay_test.py \
+            tests/candidate_activation_overlay_ci_test.py
+
+      - name: Verify deterministic overlay and SWI-Prolog runtime
+        env:
+          PYTHONPATH: tools
+        run: |
+          set +e
+          python tests/candidate_activation_overlay_ci_test.py > overlay-test.log 2>&1
+          exit_code=$?
+          cat overlay-test.log
+          exit "$exit_code"
+
+      - name: Upload focused overlay test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-activation-overlay-test-log
+          path: overlay-test.log
+          if-no-files-found: error
+          retention-days: 14

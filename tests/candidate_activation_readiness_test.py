@@ -38,12 +38,17 @@ def write_json(path: Path, value: dict) -> None:
 def build_active(root: Path) -> dict:
     (root / "rules").mkdir(parents=True)
     (root / "entry.pl").write_text(
-        ":- use_module('rules/cli_runtime.pl').\n",
+        ":- use_module('rules/cli_runtime.pl').\n"
+        "dispatch(Request, Response, ExitCode) :-\n"
+        "    cli_runtime:handle_request(Request, Response, ExitCode).\n",
         encoding="utf-8",
         newline="\n",
     )
     (root / "rules" / "cli_runtime.pl").write_text(
-        ":- module(cli_runtime, []).\nloaded_epoch(0).\nloaded_revision(0).\n",
+        ":- module(cli_runtime, [handle_request/3]).\n"
+        "loaded_epoch(0).\n"
+        "loaded_revision(0).\n"
+        "handle_request(_, _, 0).\n",
         encoding="utf-8",
         newline="\n",
     )
@@ -252,12 +257,17 @@ def main() -> int:
         (ready_root / "entry.pl").write_text(
             ":- use_module('rules/cli_runtime.pl').\n"
             ":- use_module('rules/candidate_researcher.pl').\n"
+            "dispatch(Request, Response, ExitCode) :-\n"
+            "    cli_runtime:handle_request(Request, Response, ExitCode).\n"
             "exposed(P,E) :- candidate_researcher:researcher_at_iis(P,E).\n",
             encoding="utf-8",
             newline="\n",
         )
         (ready_root / "rules" / "cli_runtime.pl").write_text(
-            ":- module(cli_runtime, []).\nloaded_epoch(0).\nloaded_revision(1).\n",
+            ":- module(cli_runtime, [handle_request/3]).\n"
+            "loaded_epoch(0).\n"
+            "loaded_revision(1).\n"
+            "handle_request(_, _, 0).\n",
             encoding="utf-8",
             newline="\n",
         )
