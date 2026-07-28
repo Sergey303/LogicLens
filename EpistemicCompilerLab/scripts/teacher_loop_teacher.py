@@ -40,6 +40,8 @@ def invoke_teacher(
         command,
         input=prompt,
         text=True,
+        encoding="utf-8",
+        errors="strict",
         capture_output=True,
         check=False,
         timeout=timeout + 30,
