@@ -11,6 +11,7 @@ $required = @(
     'runner/prompts/teacher-optimize.md',
     'runner/teacher-candidate.schema.json',
     'runner/student-answer.schema.json',
+    'scripts/invoke_codex_json.py',
     'scripts/teacher_loop_eval.py',
     'scripts/teacher_loop_teacher.py',
     'scripts/run_teacher_loop.py',
@@ -96,7 +97,19 @@ if ((@($studentSchema.properties.status.enum) -join ',') -ne 'success,unknown,ne
     throw 'Student answer schema status enum changed.'
 }
 
+$teacherTransport = Get-Content -LiteralPath (Join-Path $labRoot 'scripts/teacher_loop_teacher.py') -Raw -Encoding utf8
+if ($teacherTransport -notmatch 'encoding="utf-8"' -or $teacherTransport -notmatch 'errors="strict"') {
+    throw 'Teacher subprocess must send the Russian prompt as strict UTF-8.'
+}
+$codexTransport = Get-Content -LiteralPath (Join-Path $labRoot 'scripts/invoke_codex_json.py') -Raw -Encoding utf8
+if ($codexTransport -notmatch 'sys\.stdin\.buffer\.read\(\)\.decode\("utf-8"' -or
+    $codexTransport -notmatch 'encoding="utf-8"' -or
+    $codexTransport -notmatch 'errors="strict"') {
+    throw 'Codex adapter must decode and forward provider prompts as strict UTF-8.'
+}
+
 $pythonFiles = @(
+    'scripts/invoke_codex_json.py',
     'scripts/teacher_loop_eval.py',
     'scripts/teacher_loop_teacher.py',
     'scripts/run_teacher_loop.py',
@@ -134,5 +147,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $caseHash = (Get-FileHash -LiteralPath $casePath -Algorithm SHA256).Hash.ToLowerInvariant()
-Write-Host "Teacher loop assets valid: 18 cases (6/6/6), fixed student schema, closed teacher schema, offline regressions passed."
+Write-Host "Teacher loop assets valid: 18 cases (6/6/6), fixed schemas, strict UTF-8 Codex transport, offline regressions passed."
 Write-Host "Frozen pilot cases SHA256: $caseHash"
