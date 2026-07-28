@@ -12,6 +12,7 @@ param(
         'ollama-smoke',
         'codex-smoke',
         'planner-v1-codex-pair',
+        'teacher-loop',
         'representation-run',
         'representation-score',
         'representation-baseline',
@@ -84,6 +85,16 @@ try {
             $pairParameters = @{}
             if ($Arguments -and $Arguments.Count -eq 1) { $pairParameters.Model = $Arguments[0] }
             & (Join-Path $scriptsRoot 'run-planner-v1-codex-pair.ps1') @pairParameters
+        }
+        'teacher-loop' {
+            if ($Arguments -and $Arguments.Count -gt 3) {
+                throw 'Usage: teacher-loop [prompt|prolog|combined] [epochs] [base-model]'
+            }
+            $parameters = @{}
+            if ($Arguments -and $Arguments.Count -ge 1) { $parameters.Track = $Arguments[0] }
+            if ($Arguments -and $Arguments.Count -ge 2) { $parameters.Epochs = [int] $Arguments[1] }
+            if ($Arguments -and $Arguments.Count -eq 3) { $parameters.BaseModel = $Arguments[2] }
+            & (Join-Path $scriptsRoot 'run-teacher-loop.ps1') @parameters
         }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
