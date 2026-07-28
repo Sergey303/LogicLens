@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "status", "material", "askField", "answerRu"],
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["answer", "ask_user"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["success", "unknown", "need_user"]
+    },
+    "material": {
+      "type": ["string", "null"]
+    },
+    "askField": {
+      "type": ["string", "null"]
+    },
+    "answerRu": {
+      "type": "string"
+    }
+  }
+}
