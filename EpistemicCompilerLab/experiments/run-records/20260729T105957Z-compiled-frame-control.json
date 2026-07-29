@@ -1,0 +1,51 @@
+{
+  "runId": "20260729T105957Z-compiled-frame-epistemic-qwen2.5-coder-7b_cpu-v1-seed42",
+  "kind": "compiled-decision-frame-control",
+  "commit": "d9dcb45563ba0ffcab0f326a8b647cec57230090",
+  "platform": "windows-x64",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "doctorStatus": "passed",
+  "frameOracle": {
+    "passedCases": 18,
+    "totalCases": 18,
+    "errors": 0
+  },
+  "renderer": {
+    "passedCases": 18,
+    "totalCases": 18,
+    "actionCorrect": 18,
+    "statusCorrect": 18,
+    "materialCorrect": 18,
+    "askFieldCorrect": 18,
+    "runnerErrors": 0,
+    "answerRuNonEmpty": 18,
+    "answerRuHasCyrillic": 17,
+    "nonRussianCase": "holdout-c-after"
+  },
+  "splits": {
+    "train": {
+      "framePassedCases": 6,
+      "renderedPassedCases": 6,
+      "elapsedMs": 69284
+    },
+    "dev": {
+      "framePassedCases": 6,
+      "renderedPassedCases": 6,
+      "elapsedMs": 62532
+    },
+    "holdout": {
+      "framePassedCases": 6,
+      "renderedPassedCases": 6,
+      "elapsedMs": 62729
+    }
+  },
+  "usage": {
+    "promptEvalCount": 5169,
+    "evalCount": 928,
+    "elapsedMs": 194545
+  },
+  "source": "user-cgr+attached-run-zip",
+  "createdAt": "2026-07-29T11:03:12.100331+00:00",
+  "conclusion": "A deterministic question compiler plus verified SWI-Prolog execution produced correct decision frames for all 18 pilot cases, and Qwen copied all four semantic decision fields correctly in all 18 renders. One holdout answerRu was semantically correct but written in English, so semantic rendering is 18/18 while Russian-language compliance is 17/18. The result supports epistemic compilation as the effective mechanism, but the parser was built against known pilot formats; a newly generated frozen replication split is required before publication claims."
+}
