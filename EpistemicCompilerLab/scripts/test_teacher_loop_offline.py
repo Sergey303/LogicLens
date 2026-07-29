@@ -90,6 +90,20 @@ def main() -> int:
     ):
         raise AssertionError("semantic Prolog change was not rejected")
 
+    interface_change = dict(stop)
+    interface_change.update({
+        "decision": "revise",
+        "changeType": "prolog",
+        "prologKnowledge": prolog + (
+            "\nrequired_query_input(date).\n"
+            "required_query_input(revision).\n"
+            "supplied_unsupported_value_status(unknown).\n"
+        ),
+    })
+    passed, errors = validate(interface_change, "prolog")
+    if not passed:
+        raise AssertionError(f"generic interface facts were rejected: {errors}")
+
     reference = {"records": [
         {"caseId": "fixed", "checks": {"passed": False}},
         {"caseId": "regressed", "checks": {"passed": True}},
@@ -108,8 +122,9 @@ def main() -> int:
     print("ok 3 - declared change type must match actual files")
     print("ok 4 - benchmark-question memorization is rejected")
     print("ok 5 - Prolog semantic changes are rejected")
-    print("ok 6 - TRAIN effects distinguish fixes and regressions")
-    print("1..6")
+    print("ok 6 - generic query-interface Prolog facts are accepted")
+    print("ok 7 - TRAIN effects distinguish fixes and regressions")
+    print("1..7")
     return 0
 
 
