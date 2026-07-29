@@ -246,7 +246,10 @@ def main() -> int:
         selected_package = tampered.joinpath(*target["packagePath"].split("/"))
         with (selected_package / "entry.pl").open("ab") as stream:
             stream.write(b"\n% tampered\n")
-        expect_error(lambda: selected(repository, tampered), "file hash differs")
+        expect_error(
+            lambda: selected(repository, tampered),
+            "staged per-file hashes do not match its contents",
+        )
 
         incomplete = clone(deployment, root, "incomplete-journal")
         pending = transaction.build_journal(
