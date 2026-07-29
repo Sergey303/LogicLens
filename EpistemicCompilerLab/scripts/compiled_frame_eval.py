@@ -2,11 +2,14 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from typing import Any
 
 from compiled_frame_core import compile_frame
 from teacher_loop_eval import STUDENT_SCHEMA, _post_json, score_case
+
+CYRILLIC = re.compile(r"[А-Яа-яЁё]")
 
 
 def evaluate_split(
@@ -61,6 +64,7 @@ def evaluate_case(
         except Exception as exc:
             response_error = str(exc)
     checks = score_case(case, response, response_error or frame_error)
+    language = answer_checks(response)
     return {
         "caseId": case["id"],
         "split": split,
@@ -75,6 +79,15 @@ def evaluate_case(
         "elapsedMs": int((time.perf_counter() - started) * 1000),
         "usage": usage,
         "checks": checks,
+        "answerChecks": language,
+    }
+
+
+def answer_checks(response: dict[str, Any] | None) -> dict[str, bool]:
+    answer = "" if response is None else str(response.get("answerRu") or "").strip()
+    return {
+        "nonEmpty": bool(answer),
+        "hasCyrillic": bool(CYRILLIC.search(answer)),
     }
 
 
@@ -102,6 +115,9 @@ def _payload(args: Any, renderer: str, frame: dict[str, Any]) -> dict[str, Any]:
 
 def metrics(split: str, records: list[dict[str, Any]]) -> dict[str, Any]:
     count = lambda key: sum(1 for item in records if item["checks"][key])
+    answer_count = lambda key: sum(
+        1 for item in records if item["answerChecks"][key]
+    )
     return {
         "split": split,
         "totalCases": len(records),
@@ -111,6 +127,8 @@ def metrics(split: str, records: list[dict[str, Any]]) -> dict[str, Any]:
         "statusCorrect": count("statusCorrect"),
         "materialCorrect": count("materialCorrect"),
         "askFieldCorrect": count("askFieldCorrect"),
+        "answerRuNonEmpty": answer_count("nonEmpty"),
+        "answerRuHasCyrillic": answer_count("hasCyrillic"),
         "frameErrors": sum(1 for item in records if item["frameError"]),
         "runnerErrors": sum(1 for item in records if item["runnerError"]),
         "elapsedMs": sum(item["elapsedMs"] for item in records),
