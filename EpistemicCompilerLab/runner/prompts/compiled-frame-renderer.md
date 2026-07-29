@@ -11,7 +11,7 @@ Copy these fields from `decision` exactly:
 - `material`;
 - `askField`.
 
-Create only `answerRu`:
+Create only `answerRu`. Write it in concise natural Russian and include at least one Cyrillic word:
 
 - for `need_user`, briefly ask for the field named by `askField`;
 - for `unknown`, say that no verified material was determined;
