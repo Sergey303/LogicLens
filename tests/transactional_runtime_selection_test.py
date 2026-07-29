@@ -7,7 +7,6 @@ import importlib.util
 import json
 import shutil
 import tempfile
-from copy import deepcopy
 from pathlib import Path
 
 import apply_builder_activation_transaction as transaction
@@ -208,7 +207,10 @@ def main() -> int:
 
         unsafe = clone(deployment, root, "unsafe-path")
         rewrite_pointer(unsafe, lambda value: value.__setitem__("packagePath", "../escape"))
-        expect_error(lambda: selected(repository, unsafe), "active pointer failed schema")
+        expect_error(
+            lambda: selected(repository, unsafe),
+            "active pointer schema validation failed",
+        )
 
         missing = clone(deployment, root, "missing-package")
         rewrite_pointer(
