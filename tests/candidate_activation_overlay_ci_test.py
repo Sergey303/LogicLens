@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Run the activation-overlay contract test with shared hashing helpers."""
+"""Run the activation-overlay contract test with shared hashing and clean imports."""
 from __future__ import annotations
 
 import importlib.util
-import sys
 from pathlib import Path, PurePosixPath
 
 from active_epoch.hashing import aggregate_hash
+import build_builder_candidate_activation_overlay_clean_compat as clean
 
 
 def load_test(path: Path):
@@ -48,6 +48,7 @@ def main() -> int:
         module = original_load_module(name, path)
         if path.name == "build_builder_candidate_activation_overlay.py":
             module.aggregate_hash = aggregate_hash
+            module.render_revision_runtime = clean.render_revision_runtime_clean
 
             def tree_bytes(root: Path):
                 state["treeCalls"] = int(state["treeCalls"]) + 1
