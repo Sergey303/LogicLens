@@ -17,6 +17,9 @@ Write-Host 'Validating benchmark v1 teacher frames...'
 Write-Host 'Validating teacher-loop pilot...'
 & (Join-Path $PSScriptRoot 'validate-teacher-loop.ps1')
 
+Write-Host 'Validating compiled decision frame...'
+& (Join-Path $PSScriptRoot 'validate-compiled-frame.ps1')
+
 Write-Host 'Validating representation runner...'
 & (Join-Path $PSScriptRoot 'validate-runner.ps1')
 
