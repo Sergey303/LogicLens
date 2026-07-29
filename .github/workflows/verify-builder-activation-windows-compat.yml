@@ -1,0 +1,44 @@
+name: Verify Builder activation Windows compatibility
+
+on:
+  pull_request:
+    paths:
+      - "tools/apply_builder_activation_transaction.py"
+      - "tools/apply_builder_activation_transaction_portable.py"
+      - "tests/builder_activation_windows_compat_test.py"
+      - ".github/workflows/verify-builder-activation-windows-compat.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/apply_builder_activation_transaction.py"
+      - "tools/apply_builder_activation_transaction_portable.py"
+      - "tests/builder_activation_windows_compat_test.py"
+      - ".github/workflows/verify-builder-activation-windows-compat.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  durable-file-sync:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependency
+        run: python -m pip install jsonschema==4.23.0
+
+      - name: Verify writable durable-copy descriptors
+        run: python tests/builder_activation_windows_compat_test.py
