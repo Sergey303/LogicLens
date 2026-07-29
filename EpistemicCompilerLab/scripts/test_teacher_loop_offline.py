@@ -18,6 +18,10 @@ def main() -> int:
     args = parse_args()
     lab = args.lab_root.resolve()
     sys.path.insert(0, str(lab / "scripts"))
+    from teacher_loop_feedback import (
+        build_train_effects,
+        summarize_train_effects,
+    )
     from teacher_loop_teacher import validate_candidate
 
     prompt = (lab / "runner" / "prompts" / "direct.md").read_text(encoding="utf-8")
@@ -32,14 +36,8 @@ def main() -> int:
 
     def validate(candidate: dict, track: str) -> tuple[bool, list[str]]:
         return validate_candidate(
-            candidate,
-            track,
-            prompt,
-            prolog,
-            cases,
-            lab,
-            args.swipl,
-            60,
+            candidate, track, prompt, prolog, cases,
+            lab, args.swipl, 60,
         )
 
     stop = {
@@ -59,7 +57,7 @@ def main() -> int:
     prompt_change.update({
         "decision": "revise",
         "changeType": "prompt",
-        "studentPrompt": prompt + "\nParse explicit calendar dates before deciding whether date is missing.\n",
+        "studentPrompt": prompt + "\nParse explicit calendar dates first.\n",
     })
     passed, errors = validate(prompt_change, "prompt")
     if not passed:
@@ -81,7 +79,9 @@ def main() -> int:
     semantic_change.update({
         "decision": "revise",
         "changeType": "prolog",
-        "prologKnowledge": prolog.replace("Date < 20260701", "Date < 20260630", 1),
+        "prologKnowledge": prolog.replace(
+            "Date < 20260701", "Date < 20260630", 1
+        ),
     })
     passed, errors = validate(semantic_change, "prolog")
     if passed or not any(
@@ -90,12 +90,26 @@ def main() -> int:
     ):
         raise AssertionError("semantic Prolog change was not rejected")
 
+    reference = {"records": [
+        {"caseId": "fixed", "checks": {"passed": False}},
+        {"caseId": "regressed", "checks": {"passed": True}},
+    ]}
+    candidate = {"records": [
+        {"caseId": "fixed", "checks": {"passed": True}},
+        {"caseId": "regressed", "checks": {"passed": False}},
+    ]}
+    effects = build_train_effects(reference, candidate)
+    counts = summarize_train_effects(effects)
+    if counts["fixed"] != 1 or counts["regressed"] != 1:
+        raise AssertionError(f"bad intervention counts: {counts}")
+
     print("ok 1 - unchanged validated stop is accepted")
     print("ok 2 - generic prompt-only edit is accepted")
     print("ok 3 - declared change type must match actual files")
     print("ok 4 - benchmark-question memorization is rejected")
     print("ok 5 - Prolog semantic changes are rejected")
-    print("1..5")
+    print("ok 6 - TRAIN effects distinguish fixes and regressions")
+    print("1..6")
     return 0
 
 
