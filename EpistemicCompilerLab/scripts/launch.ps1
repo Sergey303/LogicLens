@@ -13,6 +13,7 @@ param(
         'codex-smoke',
         'planner-v1-codex-pair',
         'teacher-loop',
+        'compiled-frame',
         'representation-run',
         'representation-score',
         'representation-baseline',
@@ -44,24 +45,12 @@ try {
             if ($LASTEXITCODE -ne 0) { throw "git pull failed with code $LASTEXITCODE." }
             & (Join-Path $scriptsRoot 'doctor.ps1')
         }
-        'doctor' {
-            & (Join-Path $scriptsRoot 'doctor.ps1')
-        }
-        'tests' {
-            & (Join-Path $scriptsRoot 'run-tests.ps1')
-        }
-        'cases' {
-            & (Join-Path $scriptsRoot 'validate-cases.ps1')
-        }
-        'cases-v1' {
-            & (Join-Path $scriptsRoot 'validate-benchmark-v1.ps1')
-        }
-        'oracle' {
-            & (Join-Path $scriptsRoot 'verify-oracle.ps1')
-        }
-        'runner-check' {
-            & (Join-Path $scriptsRoot 'validate-runner.ps1')
-        }
+        'doctor' { & (Join-Path $scriptsRoot 'doctor.ps1') }
+        'tests' { & (Join-Path $scriptsRoot 'run-tests.ps1') }
+        'cases' { & (Join-Path $scriptsRoot 'validate-cases.ps1') }
+        'cases-v1' { & (Join-Path $scriptsRoot 'validate-benchmark-v1.ps1') }
+        'oracle' { & (Join-Path $scriptsRoot 'verify-oracle.ps1') }
+        'runner-check' { & (Join-Path $scriptsRoot 'validate-runner.ps1') }
         'ollama-smoke' {
             if (-not $Arguments -or $Arguments.Count -ne 1) {
                 throw 'Usage: ollama-smoke <base-model>'
@@ -95,6 +84,12 @@ try {
             if ($Arguments -and $Arguments.Count -ge 2) { $parameters.Epochs = [int] $Arguments[1] }
             if ($Arguments -and $Arguments.Count -eq 3) { $parameters.BaseModel = $Arguments[2] }
             & (Join-Path $scriptsRoot 'run-teacher-loop.ps1') @parameters
+        }
+        'compiled-frame' {
+            if ($Arguments -and $Arguments.Count -gt 1) { throw 'Usage: compiled-frame [base-model]' }
+            $parameters = @{}
+            if ($Arguments) { $parameters.BaseModel = $Arguments[0] }
+            & (Join-Path $scriptsRoot 'run-compiled-frame.ps1') @parameters
         }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
