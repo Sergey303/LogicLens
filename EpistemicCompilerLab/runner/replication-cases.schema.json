@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "cases"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "enum": [1]
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "questionRu",
+          "caseKind",
+          "revision",
+          "date",
+          "dateStyle",
+          "hasDistractor"
+        ],
+        "properties": {
+          "id": {"type": "string"},
+          "questionRu": {"type": "string"},
+          "caseKind": {
+            "type": "string",
+            "enum": ["success", "unknown", "missing_date", "missing_revision"]
+          },
+          "revision": {
+            "type": "string",
+            "enum": ["a", "b", "c", "missing"]
+          },
+          "date": {
+            "type": "integer",
+            "enum": [0, 20260630, 20260701, 20260810]
+          },
+          "dateStyle": {
+            "type": "string",
+            "enum": ["words", "dotted", "iso", "none"]
+          },
+          "hasDistractor": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}
