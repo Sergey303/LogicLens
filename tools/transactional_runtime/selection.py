@@ -58,19 +58,53 @@ def resolve_selected_runtime(
     attestation_schema_path: Path,
 ) -> SelectedRuntime:
     deployment = deployment_root.resolve()
+    pointer_schema_path = pointer_schema_path.resolve()
+    journal_schema_path = journal_schema_path.resolve()
+    attestation_schema_path = attestation_schema_path.resolve()
+
     transaction.verify_deployment(
         deployment_root=deployment,
-        pointer_schema_path=pointer_schema_path.resolve(),
-        journal_schema_path=journal_schema_path.resolve(),
-        attestation_schema_path=attestation_schema_path.resolve(),
+        pointer_schema_path=pointer_schema_path,
+        journal_schema_path=journal_schema_path,
+        attestation_schema_path=attestation_schema_path,
         attestation_path=None,
     )
 
     pointer_schema = transaction.read_json_object(
-        pointer_schema_path.resolve(),
+        pointer_schema_path,
         "active pointer schema",
     )
     pointer = transaction.read_and_verify_pointer(deployment, pointer_schema)
+    transaction_id = transaction.required_string(
+        pointer,
+        "transactionId",
+        "active pointer",
+    )
+    decision_hash = pointer.get("decisionHash")
+    if decision_hash is not None:
+        decision_hash = transaction.required_hash(
+            pointer,
+            "decisionHash",
+            "active pointer",
+        )
+        attestation_path = (
+            deployment
+            / "transactions"
+            / f"{transaction_id}.attestation.json"
+        )
+        if attestation_path.is_symlink() or not attestation_path.is_file():
+            raise SelectedRuntimeError(
+                "activated pointer has no immutable committed attestation: "
+                f"{attestation_path}"
+            )
+        transaction.verify_deployment(
+            deployment_root=deployment,
+            pointer_schema_path=pointer_schema_path,
+            journal_schema_path=journal_schema_path,
+            attestation_schema_path=attestation_schema_path,
+            attestation_path=attestation_path,
+        )
+
     package = transaction.resolve_pointer_package(deployment, pointer)
     transaction.verify_pointer_package(package, pointer)
 
@@ -101,18 +135,6 @@ def resolve_selected_runtime(
         "pointerHash",
         "active pointer",
     )
-    transaction_id = transaction.required_string(
-        pointer,
-        "transactionId",
-        "active pointer",
-    )
-    decision_hash = pointer.get("decisionHash")
-    if decision_hash is not None:
-        decision_hash = transaction.required_hash(
-            pointer,
-            "decisionHash",
-            "active pointer",
-        )
 
     return SelectedRuntime(
         deployment_root=deployment,
