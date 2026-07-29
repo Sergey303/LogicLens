@@ -28,6 +28,13 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def write_json(path: Path, value: object) -> None:
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
 def main() -> int:
     args = parse_args()
     lab = args.lab_root.resolve()
@@ -51,36 +58,57 @@ def main() -> int:
         args.timeout_seconds,
         args.codex_model,
     )
-    (output / "generator-audit.json").write_text(
-        json.dumps(audit, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
-    old_questions = _old_questions(lab)
-    generated = validate_generated(value, old_questions)
-    compiled = compile_cases(generated, args.swipl, lab)
-    case_path = output / "compiled-frame-replication-v0.jsonl"
-    write_jsonl(case_path, compiled)
+    write_json(output / "generator-audit.json", audit)
+    write_json(output / "candidate.generated.json", value)
     commit = subprocess.check_output(
         ["git", "-C", str(lab.parent), "rev-parse", "HEAD"],
         text=True,
         encoding="utf-8",
     ).strip()
-    manifest = {
+    base_manifest = {
         "schemaVersion": 1,
         "kind": "compiled-frame-replication-candidate",
         "createdAt": datetime.now(timezone.utc).isoformat(),
         "commit": commit,
-        "generator": "codex-cli-account-default" if not args.codex_model else args.codex_model,
-        "caseCount": len(compiled),
+        "generator": (
+            "codex-cli-account-default"
+            if not args.codex_model
+            else args.codex_model
+        ),
         "parserSha256": sha256(parser_path),
         "generatorPromptSha256": sha256(prompt_path),
-        "casesSha256": sha256(case_path),
         "oldQuestionsWithheld": True,
         "parserSourceWithheld": True,
-        "status": "candidate_requires_review_and_freeze",
     }
-    (output / "manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    try:
+        generated = validate_generated(value, _old_questions(lab))
+        compiled = compile_cases(generated, args.swipl, lab)
+        case_path = output / "compiled-frame-replication-v0.jsonl"
+        write_jsonl(case_path, compiled)
+        manifest = {
+            **base_manifest,
+            "caseCount": len(compiled),
+            "casesSha256": sha256(case_path),
+            "status": "candidate_requires_review_and_freeze",
+        }
+        write_json(output / "manifest.json", manifest)
+    except Exception as exc:
+        manifest = {
+            **base_manifest,
+            "caseCount": len(value.get("cases") or []),
+            "status": "rejected_by_trusted_validator",
+            "validationError": str(exc),
+        }
+        write_json(output / "manifest.json", manifest)
+        write_json(
+            output / "validation-error.json",
+            {"type": type(exc).__name__, "message": str(exc)},
+        )
+        shutil.make_archive(str(output), "zip", root_dir=output)
+        print(json.dumps(manifest, ensure_ascii=False))
+        print("[CGR_ARTIFACT_TITLE] Rejected replication candidate")
+        print(f"[CGR_ARTIFACT] {output}.zip")
+        raise
     shutil.make_archive(str(output), "zip", root_dir=output)
     print(json.dumps(manifest, ensure_ascii=False))
     print("[CGR_ARTIFACT_TITLE] Compiled-frame replication candidate")
@@ -99,7 +127,9 @@ def _old_questions(lab: Path) -> set[str]:
         if not path.exists():
             continue
         for item in load_cases(path):
-            question = str(item.get("questionRu") or item.get("question") or "").strip()
+            question = str(
+                item.get("questionRu") or item.get("question") or ""
+            ).strip()
             if question:
                 questions.add(question)
     return questions
