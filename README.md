@@ -37,6 +37,7 @@ LogicLens is a research system for building stable and query-specific interfaces
 - [ADR-0009: Crash-safe runtime state log](docs/adr/0009-crash-safe-runtime-state-log.md)
 - [ADR-0010: Provider-neutral Builder candidate package](docs/adr/0010-builder-candidate-package.md)
 - [ADR-0011: Reproducible Builder experiment envelope](docs/adr/0011-builder-experiment-envelope.md)
+- [ADR-0020: Transactional runtime selection](docs/adr/0020-transactional-runtime-selection.md)
 - [UI Document v0 JSON Schema](contracts/ui-document-v0.schema.json)
 - [Epoch candidate v0 JSON Schema](contracts/epoch-candidate-v0.schema.json)
 - [Builder task v0 JSON Schema](contracts/builder-task-v0.schema.json)
@@ -45,7 +46,36 @@ LogicLens is a research system for building stable and query-specific interfaces
 - [A0 architecture exit criteria](docs/verification/a0-exit-criteria.md)
 - [ENG-23 zero-epoch vertical slice plan](docs/plans/eng-23-zero-epoch-vertical-slice.md)
 
-## Run the zero epoch
+## Run the selected transactional runtime
+
+A normal launcher must resolve the immutable package selected by `deployment/current.json`; it does not open `active-epoch` directly.
+
+```powershell
+python .\tools\run_transactional_runtime.py `
+  --deployment-root .\artifacts\builder\eng-107-activation-002\deployment `
+  request `
+  --command health
+```
+
+Run the API and React application through the same verified pointer:
+
+```powershell
+python .\tools\run_logiclens.py `
+  --deployment-root .\artifacts\builder\eng-107-activation-002\deployment
+```
+
+Finite verification mode builds the application, starts it against the selected package, checks the vertical slice and stops it:
+
+```powershell
+python .\tools\run_logiclens.py `
+  --deployment-root .\artifacts\builder\eng-107-activation-002\deployment `
+  --verify-only `
+  --no-browser
+```
+
+The launcher validates pointer, journal, attestation and package hashes before starting SWI-Prolog. See [ADR-0020](docs/adr/0020-transactional-runtime-selection.md).
+
+## Run the zero epoch fixture
 
 With Python 3.12+, .NET 8, Node.js 24, npm, SWI-Prolog 9.0.4 and Git available on `PATH`:
 
@@ -53,9 +83,9 @@ With Python 3.12+, .NET 8, Node.js 24, npm, SWI-Prolog 9.0.4 and Git available o
 python .\tools\run_zero_epoch.py
 ```
 
-The command prepares a fresh portable epoch, builds the API and React renderer, starts both services, verifies the complete path and opens the entity page. See the [zero-epoch local runbook](docs/runbooks/zero-epoch-local-run.md).
+This command is retained for the historical revision 0.0 fixture. It prepares a fresh portable epoch, builds the API and React renderer, starts both services, verifies the complete path and opens the entity page. See the [zero-epoch local runbook](docs/runbooks/zero-epoch-local-run.md).
 
-CI uses the same entry point in finite verification mode:
+CI uses the same fixture entry point in finite verification mode:
 
 ```powershell
 python .\tools\run_zero_epoch.py --verify-only --no-browser

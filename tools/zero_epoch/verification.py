@@ -57,7 +57,13 @@ def wait_for(
     raise RunFailure(f"{name} did not become ready at {url}: {last_error}")
 
 
-def verify_vertical_slice(api_url: str, web_url: str) -> None:
+def verify_vertical_slice(
+    api_url: str,
+    web_url: str,
+    *,
+    expected_epoch: int = 0,
+    expected_revision: int = 0,
+) -> None:
     direct_health = require_json(f"{api_url}/api/health", "direct API health")
     require(direct_health.get("kind") == "health", "direct health kind is invalid")
 
@@ -122,8 +128,8 @@ def verify_vertical_slice(api_url: str, web_url: str) -> None:
         )
         document = parse_json(proxy_bytes, f"UI Document for {entity_id}")
         require(document.get("schemaVersion") == "0.1", "schemaVersion mismatch")
-        require(document.get("epoch") == 0, "epoch mismatch")
-        require(document.get("revision") == 0, "revision mismatch")
+        require(document.get("epoch") == expected_epoch, "epoch mismatch")
+        require(document.get("revision") == expected_revision, "revision mismatch")
         require(
             document.get("context") == {"kind": "entity", "entityId": entity_id},
             f"entity context mismatch for {entity_id}",
