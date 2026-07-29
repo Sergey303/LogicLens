@@ -1,0 +1,62 @@
+{
+  "runId": "20260729T084306Z-teacher-loop-combined-epistemic-qwen2.5-coder-7b_cpu-v1-seed42",
+  "kind": "teacher-loop-case-level-feedback-pilot",
+  "commit": "4d6f8424d58cdc8712207a6aa6ddd432bf6250ac",
+  "platform": "windows-x64",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "codexCli": "0.145.0",
+  "authentication": "ChatGPT",
+  "modelSelection": "account-default",
+  "track": "combined",
+  "epochBudget": 2,
+  "doctorStatus": "passed",
+  "baseline": {
+    "train": {"passedCases": 4, "totalCases": 6, "elapsedMs": 73856},
+    "dev": {"passedCases": 3, "totalCases": 6, "elapsedMs": 62147},
+    "holdout": {"passedCases": 2, "totalCases": 6, "elapsedMs": 64081}
+  },
+  "teacherEpochs": [
+    {
+      "epoch": 1,
+      "status": "accepted",
+      "changeType": "prompt",
+      "promptBytes": 1329,
+      "trainPassedCases": 3,
+      "devPassedCases": 3,
+      "fixedCases": 0,
+      "regressedCases": 1,
+      "unchangedFailCases": 2,
+      "candidateSelected": false,
+      "auditEvents": 4,
+      "forbiddenToolEvents": 0,
+      "codexInputTokens": 18576,
+      "codexOutputTokens": 939,
+      "codexReasoningTokens": 84
+    },
+    {
+      "epoch": 2,
+      "status": "accepted",
+      "changeType": "prompt",
+      "promptBytes": 1543,
+      "trainPassedCases": 3,
+      "devPassedCases": 2,
+      "fixedCases": 0,
+      "regressedCases": 1,
+      "unchangedFailCases": 2,
+      "candidateSelected": false,
+      "receivedTrainCaseEffects": true,
+      "auditEvents": 4,
+      "forbiddenToolEvents": 0,
+      "codexInputTokens": 20170,
+      "codexOutputTokens": 1215,
+      "codexReasoningTokens": 288
+    }
+  ],
+  "bestEpoch": 0,
+  "selectedHoldoutPassedCases": 2,
+  "holdoutDeltaCases": 0,
+  "source": "user-cgr+attached-run-zip",
+  "createdAt": "2026-07-29T08:52:14.091599+00:00",
+  "conclusion": "TRAIN-only case-level feedback reached epoch 2 and materially changed the teacher hypothesis, but both prompt candidates produced zero fixes. Epoch 2 preserved unsupported-revision behavior yet regressed a supported date case and reduced DEV from 3/6 to 2/6. The next ablation should force a Prolog-only representation mechanism rather than another prompt rewrite."
+}
