@@ -237,7 +237,10 @@ def main() -> int:
                 "sha256:" + hashlib.sha256(b"wrong-package").hexdigest(),
             ),
         )
-        expect_error(lambda: selected(repository, wrong_package), "packageHash")
+        expect_error(
+            lambda: selected(repository, wrong_package),
+            "pointer differs from staged package identity",
+        )
 
         tampered = clone(deployment, root, "tampered-package")
         selected_package = tampered.joinpath(*target["packagePath"].split("/"))
