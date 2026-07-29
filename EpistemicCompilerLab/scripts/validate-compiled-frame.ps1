@@ -52,6 +52,22 @@ if ('cases' -notin @($schema.required) -or
     throw 'Replication case schema must require a closed cases array.'
 }
 
+$generator = Get-Content (Join-Path $labRoot 'scripts/generate_replication_cases.py') -Raw -Encoding utf8
+foreach ($marker in @(
+    'candidate.generated.json',
+    'rejected_by_trusted_validator',
+    'validation-error.json',
+    '[CGR_ARTIFACT]'
+)) {
+    if ($generator -notmatch [regex]::Escape($marker)) {
+        throw "Replication generator does not preserve rejected candidates: $marker"
+    }
+}
+$validator = Get-Content (Join-Path $labRoot 'scripts/replication_cases.py') -Raw -Encoding utf8
+if ($validator -notmatch 'expectedLiteral' -or $validator -notmatch 'foundDateLiterals') {
+    throw 'Replication validator must report literal date mismatch details.'
+}
+
 $tokens = $null; $errors = $null
 foreach ($relative in @($required | Where-Object { $_ -like '*.ps1' })) {
     [void] [System.Management.Automation.Language.Parser]::ParseFile(
@@ -65,4 +81,4 @@ python (Join-Path $labRoot 'scripts/validate_compiled_frame.py') `
     --lab-root $labRoot --swipl $swipl
 if ($LASTEXITCODE -ne 0) { throw 'Compiled decision frame oracle failed.' }
 
-Write-Host 'Compiled-frame assets valid: 18/18 oracle, renderer language metrics and withheld-parser replication generator.'
+Write-Host 'Compiled-frame assets valid: 18/18 oracle, renderer metrics, replication generator and rejected-candidate preservation.'
