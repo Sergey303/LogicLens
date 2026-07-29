@@ -120,6 +120,14 @@ Run the compiled decision-frame control:
 
 This control deterministically extracts revision/date, marks absent inputs, executes the verified Prolog query and gives Qwen only the resulting decision frame. It reports frame accuracy separately from Qwen rendering accuracy. The current 18-case oracle is an engineering control, not publication-grade evidence of parser generalization.
 
+Generate a withheld-parser replication candidate:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' generate-replication
+```
+
+Codex receives neither parser source nor previous questions. Review and freeze the attached 24-case ZIP before any Qwen run.
+
 Run one historical v0 Ollama representation:
 
 ```powershell
