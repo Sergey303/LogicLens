@@ -3,13 +3,19 @@ param()
 
 $ErrorActionPreference = 'Stop'
 $labRoot = Split-Path -Parent $PSScriptRoot
+$schemaPath = Join-Path $labRoot 'runner/replication-cases.schema.json'
 $required = @(
     'runner/prompts/compiled-frame-renderer.md',
+    'runner/prompts/generate-replication-cases.md',
+    'runner/replication-cases.schema.json',
     'scripts/compiled_frame_core.py',
     'scripts/compiled_frame_eval.py',
     'scripts/run_compiled_frame.py',
     'scripts/validate_compiled_frame.py',
-    'scripts/run-compiled-frame.ps1'
+    'scripts/replication_cases.py',
+    'scripts/generate_replication_cases.py',
+    'scripts/run-compiled-frame.ps1',
+    'scripts/run-generate-replication.ps1'
 )
 
 foreach ($relative in $required) {
@@ -37,12 +43,26 @@ foreach ($relative in @($required | Where-Object { $_ -like '*.py' })) {
     }
 }
 
-$swipl = & (Join-Path $PSScriptRoot 'resolve-swipl.ps1') -Required
-python (Join-Path $labRoot 'scripts/validate_compiled_frame.py') `
-    --lab-root $labRoot `
-    --swipl $swipl
-if ($LASTEXITCODE -ne 0) {
-    throw 'Compiled decision frame oracle failed.'
+$schema = Get-Content $schemaPath -Raw -Encoding utf8 | ConvertFrom-Json -Depth 30
+if ($schema.type -ne 'object' -or $schema.additionalProperties -ne $false) {
+    throw 'Replication schema must be a closed object.'
+}
+if ('cases' -notin @($schema.required) -or
+    $schema.properties.cases.items.additionalProperties -ne $false) {
+    throw 'Replication case schema must require a closed cases array.'
 }
 
-Write-Host 'Compiled decision frame assets valid: parser and trusted Prolog frame passed 18/18.'
+$tokens = $null; $errors = $null
+foreach ($relative in @($required | Where-Object { $_ -like '*.ps1' })) {
+    [void] [System.Management.Automation.Language.Parser]::ParseFile(
+        (Join-Path $labRoot $relative), [ref] $tokens, [ref] $errors
+    )
+    if (@($errors).Count -gt 0) { throw "PowerShell parse failed: $relative" }
+}
+
+$swipl = & (Join-Path $PSScriptRoot 'resolve-swipl.ps1') -Required
+python (Join-Path $labRoot 'scripts/validate_compiled_frame.py') `
+    --lab-root $labRoot --swipl $swipl
+if ($LASTEXITCODE -ne 0) { throw 'Compiled decision frame oracle failed.' }
+
+Write-Host 'Compiled-frame assets valid: 18/18 oracle, renderer language metrics and withheld-parser replication generator.'
