@@ -38,7 +38,11 @@ var schemaPath = string.IsNullOrWhiteSpace(configuredSchemaPath)
                 configuredSchemaPath));
 
 builder.Services.AddSingleton(prologOptions);
-builder.Services.AddSingleton<IPrologCliClient, PrologCliClient>();
+builder.Services.AddSingleton<PrologCliClient>();
+builder.Services.AddSingleton<IPrologCliClient>(services =>
+    new StateCheckingPrologCliClient(
+        services.GetRequiredService<PrologCliClient>(),
+        prologOptions));
 builder.Services.AddSingleton(validationOptions);
 builder.Services.AddSingleton<IUiDocumentValidator>(_ =>
     new UiDocumentValidator(schemaPath, validationOptions));
