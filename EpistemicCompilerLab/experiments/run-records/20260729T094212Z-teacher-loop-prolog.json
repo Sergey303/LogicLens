@@ -1,0 +1,57 @@
+{
+  "runId": "20260729T094212Z-teacher-loop-prolog-epistemic-qwen2.5-coder-7b_cpu-v1-seed42",
+  "kind": "teacher-loop-prolog-only-pilot",
+  "commit": "4196a9c7455eccb1f8681aad073d3e4f9098fc43",
+  "platform": "windows-x64",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "codexCli": "0.145.0",
+  "authentication": "ChatGPT",
+  "modelSelection": "account-default",
+  "track": "prolog",
+  "epochBudget": 2,
+  "baseline": {
+    "trainPassedCases": 4,
+    "devPassedCases": 3,
+    "holdoutPassedCases": 2
+  },
+  "teacherEpochs": [
+    {
+      "epoch": 1,
+      "status": "accepted",
+      "changeType": "prolog",
+      "prologBytes": 1636,
+      "trainPassedCases": 4,
+      "devPassedCases": 3,
+      "fixedCases": 0,
+      "regressedCases": 0,
+      "unchangedFailCases": 2,
+      "candidateSelected": false,
+      "codexInputTokens": 18661,
+      "codexOutputTokens": 1142,
+      "codexReasoningTokens": 253
+    },
+    {
+      "epoch": 2,
+      "status": "accepted",
+      "changeType": "prolog",
+      "prologBytes": 1490,
+      "trainPassedCases": 3,
+      "devPassedCases": 3,
+      "fixedCases": 0,
+      "regressedCases": 1,
+      "unchangedFailCases": 2,
+      "candidateSelected": false,
+      "receivedTrainCaseEffects": true,
+      "codexInputTokens": 20183,
+      "codexOutputTokens": 1315,
+      "codexReasoningTokens": 476
+    }
+  ],
+  "bestEpoch": 0,
+  "selectedHoldoutPassedCases": 2,
+  "holdoutDeltaCases": 0,
+  "source": "user-cgr+attached-run-zip",
+  "createdAt": "2026-07-29T09:50:55.697969+00:00",
+  "conclusion": "Generic interface predicates were ignored by Qwen. Adding nonvar guards to current_material did not fix missing-input cases and regressed unsupported revision C. The student reads Prolog as text but does not reliably execute its operational semantics. The next control should compile the question and trusted Prolog result into an explicit decision frame before Qwen rendering."
+}
