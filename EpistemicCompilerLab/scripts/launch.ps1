@@ -14,6 +14,7 @@ param(
         'planner-v1-codex-pair',
         'teacher-loop',
         'compiled-frame',
+        'generate-replication',
         'representation-run',
         'representation-score',
         'representation-baseline',
@@ -60,20 +61,16 @@ try {
             & (Join-Path $scriptsRoot 'test-ollama-model.ps1') -Model $profileModel
         }
         'codex-smoke' {
-            if ($Arguments -and $Arguments.Count -gt 1) {
-                throw 'Usage: codex-smoke [explicit-model]'
-            }
-            $codexParameters = @{}
-            if ($Arguments -and $Arguments.Count -eq 1) { $codexParameters.Model = $Arguments[0] }
-            & (Join-Path $scriptsRoot 'test-codex-cli.ps1') @codexParameters
+            if ($Arguments -and $Arguments.Count -gt 1) { throw 'Usage: codex-smoke [explicit-model]' }
+            $parameters = @{}
+            if ($Arguments) { $parameters.Model = $Arguments[0] }
+            & (Join-Path $scriptsRoot 'test-codex-cli.ps1') @parameters
         }
         'planner-v1-codex-pair' {
-            if ($Arguments -and $Arguments.Count -gt 1) {
-                throw 'Usage: planner-v1-codex-pair [explicit-model]'
-            }
-            $pairParameters = @{}
-            if ($Arguments -and $Arguments.Count -eq 1) { $pairParameters.Model = $Arguments[0] }
-            & (Join-Path $scriptsRoot 'run-planner-v1-codex-pair.ps1') @pairParameters
+            if ($Arguments -and $Arguments.Count -gt 1) { throw 'Usage: planner-v1-codex-pair [explicit-model]' }
+            $parameters = @{}
+            if ($Arguments) { $parameters.Model = $Arguments[0] }
+            & (Join-Path $scriptsRoot 'run-planner-v1-codex-pair.ps1') @parameters
         }
         'teacher-loop' {
             if ($Arguments -and $Arguments.Count -gt 3) {
@@ -91,21 +88,27 @@ try {
             if ($Arguments) { $parameters.BaseModel = $Arguments[0] }
             & (Join-Path $scriptsRoot 'run-compiled-frame.ps1') @parameters
         }
+        'generate-replication' {
+            if ($Arguments -and $Arguments.Count -gt 1) { throw 'Usage: generate-replication [explicit-model]' }
+            $parameters = @{}
+            if ($Arguments) { $parameters.CodexModel = $Arguments[0] }
+            & (Join-Path $scriptsRoot 'run-generate-replication.ps1') @parameters
+        }
         'representation-run' {
             if (-not $Arguments -or $Arguments.Count -lt 2 -or $Arguments.Count -gt 3) {
                 throw 'Usage: representation-run <mode> <execution-model> [absolute-output-path]'
             }
-            $runParameters = @{ Mode = $Arguments[0]; Model = $Arguments[1] }
-            if ($Arguments.Count -eq 3) { $runParameters.OutputPath = $Arguments[2] }
-            & (Join-Path $scriptsRoot 'run-representation.ps1') @runParameters
+            $parameters = @{ Mode = $Arguments[0]; Model = $Arguments[1] }
+            if ($Arguments.Count -eq 3) { $parameters.OutputPath = $Arguments[2] }
+            & (Join-Path $scriptsRoot 'run-representation.ps1') @parameters
         }
         'representation-score' {
             if (-not $Arguments -or $Arguments.Count -lt 1 -or $Arguments.Count -gt 2) {
                 throw 'Usage: representation-score <run-jsonl-path> [summary-json-path]'
             }
-            $scoreParameters = @{ RunPath = $Arguments[0] }
-            if ($Arguments.Count -eq 2) { $scoreParameters.SummaryPath = $Arguments[1] }
-            & (Join-Path $scriptsRoot 'score-representation.ps1') @scoreParameters
+            $parameters = @{ RunPath = $Arguments[0] }
+            if ($Arguments.Count -eq 2) { $parameters.SummaryPath = $Arguments[1] }
+            & (Join-Path $scriptsRoot 'score-representation.ps1') @parameters
         }
         'representation-baseline' {
             if (-not $Arguments -or $Arguments.Count -ne 2) {
