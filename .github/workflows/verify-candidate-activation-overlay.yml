@@ -6,9 +6,11 @@ on:
       - "contracts/candidate-activation-overlay-v0.schema.json"
       - "docs/adr/0015-reviewed-builder-activation-overlay.md"
       - "tools/build_builder_candidate_activation_overlay.py"
+      - "tools/build_builder_candidate_activation_overlay_clean_compat.py"
       - "tools/assess_builder_candidate_activation_readiness.py"
       - "tests/candidate_activation_overlay_test.py"
       - "tests/candidate_activation_overlay_ci_test.py"
+      - "tests/candidate_activation_overlay_clean_import_test.py"
       - ".github/workflows/verify-candidate-activation-overlay.yml"
   push:
     branches:
@@ -17,9 +19,11 @@ on:
       - "contracts/candidate-activation-overlay-v0.schema.json"
       - "docs/adr/0015-reviewed-builder-activation-overlay.md"
       - "tools/build_builder_candidate_activation_overlay.py"
+      - "tools/build_builder_candidate_activation_overlay_clean_compat.py"
       - "tools/assess_builder_candidate_activation_readiness.py"
       - "tests/candidate_activation_overlay_test.py"
       - "tests/candidate_activation_overlay_ci_test.py"
+      - "tests/candidate_activation_overlay_clean_import_test.py"
       - ".github/workflows/verify-candidate-activation-overlay.yml"
 
 permissions:
@@ -54,9 +58,16 @@ jobs:
         run: |
           python -m py_compile \
             tools/build_builder_candidate_activation_overlay.py \
+            tools/build_builder_candidate_activation_overlay_clean_compat.py \
             tools/assess_builder_candidate_activation_readiness.py \
             tests/candidate_activation_overlay_test.py \
-            tests/candidate_activation_overlay_ci_test.py
+            tests/candidate_activation_overlay_ci_test.py \
+            tests/candidate_activation_overlay_clean_import_test.py
+
+      - name: Verify warning-free baseline import
+        env:
+          PYTHONPATH: tools
+        run: python tests/candidate_activation_overlay_clean_import_test.py
 
       - name: Verify deterministic overlay and SWI-Prolog runtime
         env:
