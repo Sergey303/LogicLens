@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Cross-platform entry point for the Builder activation transaction.
 
-Windows rejects ``os.fsync`` for descriptors opened read-only.  The original
+Windows rejects ``os.fsync`` for descriptors opened read-only. The original
 transaction engine uses read-only descriptors while durably copying immutable
-packages, which works on POSIX but fails with ``EBADF`` on Windows.  This entry
+packages, which works on POSIX but fails with ``EBADF`` on Windows. This entry
 point installs equivalent helpers that open regular files for binary write
 access before flushing them, then delegates every command and contract check to
 the reviewed transaction engine.
@@ -12,7 +12,12 @@ from __future__ import annotations
 
 import os
 import shutil
+import sys
 from pathlib import Path
+
+TOOLS_DIRECTORY = str(Path(__file__).resolve().parent)
+if TOOLS_DIRECTORY not in sys.path:
+    sys.path.insert(0, TOOLS_DIRECTORY)
 
 import apply_builder_activation_transaction as core
 
