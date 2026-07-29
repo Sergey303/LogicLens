@@ -81,7 +81,15 @@ def _validate_case(item: dict[str, Any], question: str) -> None:
             raise ValueError(f"invalid date style: {item['id']}")
         expected_text = DATES[date][style]
         if expected_text not in lowered or len(found_dates) != 1:
-            raise ValueError(f"date annotation mismatch: {item['id']}")
+            details = {
+                "caseId": item["id"],
+                "date": date,
+                "dateStyle": style,
+                "expectedLiteral": expected_text,
+                "foundDateLiterals": found_dates,
+                "questionRu": question,
+            }
+            raise ValueError("date annotation mismatch: " + json.dumps(details, ensure_ascii=False))
     if kind == "unknown" and revision != "c":
         raise ValueError(f"unknown case must use revision C: {item['id']}")
     if kind == "success" and revision not in {"a", "b"}:
