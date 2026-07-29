@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/active-pointer-v0.schema.json",
+  "title": "LogicLens active package pointer v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "generation",
+    "epoch",
+    "revision",
+    "packageHash",
+    "packagePath",
+    "decisionHash",
+    "transactionId",
+    "pointerHash"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "stage": { "const": "active-pointer" },
+    "generation": { "type": "integer", "minimum": 0 },
+    "epoch": { "type": "integer", "minimum": 0 },
+    "revision": { "type": "integer", "minimum": 0 },
+    "packageHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "packagePath": {
+      "type": "string",
+      "pattern": "^packages/[A-Za-z0-9][A-Za-z0-9._-]{0,191}$"
+    },
+    "decisionHash": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      ]
+    },
+    "transactionId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "pointerHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}
