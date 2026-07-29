@@ -1,0 +1,58 @@
+name: Verify Builder staged revision
+
+on:
+  pull_request:
+    paths:
+      - "contracts/staged-revision-v0.schema.json"
+      - "docs/adr/0017-isolated-builder-staged-revision.md"
+      - "tools/build_builder_staged_revision.py"
+      - "tests/builder_staged_revision_test.py"
+      - ".github/workflows/verify-builder-staged-revision.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/staged-revision-v0.schema.json"
+      - "docs/adr/0017-isolated-builder-staged-revision.md"
+      - "tools/build_builder_staged_revision.py"
+      - "tests/builder_staged_revision_test.py"
+      - ".github/workflows/verify-builder-staged-revision.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-builder-staged-revision-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+          sudo apt-get update -qq
+          sudo apt-get install -qq --yes --no-install-recommends swi-prolog-nox
+
+      - name: Compile staged revision modules
+        env:
+          PYTHONPATH: tools
+        run: |
+          python -m py_compile \
+            tools/build_builder_staged_revision.py \
+            tests/builder_staged_revision_test.py
+
+      - name: Verify isolated staged revision
+        env:
+          PYTHONPATH: tools
+        run: python tests/builder_staged_revision_test.py
