@@ -1,0 +1,32 @@
+{
+  "runId": "20260729T133449Z-compiled-frame-replication-candidate",
+  "kind": "replication-candidate-rejected",
+  "commit": "a7a89247afe426a21a5a989b33020df239c03d4e",
+  "platform": "windows-x64",
+  "codexCli": "0.145.0",
+  "authentication": "ChatGPT",
+  "modelSelection": "account-default",
+  "doctorStatus": "passed",
+  "codexStatus": "completed",
+  "auditEvents": 4,
+  "forbiddenToolEvents": 0,
+  "candidateCaseCount": 24,
+  "trustedChecksPassedBeforeFailure": [
+    "schema envelope",
+    "24 cases",
+    "unique rep-* IDs",
+    "new unique questions",
+    "6/6/6/6 case-kind balance",
+    "6/6/6 dated-style balance",
+    "12 distractor cases"
+  ],
+  "status": "rejected_by_trusted_validator",
+  "failureCase": "rep-01",
+  "failure": "date annotation mismatch between date/dateStyle and literal questionRu",
+  "qwenRun": false,
+  "parserChangedAfterResult": false,
+  "artifactAttached": false,
+  "source": "user-cgr",
+  "createdAt": "2026-07-29T13:37:57.266Z",
+  "notes": "The candidate was correctly blocked before freeze and before any Qwen evaluation. The old generator preserved files locally but did not package a failed candidate. Subsequent code now writes candidate.generated.json, validation-error.json and manifest.json, creates a ZIP and emits CGR artifact markers even when trusted validation rejects the candidate."
+}
