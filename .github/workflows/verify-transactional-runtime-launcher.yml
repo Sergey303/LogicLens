@@ -1,0 +1,90 @@
+name: Verify transactional runtime launcher
+
+on:
+  pull_request:
+    paths:
+      - "tools/transactional_runtime/**"
+      - "tools/run_transactional_runtime.py"
+      - "tools/run_logiclens.py"
+      - "tools/zero_epoch/verification.py"
+      - "tests/transactional_runtime_selection_test.py"
+      - "tests/transactional_runtime_request_test.py"
+      - "docs/adr/0020-transactional-runtime-selection.md"
+      - ".github/workflows/verify-transactional-runtime-launcher.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/transactional_runtime/**"
+      - "tools/run_transactional_runtime.py"
+      - "tools/run_logiclens.py"
+      - "tools/zero_epoch/verification.py"
+      - "tests/transactional_runtime_selection_test.py"
+      - "tests/transactional_runtime_request_test.py"
+      - "docs/adr/0020-transactional-runtime-selection.md"
+      - ".github/workflows/verify-transactional-runtime-launcher.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-transactional-runtime-launcher-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  selection:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: tools
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned dependency
+        run: python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+
+      - name: Compile launcher modules
+        run: >-
+          python -m py_compile
+          tools/transactional_runtime/selection.py
+          tools/transactional_runtime/cli.py
+          tools/transactional_runtime/stack.py
+          tools/run_transactional_runtime.py
+          tools/run_logiclens.py
+          tests/transactional_runtime_selection_test.py
+
+      - name: Verify fail-closed selection
+        run: python tests/transactional_runtime_selection_test.py
+
+  runtime-request:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: tools
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+          sudo apt-get update -qq
+          sudo apt-get install -qq --yes --no-install-recommends swi-prolog-nox
+
+      - name: Verify selected SWI-Prolog requests
+        run: python tests/transactional_runtime_request_test.py
