@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/activation-decision-v0.schema.json",
+  "title": "LogicLens reviewed activation decision v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "decisionId",
+    "decision",
+    "source",
+    "expectedCurrent",
+    "target",
+    "rollback",
+    "evidence",
+    "checks",
+    "intent",
+    "decisionHash"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "stage": { "const": "activation-decision" },
+    "decisionId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "decision": { "const": "authorize" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stageId",
+        "stagedPackageHash",
+        "promotionPlanHash",
+        "plannedRevisionHash",
+        "assessmentHash",
+        "overlayHash",
+        "candidateHash",
+        "candidatePackageHash",
+        "basePackageHash"
+      ],
+      "properties": {
+        "stageId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "stagedPackageHash": { "$ref": "#/$defs/hash" },
+        "promotionPlanHash": { "$ref": "#/$defs/hash" },
+        "plannedRevisionHash": { "$ref": "#/$defs/hash" },
+        "assessmentHash": { "$ref": "#/$defs/hash" },
+        "overlayHash": { "$ref": "#/$defs/hash" },
+        "candidateHash": { "$ref": "#/$defs/hash" },
+        "candidatePackageHash": { "$ref": "#/$defs/hash" },
+        "basePackageHash": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "expectedCurrent": { "$ref": "#/$defs/packageState" },
+    "target": { "$ref": "#/$defs/packageState" },
+    "rollback": { "$ref": "#/$defs/packageState" },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stagedManifestFileHash",
+        "activeManifestFileHash",
+        "candidateManifestFileHash",
+        "overlayManifestFileHash"
+      ],
+      "properties": {
+        "stagedManifestFileHash": { "$ref": "#/$defs/hash" },
+        "activeManifestFileHash": { "$ref": "#/$defs/hash" },
+        "candidateManifestFileHash": { "$ref": "#/$defs/hash" },
+        "overlayManifestFileHash": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stagedSchemaVerified",
+        "stagedFilesVerified",
+        "stagedPackageHashVerified",
+        "sourceBindingsVerified",
+        "activeBaselineVerified",
+        "transitionIsNextRevision",
+        "rollbackPinned",
+        "runtimeRevalidated",
+        "activePackageUntouched"
+      ],
+      "properties": {
+        "stagedSchemaVerified": { "const": true },
+        "stagedFilesVerified": { "const": true },
+        "stagedPackageHashVerified": { "const": true },
+        "sourceBindingsVerified": { "const": true },
+        "activeBaselineVerified": { "const": true },
+        "transitionIsNextRevision": { "const": true },
+        "rollbackPinned": { "const": true },
+        "runtimeRevalidated": { "const": true },
+        "activePackageUntouched": { "const": true }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorization", "apply", "activePointerUpdate"],
+      "properties": {
+        "authorization": { "const": "recorded-only" },
+        "apply": { "const": "not-performed" },
+        "activePointerUpdate": { "const": "not-performed" }
+      }
+    },
+    "decisionHash": { "$ref": "#/$defs/hash" }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "packageState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch", "revision", "packageHash"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 0 },
+        "revision": { "type": "integer", "minimum": 0 },
+        "packageHash": { "$ref": "#/$defs/hash" }
+      }
+    }
+  }
+}
