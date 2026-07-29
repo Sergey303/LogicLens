@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/staged-revision-v0.schema.json",
+  "title": "LogicLens isolated staged revision v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "stage",
+    "stageId",
+    "source",
+    "target",
+    "rollback",
+    "changes",
+    "checks",
+    "intent",
+    "files",
+    "packageHash"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "stage": { "const": "staged-revision" },
+    "stageId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planId",
+        "promotionPlanHash",
+        "plannedRevisionHash",
+        "assessmentId",
+        "assessmentHash",
+        "overlayId",
+        "overlayHash",
+        "candidateHash",
+        "candidatePackageHash",
+        "basePackageHash"
+      ],
+      "properties": {
+        "planId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "promotionPlanHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "plannedRevisionHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "assessmentId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "assessmentHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "overlayId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "overlayHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidateHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidatePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" },
+        "basePackageHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch", "revision", "mode"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 0 },
+        "revision": { "type": "integer", "minimum": 1 },
+        "mode": { "const": "additive-revision" }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch", "revision", "packageHash"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 0 },
+        "revision": { "type": "integer", "minimum": 0 },
+        "packageHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateAddedFiles", "overlayAddedFiles", "overlayReplacedFiles"],
+      "properties": {
+        "candidateAddedFiles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "overlayAddedFiles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "overlayReplacedFiles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planVerified",
+        "readyAssessmentVerified",
+        "overlayVerified",
+        "baselineVerified",
+        "candidateFilesVerified",
+        "overlayFilesVerified",
+        "staticValidationPassed",
+        "prologLoadPassed",
+        "plunitPassed",
+        "runtimePreviewPassed",
+        "baselineBehaviorPreserved",
+        "activePackageUntouched"
+      ],
+      "properties": {
+        "planVerified": { "const": true },
+        "readyAssessmentVerified": { "const": true },
+        "overlayVerified": { "const": true },
+        "baselineVerified": { "const": true },
+        "candidateFilesVerified": { "const": true },
+        "overlayFilesVerified": { "const": true },
+        "staticValidationPassed": { "const": true },
+        "prologLoadPassed": { "const": true },
+        "plunitPassed": { "const": true },
+        "runtimePreviewPassed": { "const": true },
+        "baselineBehaviorPreserved": { "const": true },
+        "activePackageUntouched": { "const": true }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["staging", "apply", "activePointerUpdate"],
+      "properties": {
+        "staging": { "const": "isolated-output-only" },
+        "apply": { "const": "not-performed" },
+        "activePointerUpdate": { "const": "not-performed" }
+      }
+    },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "pattern": "^sha256:[0-9a-f]{64}$" }
+    },
+    "packageHash": { "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}
