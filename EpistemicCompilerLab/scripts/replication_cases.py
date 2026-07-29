@@ -47,6 +47,11 @@ def validate_generated(
     counts = Counter(str(item.get("caseKind")) for item in cases)
     if set(counts) != KINDS or any(counts[kind] != 6 for kind in KINDS):
         raise ValueError(f"replication kind balance is invalid: {dict(counts)}")
+    styles = Counter(str(item.get("dateStyle")) for item in cases)
+    if any(styles[style] != 6 for style in ("words", "dotted", "iso")):
+        raise ValueError(f"replication date-style balance is invalid: {dict(styles)}")
+    if sum(bool(item.get("hasDistractor")) for item in cases) != 12:
+        raise ValueError("replication must contain exactly 12 distractor cases")
     for item, question in zip(cases, questions):
         _validate_case(item, question)
     return cases
@@ -65,13 +70,15 @@ def _validate_case(item: dict[str, Any], question: str) -> None:
         if letters or kind != "missing_revision":
             raise ValueError(f"revision annotation mismatch: {item['id']}")
     elif revision not in letters:
-        raise ValueError(f"revision is not explicit: {item['id']}")
+        raise ValueError(f"Latin revision is not explicit: {item['id']}")
     all_dates = [text for styles in DATES.values() for text in styles.values()]
     found_dates = [text for text in all_dates if text in lowered]
     if date == 0:
         if style != "none" or kind != "missing_date" or found_dates or "2026" in lowered:
             raise ValueError(f"missing-date annotation mismatch: {item['id']}")
     else:
+        if style not in DATES[date]:
+            raise ValueError(f"invalid date style: {item['id']}")
         expected_text = DATES[date][style]
         if expected_text not in lowered or len(found_dates) != 1:
             raise ValueError(f"date annotation mismatch: {item['id']}")
@@ -120,6 +127,9 @@ def _expected(item: dict[str, Any], swipl: str, lab_root: Path) -> dict[str, Any
 
 def write_jsonl(path: Path, cases: list[dict[str, Any]]) -> None:
     path.write_text(
-        "".join(json.dumps(item, ensure_ascii=False, separators=(",", ":")) + "\n" for item in cases),
+        "".join(
+            json.dumps(item, ensure_ascii=False, separators=(",", ":")) + "\n"
+            for item in cases
+        ),
         encoding="utf-8",
     )
