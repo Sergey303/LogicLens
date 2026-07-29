@@ -112,6 +112,14 @@ Longer ablation examples:
 
 The teacher loop stores every Qwen response, Codex candidate, validation result, epoch metric, selected candidate and final holdout result. It creates a sibling ZIP and prints the ChatGptRunner `[CGR_ARTIFACT]` marker, so `Attach output` includes the full run automatically.
 
+Run the compiled decision-frame control:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' compiled-frame
+```
+
+This control deterministically extracts revision/date, marks absent inputs, executes the verified Prolog query and gives Qwen only the resulting decision frame. It reports frame accuracy separately from Qwen rendering accuracy. The current 18-case oracle is an engineering control, not publication-grade evidence of parser generalization.
+
 Run one historical v0 Ollama representation:
 
 ```powershell
