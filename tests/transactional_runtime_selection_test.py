@@ -9,8 +9,11 @@ import shutil
 import tempfile
 from pathlib import Path
 
-import apply_builder_activation_transaction as transaction
+import apply_builder_activation_transaction_portable as portable_transaction
 from transactional_runtime.selection import resolve_selected_runtime
+
+portable_transaction.install_portable_sync()
+transaction = portable_transaction.core
 
 
 class VerificationError(AssertionError):
