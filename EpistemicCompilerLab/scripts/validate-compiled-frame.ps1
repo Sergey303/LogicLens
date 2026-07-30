@@ -5,16 +5,21 @@ $ErrorActionPreference = 'Stop'
 $labRoot = Split-Path -Parent $PSScriptRoot
 $schemaPath = Join-Path $labRoot 'runner/replication-cases.schema.json'
 $required = @(
+    'cases/compiled-frame-replication-v0.jsonl',
+    'cases/compiled-frame-replication-v0.manifest.json',
     'runner/prompts/compiled-frame-renderer.md',
     'runner/prompts/generate-replication-cases.md',
     'runner/replication-cases.schema.json',
     'scripts/compiled_frame_core.py',
     'scripts/compiled_frame_eval.py',
     'scripts/run_compiled_frame.py',
+    'scripts/run_compiled_frame_replication.py',
     'scripts/validate_compiled_frame.py',
+    'scripts/validate_compiled_frame_replication.py',
     'scripts/replication_cases.py',
     'scripts/generate_replication_cases.py',
     'scripts/run-compiled-frame.ps1',
+    'scripts/run-compiled-frame-replication.ps1',
     'scripts/run-generate-replication.ps1'
 )
 
@@ -80,5 +85,8 @@ $swipl = & (Join-Path $PSScriptRoot 'resolve-swipl.ps1') -Required
 python (Join-Path $labRoot 'scripts/validate_compiled_frame.py') `
     --lab-root $labRoot --swipl $swipl
 if ($LASTEXITCODE -ne 0) { throw 'Compiled decision frame oracle failed.' }
+python (Join-Path $labRoot 'scripts/validate_compiled_frame_replication.py') `
+    --lab-root $labRoot --swipl $swipl
+if ($LASTEXITCODE -ne 0) { throw 'Frozen compiled-frame replication oracle failed.' }
 
-Write-Host 'Compiled-frame assets valid: 18/18 oracle, renderer metrics, replication generator and rejected-candidate preservation.'
+Write-Host 'Compiled-frame assets valid: pilot 18/18 and frozen replication 24/24.'
