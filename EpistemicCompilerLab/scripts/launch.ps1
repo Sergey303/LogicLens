@@ -14,6 +14,7 @@ param(
         'planner-v1-codex-pair',
         'teacher-loop',
         'compiled-frame',
+        'compiled-frame-replication',
         'generate-replication',
         'representation-run',
         'representation-score',
@@ -87,6 +88,12 @@ try {
             $parameters = @{}
             if ($Arguments) { $parameters.BaseModel = $Arguments[0] }
             & (Join-Path $scriptsRoot 'run-compiled-frame.ps1') @parameters
+        }
+        'compiled-frame-replication' {
+            if ($Arguments -and $Arguments.Count -gt 1) { throw 'Usage: compiled-frame-replication [base-model]' }
+            $parameters = @{}
+            if ($Arguments) { $parameters.BaseModel = $Arguments[0] }
+            & (Join-Path $scriptsRoot 'run-compiled-frame-replication.ps1') @parameters
         }
         'generate-replication' {
             if ($Arguments -and $Arguments.Count -gt 1) { throw 'Usage: generate-replication [explicit-model]' }
