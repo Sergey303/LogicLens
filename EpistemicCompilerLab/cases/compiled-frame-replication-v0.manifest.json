@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "kind": "compiled-frame-replication-frozen",
+  "sourceRunId": "20260729T155046Z-compiled-frame-replication-candidate",
+  "sourceCommit": "0262f7e948d6a312a1827495200ef4d4f3ae30d6",
+  "frozenCasesCommit": "4bd48ff7daaf52f1e8db459d4f87c14b50188d4b",
+  "generator": "codex-cli-account-default",
+  "caseCount": 24,
+  "casesSha256": "22f346b523a4a4b09fd463e2803893fa4140f8949490049d6888154e9ce4f1f2",
+  "parserSha256": "4dabc3f43b8e1e00ce21d812ba554f6edd2affd52566f9acf71668692412f84c",
+  "parserBlobShaAtGeneration": "7789cf415a809ccff996823a90dc825d119f8ddd",
+  "generatorPromptSha256": "1e9280654a47bf43b808ba34aff26a2254fa261e3aa2bbc90f1b9352d987e26a",
+  "oldQuestionsWithheld": true,
+  "parserSourceWithheld": true,
+  "trustedValidation": {
+    "schemaAndCounts": "passed",
+    "kindBalance": "6/6/6/6",
+    "dateStyleBalance": "6 words / 6 dotted / 6 iso",
+    "distractorBalance": "12/24",
+    "parserExtraction": "24/24",
+    "expectedAnswersFromSwipl": "24/24"
+  },
+  "manualReview": {
+    "status": "accepted_without_edits",
+    "ambiguities": 0,
+    "stylisticCaveats": [
+      "rep-003 and rep-015 use the formal phrase 'исполнение ревизии'",
+      "rep-010 uses the intentionally harmless but awkward distractor 'с учётом доски'",
+      "rep-024 starts with the awkward but unambiguous distractor 'Для доски'"
+    ],
+    "reasonNoEdits": "Preserve independence and avoid human tuning after generation."
+  },
+  "status": "frozen_before_qwen_evaluation"
+}
