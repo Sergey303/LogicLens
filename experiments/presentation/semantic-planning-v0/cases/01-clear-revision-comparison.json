@@ -1,0 +1,465 @@
+{
+  "schemaVersion": "semantic-planning-benchmark-case-v0",
+  "caseId": "clear-revision-comparison",
+  "caseKind": "positive",
+  "researchTargets": [
+    "semantic_interpretation",
+    "dataset_profile",
+    "presentation_planner"
+  ],
+  "task": {
+    "language": "ru",
+    "text": "Сравни три редакции: когда каждая начала действовать, какой материал указан и каков статус.",
+    "goal": "compare_revisions",
+    "questions": [
+      {
+        "questionId": "q1",
+        "text": "В какой редакции материал впервые стал aluminium?"
+      },
+      {
+        "questionId": "q2",
+        "text": "Какая редакция имеет статус approved?"
+      }
+    ],
+    "answerKey": [
+      {
+        "questionId": "q1",
+        "answer": "rev:B",
+        "supportFactIds": [
+          "fixture:clear:b:material"
+        ]
+      },
+      {
+        "questionId": "q2",
+        "answer": "rev:C",
+        "supportFactIds": [
+          "fixture:clear:c:status"
+        ]
+      }
+    ]
+  },
+  "canonicalFacts": [
+    {
+      "factId": "fixture:clear:a:id",
+      "subject": "rev:A",
+      "predicate": "ll:revisionId",
+      "object": {
+        "kind": "literal",
+        "lexical": "A",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:a:validFrom",
+      "subject": "rev:A",
+      "predicate": "ll:validFrom",
+      "object": {
+        "kind": "literal",
+        "lexical": "2026-01-01",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:date"
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:a:material",
+      "subject": "rev:A",
+      "predicate": "ll:material",
+      "object": {
+        "kind": "literal",
+        "lexical": "steel",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:a:status",
+      "subject": "rev:A",
+      "predicate": "ll:status",
+      "object": {
+        "kind": "literal",
+        "lexical": "draft",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:b:id",
+      "subject": "rev:B",
+      "predicate": "ll:revisionId",
+      "object": {
+        "kind": "literal",
+        "lexical": "B",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:b:validFrom",
+      "subject": "rev:B",
+      "predicate": "ll:validFrom",
+      "object": {
+        "kind": "literal",
+        "lexical": "2026-02-10",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:date"
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:b:material",
+      "subject": "rev:B",
+      "predicate": "ll:material",
+      "object": {
+        "kind": "literal",
+        "lexical": "aluminium",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:b:status",
+      "subject": "rev:B",
+      "predicate": "ll:status",
+      "object": {
+        "kind": "literal",
+        "lexical": "review",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:c:id",
+      "subject": "rev:C",
+      "predicate": "ll:revisionId",
+      "object": {
+        "kind": "literal",
+        "lexical": "C",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:c:validFrom",
+      "subject": "rev:C",
+      "predicate": "ll:validFrom",
+      "object": {
+        "kind": "literal",
+        "lexical": "2026-03-15",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:date"
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:c:material",
+      "subject": "rev:C",
+      "predicate": "ll:material",
+      "object": {
+        "kind": "literal",
+        "lexical": "aluminium",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    },
+    {
+      "factId": "fixture:clear:c:status",
+      "subject": "rev:C",
+      "predicate": "ll:status",
+      "object": {
+        "kind": "literal",
+        "lexical": "approved",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:clear"
+      ]
+    }
+  ],
+  "ontologyEvidence": [
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ll:revisionId"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Редакция"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ll:validFrom"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Действует с"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ll:material"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Материал"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ll:status"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Статус"
+        }
+      ],
+      "definitions": []
+    }
+  ],
+  "oracleSemanticClaims": [
+    {
+      "claimId": "claim:clear:revision-id",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ll:revisionId"
+      },
+      "facet": "display_role",
+      "role": "identifier",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Редакция"
+        },
+        {
+          "kind": "fact_ids",
+          "factIds": [
+            "fixture:clear:a:id",
+            "fixture:clear:b:id",
+            "fixture:clear:c:id"
+          ]
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:clear:valid-from",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ll:validFrom"
+      },
+      "facet": "value_role",
+      "role": "time_value",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Действует с"
+        },
+        {
+          "kind": "datatype",
+          "value": "xsd:date"
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:clear:material",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ll:material"
+      },
+      "facet": "value_role",
+      "role": "category",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Материал"
+        },
+        {
+          "kind": "task_text",
+          "value": "какой материал указан"
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:clear:status",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ll:status"
+      },
+      "facet": "value_role",
+      "role": "status",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Статус"
+        },
+        {
+          "kind": "task_text",
+          "value": "каков статус"
+        }
+      ],
+      "alternatives": []
+    }
+  ],
+  "oracleDatasetProfile": {
+    "profileVersion": "dataset-profile-v0",
+    "entityIds": [
+      "rev:A",
+      "rev:B",
+      "rev:C"
+    ],
+    "entityCount": 3,
+    "factCount": 12,
+    "repeatedRecordShape": true,
+    "commonPredicates": [
+      "ll:revisionId",
+      "ll:validFrom",
+      "ll:material",
+      "ll:status"
+    ],
+    "candidateRowLabelPredicate": "ll:revisionId",
+    "candidateDimensions": [
+      {
+        "predicate": "ll:validFrom",
+        "semanticClaimIds": [
+          "claim:clear:valid-from"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": true
+      },
+      {
+        "predicate": "ll:material",
+        "semanticClaimIds": [
+          "claim:clear:material"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": true
+      },
+      {
+        "predicate": "ll:status",
+        "semanticClaimIds": [
+          "claim:clear:status"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": true
+      }
+    ],
+    "technicalPredicates": [],
+    "mandatoryFactIds": [
+      "fixture:clear:a:id",
+      "fixture:clear:a:validFrom",
+      "fixture:clear:a:material",
+      "fixture:clear:a:status",
+      "fixture:clear:b:id",
+      "fixture:clear:b:validFrom",
+      "fixture:clear:b:material",
+      "fixture:clear:b:status",
+      "fixture:clear:c:id",
+      "fixture:clear:c:validFrom",
+      "fixture:clear:c:material",
+      "fixture:clear:c:status"
+    ]
+  },
+  "expectedPresentation": {
+    "acceptableDecisions": [
+      {
+        "kind": "select",
+        "component": "comparison_table",
+        "entityIds": [
+          "rev:A",
+          "rev:B",
+          "rev:C"
+        ],
+        "rowLabelPredicate": "ll:revisionId",
+        "dimensionPredicates": [
+          "ll:validFrom",
+          "ll:material",
+          "ll:status"
+        ],
+        "fallback": "generic_property_sections"
+      }
+    ],
+    "requiredRejectedCandidates": [],
+    "requiredCoveredFactIds": [
+      "fixture:clear:a:id",
+      "fixture:clear:a:validFrom",
+      "fixture:clear:a:material",
+      "fixture:clear:a:status",
+      "fixture:clear:b:id",
+      "fixture:clear:b:validFrom",
+      "fixture:clear:b:material",
+      "fixture:clear:b:status",
+      "fixture:clear:c:id",
+      "fixture:clear:c:validFrom",
+      "fixture:clear:c:material",
+      "fixture:clear:c:status"
+    ],
+    "mustExposeFallback": true
+  }
+}
