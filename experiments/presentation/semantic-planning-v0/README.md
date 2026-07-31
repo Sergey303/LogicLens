@@ -25,6 +25,15 @@ not claim to be production FactId v1 hashes. Future import tooling may translate
 into production canonical facts while preserving the frozen references inside the
 benchmark envelope.
 
+
+## Vocabulary boundary
+
+The `facet`, `role`, component, and rejection-reason strings are frozen oracle labels
+for this research set; they are not an already accepted production enum. A future
+schema must explicitly accept, map, or reject each value. A runner must not silently
+normalize `publication_time`, `monetary_amount`, `age`, or any other role into a broader
+role because that would erase the interpretation boundary the case is intended to test.
+
 ## Cases
 
 1. `clear-revision-comparison` — positive table case with explicit labels and datatypes.
