@@ -1,0 +1,350 @@
+{
+  "schemaVersion": "semantic-planning-benchmark-case-v0",
+  "caseId": "opaque-revision-comparison",
+  "caseKind": "positive",
+  "researchTargets": [
+    "semantic_interpretation",
+    "presentation_planner"
+  ],
+  "task": {
+    "language": "ru",
+    "text": "Сравни версии R1, R2 и R3 по состоянию и материалу.",
+    "goal": "compare_revisions",
+    "questions": [
+      {
+        "questionId": "q1",
+        "text": "В какой версии материал меняется на polymer?"
+      },
+      {
+        "questionId": "q2",
+        "text": "Какое состояние у R2?"
+      }
+    ],
+    "answerKey": [
+      {
+        "questionId": "q1",
+        "answer": "opaque:r3",
+        "supportFactIds": [
+          "fixture:opaque:r3:a3"
+        ]
+      },
+      {
+        "questionId": "q2",
+        "answer": "checked",
+        "supportFactIds": [
+          "fixture:opaque:r2:a2"
+        ]
+      }
+    ]
+  },
+  "canonicalFacts": [
+    {
+      "factId": "fixture:opaque:r1:a1",
+      "subject": "opaque:r1",
+      "predicate": "urn:opaque:p-a1",
+      "object": {
+        "kind": "literal",
+        "lexical": "R1",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r1:a2",
+      "subject": "opaque:r1",
+      "predicate": "urn:opaque:p-a2",
+      "object": {
+        "kind": "literal",
+        "lexical": "open",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r1:a3",
+      "subject": "opaque:r1",
+      "predicate": "urn:opaque:p-a3",
+      "object": {
+        "kind": "literal",
+        "lexical": "copper",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r2:a1",
+      "subject": "opaque:r2",
+      "predicate": "urn:opaque:p-a1",
+      "object": {
+        "kind": "literal",
+        "lexical": "R2",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r2:a2",
+      "subject": "opaque:r2",
+      "predicate": "urn:opaque:p-a2",
+      "object": {
+        "kind": "literal",
+        "lexical": "checked",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r2:a3",
+      "subject": "opaque:r2",
+      "predicate": "urn:opaque:p-a3",
+      "object": {
+        "kind": "literal",
+        "lexical": "copper",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r3:a1",
+      "subject": "opaque:r3",
+      "predicate": "urn:opaque:p-a1",
+      "object": {
+        "kind": "literal",
+        "lexical": "R3",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r3:a2",
+      "subject": "opaque:r3",
+      "predicate": "urn:opaque:p-a2",
+      "object": {
+        "kind": "literal",
+        "lexical": "released",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    },
+    {
+      "factId": "fixture:opaque:r3:a3",
+      "subject": "opaque:r3",
+      "predicate": "urn:opaque:p-a3",
+      "object": {
+        "kind": "literal",
+        "lexical": "polymer",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:opaque"
+      ]
+    }
+  ],
+  "ontologyEvidence": [],
+  "oracleSemanticClaims": [
+    {
+      "claimId": "claim:opaque:a1",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "urn:opaque:p-a1"
+      },
+      "facet": "display_role",
+      "role": "identifier",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "fact_ids",
+          "factIds": [
+            "fixture:opaque:r1:a1",
+            "fixture:opaque:r2:a1",
+            "fixture:opaque:r3:a1"
+          ]
+        },
+        {
+          "kind": "task_text",
+          "value": "Сравни версии R1, R2 и R3 по состоянию и материалу."
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:opaque:a2",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "urn:opaque:p-a2"
+      },
+      "facet": "value_role",
+      "role": "status",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "fact_ids",
+          "factIds": [
+            "fixture:opaque:r1:a2",
+            "fixture:opaque:r2:a2",
+            "fixture:opaque:r3:a2"
+          ]
+        },
+        {
+          "kind": "task_text",
+          "value": "Сравни версии R1, R2 и R3 по состоянию и материалу."
+        },
+        {
+          "kind": "neighboring_predicates",
+          "predicateIds": [
+            "urn:opaque:p-a1",
+            "urn:opaque:p-a3"
+          ]
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:opaque:a3",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "urn:opaque:p-a3"
+      },
+      "facet": "value_role",
+      "role": "category",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "fact_ids",
+          "factIds": [
+            "fixture:opaque:r1:a3",
+            "fixture:opaque:r2:a3",
+            "fixture:opaque:r3:a3"
+          ]
+        },
+        {
+          "kind": "task_text",
+          "value": "Сравни версии R1, R2 и R3 по состоянию и материалу."
+        },
+        {
+          "kind": "neighboring_predicates",
+          "predicateIds": [
+            "urn:opaque:p-a1",
+            "urn:opaque:p-a2"
+          ]
+        }
+      ],
+      "alternatives": []
+    }
+  ],
+  "oracleDatasetProfile": {
+    "profileVersion": "dataset-profile-v0",
+    "entityIds": [
+      "opaque:r1",
+      "opaque:r2",
+      "opaque:r3"
+    ],
+    "entityCount": 3,
+    "factCount": 9,
+    "repeatedRecordShape": true,
+    "commonPredicates": [
+      "urn:opaque:p-a1",
+      "urn:opaque:p-a2",
+      "urn:opaque:p-a3"
+    ],
+    "candidateRowLabelPredicate": "urn:opaque:p-a1",
+    "candidateDimensions": [
+      {
+        "predicate": "urn:opaque:p-a2",
+        "semanticClaimIds": [
+          "claim:opaque:a2"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": true
+      },
+      {
+        "predicate": "urn:opaque:p-a3",
+        "semanticClaimIds": [
+          "claim:opaque:a3"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": true
+      }
+    ],
+    "technicalPredicates": [],
+    "mandatoryFactIds": [
+      "fixture:opaque:r1:a1",
+      "fixture:opaque:r1:a2",
+      "fixture:opaque:r1:a3",
+      "fixture:opaque:r2:a1",
+      "fixture:opaque:r2:a2",
+      "fixture:opaque:r2:a3",
+      "fixture:opaque:r3:a1",
+      "fixture:opaque:r3:a2",
+      "fixture:opaque:r3:a3"
+    ]
+  },
+  "expectedPresentation": {
+    "acceptableDecisions": [
+      {
+        "kind": "select",
+        "component": "comparison_table",
+        "entityIds": [
+          "opaque:r1",
+          "opaque:r2",
+          "opaque:r3"
+        ],
+        "rowLabelPredicate": "urn:opaque:p-a1",
+        "dimensionPredicates": [
+          "urn:opaque:p-a2",
+          "urn:opaque:p-a3"
+        ],
+        "fallback": "generic_property_sections"
+      }
+    ],
+    "requiredRejectedCandidates": [],
+    "requiredCoveredFactIds": [
+      "fixture:opaque:r1:a1",
+      "fixture:opaque:r1:a2",
+      "fixture:opaque:r1:a3",
+      "fixture:opaque:r2:a1",
+      "fixture:opaque:r2:a2",
+      "fixture:opaque:r2:a3",
+      "fixture:opaque:r3:a1",
+      "fixture:opaque:r3:a2",
+      "fixture:opaque:r3:a3"
+    ],
+    "mustExposeFallback": true
+  }
+}
