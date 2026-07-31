@@ -6,9 +6,15 @@ $labRoot = Split-Path -Parent $PSScriptRoot
 $required = @(
     'sources/strict-epistemic-v0.md',
     'prolog/strict_epistemic.pl',
+    'prolog/strict_epistemic_request.pl',
+    'prolog/strict_epistemic_entry.pl',
     'tests/strict_epistemic_tests.pl',
     'research/STRICT_EPISTEMIC_ABLATION.md',
-    'scripts/run-strict-epistemic-tests.ps1'
+    'scripts/run-strict-epistemic-tests.ps1',
+    'scripts/strict_epistemic_benchmark_core.py',
+    'scripts/generate_strict_epistemic_benchmark.py',
+    'scripts/validate_strict_epistemic_benchmark.py',
+    'scripts/run-generate-strict-epistemic-benchmark.ps1'
 )
 
 foreach ($relative in $required) {
@@ -33,6 +39,19 @@ foreach ($forbidden in @('probability(', 'membership(', 'confidence(')) {
     }
 }
 
+$pythonCheck = @'
+import ast, pathlib, sys
+path = pathlib.Path(sys.argv[1])
+source = path.read_text(encoding="utf-8")
+ast.parse(source)
+if len(source.splitlines()) > 149:
+    raise SystemExit(f"human-maintained file exceeds 149 lines: {path}")
+'@
+foreach ($relative in @($required | Where-Object { $_ -like '*.py' })) {
+    $pythonCheck | python - (Join-Path $labRoot $relative)
+    if ($LASTEXITCODE -ne 0) { throw "Python validation failed: $relative" }
+}
+
 $tokens = $null; $errors = $null
 foreach ($relative in @($required | Where-Object { $_ -like '*.ps1' })) {
     [void] [System.Management.Automation.Language.Parser]::ParseFile(
@@ -42,4 +61,4 @@ foreach ($relative in @($required | Where-Object { $_ -like '*.ps1' })) {
 }
 
 & (Join-Path $PSScriptRoot 'run-strict-epistemic-tests.ps1')
-Write-Host 'Strict epistemic assets valid: typed statuses, provenance and policy are separated.'
+Write-Host 'Strict epistemic assets valid: oracle, request policy and frozen-candidate generator are separated.'
