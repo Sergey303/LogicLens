@@ -1,0 +1,276 @@
+{
+  "schemaVersion": "semantic-planning-benchmark-case-v0",
+  "caseId": "lookalike-incomparable-records",
+  "caseKind": "negative",
+  "researchTargets": [
+    "semantic_interpretation",
+    "false_rich_view_rejection"
+  ],
+  "task": {
+    "language": "ru",
+    "text": "Сравни три объекта с числом 82 и покажи их общей таблицей.",
+    "goal": "compare_objects",
+    "questions": [
+      {
+        "questionId": "q1",
+        "text": "Означает ли число 82 одно и то же для всех объектов?"
+      }
+    ],
+    "answerKey": [
+      {
+        "questionId": "q1",
+        "answer": "нет: температура, цена и возраст имеют разные семантические роли",
+        "supportClaimIds": [
+          "claim:look:temperature",
+          "claim:look:price",
+          "claim:look:age"
+        ]
+      }
+    ]
+  },
+  "canonicalFacts": [
+    {
+      "factId": "fixture:look:temp:id",
+      "subject": "sensor:1",
+      "predicate": "sensor:code",
+      "object": {
+        "kind": "literal",
+        "lexical": "S-1",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:look"
+      ]
+    },
+    {
+      "factId": "fixture:look:temp:value",
+      "subject": "sensor:1",
+      "predicate": "sensor:temperature",
+      "object": {
+        "kind": "literal",
+        "lexical": "82",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:decimal"
+      },
+      "origins": [
+        "origin:look"
+      ]
+    },
+    {
+      "factId": "fixture:look:price:id",
+      "subject": "offer:1",
+      "predicate": "offer:code",
+      "object": {
+        "kind": "literal",
+        "lexical": "O-1",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:look"
+      ]
+    },
+    {
+      "factId": "fixture:look:price:value",
+      "subject": "offer:1",
+      "predicate": "offer:price",
+      "object": {
+        "kind": "literal",
+        "lexical": "82",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:decimal"
+      },
+      "origins": [
+        "origin:look"
+      ]
+    },
+    {
+      "factId": "fixture:look:age:id",
+      "subject": "person:1",
+      "predicate": "person:code",
+      "object": {
+        "kind": "literal",
+        "lexical": "P-1",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:look"
+      ]
+    },
+    {
+      "factId": "fixture:look:age:value",
+      "subject": "person:1",
+      "predicate": "person:age",
+      "object": {
+        "kind": "literal",
+        "lexical": "82",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:integer"
+      },
+      "origins": [
+        "origin:look"
+      ]
+    }
+  ],
+  "ontologyEvidence": [
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "sensor:temperature"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Температура"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "offer:price"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Цена"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "person:age"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Возраст"
+        }
+      ],
+      "definitions": []
+    }
+  ],
+  "oracleSemanticClaims": [
+    {
+      "claimId": "claim:look:temperature",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "sensor:temperature"
+      },
+      "facet": "value_role",
+      "role": "measurement",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Температура"
+        },
+        {
+          "kind": "datatype",
+          "value": "xsd:decimal"
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:look:price",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "offer:price"
+      },
+      "facet": "value_role",
+      "role": "monetary_amount",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Цена"
+        },
+        {
+          "kind": "datatype",
+          "value": "xsd:decimal"
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:look:age",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "person:age"
+      },
+      "facet": "value_role",
+      "role": "age",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Возраст"
+        },
+        {
+          "kind": "datatype",
+          "value": "xsd:integer"
+        }
+      ],
+      "alternatives": []
+    }
+  ],
+  "oracleDatasetProfile": {
+    "profileVersion": "dataset-profile-v0",
+    "entityIds": [
+      "sensor:1",
+      "offer:1",
+      "person:1"
+    ],
+    "entityCount": 3,
+    "factCount": 6,
+    "repeatedRecordShape": true,
+    "commonPredicates": [],
+    "candidateRowLabelPredicate": null,
+    "candidateDimensions": [],
+    "technicalPredicates": [],
+    "mandatoryFactIds": [
+      "fixture:look:temp:id",
+      "fixture:look:temp:value",
+      "fixture:look:price:id",
+      "fixture:look:price:value",
+      "fixture:look:age:id",
+      "fixture:look:age:value"
+    ]
+  },
+  "expectedPresentation": {
+    "acceptableDecisions": [
+      {
+        "kind": "fallback",
+        "component": "generic_property_sections",
+        "reason": "insufficient_shared_semantic_dimensions"
+      }
+    ],
+    "requiredRejectedCandidates": [
+      {
+        "component": "comparison_table",
+        "reason": "insufficient_shared_semantic_dimensions"
+      }
+    ],
+    "requiredCoveredFactIds": [
+      "fixture:look:temp:id",
+      "fixture:look:temp:value",
+      "fixture:look:price:id",
+      "fixture:look:price:value",
+      "fixture:look:age:id",
+      "fixture:look:age:value"
+    ],
+    "mustExposeFallback": true
+  }
+}
