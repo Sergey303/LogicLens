@@ -1,6 +1,7 @@
 :- begin_tests(strict_epistemic).
 
 :- use_module('../prolog/strict_epistemic').
+:- use_module('../prolog/strict_epistemic_request').
 
 test(supported_status) :-
     claim_status(uses_material(revision_a, asd2), supported).
@@ -63,5 +64,23 @@ test(provenance_is_addressable) :-
     source_ref(SourceId, Ref),
     get_dict(file, Ref, "EpistemicCompilerLab/sources/strict-epistemic-v0.md"),
     get_dict(section, Ref, "Source S-A-positive").
+
+test(irrelevant_assertions_do_not_change_target_statuses) :-
+    assertion(ep_e_positive, uses_material(revision_e, asd7), _, positive),
+    assertion(ep_f_negative, uses_material(revision_f, asd9), _, negative),
+    claim_status(uses_material(revision_a, asd2), supported),
+    claim_status(uses_material(revision_c, asd2), unknown).
+
+test(missing_revision_requests_clarification) :-
+    request_frame(missing, asd2, Frame),
+    get_dict(status, Frame, not_evaluated),
+    get_dict(action, Frame, ask_clarification),
+    get_dict(askField, Frame, revision).
+
+test(missing_material_requests_clarification) :-
+    request_frame(revision_a, missing, Frame),
+    get_dict(status, Frame, not_evaluated),
+    get_dict(action, Frame, ask_clarification),
+    get_dict(askField, Frame, material).
 
 :- end_tests(strict_epistemic).
