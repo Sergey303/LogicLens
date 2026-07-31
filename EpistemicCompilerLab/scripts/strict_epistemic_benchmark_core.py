@@ -35,6 +35,12 @@ QUESTIONS = {
         "Можно ли по доступным документам принять тезис: ревизия {r} использует {m}?",
     ),
 }
+CLARIFICATIONS = {
+    "train": ("Подтверждается ли применение ASD2 для указанной ревизии?", "Каков статус утверждения о материале для ревизии A?"),
+    "dev": ("Можно ли оценить применение ASD2, если ревизия не названа?", "Что известно о применяемом материале ревизии A, если материал не указан?"),
+    "holdout": ("Как решить вопрос об ASD2 без обозначения ревизии?", "Подтверждается ли тезис для ревизии A без названия материала?"),
+    "replication": ("Достаточно ли данных об ASD2, когда версия оборудования не указана?", "Как классифицировать запрос о ревизии A без конкретного материала?"),
+}
 ASSERTIONS = (
     ("ep_a_positive", "Source S-A-positive", "Для ревизии A утверждён материал ASD2."),
     ("ep_b_negative", "Source S-B-negative", "Ревизия B не использует ASD2 как утверждённый материал."),
@@ -95,12 +101,10 @@ def primary_case(split: str, split_index: int, status: str, revision: str, famil
         raise AssertionError(f"oracle status mismatch: {revision} {frame}")
     return {
         "schemaVersion": 1, "id": f"se-{split}-{status}-{family + 1}", "split": split,
-        "caseKind": "epistemic", "questionRu": QUESTIONS[split][family].format(
-            r=revision[-1].upper(), m="ASD2"),
+        "caseKind": "epistemic", "questionRu": QUESTIONS[split][family].format(r=revision[-1].upper(), m="ASD2"),
         "sourceContext": context,
-        "expected": {"status": frame["status"], "action": frame["action"],
-                     "reason": frame["reason"], "evidence": remap_evidence(frame["evidence"], aliases),
-                     "askField": None},
+        "expected": {"status": frame["status"], "action": frame["action"], "reason": frame["reason"],
+                     "evidence": remap_evidence(frame["evidence"], aliases), "askField": None},
         "annotation": {"revision": revision, "material": "asd2", "statusClass": status,
                        "paraphraseFamily": family + 1, **meta},
     }
@@ -109,8 +113,8 @@ def primary_case(split: str, split_index: int, status: str, revision: str, famil
 def clarification_cases(split: str, split_index: int, swipl: str, lab: Path) -> list[dict[str, Any]]:
     context, _, meta = visible_context(split_index, 2)
     specs = (
-        ("revision", "Подтверждается ли применение ASD2 для указанной ревизии?", "missing", "asd2"),
-        ("material", "Каков статус утверждения о материале для ревизии A?", "revision_a", "missing"),
+        ("revision", CLARIFICATIONS[split][0], "missing", "asd2"),
+        ("material", CLARIFICATIONS[split][1], "revision_a", "missing"),
     )
     result = []
     for field, question, revision, material in specs:
@@ -118,8 +122,8 @@ def clarification_cases(split: str, split_index: int, swipl: str, lab: Path) -> 
         result.append({
             "schemaVersion": 1, "id": f"se-{split}-missing-{field}", "split": split,
             "caseKind": "clarification", "questionRu": question, "sourceContext": context,
-            "expected": {"status": frame["status"], "action": frame["action"],
-                         "reason": frame["reason"], "evidence": [], "askField": frame["askField"]},
+            "expected": {"status": frame["status"], "action": frame["action"], "reason": frame["reason"],
+                         "evidence": [], "askField": frame["askField"]},
             "annotation": {"revision": revision, "material": material, "statusClass": None,
                            "paraphraseFamily": 0, **meta},
         })
