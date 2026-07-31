@@ -5,6 +5,7 @@ param(
         'sync-doctor',
         'doctor',
         'tests',
+        'strict-epistemic-tests',
         'cases',
         'cases-v1',
         'oracle',
@@ -49,6 +50,7 @@ try {
         }
         'doctor' { & (Join-Path $scriptsRoot 'doctor.ps1') }
         'tests' { & (Join-Path $scriptsRoot 'run-tests.ps1') }
+        'strict-epistemic-tests' { & (Join-Path $scriptsRoot 'run-strict-epistemic-tests.ps1') }
         'cases' { & (Join-Path $scriptsRoot 'validate-cases.ps1') }
         'cases-v1' { & (Join-Path $scriptsRoot 'validate-benchmark-v1.ps1') }
         'oracle' { & (Join-Path $scriptsRoot 'verify-oracle.ps1') }
