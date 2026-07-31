@@ -1,23 +1,31 @@
 # Strict epistemic fixture v0
 
-This source is a synthetic research fixture. Each section is an addressable source assertion. Absence of a section is not evidence of falsity.
+Это синтетический исследовательский источник. Каждый раздел является адресуемым утверждением источника. Отсутствие раздела не считается доказательством ложности.
 
 ## Source S-A-positive
 
-The approved material for revision A is ASD2.
+Для ревизии A утверждён материал ASD2.
 
 ## Source S-B-negative
 
-Revision B does not use ASD2 as its approved material.
+Ревизия B не использует ASD2 как утверждённый материал.
 
 ## Source S-D-positive
 
-The approved material for revision D is ASD2.
+Для ревизии D утверждён материал ASD2.
 
 ## Source S-D-negative
 
-Revision D does not use ASD2 as its approved material.
+Ревизия D не использует ASD2 как утверждённый материал.
+
+## Source S-E-positive
+
+Для ревизии E утверждён материал ASD7. Это утверждение нерелевантно тезисам об ASD2 для ревизий A–D.
+
+## Source S-F-negative
+
+Ревизия F не использует ASD9. Это утверждение нерелевантно тезисам об ASD2 для ревизий A–D.
 
 ## Intentionally absent claim
 
-No loaded source asserts or explicitly denies that revision C uses ASD2. The expected epistemic status is therefore `unknown`, not `refuted`.
+Ни один загруженный источник не утверждает и явно не отрицает, что ревизия C использует ASD2. Ожидаемый эпистемический статус — `unknown`, а не `refuted`.
