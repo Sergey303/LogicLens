@@ -24,11 +24,21 @@ source_ref(source_d_negative, _{
     file:"EpistemicCompilerLab/sources/strict-epistemic-v0.md",
     section:"Source S-D-negative"
 }).
+source_ref(source_e_positive, _{
+    file:"EpistemicCompilerLab/sources/strict-epistemic-v0.md",
+    section:"Source S-E-positive"
+}).
+source_ref(source_f_negative, _{
+    file:"EpistemicCompilerLab/sources/strict-epistemic-v0.md",
+    section:"Source S-F-negative"
+}).
 
 assertion(ep_a_positive, uses_material(revision_a, asd2), source_a_positive, positive).
 assertion(ep_b_negative, uses_material(revision_b, asd2), source_b_negative, negative).
 assertion(ep_d_positive, uses_material(revision_d, asd2), source_d_positive, positive).
 assertion(ep_d_negative, uses_material(revision_d, asd2), source_d_negative, negative).
+assertion(ep_e_positive, uses_material(revision_e, asd7), source_e_positive, positive).
+assertion(ep_f_negative, uses_material(revision_f, asd9), source_f_negative, negative).
 
 positive_evidence(Proposition, AssertionId) :-
     assertion(AssertionId, Proposition, _, positive).
