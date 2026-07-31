@@ -2,15 +2,17 @@
 
 ## Isolation
 
-All work for this research stays inside `EpistemicCompilerLab/` unless the task explicitly asks for a repository-level link.
+All research work stays inside `EpistemicCompilerLab/` unless a task explicitly requires a repository-level link.
 
-Do not modify the main LogicLens application, its React renderer, epochs, UI Document contracts or Builder/Search implementation.
+Do not modify the main LogicLens application, React renderer, epochs, UI Document contracts or Builder/Search implementation.
 
 ## Current scope
 
-The current task is E4: run a controlled local Codex→Qwen teacher loop after the deterministic SWI-Prolog MVP, representation comparison and benchmark-v1 planner experiments.
+The active stage follows the completed E4 Codex→Qwen teacher-loop and compiled-frame replication. Design and test strict epistemic structures that separate source assertions, interpretation, epistemic status, decision policy and rendering.
 
-Do not add a web proxy, persistent service, authentication layer, model training or production sandbox unless a later task explicitly requires it.
+Do not add probability, fuzzy membership, a web proxy, persistent service, authentication, model training or production sandboxing unless a later task supplies a separate benchmark and provenance contract.
+
+The frozen compiled-frame replication v0, its cases hash and parser hash are immutable controls. New strict-epistemic work must use separate files and commands.
 
 ## Sources of truth
 
@@ -22,71 +24,77 @@ Use this order:
 4. the current task;
 5. prompts and explanatory documents.
 
-A successful Prolog proof establishes a consequence of loaded facts and rules. It does not prove that the source was extracted correctly.
+A successful Prolog proof establishes a consequence of loaded facts and rules. It does not prove that source extraction was correct.
 
-## Roles
+## Typed epistemic boundary
 
-### Student
+Keep these objects distinct:
+
+- source assertion with provenance and explicit polarity;
+- interpretation containing only values present in the request;
+- derived epistemic status;
+- decision and reason;
+- natural-language rendering.
+
+`unknown` means insufficient loaded evidence, never `false`. `refuted` requires explicit negative evidence. `conflicting` preserves incompatible positive and negative evidence instead of selecting one silently.
+
+## Student
 
 - reads only the representation assigned to the current mode;
 - asks for missing obligatory fields;
-- runs the smallest permitted CLI query in CLI modes;
-- treats `unknown` as missing knowledge;
-- opens evidence or exceptions only when needed;
-- does not modify knowledge files.
+- treats `unknown`, `refuted` and `conflicting` as different statuses;
+- does not modify knowledge files;
+- never receives hidden expected fields.
 
-### Teacher
+## Teacher
 
 - reproduces the student's TRAIN error;
 - receives only aggregate DEV metrics;
-- never receives HOLDOUT questions, answers or diagnostics;
+- never receives HOLDOUT or replication content during optimization;
 - locates the earliest faulty layer before editing;
 - checks original evidence;
 - makes the smallest coherent change allowed by the current track;
 - does not encode case IDs or full benchmark questions into candidates;
-- records a short testable hypothesis, expected effect and risk;
+- records a testable hypothesis, expected effect and risk;
 - stops when no safe reusable improvement is supported.
 
-### Trusted evaluator
+## Trusted evaluator
 
 - stores raw model output before scoring;
-- validates change-track isolation and anti-memorization rules;
-- runs Prolog regression tests for every candidate;
-- selects the best epoch by DEV, then TRAIN, then smaller candidate size;
-- evaluates HOLDOUT exactly once after model selection;
-- preserves rejected candidates and runner failures as experiment evidence.
+- validates factor isolation and anti-memorization rules;
+- runs Prolog regression tests for every knowledge or policy candidate;
+- evaluates frozen hashes before model calls;
+- preserves rejected candidates and runner failures as evidence;
+- reports compiler, status, policy and renderer accuracy separately.
 
 ## Benchmark isolation
 
 - Never include expected benchmark fields in a student prompt.
-- Use expected fields only in deterministic validation and scoring after the student response is stored.
-- Teacher optimization may use labeled TRAIN cases, but never DEV or HOLDOUT case content.
+- Use expected fields only in deterministic scoring after raw output is stored.
+- Teacher optimization may use labeled TRAIN cases, but never DEV or HOLDOUT content.
 - Keep questions, model settings and scoring fixed while changing one factor.
-- Preserve raw model responses; do not repair them before scoring.
-- Treat malformed JSON, invalid candidates and regression failures as experiment results.
-- Do not claim publication-grade improvement from the 18-case engineering pilot.
+- Preserve raw responses; do not repair them before scoring.
+- Treat malformed JSON, invalid candidates and regression failures as results.
+- Freeze parser, knowledge, policy, prompt, schema and cases hashes independently.
+- Do not claim publication-grade improvement from one domain, model or seed.
 
 ## User launch convention
 
-Commands sent to the user must work from any PowerShell location.
-
-Use the absolute launcher path:
+Commands must work from any PowerShell location:
 
 ```powershell
 & 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' <action>
 ```
 
-The launcher validates the checkout, enters `D:\projects\ChatPilotGroup\LogicLens`, performs the action and restores the caller's previous location.
-
 ## Change discipline
 
 - Prefer explicit predicates and small modules.
-- Keep source evidence addressable from derived facts.
-- Do not mix changes to knowledge, prompts and model settings outside the declared combined ablation.
-- Run the `tests` launcher action before accepting a knowledge change.
-- Use the `doctor` launcher action to verify deterministic assets and the CLI smoke test.
-- Use `runner-check` before a model experiment.
-- Preserve JSON CLI statuses and field meanings.
-- Keep generated model outputs under `EpistemicCompilerLab/experiments/model-runs/`; they are ignored by Git by default.
-- Record only reviewed aggregate findings in append-only `experiments/runs.jsonl`.
-- Emit `[CGR_ARTIFACT]` for complete run packages instead of pasting large logs.
+- Keep source evidence addressable from derived conclusions.
+- Do not mix parser, knowledge, policy and renderer changes outside a declared combined ablation.
+- Run `strict-epistemic-tests` before accepting strict epistemic changes.
+- Use `doctor` to verify all deterministic assets.
+- Use `runner-check` before model experiments.
+- Preserve JSON status and field meanings.
+- Keep model outputs under `experiments/model-runs/`; they are ignored by Git.
+- Record only reviewed aggregate findings in the append-only run ledger.
+- Emit `[CGR_ARTIFACT]` for complete packages instead of pasting large logs.
