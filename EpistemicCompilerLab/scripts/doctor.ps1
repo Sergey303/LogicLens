@@ -20,6 +20,9 @@ Write-Host 'Validating teacher-loop pilot...'
 Write-Host 'Validating compiled decision frame...'
 & (Join-Path $PSScriptRoot 'validate-compiled-frame.ps1')
 
+Write-Host 'Validating strict epistemic oracle...'
+& (Join-Path $PSScriptRoot 'validate-strict-epistemic.ps1')
+
 Write-Host 'Validating representation runner...'
 & (Join-Path $PSScriptRoot 'validate-runner.ps1')
 
