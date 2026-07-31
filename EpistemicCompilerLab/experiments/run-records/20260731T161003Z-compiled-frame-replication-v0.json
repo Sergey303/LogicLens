@@ -1,0 +1,73 @@
+{
+  "runId": "20260731T161003Z-compiled-frame-replication-v0-epistemic-qwen2.5-coder-7b_cpu-v1-seed42",
+  "kind": "compiled-decision-frame-replication-v0",
+  "commit": "c8218bd2d0f40e3735f00d32ab22d4a26bdb7e51",
+  "platform": "windows-x64",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "doctorStatus": "passed",
+  "frozenIntegrity": {
+    "casesSha256": "22f346b523a4a4b09fd463e2803893fa4140f8949490049d6888154e9ce4f1f2",
+    "parserSha256": "4dabc3f43b8e1e00ce21d812ba554f6edd2affd52566f9acf71668692412f84c",
+    "casesFrozenBeforeStudentRun": true,
+    "parserFrozenBeforeStudentRun": true,
+    "oldQuestionsWithheldFromGenerator": true,
+    "parserSourceWithheldFromGenerator": true
+  },
+  "dataset": {
+    "totalCases": 24,
+    "successCases": 6,
+    "unknownCases": 6,
+    "missingDateCases": 6,
+    "missingRevisionCases": 6,
+    "wordDateCases": 6,
+    "dottedDateCases": 6,
+    "isoDateCases": 6,
+    "distractorCases": 12
+  },
+  "metrics": {
+    "framePassedCases": 24,
+    "renderedPassedCases": 24,
+    "actionCorrect": 24,
+    "statusCorrect": 24,
+    "materialCorrect": 24,
+    "askFieldCorrect": 24,
+    "answerRuNonEmpty": 24,
+    "answerRuHasCyrillic": 24,
+    "frameErrors": 0,
+    "runnerErrors": 0
+  },
+  "usage": {
+    "promptEvalCount": 7162,
+    "evalCount": 1154,
+    "elapsedMs": 234528,
+    "meanCaseElapsedMs": 9772,
+    "medianCaseElapsedMs": 9355.5,
+    "p95CaseElapsedMs": 12173,
+    "minCaseElapsedMs": 6917,
+    "maxCaseElapsedMs": 15308
+  },
+  "classResults": {
+    "success": {"passed": 6, "total": 6, "elapsedMs": 68909},
+    "unknown": {"passed": 6, "total": 6, "elapsedMs": 54859},
+    "missingDate": {"passed": 6, "total": 6, "elapsedMs": 55113},
+    "missingRevision": {"passed": 6, "total": 6, "elapsedMs": 55647}
+  },
+  "comparison": {
+    "knownFormatPilot": {
+      "framePassedCases": 18,
+      "renderedPassedCases": 18,
+      "answerRuHasCyrillic": 17,
+      "totalCases": 18
+    },
+    "frozenReplication": {
+      "framePassedCases": 24,
+      "renderedPassedCases": 24,
+      "answerRuHasCyrillic": 24,
+      "totalCases": 24
+    }
+  },
+  "source": "user-cgr+attached-run-zip",
+  "createdAt": "2026-07-31T16:18:01.863Z",
+  "conclusion": "The frozen withheld-parser replication reproduced the compiled-frame effect: the unchanged deterministic compiler produced correct verified frames for all 24 new cases and Qwen copied all four semantic fields correctly in all 24 renders. All answerRu values were non-empty and contained Cyrillic. This is stronger than the known-format 18-case engineering control because cases and parser were frozen before the student run, but the result remains limited to one domain, one generated replication set, one Qwen model profile and one seed."
+}
