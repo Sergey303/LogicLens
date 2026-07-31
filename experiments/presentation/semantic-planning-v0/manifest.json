@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "semantic-planning-benchmark-manifest-v0",
+  "benchmarkId": "logiclens-semantic-planning-v0",
+  "status": "frozen",
+  "researchSpecification": "docs/research/semantic-presentation-planning-v1.md",
+  "caseCount": 5,
+  "caseIds": [
+    "clear-revision-comparison",
+    "opaque-revision-comparison",
+    "ambiguous-time-excluded",
+    "lookalike-incomparable-records",
+    "single-entity-generic-fallback"
+  ],
+  "mutationPolicy": "append-new-version-only",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "87f1866210df72c1be6810b88bf6de40f2eb57f6f6ccde5ba22f9f6d6a0e18d5",
+      "bytes": 2940
+    },
+    {
+      "path": "cases/01-clear-revision-comparison.json",
+      "sha256": "754d2a9c66cfcb1ff97927580c9107fec55864986db7a18fdd6100c83af443c1",
+      "bytes": 10527
+    },
+    {
+      "path": "cases/02-opaque-revision-comparison.json",
+      "sha256": "1aa50e3ca72f966461081101c1e336753ed4a9028980cbf421fdbff9b136aaff",
+      "bytes": 8285
+    },
+    {
+      "path": "cases/03-ambiguous-time-excluded.json",
+      "sha256": "716bb8c5408ba084170ebe78e7cab045daf7d4ccf9a3b33fb8143f4d09a58f7d",
+      "bytes": 11569
+    },
+    {
+      "path": "cases/04-lookalike-incomparable.json",
+      "sha256": "b0ada5257d01f39de620210ba9412d5da1b61b4db7fa0cb2bd5ddacdf5cf8228",
+      "bytes": 6334
+    },
+    {
+      "path": "cases/05-single-entity-fallback.json",
+      "sha256": "6796b023bef82c9eaafc8c7bf6a89b414747957af640ed623828d27538c8eca2",
+      "bytes": 4667
+    }
+  ]
+}

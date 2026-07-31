@@ -1,0 +1,497 @@
+{
+  "schemaVersion": "semantic-planning-benchmark-case-v0",
+  "caseId": "ambiguous-time-excluded",
+  "caseKind": "mixed",
+  "researchTargets": [
+    "ambiguity_detection",
+    "dataset_profile",
+    "presentation_planner"
+  ],
+  "task": {
+    "language": "ru",
+    "text": "Сравни редакции по статусу и материалу. Поле «Дата» покажи только если его смысл однозначен.",
+    "goal": "compare_revisions",
+    "questions": [
+      {
+        "questionId": "q1",
+        "text": "Какая редакция имеет материал glass?"
+      },
+      {
+        "questionId": "q2",
+        "text": "Можно ли по данным утверждать, что поле «Дата» означает начало действия?"
+      }
+    ],
+    "answerKey": [
+      {
+        "questionId": "q1",
+        "answer": "amb:r3",
+        "supportFactIds": [
+          "fixture:amb:r3:material"
+        ]
+      },
+      {
+        "questionId": "q2",
+        "answer": "нет, семантика неоднозначна",
+        "supportClaimIds": [
+          "claim:amb:created-event",
+          "claim:amb:created-publication"
+        ]
+      }
+    ]
+  },
+  "canonicalFacts": [
+    {
+      "factId": "fixture:amb:r1:id",
+      "subject": "amb:r1",
+      "predicate": "ex:code",
+      "object": {
+        "kind": "literal",
+        "lexical": "R1",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r1:created",
+      "subject": "amb:r1",
+      "predicate": "ex:created",
+      "object": {
+        "kind": "literal",
+        "lexical": "2026-01-02T10:00:00Z",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:dateTime"
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r1:status",
+      "subject": "amb:r1",
+      "predicate": "ex:status",
+      "object": {
+        "kind": "literal",
+        "lexical": "draft",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r1:material",
+      "subject": "amb:r1",
+      "predicate": "ex:material",
+      "object": {
+        "kind": "literal",
+        "lexical": "steel",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r2:id",
+      "subject": "amb:r2",
+      "predicate": "ex:code",
+      "object": {
+        "kind": "literal",
+        "lexical": "R2",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r2:created",
+      "subject": "amb:r2",
+      "predicate": "ex:created",
+      "object": {
+        "kind": "literal",
+        "lexical": "2026-02-03T10:00:00Z",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:dateTime"
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r2:status",
+      "subject": "amb:r2",
+      "predicate": "ex:status",
+      "object": {
+        "kind": "literal",
+        "lexical": "review",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r2:material",
+      "subject": "amb:r2",
+      "predicate": "ex:material",
+      "object": {
+        "kind": "literal",
+        "lexical": "steel",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r3:id",
+      "subject": "amb:r3",
+      "predicate": "ex:code",
+      "object": {
+        "kind": "literal",
+        "lexical": "R3",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r3:created",
+      "subject": "amb:r3",
+      "predicate": "ex:created",
+      "object": {
+        "kind": "literal",
+        "lexical": "2026-03-04T10:00:00Z",
+        "literalKind": "datatype",
+        "language": null,
+        "datatype": "xsd:dateTime"
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r3:status",
+      "subject": "amb:r3",
+      "predicate": "ex:status",
+      "object": {
+        "kind": "literal",
+        "lexical": "approved",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    },
+    {
+      "factId": "fixture:amb:r3:material",
+      "subject": "amb:r3",
+      "predicate": "ex:material",
+      "object": {
+        "kind": "literal",
+        "lexical": "glass",
+        "literalKind": "plain",
+        "language": null,
+        "datatype": null
+      },
+      "origins": [
+        "origin:amb"
+      ]
+    }
+  ],
+  "ontologyEvidence": [
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ex:code"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Редакция"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ex:created"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Дата"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ex:status"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Статус"
+        }
+      ],
+      "definitions": []
+    },
+    {
+      "element": {
+        "kind": "predicate",
+        "id": "ex:material"
+      },
+      "labels": [
+        {
+          "language": "ru",
+          "text": "Материал"
+        }
+      ],
+      "definitions": []
+    }
+  ],
+  "oracleSemanticClaims": [
+    {
+      "claimId": "claim:amb:code",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ex:code"
+      },
+      "facet": "display_role",
+      "role": "identifier",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Редакция"
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:amb:status",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ex:status"
+      },
+      "facet": "value_role",
+      "role": "status",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Статус"
+        },
+        {
+          "kind": "task_text",
+          "value": "Сравни редакции по статусу и материалу. Поле «Дата» покажи только если его смысл однозначен."
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:amb:material",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ex:material"
+      },
+      "facet": "value_role",
+      "role": "category",
+      "status": "supported",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Материал"
+        },
+        {
+          "kind": "task_text",
+          "value": "Сравни редакции по статусу и материалу. Поле «Дата» покажи только если его смысл однозначен."
+        }
+      ],
+      "alternatives": []
+    },
+    {
+      "claimId": "claim:amb:created-event",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ex:created"
+      },
+      "facet": "value_role",
+      "role": "time_value",
+      "status": "possible",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Дата"
+        },
+        {
+          "kind": "datatype",
+          "value": "xsd:dateTime"
+        }
+      ],
+      "alternatives": [
+        "claim:amb:created-publication"
+      ]
+    },
+    {
+      "claimId": "claim:amb:created-publication",
+      "dataElement": {
+        "kind": "predicate",
+        "id": "ex:created"
+      },
+      "facet": "value_role",
+      "role": "publication_time",
+      "status": "possible",
+      "evidence": [
+        {
+          "kind": "ontology_label",
+          "value": "Дата"
+        },
+        {
+          "kind": "datatype",
+          "value": "xsd:dateTime"
+        }
+      ],
+      "alternatives": [
+        "claim:amb:created-event"
+      ]
+    }
+  ],
+  "oracleDatasetProfile": {
+    "profileVersion": "dataset-profile-v0",
+    "entityIds": [
+      "amb:r1",
+      "amb:r2",
+      "amb:r3"
+    ],
+    "entityCount": 3,
+    "factCount": 12,
+    "repeatedRecordShape": true,
+    "commonPredicates": [
+      "ex:code",
+      "ex:created",
+      "ex:status",
+      "ex:material"
+    ],
+    "candidateRowLabelPredicate": "ex:code",
+    "candidateDimensions": [
+      {
+        "predicate": "ex:created",
+        "semanticClaimIds": [
+          "claim:amb:created-event",
+          "claim:amb:created-publication"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": false,
+        "ineligibilityReason": "required_semantic_claim_not_supported"
+      },
+      {
+        "predicate": "ex:status",
+        "semanticClaimIds": [
+          "claim:amb:status"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": true
+      },
+      {
+        "predicate": "ex:material",
+        "semanticClaimIds": [
+          "claim:amb:material"
+        ],
+        "present": 3,
+        "total": 3,
+        "eligible": true
+      }
+    ],
+    "technicalPredicates": [],
+    "mandatoryFactIds": [
+      "fixture:amb:r1:id",
+      "fixture:amb:r1:created",
+      "fixture:amb:r1:status",
+      "fixture:amb:r1:material",
+      "fixture:amb:r2:id",
+      "fixture:amb:r2:created",
+      "fixture:amb:r2:status",
+      "fixture:amb:r2:material",
+      "fixture:amb:r3:id",
+      "fixture:amb:r3:created",
+      "fixture:amb:r3:status",
+      "fixture:amb:r3:material"
+    ]
+  },
+  "expectedPresentation": {
+    "acceptableDecisions": [
+      {
+        "kind": "select",
+        "component": "comparison_table",
+        "entityIds": [
+          "amb:r1",
+          "amb:r2",
+          "amb:r3"
+        ],
+        "rowLabelPredicate": "ex:code",
+        "dimensionPredicates": [
+          "ex:status",
+          "ex:material"
+        ],
+        "excludedPredicates": [
+          {
+            "predicate": "ex:created",
+            "reason": "ambiguous_time_semantics"
+          }
+        ],
+        "fallback": "generic_property_sections"
+      }
+    ],
+    "requiredRejectedCandidates": [
+      {
+        "component": "timeline",
+        "reason": "ambiguous_time_semantics"
+      }
+    ],
+    "requiredCoveredFactIds": [
+      "fixture:amb:r1:id",
+      "fixture:amb:r1:status",
+      "fixture:amb:r1:material",
+      "fixture:amb:r2:id",
+      "fixture:amb:r2:status",
+      "fixture:amb:r2:material",
+      "fixture:amb:r3:id",
+      "fixture:amb:r3:status",
+      "fixture:amb:r3:material"
+    ],
+    "factsRequiredOnlyInFallback": [
+      "fixture:amb:r1:created",
+      "fixture:amb:r2:created",
+      "fixture:amb:r3:created"
+    ],
+    "mustExposeFallback": true
+  }
+}
