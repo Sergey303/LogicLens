@@ -214,7 +214,8 @@ jobs:
           assert exact["fp"] == 0
           assert exact["fn"] == 0
           assert value["metrics"]["falseSupportedCount"] == 0
-          evidence = value["metrics"]["evidenceValidity"]
+          evidence = value["contractEvidenceValidity"]
           assert evidence["valid"] == evidence["total"]
+          assert evidence["rate"] == 1.0
           print("synthetic transport replay verified; this is not a measured LLM result")
           PY
