@@ -106,7 +106,7 @@ def primary_case(split: str, split_index: int, status: str, revision: str, famil
         "expected": {"status": frame["status"], "action": frame["action"], "reason": frame["reason"],
                      "evidence": remap_evidence(frame["evidence"], aliases), "askField": None},
         "annotation": {"revision": revision, "material": "asd2", "statusClass": status,
-                       "paraphraseFamily": family + 1, **meta},
+                       "paraphraseFamily": family + 1, "evidenceAliasMap": aliases, **meta},
     }
 
 
