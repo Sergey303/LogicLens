@@ -11,10 +11,10 @@ request_frame(_, missing, Frame) :-
 request_frame(Revision, Material, Frame) :-
     Proposition = uses_material(Revision, Material),
     decision_frame(Proposition, Base),
-    put_dict(askField, Base, @(null), Frame).
+    put_dict(askField, Base, null, Frame).
 
 clarification_frame(Field, _{
-    proposition: @(null),
+    proposition: null,
     status: not_evaluated,
     action: ask_clarification,
     reason: missing_required_field,
