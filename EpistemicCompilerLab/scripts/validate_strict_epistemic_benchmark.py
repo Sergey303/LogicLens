@@ -62,6 +62,15 @@ def main() -> int:
     statuses = Counter(case["expected"]["status"] for case in primary)
     if any(statuses[name] != 12 for name in ("supported", "refuted", "unknown", "conflicting")):
         raise AssertionError(f"bad status balance: {dict(statuses)}")
+    family_status = Counter(
+        (case["split"], case["annotation"]["paraphraseFamily"], case["expected"]["status"])
+        for case in primary
+    )
+    if any(family_status[(split, family, status)] != 1
+           for split in ("train", "dev", "holdout", "replication")
+           for family in (1, 2, 3)
+           for status in ("supported", "refuted", "unknown", "conflicting")):
+        raise AssertionError("each question family must contain every status once")
     propositions = [case["annotation"]["uniqueProposition"] for case in primary]
     if len(primary) != 48 or len(set(propositions)) != 48:
         raise AssertionError("primary cases must contain 48 unique propositions")
