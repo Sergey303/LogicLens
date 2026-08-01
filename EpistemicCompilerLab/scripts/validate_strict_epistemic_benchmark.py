@@ -55,6 +55,12 @@ def main() -> int:
         visible_ids = {item["id"] for item in case["sourceContext"]}
         if not set(expected["evidence"]).issubset(visible_ids):
             raise AssertionError(f"{case['id']} evidence is not visible")
+        if case["caseKind"] == "epistemic":
+            aliases = annotation.get("evidenceAliasMap") or {}
+            oracle_evidence = frame.get("evidence") or []
+            mapped = sorted(aliases[item] for item in oracle_evidence)
+            if expected["evidence"] != mapped:
+                raise AssertionError(f"{case['id']} evidence alias mismatch")
         if expected["status"] == "unknown" and expected["evidence"]:
             raise AssertionError(f"{case['id']} unknown must have no evidence")
         if expected["status"] == "conflicting" and len(expected["evidence"]) != 2:
