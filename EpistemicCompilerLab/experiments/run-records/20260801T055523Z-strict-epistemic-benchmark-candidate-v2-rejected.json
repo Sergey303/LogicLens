@@ -1,0 +1,57 @@
+{
+  "runId": "20260801T055523Z-strict-epistemic-benchmark-candidate-v2",
+  "kind": "strict-epistemic-benchmark-candidate-review",
+  "sourceCommit": "26817ca77ddb3aeca1308e4fca5a6928fcbab865",
+  "platform": "windows-x64",
+  "status": "rejected_after_manual_review",
+  "doctorStatus": "passed",
+  "trustedValidation": {
+    "cases": 56,
+    "passed": 56,
+    "sourceAssertions": 224,
+    "uniquePrimaryPropositions": 48,
+    "train": 14,
+    "dev": 14,
+    "holdout": 14,
+    "replication": 14,
+    "supported": 12,
+    "refuted": 12,
+    "unknown": 12,
+    "conflicting": 12,
+    "clarificationCases": 8,
+    "casesSha256": "ec393f269246f20c17e2b183f063fb59b8f0c4e1e8a84bfe0dca7b8b5094b0ea",
+    "sourceCatalogSha256": "6d121c2fa360a00130dcbd38b7a0e74eaaa106af0be2508c81370e24ce35f05a",
+    "artifactSha256": "7c1bcca28a1e004083b999905ac57c8b635632619ee40b425e718a74eda94d41"
+  },
+  "qwenEvaluated": false,
+  "manualReview": {
+    "decision": "reject_do_not_freeze",
+    "semanticAmbiguities": 0,
+    "criticalFindings": [
+      "Visible case IDs, evidence IDs and source IDs contain TRAIN, DEV, HOLDOUT or REPLICATION and the case ordinal.",
+      "Every generated entity pair follows materialNumber = revisionNumber + 900.",
+      "A missing material can be reconstructed from the revision token and a missing revision can be reconstructed from the material token.",
+      "The evidence alias mapping is not opaque enough because canonical and visible identifiers encode case structure.",
+      "The generic case CLI contains a syntax error in its invalid-request fallback; the happy-path dispatch still ran, so generation and validation did not expose it."
+    ]
+  },
+  "requiredRedesign": {
+    "schemaVersion": 3,
+    "opaqueCaseEvidenceAndSourceIds": true,
+    "independentOpaqueRevisionAndMaterialTokens": true,
+    "clarificationFieldNotDerivable": true,
+    "invalidRequestCliRegression": true
+  },
+  "fixes": {
+    "independentEntityTokens": "23c0b75e752a192d10b25656bf895b06fb133033",
+    "opaqueVisibleIds": "dad6d8cf5d48fde73ee3f472776fa6d3256e2d6d",
+    "opaqueClarificationIds": "480a5458235db2d634585034facc1c04da1e0c20",
+    "antiShortcutValidator": "cb78a8faf62340cdbf9af3d4e474f04b42bd6322",
+    "caseCliSyntaxFix": "28b86f3859723a372dbfd83edb7edc246e57a19d",
+    "schemaVersion3": "3ccda81aa86cc701a6e7d589ca6feec2af2577ef",
+    "cliFallbackRegression": "b804cec32cb1ba3d06189aec596040bbb4be69a8"
+  },
+  "interpretation": "Candidate v2 correctly tests 48 distinct propositions with balanced case-local evidence, but visible identifiers and deterministic entity pairing provide avoidable shortcuts. It is retained as design evidence and must not be frozen or shown to Qwen.",
+  "source": "user-cgr+manual-review",
+  "createdAt": "2026-08-01T05:59:05.516Z"
+}
