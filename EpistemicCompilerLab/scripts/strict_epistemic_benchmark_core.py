@@ -2,129 +2,138 @@
 from __future__ import annotations
 
 import json
+import random
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
-SPLITS = ("train", "dev", "holdout", "replication")
-TARGETS = (
-    ("supported", "revision_a"),
-    ("refuted", "revision_b"),
-    ("unknown", "revision_c"),
-    ("conflicting", "revision_d"),
-)
-QUESTIONS = {
-    "train": (
-        "Подтверждают ли загруженные источники, что ревизия {r} использует материал {m}?",
-        "Каков эпистемический статус утверждения «ревизия {r} использует {m}»?",
-        "Можно ли уверенно утверждать по документам, что для ревизии {r} применяется {m}?",
-    ),
-    "dev": (
-        "Следует ли из доступных свидетельств, что ревизия {r} работает с материалом {m}?",
-        "Что говорят загруженные источники об утверждении: ревизия {r} — материал {m}?",
-        "Есть ли достаточные основания считать, что ревизия {r} использует {m}?",
-    ),
-    "holdout": (
-        "Установлено ли документами применение материала {m} в ревизии {r}?",
-        "Как следует оценить тезис «для ревизии {r} предусмотрен {m}»?",
-        "Позволяют ли источники однозначно сказать, что ревизия {r} использует {m}?",
-    ),
-    "replication": (
-        "Доказано ли загруженными данными, что в ревизии {r} применяется {m}?",
-        "Как классифицировать утверждение о применении {m} для ревизии {r}?",
-        "Можно ли по доступным документам принять тезис: ревизия {r} использует {m}?",
-    ),
-}
-CLARIFICATIONS = {
-    "train": ("Подтверждается ли применение ASD2 для указанной ревизии?", "Каков статус утверждения о материале для ревизии A?"),
-    "dev": ("Можно ли оценить применение ASD2, если ревизия не названа?", "Что известно о применяемом материале ревизии A, если материал не указан?"),
-    "holdout": ("Как решить вопрос об ASD2 без обозначения ревизии?", "Подтверждается ли тезис для ревизии A без названия материала?"),
-    "replication": ("Достаточно ли данных об ASD2, когда версия оборудования не указана?", "Как классифицировать запрос о ревизии A без конкретного материала?"),
-}
-ASSERTIONS = (
-    ("ep_a_positive", "Source S-A-positive", "Для ревизии A утверждён материал ASD2."),
-    ("ep_b_negative", "Source S-B-negative", "Ревизия B не использует ASD2 как утверждённый материал."),
-    ("ep_d_positive", "Source S-D-positive", "Для ревизии D утверждён материал ASD2."),
-    ("ep_d_negative", "Source S-D-negative", "Ревизия D не использует ASD2 как утверждённый материал."),
-)
-IRRELEVANT = (
-    ("ep_e_positive", "Source S-E-positive", "Для ревизии E утверждён материал ASD7."),
-    ("ep_f_negative", "Source S-F-negative", "Ревизия F не использует ASD9."),
+from strict_epistemic_benchmark_data import (
+    NEGATIVE_TEXTS,
+    POSITIVE_TEXTS,
+    QUESTION_TEMPLATES,
+    SEED,
 )
 
 
-def oracle_frame(swipl: str, lab: Path, revision: str, material: str) -> dict[str, Any]:
+def oracle_frame(
+    swipl: str,
+    lab: Path,
+    revision: str,
+    material: str,
+    positive: list[str],
+    negative: list[str],
+) -> dict[str, Any]:
+    csv = lambda values: ",".join(values) if values else "none"
+    cmd = [
+        swipl, "-q", "-s", str(lab / "prolog" / "strict_epistemic_case_entry.pl"),
+        "--", "case-frame", revision, material, csv(positive), csv(negative),
+    ]
     completed = subprocess.run(
-        [swipl, "-q", "-s", str(lab / "prolog" / "strict_epistemic_entry.pl"),
-         "--", "request-frame", revision, material],
-        text=True, encoding="utf-8", errors="strict", capture_output=True,
-        check=False, timeout=60,
+        cmd, text=True, encoding="utf-8", errors="strict",
+        capture_output=True, check=False, timeout=60,
     )
     if completed.returncode:
-        raise RuntimeError(completed.stderr.strip() or "strict epistemic query failed")
+        raise RuntimeError(completed.stderr.strip() or "case oracle failed")
     return json.loads(completed.stdout)
 
 
-def alias_map(split_index: int, family: int, include_irrelevant: bool) -> dict[str, str]:
-    items = ASSERTIONS + (IRRELEVANT if include_irrelevant else ())
-    if split_index == 0 and family == 0:
-        return {item[0]: item[0] for item in items}
-    return {item[0]: f"ev-{split_index + 1}{family + 1}-{i + 1}" for i, item in enumerate(items)}
-
-
-def visible_context(split_index: int, family: int) -> tuple[list[dict[str, str]], dict[str, str], dict[str, Any]]:
-    include_irrelevant = (split_index + family) % 2 == 1
-    items = list(ASSERTIONS + (IRRELEVANT if include_irrelevant else ()))
-    rotation = (split_index + family) % len(items)
-    items = items[rotation:] + items[:rotation]
-    aliases = alias_map(split_index, family, include_irrelevant)
-    style = ("section", "document", "compact")[family]
-    context = [
-        {"id": aliases[item_id], "source": source if style != "compact" else source.replace("Source ", ""),
-         "textRu": text}
-        for item_id, source, text in items
-    ]
-    meta = {"orderVariant": rotation, "idsRenamed": any(k != v for k, v in aliases.items()),
-            "includesIrrelevant": include_irrelevant, "provenanceStyle": style}
-    return context, aliases, meta
-
-
-def remap_evidence(evidence: list[str], aliases: dict[str, str]) -> list[str]:
-    return sorted(aliases[item] for item in evidence)
-
-
-def primary_case(split: str, split_index: int, status: str, revision: str, family: int,
-                 swipl: str, lab: Path) -> dict[str, Any]:
-    context, aliases, meta = visible_context(split_index, family)
-    frame = oracle_frame(swipl, lab, revision, "asd2")
-    if frame["status"] != status:
-        raise AssertionError(f"oracle status mismatch: {revision} {frame}")
+def assertion_record(
+    case_id: str,
+    index: int,
+    revision: str,
+    material: str,
+    polarity: str,
+    family: int,
+) -> dict[str, str]:
+    canonical = f"src-{case_id}-{index + 1}"
+    source = f"DOC-{case_id.upper()}-{index + 1}"
+    templates = POSITIVE_TEXTS if polarity == "positive" else NEGATIVE_TEXTS
     return {
-        "schemaVersion": 1, "id": f"se-{split}-{status}-{family + 1}", "split": split,
-        "caseKind": "epistemic", "questionRu": QUESTIONS[split][family].format(r=revision[-1].upper(), m="ASD2"),
-        "sourceContext": context,
-        "expected": {"status": frame["status"], "action": frame["action"], "reason": frame["reason"],
-                     "evidence": remap_evidence(frame["evidence"], aliases), "askField": None},
-        "annotation": {"revision": revision, "material": "asd2", "statusClass": status,
-                       "paraphraseFamily": family + 1, "evidenceAliasMap": aliases, **meta},
+        "canonicalId": canonical,
+        "revision": revision,
+        "material": material,
+        "polarity": polarity,
+        "source": source,
+        "textRu": templates[family % 3].format(s=source, r=revision, m=material),
     }
 
 
-def clarification_cases(split: str, split_index: int, swipl: str, lab: Path) -> list[dict[str, Any]]:
-    context, _, meta = visible_context(split_index, 2)
-    specs = (
-        ("revision", CLARIFICATIONS[split][0], "missing", "asd2"),
-        ("material", CLARIFICATIONS[split][1], "revision_a", "missing"),
+def context_for(
+    case_id: str,
+    family: int,
+    target: tuple[str, str],
+    status: str,
+    pairs: Iterator[tuple[str, str]],
+    rng: random.Random,
+) -> tuple[list[dict[str, str]], list[dict[str, str]], dict[str, str], list[str], list[str]]:
+    target_polarities = {
+        "supported": ("positive",),
+        "refuted": ("negative",),
+        "unknown": (),
+        "conflicting": ("positive", "negative"),
+    }[status]
+    specs = [(target[0], target[1], polarity) for polarity in target_polarities]
+    positive_needed = 2 - sum(p == "positive" for _, _, p in specs)
+    negative_needed = 2 - sum(p == "negative" for _, _, p in specs)
+    specs += [(*next(pairs), "positive") for _ in range(positive_needed)]
+    specs += [(*next(pairs), "negative") for _ in range(negative_needed)]
+    rng.shuffle(specs)
+
+    catalog = [
+        assertion_record(case_id, i, revision, material, polarity, family)
+        for i, (revision, material, polarity) in enumerate(specs)
+    ]
+    rename = not (case_id.startswith("se-train") and family == 0)
+    aliases = {
+        item["canonicalId"]: (
+            f"ev-{case_id.split('-', 1)[1]}-{i + 1}" if rename else item["canonicalId"]
+        )
+        for i, item in enumerate(catalog)
+    }
+    context = [
+        {"id": aliases[item["canonicalId"]], "source": item["source"], "textRu": item["textRu"]}
+        for item in catalog
+    ]
+    positive = [
+        item["canonicalId"] for item in catalog
+        if item["revision"] == target[0] and item["material"] == target[1]
+        and item["polarity"] == "positive"
+    ]
+    negative = [
+        item["canonicalId"] for item in catalog
+        if item["revision"] == target[0] and item["material"] == target[1]
+        and item["polarity"] == "negative"
+    ]
+    return context, catalog, aliases, positive, negative
+
+
+def primary_case(
+    split: str,
+    split_index: int,
+    ordinal: int,
+    status: str,
+    target: tuple[str, str],
+    pairs: Iterator[tuple[str, str]],
+    swipl: str,
+    lab: Path,
+) -> tuple[dict[str, Any], list[dict[str, str]]]:
+    family = ordinal % 3
+    case_id = f"se-{split}-{ordinal + 1:02d}"
+    rng = random.Random(SEED + split_index * 100 + ordinal)
+    context, catalog, aliases, positive, negative = context_for(
+        case_id, family, target, status, pairs, rng
     )
-    result = []
-    for field, question, revision, material in specs:
-        frame = oracle_frame(swipl, lab, revision, material)
-        result.append({
-            "schemaVersion": 1, "id": f"se-{split}-missing-{field}", "split": split,
-            "caseKind": "clarification", "questionRu": question, "sourceContext": context,
-            "expected": {"status": frame["status"], "action": frame["action"], "reason": frame["reason"],
-                         "evidence": [], "askField": frame["askField"]},
-            "annotation": {"revision": revision, "material": material, "statusClass": None,
-                           "paraphraseFamily": 0, **meta},
-        })
-    return result
+    frame = oracle_frame(swipl, lab, target[0], target[1], positive, negative)
+    evidence = sorted(aliases[item] for item in frame["evidence"])
+    question = QUESTION_TEMPLATES[split][family].format(r=target[0], m=target[1])
+    case = {
+        "schemaVersion": 2, "id": case_id, "split": split, "caseKind": "epistemic",
+        "questionRu": question, "sourceContext": context,
+        "expected": {**frame, "evidence": evidence},
+        "annotation": {
+            "revision": target[0], "material": target[1], "statusClass": status,
+            "paraphraseFamily": family + 1, "evidenceAliasMap": aliases,
+            "uniqueProposition": f"{target[0]}::{target[1]}",
+        },
+    }
+    return case, catalog
