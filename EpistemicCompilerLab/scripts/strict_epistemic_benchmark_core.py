@@ -12,7 +12,16 @@ from strict_epistemic_benchmark_data import (
     POSITIVE_TEXTS,
     QUESTION_TEMPLATES,
     SEED,
+    opaque_token,
 )
+
+
+def case_id_for(split: str, key: str) -> str:
+    return f"se-{opaque_token('case', f'{split}|{key}', 12)}"
+
+
+def evidence_id(canonical_id: str) -> str:
+    return f"ev-{opaque_token('evidence', canonical_id, 12)}"
 
 
 def oracle_frame(
@@ -34,6 +43,8 @@ def oracle_frame(
     )
     if completed.returncode:
         raise RuntimeError(completed.stderr.strip() or "case oracle failed")
+    if "ERROR:" in completed.stderr:
+        raise RuntimeError(completed.stderr.strip())
     return json.loads(completed.stdout)
 
 
@@ -45,8 +56,9 @@ def assertion_record(
     polarity: str,
     family: int,
 ) -> dict[str, str]:
-    canonical = f"src-{case_id}-{index + 1}"
-    source = f"DOC-{case_id.upper()}-{index + 1}"
+    key = f"{case_id}|{index}"
+    canonical = f"ca-{opaque_token('canonical', key, 12)}"
+    source = f"DOC-{opaque_token('source', key, 12)}"
     templates = POSITIVE_TEXTS if polarity == "positive" else NEGATIVE_TEXTS
     return {
         "canonicalId": canonical,
@@ -83,12 +95,9 @@ def context_for(
         assertion_record(case_id, i, revision, material, polarity, family)
         for i, (revision, material, polarity) in enumerate(specs)
     ]
-    rename = not (case_id.startswith("se-train") and family == 0)
     aliases = {
-        item["canonicalId"]: (
-            f"ev-{case_id.split('-', 1)[1]}-{i + 1}" if rename else item["canonicalId"]
-        )
-        for i, item in enumerate(catalog)
+        item["canonicalId"]: evidence_id(item["canonicalId"])
+        for item in catalog
     }
     context = [
         {"id": aliases[item["canonicalId"]], "source": item["source"], "textRu": item["textRu"]}
@@ -118,7 +127,7 @@ def primary_case(
     lab: Path,
 ) -> tuple[dict[str, Any], list[dict[str, str]]]:
     family = ordinal % 3
-    case_id = f"se-{split}-{ordinal + 1:02d}"
+    case_id = case_id_for(split, f"primary-{ordinal}")
     rng = random.Random(SEED + split_index * 100 + ordinal)
     context, catalog, aliases, positive, negative = context_for(
         case_id, family, target, status, pairs, rng
@@ -127,7 +136,7 @@ def primary_case(
     evidence = sorted(aliases[item] for item in frame["evidence"])
     question = QUESTION_TEMPLATES[split][family].format(r=target[0], m=target[1])
     case = {
-        "schemaVersion": 2, "id": case_id, "split": split, "caseKind": "epistemic",
+        "schemaVersion": 3, "id": case_id, "split": split, "caseKind": "epistemic",
         "questionRu": question, "sourceContext": context,
         "expected": {**frame, "evidence": evidence},
         "annotation": {
