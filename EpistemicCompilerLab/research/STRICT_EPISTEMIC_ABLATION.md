@@ -39,7 +39,7 @@ The first fixture uses `uses_material(Revision, Material)` and contains one exam
 - `decision_reason/2`;
 - `decision_frame/2`.
 
-The existing material-selection oracle and frozen compiled-frame replication remain unchanged.
+The generated benchmark uses a separate generic SWI-Prolog status oracle over case-local evidence IDs. The existing material-selection oracle and frozen compiled-frame replication remain unchanged.
 
 ## Primary factor experiment
 
@@ -54,20 +54,22 @@ Each mode has separate frozen hashes for parser, knowledge, policy, prompt, resp
 
 ## Benchmark design
 
-Minimum publication pilot: 48 cases, balanced across the four statuses. Each base claim receives controlled variants:
+The first factor pilot contains 48 primary cases and 8 clarification cases. The primary cases must have 48 distinct propositions and case-local source bundles. Every visible context contains exactly four assertions: two positive and two negative. Status is determined only by evidence matching the target proposition.
+
+Controlled variations include:
 
 - natural paraphrase;
 - source-order permutation;
-- internal-ID renaming;
-- irrelevant source assertion;
-- temporal or provenance wording variation;
-- one missing-required-field variant where applicable.
+- opaque evidence-ID aliases;
+- irrelevant source assertions;
+- provenance wording variation;
+- one missing-required-field case per field and split.
 
-Use TRAIN/DEV/HOLDOUT for development and a separately generated replication split frozen before student evaluation.
+Every split and every paraphrase family contains all four statuses once. TRAIN, DEV, HOLDOUT and replication use disjoint target propositions. Semantic temporal scopes are deferred to the reserve experiment because they add a separate applicability variable.
 
 ## Trusted expected values
 
-Expected interpretation fields are derived from hidden annotations. Expected epistemic status, evidence IDs and decision action are computed by SWI-Prolog. Expected values never enter Qwen prompts.
+Expected interpretation fields are derived from hidden annotations. Expected epistemic status, evidence IDs and decision action are computed by SWI-Prolog. A generated source catalog and benchmark cases are reviewed and frozen together. Expected values never enter Qwen prompts.
 
 ## Primary metrics
 
@@ -88,7 +90,7 @@ Report accuracy deltas under paraphrase, fact order, ID renaming and irrelevant 
 
 ## Main experiment
 
-Freeze a 48-case strict-epistemic benchmark and run the four modes with the same Qwen profile, response schema, seed set and output budget. The key contrast is the earliest mode at which accuracy becomes stable.
+Freeze the strict-epistemic cases and source catalog before any student evaluation, then run the four modes with the same Qwen profile, response schema, seed set and output budget. The key contrast is the earliest mode at which accuracy becomes stable.
 
 ## Reserve experiment
 
@@ -96,8 +98,8 @@ If all four modes are near ceiling, add contradictory temporal scopes and source
 
 ## Stop and rejection criteria
 
-Stop increasing representational complexity when two consecutive frozen experiments show no improvement in status or decision accuracy. Reject the direction if the full verified decision frame still produces frequent semantic-copy errors across seeds. Do not add probability or fuzzy membership until a separate task provides meaningful numerical provenance and calibration.
+Reject any candidate where a proposition or entity token has a fixed status across splits, where visible context size or polarity counts reveal status, or where replication reuses TRAIN propositions. Stop increasing representational complexity when two consecutive frozen experiments show no improvement in status or decision accuracy. Reject the direction if the full verified decision frame still produces frequent semantic-copy errors across seeds. Do not add probability or fuzzy membership until a separate task provides meaningful numerical provenance and calibration.
 
 ## Publication boundary
 
-A claim requires at least three Qwen seeds, three independently generated paraphrase families, a static deterministic baseline, direct-Codex upper bound, confidence intervals and a never-touched replication set. The current four-claim oracle is only an architectural gate.
+A claim requires at least three Qwen seeds, three independently generated paraphrase families, a static deterministic baseline, direct-Codex upper bound, confidence intervals and a never-touched replication set. The current generated benchmark remains a controlled domain fixture, not broad Russian-language evidence.
