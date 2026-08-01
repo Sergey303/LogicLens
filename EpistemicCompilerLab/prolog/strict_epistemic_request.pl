@@ -11,7 +11,13 @@ request_frame(_, missing, Frame) :-
 request_frame(Revision, Material, Frame) :-
     Proposition = uses_material(Revision, Material),
     decision_frame(Proposition, Base),
-    put_dict(askField, Base, null, Frame).
+    PropositionJson = _{
+        predicate: uses_material,
+        revision: Revision,
+        material: Material
+    },
+    put_dict(proposition, Base, PropositionJson, WithProposition),
+    put_dict(askField, WithProposition, null, Frame).
 
 clarification_frame(Field, _{
     proposition: null,
