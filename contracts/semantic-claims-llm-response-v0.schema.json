@@ -1,0 +1,163 @@
+{
+  "$id": "https://logiclens.local/contracts/semantic-claims-llm-response-v0.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "alternativeIndices": {
+            "items": {
+              "maximum": 63,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "maxItems": 8,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "dataElement": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "maxLength": 512,
+                "minLength": 1,
+                "type": "string"
+              },
+              "kind": {
+                "const": "predicate"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "type": "object"
+          },
+          "evidence": {
+            "items": {
+              "oneOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "factIds": {
+                      "items": {
+                        "maxLength": 256,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "kind": {
+                      "const": "fact_ids"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "factIds"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "ontology_label",
+                        "datatype",
+                        "task_text"
+                      ]
+                    },
+                    "value": {
+                      "maxLength": 2000,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "neighboring_predicates"
+                    },
+                    "predicateIds": {
+                      "items": {
+                        "maxLength": 512,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "minItems": 1,
+                      "type": "array",
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "predicateIds"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "maxItems": 12,
+            "type": "array"
+          },
+          "facet": {
+            "enum": [
+              "display_role",
+              "policy_role",
+              "value_role"
+            ]
+          },
+          "role": {
+            "pattern": "^[a-z][a-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "possible",
+              "supported",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "dataElement",
+          "facet",
+          "role",
+          "status",
+          "evidence",
+          "alternativeIndices"
+        ],
+        "type": "object"
+      },
+      "maxItems": 64,
+      "type": "array"
+    },
+    "unclassifiedPredicateIds": {
+      "items": {
+        "maxLength": 512,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 64,
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "claims",
+    "unclassifiedPredicateIds"
+  ],
+  "title": "LogicLens bounded LLM Semantic Claims response v0",
+  "type": "object"
+}
