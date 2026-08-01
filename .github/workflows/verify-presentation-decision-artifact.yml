@@ -1,0 +1,84 @@
+name: Verify deterministic presentation decision artifact v0
+
+on:
+  pull_request:
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "tools/presentation_decision_artifact.py"
+      - "tools/dataset_profile_artifact.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/presentation_decision_artifact_test.py"
+      - "docs/runbooks/presentation-decision-artifact.md"
+      - ".github/workflows/verify-presentation-decision-artifact.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "tools/presentation_decision_artifact.py"
+      - "tools/dataset_profile_artifact.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/presentation_decision_artifact_test.py"
+      - "docs/runbooks/presentation-decision-artifact.md"
+      - ".github/workflows/verify-presentation-decision-artifact.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-presentation-decision-artifact-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify planner, negative cases and all frozen decisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/presentation_decision_artifact.py \
+            tests/presentation_decision_artifact_test.py
+          python tests/presentation_decision_artifact_test.py
+
+          output_root="$(mktemp -d)"
+          cases=(
+            clear-revision-comparison
+            opaque-revision-comparison
+            ambiguous-time-excluded
+            lookalike-incomparable-records
+            single-entity-generic-fallback
+          )
+          for case_id in "${cases[@]}"; do
+            claims="$output_root/$case_id.claims.json"
+            profile="$output_root/$case_id.profile.json"
+            decision="$output_root/$case_id.decision.json"
+            python tools/semantic_claims_artifact.py create \
+              --case-id "$case_id" \
+              --output "$claims"
+            python tools/dataset_profile_artifact.py create \
+              --semantic-claims "$claims" \
+              --output "$profile"
+            python tools/presentation_decision_artifact.py create \
+              --semantic-claims "$claims" \
+              --dataset-profile "$profile" \
+              --output "$decision"
+            python tools/presentation_decision_artifact.py verify \
+              --semantic-claims "$claims" \
+              --dataset-profile "$profile" \
+              --artifact "$decision"
+          done
