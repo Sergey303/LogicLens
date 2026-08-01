@@ -5,7 +5,13 @@ import random
 from pathlib import Path
 from typing import Any, Iterator
 
-from strict_epistemic_benchmark_core import assertion_record, oracle_frame, primary_case
+from strict_epistemic_benchmark_core import (
+    assertion_record,
+    case_id_for,
+    evidence_id,
+    oracle_frame,
+    primary_case,
+)
 from strict_epistemic_benchmark_data import (
     CLARIFICATION_TEMPLATES,
     SEED,
@@ -49,8 +55,8 @@ def clarification_context(
         for i, (rev, mat, polarity) in enumerate(specs)
     ]
     aliases = {
-        item["canonicalId"]: f"ev-{case_id.split('-', 1)[1]}-{i + 1}"
-        for i, item in enumerate(catalog)
+        item["canonicalId"]: evidence_id(item["canonicalId"])
+        for item in catalog
     }
     context = [
         {"id": aliases[item["canonicalId"]], "source": item["source"], "textRu": item["textRu"]}
@@ -61,14 +67,13 @@ def clarification_context(
 
 def clarification_case(
     split: str,
-    split_index: int,
     field: str,
     pairs: Iterator[tuple[str, str]],
     swipl: str,
     lab: Path,
 ) -> tuple[dict[str, Any], list[dict[str, str]]]:
     family = 2
-    case_id = f"se-{split}-missing-{field}"
+    case_id = case_id_for(split, f"missing-{field}")
     context, catalog, aliases, revision, material, query_revision, query_material = (
         clarification_context(case_id, field, family, pairs)
     )
@@ -78,7 +83,7 @@ def clarification_case(
     )
     frame = oracle_frame(swipl, lab, revision, material, [], [])
     case = {
-        "schemaVersion": 2, "id": case_id, "split": split,
+        "schemaVersion": 3, "id": case_id, "split": split,
         "caseKind": "clarification", "questionRu": question, "sourceContext": context,
         "expected": frame,
         "annotation": {
@@ -102,9 +107,7 @@ def build_benchmark(swipl: str, lab: Path) -> tuple[list[dict[str, Any]], list[d
             cases.append(case)
             catalog.extend(records)
         for field in ("revision", "material"):
-            case, records = clarification_case(
-                split, split_index, field, pairs, swipl, lab
-            )
+            case, records = clarification_case(split, field, pairs, swipl, lab)
             cases.append(case)
             catalog.extend(records)
     return cases, catalog
