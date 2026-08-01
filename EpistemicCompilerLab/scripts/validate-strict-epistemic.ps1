@@ -8,10 +8,15 @@ $required = @(
     'prolog/strict_epistemic.pl',
     'prolog/strict_epistemic_request.pl',
     'prolog/strict_epistemic_entry.pl',
+    'prolog/strict_epistemic_case.pl',
+    'prolog/strict_epistemic_case_entry.pl',
     'tests/strict_epistemic_tests.pl',
+    'tests/strict_epistemic_case_tests.pl',
     'research/STRICT_EPISTEMIC_ABLATION.md',
     'scripts/run-strict-epistemic-tests.ps1',
+    'scripts/strict_epistemic_benchmark_data.py',
     'scripts/strict_epistemic_benchmark_core.py',
+    'scripts/strict_epistemic_benchmark_build.py',
     'scripts/generate_strict_epistemic_benchmark.py',
     'scripts/validate_strict_epistemic_benchmark.py',
     'scripts/run-generate-strict-epistemic-benchmark.ps1'
@@ -52,6 +57,15 @@ foreach ($relative in @($required | Where-Object { $_ -like '*.py' })) {
     if ($LASTEXITCODE -ne 0) { throw "Python validation failed: $relative" }
 }
 
+$generator = Get-Content (Join-Path $labRoot 'scripts/generate_strict_epistemic_benchmark.py') -Raw -Encoding utf8
+foreach ($marker in @('uniquePrimaryPropositions', 'sourceCatalogSha256', 'qwenEvaluated')) {
+    if ($generator -notmatch $marker) { throw "Strict generator missing marker: $marker" }
+}
+$validator = Get-Content (Join-Path $labRoot 'scripts/validate_strict_epistemic_benchmark.py') -Raw -Encoding utf8
+foreach ($marker in @('48 unique propositions', 'polarity balance', 'source catalog')) {
+    if ($validator -notmatch $marker) { throw "Strict validator missing gate: $marker" }
+}
+
 $tokens = $null; $errors = $null
 foreach ($relative in @($required | Where-Object { $_ -like '*.ps1' })) {
     [void] [System.Management.Automation.Language.Parser]::ParseFile(
@@ -61,4 +75,4 @@ foreach ($relative in @($required | Where-Object { $_ -like '*.ps1' })) {
 }
 
 & (Join-Path $PSScriptRoot 'run-strict-epistemic-tests.ps1')
-Write-Host 'Strict epistemic assets valid: oracle, request policy and frozen-candidate generator are separated.'
+Write-Host 'Strict epistemic assets valid: typed fixture and unique-proposition benchmark generator are separated.'
