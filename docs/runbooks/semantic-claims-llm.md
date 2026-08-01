@@ -33,7 +33,11 @@ The model response is untrusted. Trusted code checks:
 
 A trusted importer assigns deterministic claim IDs, preserves model order, creates a
 domain-hashed candidate artifact, and invokes the same
-`semantic_claims_baseline.evaluate_claims` scorer used by the deterministic control.
+`semantic_claims_baseline.evaluate_claims` exact-role scorer used by the deterministic
+control. Because the older baseline scorer only recognizes label/datatype evidence, the
+LLM evaluation also records `contractEvidenceValidity`, recomputed by replaying the full
+closed response validator over FactIds, task substrings, labels, datatypes, and neighboring
+predicates.
 
 ## CI versus measured experiments
 
