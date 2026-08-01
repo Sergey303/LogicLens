@@ -31,11 +31,23 @@ if ($LASTEXITCODE -ne 0 -or $missing.status -ne 'not_evaluated' -or
     throw "Missing-field request-frame JSON contract failed: $missingRaw"
 }
 
-$caseRaw = (& $swipl -q -s $caseEntry -- case-frame RX-101 MX-1001 p1 n1 | Out-String).Trim()
+$caseRaw = (& $swipl -q -s $caseEntry -- case-frame RX-TEST MX-TEST p1 n1 2>&1 | Out-String).Trim()
+if ($LASTEXITCODE -ne 0 -or $caseRaw -match 'ERROR:') {
+    throw "Generic case-frame CLI emitted an error: $caseRaw"
+}
 $case = $caseRaw | ConvertFrom-Json
-if ($LASTEXITCODE -ne 0 -or $case.status -ne 'conflicting' -or
+if ($case.status -ne 'conflicting' -or
     $case.action -ne 'report_conflict' -or @($case.evidence).Count -ne 2) {
     throw "Generic case-frame JSON contract failed: $caseRaw"
+}
+
+$invalidRaw = (& $swipl -q -s $caseEntry -- invalid 2>&1 | Out-String).Trim()
+if ($LASTEXITCODE -ne 0 -or $invalidRaw -match 'ERROR:') {
+    throw "Generic case-frame fallback emitted an error: $invalidRaw"
+}
+$invalid = $invalidRaw | ConvertFrom-Json
+if ($invalid.status -ne 'invalid_request' -or @($invalid.usage).Count -ne 1) {
+    throw "Generic case-frame fallback contract failed: $invalidRaw"
 }
 
 Write-Host 'Strict epistemic fixture, generic oracle and JSON CLIs passed.'
