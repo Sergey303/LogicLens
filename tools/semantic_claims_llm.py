@@ -94,14 +94,30 @@ def verify_candidate(benchmark_root: Path, request_path: Path, raw_response_path
         raise SemanticClaimsLlmError('candidate artifactHash mismatch')
     return candidate
 
+def candidate_response(candidate: dict[str, Any]) -> dict[str, Any]:
+    id_to_index = {claim['claimId']: index for index, claim in enumerate(candidate['claims'])}
+    claims: list[dict[str, Any]] = []
+    for claim in candidate['claims']:
+        try:
+            alternatives = [id_to_index[item] for item in claim['alternatives']]
+        except KeyError as error:
+            raise SemanticClaimsLlmError(
+                f'candidate references an unknown alternative claimId: {error.args[0]}'
+            ) from error
+        claims.append({'dataElement': deepcopy(claim['dataElement']), 'facet': claim['facet'], 'role': claim['role'], 'status': claim['status'], 'evidence': deepcopy(claim['evidence']), 'alternativeIndices': alternatives})
+    return {'claims': claims, 'unclassifiedPredicateIds': deepcopy(candidate['unclassifiedPredicateIds'])}
+
 def build_evaluation(benchmark_root: Path, candidate: dict[str, Any], *, expected_manifest_sha256: str | None=FROZEN_MANIFEST_SHA256) -> dict[str, Any]:
     case_id = candidate['benchmark']['caseId']
     try:
         summary, manifest_raw, case_path, case, case_raw = load_case(benchmark_root.resolve(), case_id, expected_manifest_sha256)
     except SemanticClaimsArtifactError as error:
         raise SemanticClaimsLlmError(f'cannot load frozen benchmark case: {error}') from error
+    reconstructed = candidate_response(candidate)
+    validate_response(case, reconstructed)
     metrics = baseline.evaluate_claims(case, candidate['claims'])
-    payload: dict[str, Any] = {'schemaVersion': EVALUATION_SCHEMA_VERSION, 'stage': 'llm-semantic-claims-evaluation', 'benchmark': {'benchmarkId': summary.benchmark_id, 'manifestSha256': sha256_prefixed(manifest_raw), 'caseId': case_id, 'casePath': case_path, 'caseSha256': sha256_prefixed(case_raw)}, 'candidateArtifactHash': candidate['artifactHash'], 'scorer': {'kind': 'trusted-deterministic', 'id': 'semantic-claims-baseline-scorer-v0'}, 'metrics': metrics}
+    evidence_total = sum(len(claim['evidence']) for claim in candidate['claims'])
+    payload: dict[str, Any] = {'schemaVersion': EVALUATION_SCHEMA_VERSION, 'stage': 'llm-semantic-claims-evaluation', 'benchmark': {'benchmarkId': summary.benchmark_id, 'manifestSha256': sha256_prefixed(manifest_raw), 'caseId': case_id, 'casePath': case_path, 'caseSha256': sha256_prefixed(case_raw)}, 'candidateArtifactHash': candidate['artifactHash'], 'scorer': {'kind': 'trusted-deterministic', 'id': 'semantic-claims-baseline-scorer-v0'}, 'metrics': metrics, 'contractEvidenceValidity': {'valid': evidence_total, 'total': evidence_total, 'rate': 1.0 if evidence_total else 0.0}}
     payload['artifactHash'] = domain_hash(EVALUATION_HASH_DOMAIN, payload)
     return payload
 
