@@ -67,6 +67,10 @@ def entity_pairs() -> list[tuple[str, str]]:
 
 
 def status_plan(split_index: int) -> list[str]:
-    plan = list(STATUSES) * 3
-    random.Random(SEED + split_index + 1).shuffle(plan)
+    plan = [""] * 12
+    for family in range(3):
+        statuses = list(STATUSES)
+        random.Random(SEED + split_index * 10 + family).shuffle(statuses)
+        for block, status in enumerate(statuses):
+            plan[family + block * 3] = status
     return plan
