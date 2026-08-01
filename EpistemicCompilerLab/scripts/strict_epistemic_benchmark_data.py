@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import random
 
 SEED = 20260801
@@ -58,12 +59,17 @@ NEGATIVE_TEXTS = (
 )
 
 
+def opaque_token(namespace: str, value: str, length: int = 10) -> str:
+    raw = f"{SEED}|{namespace}|{value}".encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()[:length].upper()
+
+
 def entity_pairs() -> list[tuple[str, str]]:
-    revisions = [f"RX-{n:03d}" for n in range(101, 501)]
-    materials = [f"MX-{n:04d}" for n in range(1001, 1401)]
-    pairs = list(zip(revisions, materials))
-    random.Random(SEED).shuffle(pairs)
-    return pairs
+    revisions = [f"RX-{opaque_token('revision', str(i), 8)}" for i in range(400)]
+    materials = [f"MX-{opaque_token('material', str(i), 8)}" for i in range(400)]
+    random.Random(SEED + 11).shuffle(revisions)
+    random.Random(SEED + 29).shuffle(materials)
+    return list(zip(revisions, materials))
 
 
 def status_plan(split_index: int) -> list[str]:
