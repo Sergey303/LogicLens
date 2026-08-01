@@ -1,0 +1,51 @@
+name: Verify local Semantic Claims pilot runner v0
+
+on:
+  pull_request:
+    paths:
+      - "tools/run_semantic_claims_llm_pilot.py"
+      - "tools/semantic_claims_llm_experiment.py"
+      - "tools/semantic_claims_llm.py"
+      - "tools/semantic_claims_llm_contract.py"
+      - "tests/semantic_claims_llm_pilot_runner_test.py"
+      - "docs/runbooks/semantic-claims-llm-pilot-runner.md"
+      - ".github/workflows/verify-semantic-claims-llm-pilot-runner.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/run_semantic_claims_llm_pilot.py"
+      - "tools/semantic_claims_llm_experiment.py"
+      - "tools/semantic_claims_llm.py"
+      - "tools/semantic_claims_llm_contract.py"
+      - "tests/semantic_claims_llm_pilot_runner_test.py"
+      - "docs/runbooks/semantic-claims-llm-pilot-runner.md"
+      - ".github/workflows/verify-semantic-claims-llm-pilot-runner.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-semantic-claims-llm-pilot-runner-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify no-retry orchestration without Ollama
+        run: |
+          python -m py_compile \
+            tools/run_semantic_claims_llm_pilot.py \
+            tests/semantic_claims_llm_pilot_runner_test.py
+          python tests/semantic_claims_llm_pilot_runner_test.py
+          echo "orchestration verified; no model call and no measured LLM result"
