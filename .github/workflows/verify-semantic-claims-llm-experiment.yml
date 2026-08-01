@@ -1,0 +1,136 @@
+name: Verify measured Semantic Claims pilot plan v0
+
+on:
+  pull_request:
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "tools/semantic_claims_llm_experiment.py"
+      - "tools/semantic_claims_llm.py"
+      - "tools/semantic_claims_llm_contract.py"
+      - "tools/semantic_claims_llm_validation.py"
+      - "tools/semantic_claims_baseline.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/semantic_claims_llm_experiment_test.py"
+      - "docs/runbooks/semantic-claims-llm-experiment.md"
+      - ".github/workflows/verify-semantic-claims-llm-experiment.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "tools/semantic_claims_llm_experiment.py"
+      - "tools/semantic_claims_llm.py"
+      - "tools/semantic_claims_llm_contract.py"
+      - "tools/semantic_claims_llm_validation.py"
+      - "tools/semantic_claims_baseline.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/semantic_claims_llm_experiment_test.py"
+      - "docs/runbooks/semantic-claims-llm-experiment.md"
+      - ".github/workflows/verify-semantic-claims-llm-experiment.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-semantic-claims-llm-experiment-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify fixed plan and fail-closed empty report
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/semantic_claims_llm_experiment.py \
+            tests/semantic_claims_llm_experiment_test.py
+          python tests/semantic_claims_llm_experiment_test.py
+
+          output_root="$(mktemp -d)"
+          plan="$output_root/plan.json"
+          commands="$output_root/commands.txt"
+          runs="$output_root/runs"
+          report="$output_root/report.json"
+
+          python tools/semantic_claims_llm_experiment.py create-plan \
+            --output "$plan"
+          python tools/semantic_claims_llm_experiment.py verify-plan \
+            --plan "$plan"
+          python tools/semantic_claims_llm_experiment.py commands \
+            --plan "$plan" \
+            --runs-root "$runs" > "$commands"
+
+          python - "$plan" "$commands" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          plan = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          commands = [
+              line for line in Path(sys.argv[2]).read_text(encoding="utf-8").splitlines()
+              if line.strip()
+          ]
+          assert plan["schemaVersion"] == "semantic-claims-llm-experiment-plan-v0"
+          assert plan["experimentId"] == "semantic-claims-gate-a-pilot-v0"
+          assert len(plan["matrix"]) == 15
+          assert len({item["runId"] for item in plan["matrix"]}) == 15
+          assert {item["seed"] for item in plan["matrix"]} == {0, 1, 2}
+          assert len({item["caseId"] for item in plan["matrix"]}) == 5
+          assert len(commands) == 15
+          assert plan["policy"] == {
+              "allRunsMustBeAccountedFor": True,
+              "missingRunsMayNotBeExcluded": True,
+              "syntheticRunsForbidden": True,
+              "automaticPromotion": False,
+          }
+          PY
+
+          python tools/semantic_claims_llm_experiment.py collect \
+            --plan "$plan" \
+            --runs-root "$runs" \
+            --output "$report"
+          python tools/semantic_claims_llm_experiment.py verify-report \
+            --plan "$plan" \
+            --runs-root "$runs" \
+            --report "$report"
+
+          python - "$report" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          summary = report["summary"]
+          assert summary["plannedRuns"] == 15
+          assert summary["validRuns"] == 0
+          assert summary["missingRuns"] == 15
+          assert summary["incompleteRuns"] == 0
+          assert summary["invalidRuns"] == 0
+          assert summary["complete"] is False
+          assert summary["contractEvidenceSafe"] is False
+          assert summary["falseSupportedSafe"] is False
+          assert summary["stableAcrossSeeds"] is False
+          assert all(record["status"] == "missing" for record in report["records"])
+          assert report["pilotSignals"] == {
+              "opaqueBeatsDeterministicBaseline": False,
+              "allSafetyChecksPass": False,
+              "resultsStableAcrossDeclaredSeeds": False,
+              "automaticPromotionAllowed": False,
+          }
+          print("empty plan accounting verified; this is not a measured LLM result")
+          PY
