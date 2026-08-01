@@ -71,14 +71,20 @@ test(irrelevant_assertions_do_not_change_target_statuses) :-
     claim_status(uses_material(revision_a, asd2), supported),
     claim_status(uses_material(revision_c, asd2), unknown).
 
+test(complete_request_uses_dict_json_null) :-
+    request_frame(revision_a, asd2, Frame),
+    get_dict(askField, Frame, null).
+
 test(missing_revision_requests_clarification) :-
     request_frame(missing, asd2, Frame),
+    get_dict(proposition, Frame, null),
     get_dict(status, Frame, not_evaluated),
     get_dict(action, Frame, ask_clarification),
     get_dict(askField, Frame, revision).
 
 test(missing_material_requests_clarification) :-
     request_frame(revision_a, missing, Frame),
+    get_dict(proposition, Frame, null),
     get_dict(status, Frame, not_evaluated),
     get_dict(action, Frame, ask_clarification),
     get_dict(askField, Frame, material).
