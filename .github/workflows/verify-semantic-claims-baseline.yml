@@ -1,0 +1,135 @@
+name: Verify deterministic semantic claims baseline v0
+
+on:
+  pull_request:
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "tools/semantic_claims_baseline.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/semantic_claims_baseline_test.py"
+      - "docs/runbooks/semantic-claims-baseline.md"
+      - ".github/workflows/verify-semantic-claims-baseline.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "tools/semantic_claims_baseline.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/semantic_claims_baseline_test.py"
+      - "docs/runbooks/semantic-claims-baseline.md"
+      - ".github/workflows/verify-semantic-claims-baseline.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-semantic-claims-baseline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify baseline generation, scoring and frozen aggregate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/semantic_claims_baseline.py \
+            tests/semantic_claims_baseline_test.py
+          python tests/semantic_claims_baseline_test.py
+
+          output_root="$(mktemp -d)"
+          cases=(
+            clear-revision-comparison
+            opaque-revision-comparison
+            ambiguous-time-excluded
+            lookalike-incomparable-records
+            single-entity-generic-fallback
+          )
+          for case_id in "${cases[@]}"; do
+            candidate="$output_root/$case_id.candidate.json"
+            evaluation="$output_root/$case_id.evaluation.json"
+            python tools/semantic_claims_baseline.py create \
+              --case-id "$case_id" \
+              --output "$candidate"
+            python tools/semantic_claims_baseline.py verify \
+              --artifact "$candidate"
+            python tools/semantic_claims_baseline.py evaluate \
+              --candidate "$candidate" \
+              --output "$evaluation"
+            python tools/semantic_claims_baseline.py verify-evaluation \
+              --candidate "$candidate" \
+              --artifact "$evaluation"
+          done
+
+          python - "$output_root" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          evaluations = [
+              json.loads(path.read_text(encoding="utf-8"))
+              for path in sorted(root.glob("*.evaluation.json"))
+          ]
+          tp = sum(item["metrics"]["exactRole"]["tp"] for item in evaluations)
+          fp = sum(item["metrics"]["exactRole"]["fp"] for item in evaluations)
+          fn = sum(item["metrics"]["exactRole"]["fn"] for item in evaluations)
+          false_supported = sum(
+              item["metrics"]["falseSupportedCount"] for item in evaluations
+          )
+          evidence_valid = sum(
+              item["metrics"]["evidenceValidity"]["valid"] for item in evaluations
+          )
+          evidence_total = sum(
+              item["metrics"]["evidenceValidity"]["total"] for item in evaluations
+          )
+          opaque = next(
+              item
+              for item in evaluations
+              if item["benchmark"]["caseId"] == "opaque-revision-comparison"
+          )
+          precision = tp / (tp + fp) if tp + fp else 0.0
+          recall = tp / (tp + fn) if tp + fn else 0.0
+          f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+          summary = {
+              "tp": tp,
+              "fp": fp,
+              "fn": fn,
+              "precision": round(precision, 6),
+              "recall": round(recall, 6),
+              "f1": round(f1, 6),
+              "falseSupported": false_supported,
+              "evidenceValid": evidence_valid,
+              "evidenceTotal": evidence_total,
+              "opaqueCandidateClaims": opaque["metrics"]["candidateClaimCount"],
+          }
+          print(json.dumps(summary, sort_keys=True))
+          assert summary == {
+              "tp": 14,
+              "fp": 0,
+              "fn": 4,
+              "precision": 1.0,
+              "recall": 0.777778,
+              "f1": 0.875,
+              "falseSupported": 0,
+              "evidenceValid": 16,
+              "evidenceTotal": 16,
+              "opaqueCandidateClaims": 0,
+          }
+          PY
