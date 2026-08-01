@@ -15,7 +15,11 @@ if ($LASTEXITCODE -ne 0) {
 $completeRaw = (& $swipl -q -s $entry -- request-frame revision_a asd2 | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Complete request-frame CLI failed.' }
 $complete = $completeRaw | ConvertFrom-Json
-if ($complete.status -ne 'supported' -or $null -ne $complete.askField) {
+if ($complete.status -ne 'supported' -or
+    $null -ne $complete.askField -or
+    $complete.proposition.predicate -ne 'uses_material' -or
+    $complete.proposition.revision -ne 'revision_a' -or
+    $complete.proposition.material -ne 'asd2') {
     throw "Complete request-frame JSON contract failed: $completeRaw"
 }
 
