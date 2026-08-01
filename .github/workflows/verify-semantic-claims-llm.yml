@@ -1,0 +1,220 @@
+name: Verify bounded LLM Semantic Claims producer v0
+
+on:
+  pull_request:
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "contracts/semantic-claims-llm-response-v0.schema.json"
+      - "tools/semantic_claims_llm.py"
+      - "tools/semantic_claims_llm_contract.py"
+      - "tools/semantic_claims_llm_validation.py"
+      - "tools/semantic_claims_baseline.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/semantic_claims_llm_test.py"
+      - "docs/runbooks/semantic-claims-llm.md"
+      - ".github/workflows/verify-semantic-claims-llm.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "experiments/presentation/semantic-planning-v0/**"
+      - "contracts/semantic-claims-llm-response-v0.schema.json"
+      - "tools/semantic_claims_llm.py"
+      - "tools/semantic_claims_llm_contract.py"
+      - "tools/semantic_claims_llm_validation.py"
+      - "tools/semantic_claims_baseline.py"
+      - "tools/semantic_claims_artifact.py"
+      - "tools/verify_semantic_planning_benchmark.py"
+      - "tools/active_epoch/hashing.py"
+      - "tests/semantic_claims_llm_test.py"
+      - "docs/runbooks/semantic-claims-llm.md"
+      - ".github/workflows/verify-semantic-claims-llm.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-semantic-claims-llm-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify closed request, importer and scorer without a model call
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/semantic_claims_llm.py \
+            tools/semantic_claims_llm_contract.py \
+            tools/semantic_claims_llm_validation.py \
+            tests/semantic_claims_llm_test.py
+          python tests/semantic_claims_llm_test.py
+
+          output_root="$(mktemp -d)"
+          cases=(
+            clear-revision-comparison
+            opaque-revision-comparison
+            ambiguous-time-excluded
+            lookalike-incomparable-records
+            single-entity-generic-fallback
+          )
+          for case_id in "${cases[@]}"; do
+            python tools/semantic_claims_llm.py prepare \
+              --case-id "$case_id" \
+              --model qwen2.5-coder:7b \
+              --seed 0 \
+              --output "$output_root/$case_id.request.json"
+          done
+
+          python - "$output_root" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          contract = json.loads(
+              Path("contracts/semantic-claims-llm-response-v0.schema.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+          forbidden = {
+              "answerKey",
+              "oracleSemanticClaims",
+              "oracleDatasetProfile",
+              "expectedPresentation",
+          }
+          for path in sorted(root.glob("*.request.json")):
+              request = json.loads(path.read_text(encoding="utf-8"))
+              assert request["format"] == contract
+              prompt = request["messages"][0]["content"]
+              assert all(f'"{key}"' not in prompt for key in forbidden)
+              role = contract["properties"]["claims"]["items"]["properties"]["role"]
+              assert "pattern" in role and "enum" not in role
+          PY
+
+          request="$output_root/opaque-revision-comparison.request.json"
+          raw="$output_root/opaque.synthetic-transport.json"
+          model_response="$output_root/opaque.model-response.json"
+          candidate="$output_root/opaque.candidate.json"
+          evaluation="$output_root/opaque.evaluation.json"
+
+          python - "$raw" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          response = {
+              "claims": [
+                  {
+                      "dataElement": {"kind": "predicate", "id": "urn:opaque:p-a1"},
+                      "facet": "display_role",
+                      "role": "identifier",
+                      "status": "supported",
+                      "evidence": [
+                          {"kind": "fact_ids", "factIds": [
+                              "fixture:opaque:r1:a1",
+                              "fixture:opaque:r2:a1",
+                              "fixture:opaque:r3:a1"
+                          ]},
+                          {"kind": "task_text", "value": "версии R1, R2 и R3"}
+                      ],
+                      "alternativeIndices": []
+                  },
+                  {
+                      "dataElement": {"kind": "predicate", "id": "urn:opaque:p-a2"},
+                      "facet": "value_role",
+                      "role": "status",
+                      "status": "supported",
+                      "evidence": [
+                          {"kind": "fact_ids", "factIds": [
+                              "fixture:opaque:r1:a2",
+                              "fixture:opaque:r2:a2",
+                              "fixture:opaque:r3:a2"
+                          ]},
+                          {"kind": "task_text", "value": "состоянию"},
+                          {"kind": "neighboring_predicates", "predicateIds": [
+                              "urn:opaque:p-a1", "urn:opaque:p-a3"
+                          ]}
+                      ],
+                      "alternativeIndices": []
+                  },
+                  {
+                      "dataElement": {"kind": "predicate", "id": "urn:opaque:p-a3"},
+                      "facet": "value_role",
+                      "role": "category",
+                      "status": "supported",
+                      "evidence": [
+                          {"kind": "fact_ids", "factIds": [
+                              "fixture:opaque:r1:a3",
+                              "fixture:opaque:r2:a3",
+                              "fixture:opaque:r3:a3"
+                          ]},
+                          {"kind": "task_text", "value": "материалу"},
+                          {"kind": "neighboring_predicates", "predicateIds": [
+                              "urn:opaque:p-a1", "urn:opaque:p-a2"
+                          ]}
+                      ],
+                      "alternativeIndices": []
+                  }
+              ],
+              "unclassifiedPredicateIds": []
+          }
+          raw = {
+              "done": True,
+              "done_reason": "stop",
+              "prompt_eval_count": 1000,
+              "eval_count": 300,
+              "total_duration": 1,
+              "message": {"content": json.dumps(response, ensure_ascii=False)}
+          }
+          Path(sys.argv[1]).write_text(
+              json.dumps(raw, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+          python tools/semantic_claims_llm.py import \
+            --case-id opaque-revision-comparison \
+            --request "$request" \
+            --raw-response "$raw" \
+            --model-response "$model_response" \
+            --candidate "$candidate" \
+            --evaluation "$evaluation"
+
+          python tools/semantic_claims_llm.py verify \
+            --request "$request" \
+            --raw-response "$raw" \
+            --model-response "$model_response" \
+            --candidate "$candidate"
+
+          python tools/semantic_claims_llm.py verify-evaluation \
+            --candidate "$candidate" \
+            --artifact "$evaluation"
+
+          python - "$evaluation" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          value = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          exact = value["metrics"]["exactRole"]
+          assert exact["tp"] == 3
+          assert exact["fp"] == 0
+          assert exact["fn"] == 0
+          assert value["metrics"]["falseSupportedCount"] == 0
+          evidence = value["metrics"]["evidenceValidity"]
+          assert evidence["valid"] == evidence["total"]
+          print("synthetic transport replay verified; this is not a measured LLM result")
+          PY
