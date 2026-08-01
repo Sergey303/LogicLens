@@ -1,0 +1,34 @@
+{
+  "runId": "20260801T033702Z-strict-epistemic-benchmark-generation-failed",
+  "kind": "strict-epistemic-benchmark-candidate-generation",
+  "sourceCommit": "53d0fef9db2a80e803dffba753769262729a88d2",
+  "platform": "windows-x64",
+  "status": "infrastructure_failure",
+  "doctorStatus": "passed",
+  "doctorEvidence": {
+    "strictEpistemicTests": "14/14",
+    "legacyKnowledgeTests": "7/7",
+    "compiledFramePilot": "18/18",
+    "compiledFrameReplication": "24/24"
+  },
+  "generation": {
+    "candidateCreated": false,
+    "qwenEvaluated": false,
+    "exitCode": 1,
+    "failureBoundary": "SWI-Prolog dict JSON serialization",
+    "error": "Type error: json_term expected, found @(null)",
+    "firstObservedField": "askField"
+  },
+  "rootCause": "strict_epistemic_request.pl used the classical json(...) representation @(null) inside a dict passed to json_write_dict/3. The complete frame also retained a compound uses_material/2 proposition that was not a JSON value.",
+  "fixes": {
+    "dictNullAtom": "34341afee62659a72b744c92c275e20a6e4a9120",
+    "propositionJsonObject": "47f8efdab1a81a513618f71f695b264587e89c8f",
+    "prologRegression": "e5a086607841b33df084c5b70a2ebfb7b5f6f2d3",
+    "cliSerializationRegression": "4ff37899b1dc348ddb8742e2c9ba5c555d7a8c38",
+    "trustedEvidenceAliasMapping": "4bc7f911e36fb34352791424c9bc6109d4db7648",
+    "exactEvidenceAliasValidation": "502a94f6f5ab099747bf1d39fa9c5c62a28c81b8"
+  },
+  "interpretation": "The trusted oracle passed and no dataset or student evaluation occurred. This run is excluded from benchmark accuracy measurements and retained as transport evidence.",
+  "source": "user-cgr",
+  "createdAt": "2026-08-01T03:37:02.016Z"
+}
