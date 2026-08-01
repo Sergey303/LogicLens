@@ -239,6 +239,7 @@ class SemanticClaimsLlmTests(unittest.TestCase):
                 evaluation = llm.build_evaluation(Path("."), candidate, expected_manifest_sha256=None)
                 scorer.assert_called_once()
                 self.assertEqual({"exactRole": {"tp": 2}}, evaluation["metrics"])
+                self.assertEqual(1.0, evaluation["contractEvidenceValidity"]["rate"])
 
     def test_candidate_roundtrip_rejects_tampering(self):
         case = case_value()
