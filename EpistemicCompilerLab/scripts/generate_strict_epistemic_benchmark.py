@@ -53,7 +53,7 @@ def main() -> int:
     ).strip()
     primary = [case for case in cases if case["caseKind"] == "epistemic"]
     manifest = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "kind": "strict-epistemic-benchmark-candidate",
         "createdAt": datetime.now(timezone.utc).isoformat(),
         "commit": commit,
@@ -67,6 +67,8 @@ def main() -> int:
         "sourceAssertionCount": len(catalog),
         "splitCounts": dict(Counter(case["split"] for case in cases)),
         "statusCounts": dict(Counter(case["expected"]["status"] for case in primary)),
+        "opaqueVisibleIds": True,
+        "independentEntityTokens": True,
         "casesSha256": sha256(case_path),
         "sourceCatalogSha256": sha256(source_path),
         "caseOracleSha256": sha256(lab / "prolog" / "strict_epistemic_case.pl"),
@@ -79,7 +81,7 @@ def main() -> int:
     )
     shutil.make_archive(str(output), "zip", root_dir=output)
     print(json.dumps(manifest, ensure_ascii=False))
-    print("[CGR_ARTIFACT_TITLE] Strict epistemic benchmark candidate v2")
+    print("[CGR_ARTIFACT_TITLE] Strict epistemic benchmark candidate v3")
     print(f"[CGR_ARTIFACT] {output}.zip")
     return 0
 
