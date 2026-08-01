@@ -1,0 +1,50 @@
+{
+  "runId": "20260801T034708Z-strict-epistemic-benchmark-candidate",
+  "kind": "strict-epistemic-benchmark-candidate-review",
+  "sourceCommit": "f6372b2e43e2422b939e7c373e13c71f1fb3b7c6",
+  "platform": "windows-x64",
+  "status": "rejected_after_manual_review",
+  "doctorStatus": "passed",
+  "trustedValidation": {
+    "cases": 56,
+    "passed": 56,
+    "train": 14,
+    "dev": 14,
+    "holdout": 14,
+    "replication": 14,
+    "supported": 12,
+    "refuted": 12,
+    "unknown": 12,
+    "conflicting": 12,
+    "clarificationCases": 8,
+    "casesSha256": "d3cf554cadc7573c651871e7c1b5d6da723f6f54c94eca5b2620ebf1f955e35b"
+  },
+  "qwenEvaluated": false,
+  "manualReview": {
+    "decision": "reject_do_not_freeze",
+    "criticalFindings": [
+      "The 48 primary cases contain only four unique propositions.",
+      "revision_a/asd2 is always supported, revision_b/asd2 always refuted, revision_c/asd2 always unknown, and revision_d/asd2 always conflicting across TRAIN, DEV, HOLDOUT and replication.",
+      "A student or teacher can exploit the revision token instead of reading source assertions.",
+      "The replication split is a paraphrase split over the same claims, not an independent proposition/source split.",
+      "The requested temporal variants are absent."
+    ],
+    "uniquePrimaryPropositions": 4,
+    "repetitionsPerProposition": 12,
+    "semanticAmbiguities": 0,
+    "transportErrors": 0
+  },
+  "requiredRedesign": {
+    "uniquePrimaryPropositions": 48,
+    "distinctClaimsAcrossSplits": true,
+    "caseLocalSourceBundles": true,
+    "fixedContextSize": 4,
+    "fixedPolarityBalance": "2 positive / 2 negative",
+    "statusDeterminedOnlyByTarget-matching evidence": true,
+    "genericSwiplStatusOracle": true,
+    "sourceCatalogAndCasesFrozenTogether": true
+  },
+  "interpretation": "The generator and trusted validator worked as implemented, but the candidate would not measure factor generalization. The candidate is retained as research evidence and must not be frozen or shown to Qwen.",
+  "source": "user-cgr+manual-review",
+  "createdAt": "2026-08-01T03:59:22.692Z"
+}
