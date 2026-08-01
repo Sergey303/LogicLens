@@ -15,8 +15,7 @@ dispatch(
 dispatch(_, _{
     status:invalid_request,
     usage:[
-        "case-frame <revision|missing> <material|missing> "
-        "<positive-ids|none> <negative-ids|none>"
+        "case-frame <revision|missing> <material|missing> <positive-ids|none> <negative-ids|none>"
     ]
 }).
 
