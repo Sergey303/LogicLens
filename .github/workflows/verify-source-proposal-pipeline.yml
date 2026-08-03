@@ -5,12 +5,17 @@ on:
     paths:
       - "contracts/source-*.schema.json"
       - "contracts/assertion-proposal-v0.schema.json"
+      - "contracts/canonical-document-ir-v0.schema.json"
+      - "contracts/pdf-*.schema.json"
       - "contracts/source-manifest-v0.schema.json"
       - "docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md"
+      - "docs/architecture/PDF_LINK_PIPELINE_V0.md"
       - "prompts/generic/source-assertion-proposer.md"
       - "tools/source_pipeline.py"
+      - "tools/pdf_link_pipeline.py"
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
+      - "tests/pdf_link_contract_test.py"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
   push:
     branches:
@@ -18,12 +23,17 @@ on:
     paths:
       - "contracts/source-*.schema.json"
       - "contracts/assertion-proposal-v0.schema.json"
+      - "contracts/canonical-document-ir-v0.schema.json"
+      - "contracts/pdf-*.schema.json"
       - "contracts/source-manifest-v0.schema.json"
       - "docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md"
+      - "docs/architecture/PDF_LINK_PIPELINE_V0.md"
       - "prompts/generic/source-assertion-proposer.md"
       - "tools/source_pipeline.py"
+      - "tools/pdf_link_pipeline.py"
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
+      - "tests/pdf_link_contract_test.py"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
 
 permissions:
@@ -36,7 +46,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,17 +56,22 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install pinned SWI-Prolog and JSON Schema validator
+      - name: Install pinned SWI-Prolog, Poppler and JSON Schema validator
         run: |
           sudo apt-get update
-          sudo apt-get install --yes swi-prolog-nox
+          sudo apt-get install --yes swi-prolog-nox poppler-utils
           swipl --version | tee /tmp/swipl-version.txt
           grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
+          pdftotext -v 2>&1 | tee /tmp/poppler-version.txt
           python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
 
-      - name: Run source proposal contract and real Prolog gate
+      - name: Run text source proposal contract
         run: |
           python tests/source_pipeline_contract_test.py | tee /tmp/source-pipeline.log
+
+      - name: Run ephemeral PDF link contract and real Prolog gate
+        run: |
+          python tests/pdf_link_contract_test.py | tee /tmp/pdf-link-pipeline.log
 
       - name: Upload verification logs
         if: always()
@@ -65,6 +80,8 @@ jobs:
           name: source-proposal-pipeline-verification
           path: |
             /tmp/swipl-version.txt
+            /tmp/poppler-version.txt
             /tmp/source-pipeline.log
+            /tmp/pdf-link-pipeline.log
           if-no-files-found: warn
           retention-days: 14
