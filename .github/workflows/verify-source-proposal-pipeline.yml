@@ -1,0 +1,70 @@
+name: Verify source proposal pipeline
+
+on:
+  pull_request:
+    paths:
+      - "contracts/source-*.schema.json"
+      - "contracts/assertion-proposal-v0.schema.json"
+      - "contracts/source-manifest-v0.schema.json"
+      - "docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md"
+      - "prompts/generic/source-assertion-proposer.md"
+      - "tools/source_pipeline.py"
+      - "tools/source_proposal/**"
+      - "tests/source_pipeline_contract_test.py"
+      - ".github/workflows/verify-source-proposal-pipeline.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/source-*.schema.json"
+      - "contracts/assertion-proposal-v0.schema.json"
+      - "contracts/source-manifest-v0.schema.json"
+      - "docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md"
+      - "prompts/generic/source-assertion-proposer.md"
+      - "tools/source_pipeline.py"
+      - "tools/source_proposal/**"
+      - "tests/source_pipeline_contract_test.py"
+      - ".github/workflows/verify-source-proposal-pipeline.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-source-proposal-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned SWI-Prolog and JSON Schema validator
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version | tee /tmp/swipl-version.txt
+          grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
+          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+
+      - name: Run source proposal contract and real Prolog gate
+        run: |
+          python tests/source_pipeline_contract_test.py | tee /tmp/source-pipeline.log
+
+      - name: Upload verification logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-proposal-pipeline-verification
+          path: |
+            /tmp/swipl-version.txt
+            /tmp/source-pipeline.log
+          if-no-files-found: warn
+          retention-days: 14
