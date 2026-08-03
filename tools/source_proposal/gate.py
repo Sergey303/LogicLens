@@ -7,11 +7,28 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from capsule import atom, canonical_json, declared_file, domain_hash, json_object, normalized_text, prolog_value, schema_check, sha256
-from .common import (
-    PACKAGE_DOMAIN, SourcePipelineError, copy_workspace_artifact, group_hash,
-    load_assertion_proposal, load_workspace, validate_review_hash,
+from capsule import (
+    atom,
+    canonical_json,
+    declared_file,
+    domain_hash,
+    json_object,
+    normalized_text,
+    prolog_value,
+    schema_check,
+    sha256,
 )
+from .common import (
+    PACKAGE_DOMAIN,
+    SourcePipelineError,
+    copy_workspace_artifact,
+    group_hash,
+    load_assertion_proposal,
+    load_fragments,
+    load_workspace,
+    validate_review_hash,
+)
+
 
 def execute_gate(
     *,
@@ -38,6 +55,7 @@ def execute_gate(
     ]
     if not accepted:
         raise SourcePipelineError("source proposal has no accepted assertions")
+
     output_resolved = output.resolve()
     if output_resolved.exists() and (not output_resolved.is_dir() or any(output_resolved.iterdir())):
         raise SourcePipelineError(f"gate output must be absent or empty: {output_resolved}")
@@ -48,22 +66,99 @@ def execute_gate(
         records: list[dict[str, str]] = []
         groups: dict[str, list[tuple[str, str]]] = {
             name: []
-            for name in ("snapshot", "fragments", "proposal", "review", "generated", "extraction")
+            for name in (
+                "snapshot",
+                "fragments",
+                "proposal",
+                "review",
+                "generated",
+                "extraction",
+            )
         }
-        copy_workspace_artifact(root, workspace["artifacts"]["snapshot"]["metadataPath"], files_root, "snapshot", records, groups)
-        copy_workspace_artifact(root, workspace["artifacts"]["snapshot"]["sourcePath"], files_root, "snapshot", records, groups)
-        copy_workspace_artifact(root, workspace["artifacts"]["fragments"]["path"], files_root, "fragments", records, groups)
-        copy_workspace_artifact(root, workspace["artifacts"]["extractionRequest"]["path"], files_root, "extraction", records, groups)
-        copy_workspace_artifact(root, workspace["artifacts"]["extractionRequest"]["promptPath"], files_root, "extraction", records, groups)
-        copy_workspace_artifact(root, workspace["artifacts"]["assertionProposal"]["path"], files_root, "proposal", records, groups)
-        copy_workspace_artifact(root, workspace["artifacts"]["review"]["path"], files_root, "review", records, groups)
+        retention = workspace["artifacts"]["snapshot"].get("retentionPolicy")
+        ephemeral_pdf = retention == "no-source-retention"
+
+        copy_workspace_artifact(
+            root,
+            workspace["artifacts"]["snapshot"]["metadataPath"],
+            files_root,
+            "snapshot",
+            records,
+            groups,
+        )
+        if ephemeral_pdf:
+            package_selected_evidence(
+                workspace_root=root,
+                workspace=workspace,
+                accepted=accepted,
+                review=review,
+                files_root=files_root,
+                records=records,
+                groups=groups,
+                schemas=schemas,
+            )
+        else:
+            copy_workspace_artifact(
+                root,
+                workspace["artifacts"]["snapshot"]["sourcePath"],
+                files_root,
+                "snapshot",
+                records,
+                groups,
+            )
+            copy_workspace_artifact(
+                root,
+                workspace["artifacts"]["fragments"]["path"],
+                files_root,
+                "fragments",
+                records,
+                groups,
+            )
+            copy_workspace_artifact(
+                root,
+                workspace["artifacts"]["extractionRequest"]["path"],
+                files_root,
+                "extraction",
+                records,
+                groups,
+            )
+            copy_workspace_artifact(
+                root,
+                workspace["artifacts"]["extractionRequest"]["promptPath"],
+                files_root,
+                "extraction",
+                records,
+                groups,
+            )
+
+        copy_workspace_artifact(
+            root,
+            workspace["artifacts"]["assertionProposal"]["path"],
+            files_root,
+            "proposal",
+            records,
+            groups,
+        )
+        copy_workspace_artifact(
+            root,
+            workspace["artifacts"]["review"]["path"],
+            files_root,
+            "review",
+            records,
+            groups,
+        )
+
         prepared = [prepared_assertion(item, workspace["sourceId"]) for item in accepted]
         generated_dir = files_root / "generated"
         generated_dir.mkdir(parents=True)
         generated_files = {
-            "generated/approved-assertions.jsonl": b"".join(canonical_json(item) for item in prepared),
+            "generated/approved-assertions.jsonl": b"".join(
+                canonical_json(item) for item in prepared
+            ),
             "generated/source_proposal.pl": normalized_text(generate_prolog(prepared)),
-            "generated/source_proposal_tests.pl": normalized_text(generate_prolog_tests(prepared, workspace["proposalId"])),
+            "generated/source_proposal_tests.pl": normalized_text(
+                generate_prolog_tests(prepared, workspace["proposalId"])
+            ),
         }
         for relative, content in generated_files.items():
             destination = files_root / relative
@@ -71,6 +166,7 @@ def execute_gate(
             file_hash = sha256(content)
             records.append({"path": relative, "sha256": file_hash})
             groups["generated"].append((relative, file_hash))
+
         test_count = count_expected_tests(prepared) + 1
         run_swipl_gate(generated_dir, swipl, timeout_seconds)
         gate_report = {
@@ -87,7 +183,10 @@ def execute_gate(
         gate_hash = sha256(gate_content)
         records.append({"path": gate_relative, "sha256": gate_hash})
         groups["generated"].append((gate_relative, gate_hash))
+
         records.sort(key=lambda item: item["path"])
+        if ephemeral_pdf:
+            enforce_no_source_retention(records)
         package: dict[str, Any] = {
             "schemaVersion": "0.1",
             "proposalId": workspace["proposalId"],
@@ -123,6 +222,80 @@ def execute_gate(
         raise
 
 
+def package_selected_evidence(
+    *,
+    workspace_root: Path,
+    workspace: dict[str, Any],
+    accepted: list[dict[str, Any]],
+    review: dict[str, Any],
+    files_root: Path,
+    records: list[dict[str, str]],
+    groups: dict[str, list[tuple[str, str]]],
+    schemas: dict[str, dict[str, Any]],
+) -> None:
+    fragments = {item["fragmentId"]: item for item in load_fragments(workspace_root, workspace, schemas)}
+    selected_ids = {
+        fragment_id
+        for assertion in accepted
+        for fragment_id in assertion["grounding"]
+    }
+    for decision in review["decisions"]:
+        if decision["decision"] == "accept":
+            selected_ids.update(item["fragmentId"] for item in decision["evidenceQuotes"])
+    missing = selected_ids - fragments.keys()
+    if missing:
+        raise SourcePipelineError(f"accepted PDF evidence is missing: {sorted(missing)}")
+    selected = [fragments[item] for item in sorted(selected_ids)]
+    relative = "evidence/selected-fragments.jsonl"
+    content = b"".join(canonical_json(item) for item in selected)
+    destination = files_root / relative
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(content)
+    file_hash = sha256(content)
+    records.append({"path": relative, "sha256": file_hash})
+    groups["fragments"].append((relative, file_hash))
+
+    prompt_relative = workspace["artifacts"]["extractionRequest"]["promptPath"]
+    copy_workspace_artifact(
+        workspace_root,
+        prompt_relative,
+        files_root,
+        "extraction",
+        records,
+        groups,
+    )
+    extraction_meta = {
+        "schemaVersion": "0.1",
+        "proposalId": workspace["proposalId"],
+        "sourceId": workspace["sourceId"],
+        "retentionPolicy": "selected-evidence-only",
+        "sourceRequestHash": workspace["artifacts"]["extractionRequest"]["hash"],
+        "promptHash": workspace["artifacts"]["extractionRequest"]["promptHash"],
+        "sourceFragmentCount": workspace["artifacts"]["fragments"]["count"],
+        "retainedFragmentCount": len(selected),
+    }
+    relative = "extraction/extraction-metadata.json"
+    content = canonical_json(extraction_meta)
+    destination = files_root / relative
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(content)
+    file_hash = sha256(content)
+    records.append({"path": relative, "sha256": file_hash})
+    groups["extraction"].append((relative, file_hash))
+
+
+def enforce_no_source_retention(records: list[dict[str, str]]) -> None:
+    forbidden_exact = {
+        "document/canonical-document-ir.json",
+        "fragments/fragments.jsonl",
+        "extraction/extraction-request.json",
+    }
+    for record in records:
+        path = record["path"]
+        if path.lower().endswith(".pdf") or path in forbidden_exact or path.startswith("snapshot/source"):
+            raise SourcePipelineError(f"no-source-retention package contains forbidden artifact: {path}")
+
+
 def verify_package(
     *,
     package_root: Path,
@@ -151,7 +324,11 @@ def verify_package(
         path = declared_file(files_root, relative, "source proposal package file")
         if sha256(path.read_bytes()) != record["sha256"]:
             raise SourcePipelineError(f"source proposal package file hash mismatch: {relative}")
-    actual = {path.relative_to(files_root).as_posix() for path in files_root.rglob("*") if path.is_file()}
+    actual = {
+        path.relative_to(files_root).as_posix()
+        for path in files_root.rglob("*")
+        if path.is_file()
+    }
     if actual != expected:
         raise SourcePipelineError(
             f"source proposal package file set mismatch; extra={sorted(actual-expected)}, "
@@ -161,6 +338,11 @@ def verify_package(
     validate_review_hash(review)
     if review["reviewHash"] != package["reviewHash"]:
         raise SourcePipelineError("packaged review hash mismatch")
+    pdf_record = files_root / "snapshot/pdf-link-record.json"
+    if pdf_record.is_file():
+        enforce_no_source_retention(package["files"])
+        if not (files_root / "evidence/selected-fragments.jsonl").is_file():
+            raise SourcePipelineError("PDF proposal package lacks selected evidence")
     if swipl:
         run_swipl_gate(files_root / "generated", swipl, timeout_seconds)
     return package
@@ -190,6 +372,7 @@ def run_swipl_gate(generated_dir: Path, executable: str, timeout_seconds: int) -
 
 
 def prepared_assertion(assertion: dict[str, Any], source_id: str) -> dict[str, Any]:
+    del source_id
     return {
         "assertionId": assertion["assertionId"],
         "target": deepcopy(assertion["target"]),
@@ -282,5 +465,3 @@ def generate_prolog_tests(rows: list[dict[str, Any]], proposal_id: str) -> str:
 
 def count_expected_tests(rows: list[dict[str, Any]]) -> int:
     return len({(row["target"]["predicate"], tuple(row["target"]["arguments"])) for row in rows})
-
-
