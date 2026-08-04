@@ -5,6 +5,9 @@ namespace KnowledgePilot.LogicLens.DocumentEvidence.Docx;
 
 public static class DocxEvidenceSelector
 {
+    private static readonly JsonSerializerOptions JsonOptions =
+        new(JsonSerializerDefaults.Web);
+
     public static RetainedOoxmlEvidence Select(
         DocxDocument document,
         string sourceId,
@@ -31,7 +34,7 @@ public static class DocxEvidenceSelector
                     block.Anchor.RowIndex,
                     block.Anchor.ColumnIndex,
                     kind = block.Kind,
-                }),
+                }, JsonOptions),
                 Array.Empty<string>()
             ))
             .ToArray();
