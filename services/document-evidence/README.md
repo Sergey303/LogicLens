@@ -102,14 +102,35 @@ Accepted PDF evidence:
 - [`poppler-page-grounded-adapter-v1.json`](evidence/poppler-page-grounded-adapter-v1.json);
 - [`pdf-source-proposal-bridge-v1.json`](evidence/pdf-source-proposal-bridge-v1.json).
 
+## Deterministic OOXML adapters
+
+`src/DocumentEvidence.Ooxml` is the shared trusted package boundary for DOCX and XLSX. It:
+
+- enforces compressed, entry-count, per-entry, and total uncompressed byte limits;
+- rejects unsafe, escaping, and case-insensitively duplicated part names;
+- parses XML with DTD and external resolution disabled;
+- rejects external trusted relationships;
+- validates required content-type overrides;
+- separates raw artifact SHA-256 from canonical package-entry SHA-256;
+- canonicalizes core metadata timestamps to UTC.
+
+`src/DocumentEvidence.Docx` emits stable paragraph and table-cell blocks with section, body, paragraph,
+table, row, and column anchors. `src/DocumentEvidence.Xlsx` preserves workbook sheet order and stable
+cell anchors while keeping formula, raw, cached, and display values separate. ISO date cells are
+canonicalized to UTC. Formula evaluation, OCR, and model-based extraction are excluded from the trusted
+adapters.
+
+The initial EngDoc Sentinel provenance and reused deterministic patterns are recorded in
+[`ooxml-adapter-scope-v0.json`](evidence/ooxml-adapter-scope-v0.json).
+
 ## Remaining implementation plan
 
-1. Add outbox dispatch and an S3-compatible immutable object store.
-2. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
-3. Port deterministic DOCX and XLSX adapters from EngDoc Essential.
+1. Complete and validate deterministic DOCX/XLSX adapters and retained-evidence bridge (ENG-145).
+2. Add outbox dispatch and an S3-compatible immutable object store.
+3. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
 4. Add quota, audit, protected download response, and revocation invalidation guards.
 5. Publish versioned service clients and events for LogicLens and EngDoc Essential.
 
-The vertical slice is now PDF bytes -> immutable revision -> deterministic fragments -> permitted
+The vertical slice is document bytes -> immutable revision -> deterministic fragments -> permitted
 retrieval -> selected evidence -> typed proposal -> verified SWI-Prolog decision frame. Models cannot
 enter trusted extraction or accept their own proposals.
