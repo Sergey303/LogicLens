@@ -109,7 +109,7 @@ Accepted PDF evidence:
 - enforces compressed, entry-count, per-entry, and total uncompressed byte limits;
 - rejects unsafe, escaping, and case-insensitively duplicated part names;
 - parses XML with DTD and external resolution disabled;
-- rejects external trusted relationships;
+- rejects external trusted relationships while accepting safe package-absolute OPC targets;
 - validates required content-type overrides;
 - separates raw artifact SHA-256 from canonical package-entry SHA-256;
 - canonicalizes core metadata timestamps to UTC.
@@ -120,12 +120,47 @@ cell anchors while keeping formula, raw, cached, and display values separate. IS
 canonicalized to UTC. Formula evaluation, OCR, and model-based extraction are excluded from the trusted
 adapters.
 
-The initial EngDoc Sentinel provenance and reused deterministic patterns are recorded in
-[`ooxml-adapter-scope-v0.json`](evidence/ooxml-adapter-scope-v0.json).
+Both adapters map into `ProcessingCompletionPayload`. Semantic package identity drives stable fragment
+IDs, while raw artifact identity remains in the parser manifest. Selected DOCX and XLSX evidence uses
+the same versioned `source-fragment-v0` contract as PDF through strict format-specific anchor branches.
+
+A byte-identical EngDoc Sentinel XLSX fixture proves the real openpyxl package, source SHA-256, sheet and
+cell anchors, scenario values, C# JSONL export, typed proposal, exact-quote grounding, selected-only
+retention, real SWI-Prolog execution, and package verification.
+
+Accepted OOXML evidence:
+
+- [`ooxml-adapter-scope-v0.json`](evidence/ooxml-adapter-scope-v0.json);
+- [`ooxml-adapter-acceptance-v0.json`](evidence/ooxml-adapter-acceptance-v0.json).
+
+### Local committed DOCX gate
+
+GitHub Actions cannot read the neighboring private EngDoc Sentinel repository with the LogicLens
+`GITHUB_TOKEN`. The final ENG-145 DOCX proof therefore reads the committed local file directly and
+verifies its exact SHA-256 before parsing:
+
+```powershell
+.\services\document-evidence\verify-engdoc-docx.ps1
+```
+
+The default source is:
+
+```text
+D:\projects\ChatPilotGroup\EngDocSentinel\datasets\synthetic\demo-v0\generated\confirmed-power-conflict\01-technical-specification.docx
+```
+
+The runner expects artifact SHA-256
+`bbd051dce7fd1e351175677c2c4c5bb8f14e2ba96c5a0f63298dd3a2f318023c`, executes all OOXML contracts,
+checks real document metadata and engineering fields, exports only the selected `120 W` paragraph, and
+writes an ignored proof record to:
+
+```text
+.artifacts\document-evidence\engdoc-docx-local-proof-v0.json
+```
 
 ## Remaining implementation plan
 
-1. Complete and validate deterministic DOCX/XLSX adapters and retained-evidence bridge (ENG-145).
+1. Execute the SHA-verified local committed DOCX gate and retain its proof for ENG-145.
 2. Add outbox dispatch and an S3-compatible immutable object store.
 3. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
 4. Add quota, audit, protected download response, and revocation invalidation guards.
