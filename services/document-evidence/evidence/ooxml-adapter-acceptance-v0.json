@@ -3,19 +3,25 @@
   "linearIssue": "ENG-145",
   "branch": "agent/document-evidence-ooxml-adapters",
   "base": "agent/document-evidence-pdf-adapter",
-  "status": "accepted-initial-slice",
-  "acceptedHead": "f46c298aaa02587ebe3054751a635f32b73e4fbf",
+  "status": "accepted-processing-completion-slice",
+  "acceptedHead": "928a99cc58a2aff29ef41a3a04346213d0049876",
   "workflow": {
     "name": "Repository quality",
-    "runId": 30945630476,
+    "runId": 30946143250,
     "conclusion": "success"
   },
   "proof": {
     "repositoryGuard": "success",
     "warnings": 0,
     "errors": 0,
-    "ooxmlRuntimeContracts": 9,
+    "ooxmlRuntimeContracts": 11,
     "postgresImage": "postgres:17-alpine",
+    "completionInvariants": [
+      "fragment sequences are contiguous",
+      "ZIP order and timestamp changes do not change fragment IDs",
+      "raw artifact SHA-256 remains in the parser manifest",
+      "XLSX formula, raw and cached values remain distinct"
+    ],
     "regressions": [
       "application boundary",
       "generated adapter",
@@ -25,7 +31,6 @@
     ]
   },
   "remaining": [
-    "map DOCX and XLSX IR into processing completion payloads",
     "verify representative committed EngDoc Sentinel DOCX and XLSX artifacts",
     "prove selected-evidence retention and source-proposal bridge"
   ]
