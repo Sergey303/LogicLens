@@ -1,0 +1,41 @@
+name: Verify document evidence PDF adapter
+
+on:
+  pull_request:
+    paths:
+      - "services/document-evidence/src/DocumentEvidence.Pdf/**"
+      - "services/document-evidence/tests/DocumentEvidence.Pdf.PopplerIntegrationTests/**"
+      - ".github/workflows/verify-document-evidence-pdf.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  poppler:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install Poppler
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes poppler-utils
+
+      - name: Build integration proof
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Pdf.PopplerIntegrationTests/DocumentEvidence.Pdf.PopplerIntegrationTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run integration proof
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Pdf.PopplerIntegrationTests/DocumentEvidence.Pdf.PopplerIntegrationTests.csproj \
+            --no-build
