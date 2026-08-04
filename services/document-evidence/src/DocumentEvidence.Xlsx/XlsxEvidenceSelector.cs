@@ -5,6 +5,9 @@ namespace KnowledgePilot.LogicLens.DocumentEvidence.Xlsx;
 
 public static class XlsxEvidenceSelector
 {
+    private static readonly JsonSerializerOptions JsonOptions =
+        new(JsonSerializerDefaults.Web);
+
     public static RetainedOoxmlEvidence Select(
         XlsxWorkbook workbook,
         string sourceId,
@@ -37,7 +40,7 @@ public static class XlsxEvidenceSelector
                     cell.Formula,
                     cell.RawValue,
                     cell.CachedValue,
-                }),
+                }, JsonOptions),
                 new[] { cell.Anchor.SheetName }
             ))
             .ToArray();
