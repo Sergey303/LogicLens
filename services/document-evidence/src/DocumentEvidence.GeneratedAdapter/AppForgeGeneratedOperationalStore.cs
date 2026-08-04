@@ -31,7 +31,7 @@ public sealed class AppForgeGeneratedOperationalStore : IGeneratedOperationalSto
         }
 
         DemandDocumentIdentity(document, key);
-        return MapDocument(document);
+        return GeneratedContractMapper.MapDocument(document);
     }
 
     public async Task<IReadOnlyList<FragmentSummary>> ListFragmentsAsync(
@@ -88,7 +88,7 @@ public sealed class AppForgeGeneratedOperationalStore : IGeneratedOperationalSto
                 {
                     throw ContractViolation("Fragment response crossed the requested revision boundary.");
                 }
-                fragments.Add(MapFragment(fragment));
+                fragments.Add(GeneratedContractMapper.MapFragment(fragment));
             }
 
             if (fragments.Count >= result.TotalCount)
@@ -127,33 +127,6 @@ public sealed class AppForgeGeneratedOperationalStore : IGeneratedOperationalSto
         {
             throw ContractViolation("Document response does not match the requested workspace key.");
         }
-    }
-
-    private static DocumentSummary MapDocument(GeneratedDocumentDto document)
-    {
-        var key = new DocumentKey(document.WorkspaceId, document.Id);
-        return new DocumentSummary(
-            key,
-            document.DisplayName,
-            document.MediaType,
-            document.SourceKind,
-            document.State,
-            document.CurrentRevisionNumber,
-            document.IsRevoked
-        );
-    }
-
-    private static FragmentSummary MapFragment(GeneratedDocumentFragmentDto fragment)
-    {
-        return new FragmentSummary(
-            fragment.Id,
-            fragment.DocumentRevisionId,
-            fragment.Sequence,
-            fragment.Kind,
-            fragment.AnchorJson,
-            fragment.Text,
-            fragment.ContentHash
-        );
     }
 
     private static InvalidDataException ContractViolation(string message)
