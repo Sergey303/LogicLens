@@ -1,0 +1,42 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [
+  ".git",
+  ".venv",
+  "artifacts",
+  "bin",
+  "dist",
+  "node_modules",
+  "obj",
+  "packages",
+  "verification-results",
+  "**/Generated/**",
+  "**/Migrations/**",
+]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "COM812",
+  "D203",
+  "D213",
+  "ISC001",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+"tools/**/*.py" = ["T201"]
+"tools/quality/*.py" = ["S603", "S607", "T201"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+show_error_codes = true
+exclude = "(^|/)(artifacts|Generated|Migrations|verification-results)/"
