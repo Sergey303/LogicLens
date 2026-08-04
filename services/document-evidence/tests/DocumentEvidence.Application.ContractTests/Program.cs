@@ -10,6 +10,9 @@ internal static class Program
     {
         await AllowsStoreLookupOnlyAfterAuthorizationAsync();
         await DenialPreventsStoreLookupAsync();
+        await ProtectedRevisionBytesContractTests.DenialStopsBeforeMetadataLookupAsync();
+        await ProtectedRevisionBytesContractTests.RevocationStopsBeforeObjectLookupAsync();
+        await ProtectedRevisionBytesContractTests.AuthorizedReadUsesObjectStoreLastAsync();
         await UploadServiceContractTests.ReplayAvoidsObjectWriteAsync();
         await UploadServiceContractTests.NewUploadBuildsDeterministicManifestAsync();
         await UploadServiceContractTests.ConflictingCommitResultIsRejectedAsync();
