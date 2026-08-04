@@ -15,7 +15,7 @@ Read first:
 ## Generated package
 
 AppForge consumes [`spec/document-evidence.md`](spec/document-evidence.md) and writes the complete
-replaceable production package under `Generated/`:
+replaceable production package under the ignored local `Generated/` directory:
 
 ```text
 Generated/
@@ -36,7 +36,9 @@ Generate it from this repository with:
 ```
 
 The generated React application is an internal administration surface, not the final evidence UX.
-Do not edit files under `Generated/`; change the Markdown model or AppForge and regenerate.
+Do not edit or commit files under `Generated/`; change the Markdown model or AppForge and regenerate.
+The accepted first production trial is recorded in
+[`evidence/appforge-production-trial-v0.json`](evidence/appforge-production-trial-v0.json).
 
 ## Handwritten implementation plan
 
