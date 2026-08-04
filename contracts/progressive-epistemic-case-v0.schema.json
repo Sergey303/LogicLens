@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/progressive-epistemic-case-v0.schema.json",
+  "title": "LogicLens progressive epistemic benchmark case v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "family",
+    "question",
+    "publicContext",
+    "minimumDslLevel",
+    "goldClaims",
+    "goldQueries",
+    "expectedByLevel",
+    "answerRubric",
+    "sourceHashes"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "caseId": {"$ref": "#/$defs/id"},
+    "family": {
+      "enum": [
+        "direct-favoured",
+        "capsule-favoured",
+        "hybrid-favoured",
+        "tool-adversarial"
+      ]
+    },
+    "question": {"type": "string", "minLength": 1, "maxLength": 12000},
+    "publicContext": {"type": "object"},
+    "minimumDslLevel": {"enum": ["DSL-A", "DSL-B", "DSL-C", "DSL-D"]},
+    "goldClaims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claimId", "quoteOrMeaning", "target", "mandatory"],
+        "properties": {
+          "claimId": {"$ref": "#/$defs/id"},
+          "quoteOrMeaning": {"type": "string", "minLength": 1, "maxLength": 4000},
+          "target": {"$ref": "#/$defs/target"},
+          "mandatory": {"type": "boolean"},
+          "weight": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    "goldQueries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["queryId", "operation", "target"],
+        "properties": {
+          "queryId": {"$ref": "#/$defs/id"},
+          "operation": {
+            "enum": [
+              "strict-claim",
+              "derived-strict-claim",
+              "observation",
+              "numeric-comparison",
+              "opinion"
+            ]
+          },
+          "target": {"$ref": "#/$defs/target"}
+        }
+      }
+    },
+    "expectedByLevel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DSL-A": {"$ref": "#/$defs/expected"},
+        "DSL-B": {"$ref": "#/$defs/expected"},
+        "DSL-C": {"$ref": "#/$defs/expected"},
+        "DSL-D": {"$ref": "#/$defs/expected"}
+      }
+    },
+    "answerRubric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredSignals", "forbiddenSignals"],
+      "properties": {
+        "requiredSignals": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 1000}
+        },
+        "forbiddenSignals": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 1000}
+        }
+      }
+    },
+    "requiredAbstention": {"type": "boolean"},
+    "sourceHashes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/hash"}
+    },
+    "notes": {"type": "string", "maxLength": 4000}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predicate", "arguments"],
+      "properties": {
+        "predicate": {"$ref": "#/$defs/id"},
+        "arguments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {"type": ["string", "integer", "boolean"]}
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": ["supported", "refuted", "unknown", "conflicting"]
+        },
+        "action": {"type": "string", "minLength": 1, "maxLength": 256},
+        "evidenceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "ruleIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "warnings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "allowedConclusion": {"type": "string", "minLength": 1, "maxLength": 256},
+        "observation": {"type": "object"},
+        "opinion": {"type": "object"}
+      }
+    }
+  }
+}
