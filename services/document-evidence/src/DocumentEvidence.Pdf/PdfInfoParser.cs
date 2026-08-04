@@ -3,8 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace KnowledgePilot.LogicLens.DocumentEvidence.Pdf;
 
-internal static partial class PdfInfoParser
+internal static class PdfInfoParser
 {
+    private static readonly Regex PageSizeRegex = new(
+        @"^Page size:\s*([0-9.]+)\s+x\s+([0-9.]+)\s+pts",
+        RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled
+    );
+
     public static PdfInfo Parse(string output)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(output);
@@ -14,7 +19,7 @@ internal static partial class PdfInfoParser
             throw new InvalidDataException("pdfinfo reported no pages.");
         }
 
-        var match = PageSizeRegex().Match(output);
+        var match = PageSizeRegex.Match(output);
         if (!match.Success)
         {
             throw new InvalidDataException("pdfinfo did not report a page size.");
@@ -39,12 +44,6 @@ internal static partial class PdfInfoParser
         }
         return int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
     }
-
-    [GeneratedRegex(
-        @"^Page size:\s*([0-9.]+)\s+x\s+([0-9.]+)\s+pts",
-        RegexOptions.Multiline | RegexOptions.CultureInvariant
-    )]
-    private static partial Regex PageSizeRegex();
 }
 
 internal sealed record PdfInfo(int PageCount, double Width, double Height);
