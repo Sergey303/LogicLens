@@ -5,4 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../DocumentEvidence.Application/DocumentEvidence.Application.csproj" />
+  </ItemGroup>
 </Project>
