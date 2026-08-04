@@ -2,7 +2,7 @@ namespace KnowledgePilot.LogicLens.DocumentEvidence.Ooxml.ContractTests;
 
 internal static class Program
 {
-    public static async Task<int> Main()
+    public static async Task<int> Main(string[] args)
     {
         await OoxmlSecurityContractTests.CanonicalIdentityIgnoresZipOrderAndTimestampAsync();
         await OoxmlSecurityContractTests.PackageAbsoluteRelationshipIsResolvedAsync();
@@ -19,6 +19,14 @@ internal static class Program
         await EngDocFixtureContractTests.CommittedEngDocXlsxIsParsedAsync();
         await OoxmlSourceProposalBridgeContractTests.RealXlsxSelectionMatchesSharedFixtureAsync();
         await OoxmlSourceProposalBridgeContractTests.DocxSelectionRetainsOnlyRequestedBlockAsync();
+        if (args.Length > 0)
+        {
+            if (args.Length != 2 || args[0] != "--engdoc-docx")
+            {
+                throw new ArgumentException("Expected: --engdoc-docx <path>");
+            }
+            await EngDocLocalDocxGate.VerifyAsync(args[1]);
+        }
         Console.WriteLine("Document Evidence OOXML adapter contract tests passed.");
         return 0;
     }
