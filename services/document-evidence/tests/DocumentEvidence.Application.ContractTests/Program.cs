@@ -20,6 +20,9 @@ internal static class Program
         ProcessingJobFailureContractTests.FailureSchedulesDeterministicBackoff();
         ProcessingJobFailureContractTests.RetryCannotLeaseBeforeAvailableAt();
         ProcessingJobFailureContractTests.FinalAttemptBecomesTerminal();
+        await ProcessingCompletionContractTests.LiveLeasePersistsCanonicalPayloadAsync();
+        await ProcessingCompletionContractTests.ExpiredLeaseStopsBeforeRepositoryAsync();
+        await ProcessingCompletionContractTests.LostCasFailsClosedAsync();
         Console.WriteLine("Document Evidence boundary contract tests passed.");
         return 0;
     }
