@@ -1,12 +1,17 @@
+"""Build a source-proposal workspace from the shared Document Evidence fragment."""
+
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
 
-import pdf_link_contract_test as pdf_fixture
 from capsule import canonical_json, schema_check, sha256
 from source_proposal.common import write_workspace
+from tests import pdf_link_contract_test as pdf_fixture
+
+if TYPE_CHECKING:
+    from pathlib import Path
+    from typing import Any
 
 PROPOSAL_ID = "document-evidence-pdf-v1"
 SOURCE_ID = "document-evidence-pdf"
@@ -14,8 +19,15 @@ SNAPSHOT_HASH = "sha256:" + "f" * 64
 QUOTE = "The Product Owner is accountable for maximizing the value of the product."
 
 
-def load_fragment(root: Path, schemas: dict[str, dict[str, Any]]) -> tuple[bytes, dict[str, Any]]:
-    path = root / "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
+def load_fragment(
+    root: Path,
+    schemas: dict[str, dict[str, Any]],
+) -> tuple[bytes, dict[str, Any]]:
+    """Load and validate the shared C#-to-Python source fragment fixture."""
+    path = (
+        root
+        / "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
+    )
     content = path.read_bytes()
     fragment = json.loads(content)
     schema_check(fragment, schemas["fragment"], "Document Evidence bridge fragment")
@@ -29,6 +41,7 @@ def build_workspace(
     schemas: dict[str, dict[str, Any]],
     pdf_schemas: dict[str, dict[str, Any]],
 ) -> tuple[Path, Path, Path, dict[str, Any]]:
+    """Create a fragmented no-source-retention workspace and deterministic seed."""
     fragment_bytes, fragment = load_fragment(root, schemas)
     world = pdf_fixture.build_world(temporary)
     source_manifest_path = world / "capsules/role-boundaries/sources/manifest.json"
@@ -75,7 +88,10 @@ def build_workspace(
     return world, proposal, seed_path, fragment
 
 
-def _pdf_record(source_manifest: dict[str, Any], fragment: dict[str, Any]) -> dict[str, Any]:
+def _pdf_record(
+    source_manifest: dict[str, Any],
+    fragment: dict[str, Any],
+) -> dict[str, Any]:
     return {
         "schemaVersion": "0.1",
         "proposalId": PROPOSAL_ID,
