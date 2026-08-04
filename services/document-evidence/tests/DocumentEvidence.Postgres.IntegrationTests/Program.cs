@@ -8,6 +8,9 @@ internal static class Program
         await PostgresCommitIntegrationTests.CommitAndReplayAreAtomicAsync(database);
         await PostgresCommitIntegrationTests.ConcurrentCommitsSerializeRevisionNumbersAsync(database);
         await PostgresRollbackIntegrationTests.OutboxFailureRollsBackLifecycleAsync(database);
+        await PostgresProcessingIntegrationTests.ConcurrentWorkersAcquireOneLeaseAsync(database);
+        await PostgresProcessingIntegrationTests.ExpiredLeaseIsReclaimedAsync(database);
+        await PostgresRetryIntegrationTests.RetryThenTerminalIsDurableAsync(database);
         Console.WriteLine("Document Evidence PostgreSQL integration tests passed.");
         return 0;
     }
