@@ -18,7 +18,7 @@ def write_json(path:Path,value):
     path.write_text(json.dumps(value,ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf-8')
 
 def build_fixture(root:Path):
-    repo=root/'repo'; world=repo/'worlds'/'management'; cap=world/'capsules'/'role-boundaries'
+    repo=root/'repo'; world=repo/'worlds'/'management'; cap=world/'capsules'/'role-boundaries'; module=world/'modules'/'fixture'
     (repo/'curriculum').mkdir(parents=True)
     (repo/'curriculum'/'00-learning-model.md').write_text(
         '# Роли в сценариях\n\n'
@@ -29,7 +29,8 @@ def build_fixture(root:Path):
       'schemaVersion':'0.1','worldId':'management','title':'Management','description':'fixture','languages':['ru'],
       'semantic':{'vocabulary':'semantic/vocabulary.json','predicates':'semantic/predicates.json','roles':'semantic/roles.json','competencies':'semantic/competencies.json'},
       'capsules':[{'id':'management.role-boundaries','path':'capsules/role-boundaries'}],
-      'modules':[],'tracks':[]})
+      'modules':[{'id':'management.fixture','path':'modules/fixture'}],
+      'tracks':[{'id':'fixture-track','title':'Fixture','moduleIds':['management.fixture']}]})
     write_json(world/'semantic'/'vocabulary.json',{'schemaVersion':'0.1','concepts':[
       {'id':'outcome.technical_direction','kind':'management_outcome','labels':{'ru':'техническое направление'}},
       {'id':'outcome.people_development','kind':'management_outcome','labels':{'ru':'развитие сотрудников'}}]})
@@ -44,6 +45,9 @@ def build_fixture(root:Path):
     write_json(cap/'sources'/'manifest.json',{'schemaVersion':'0.1','capsuleId':'management.role-boundaries','sources':[
       {'id':'internal-learning-model','kind':'repository-file','title':'Learning model','locator':'https://example.invalid/internal','repositoryPath':'curriculum/00-learning-model.md','language':'ru','license':{'id':'internal','status':'internal','attribution':'fixture'},'snapshotPolicy':'internal-reference'},
       {'id':'link-only','kind':'web-page','title':'Link only','locator':'https://example.com','language':'en','license':{'id':'CC-BY','status':'confirmed','attribution':'example'},'snapshotPolicy':'link-only'}]})
+    write_json(module/'module.json',{'schemaVersion':'0.1','moduleId':'management.fixture','version':'0.1.0','worldId':'management','title':'Fixture module','usesCapsules':[{'id':'management.role-boundaries','version':'0.1.0'}],'supportedTracks':['fixture-track'],'entry':'entry.md','sequence':['sequence.json'],'scenarios':['scenario.json'],'rubrics':['rubric.json'],'completionPolicy':{'requiresCorrectionCycle':True,'allMandatoryCriteria':True,'minimumScore':75}})
+    (module/'entry.md').write_text('# Fixture\n',encoding='utf-8')
+    for name in ('sequence','scenario','rubric'):write_json(module/f'{name}.json',{'schemaVersion':'0.1'})
     return repo,world
 
 def main():
@@ -86,7 +90,6 @@ def main():
       try:sp.verify_package(package_root=root/'package',swipl=None,timeout_seconds=5,schemas=schemas)
       except sp.SourcePipelineError:pass
       else:raise AssertionError('tampered package verified')
-      # link-only sources must not be fetched
       try:sp.snapshot_source(world_root=world,capsule_id='management.role-boundaries',source_id='link-only',proposal_id='link-only-v0',output=root/'link',repository_root=repo,allow_network=False,max_bytes=100000,schemas=schemas,contracts_root=ROOT/'contracts')
       except sp.SourcePipelineError:pass
       else:raise AssertionError('link-only source was snapshotted')
