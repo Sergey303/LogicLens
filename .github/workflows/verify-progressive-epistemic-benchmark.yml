@@ -16,6 +16,7 @@ on:
       - "tests/progressive_epistemic_case_contract_test.py"
       - "tests/progressive_management_codex_ablation_contract_test.py"
       - "tests/progressive_management_dsl_b1_contract_test.py"
+      - "tests/progressive_management_dsl_b1_scoring_contract_test.py"
       - ".github/workflows/verify-progressive-epistemic-benchmark.yml"
   push:
     branches:
@@ -34,6 +35,7 @@ on:
       - "tests/progressive_epistemic_case_contract_test.py"
       - "tests/progressive_management_codex_ablation_contract_test.py"
       - "tests/progressive_management_dsl_b1_contract_test.py"
+      - "tests/progressive_management_dsl_b1_scoring_contract_test.py"
       - ".github/workflows/verify-progressive-epistemic-benchmark.yml"
 
 permissions:
@@ -74,6 +76,11 @@ jobs:
           python tests/progressive_management_dsl_b1_contract_test.py \
             | tee /tmp/progressive-management-dsl-b1.log
 
+      - name: Verify DSL-B1 private-policy scoring
+        run: |
+          python tests/progressive_management_dsl_b1_scoring_contract_test.py \
+            | tee /tmp/progressive-management-dsl-b1-scoring.log
+
       - name: Verify offline Codex ablation runner
         run: |
           python tests/progressive_management_codex_ablation_contract_test.py \
@@ -88,6 +95,7 @@ jobs:
             /tmp/swipl-version.txt
             /tmp/progressive-epistemic-benchmark.log
             /tmp/progressive-management-dsl-b1.log
+            /tmp/progressive-management-dsl-b1-scoring.log
             /tmp/progressive-management-codex-ablation.log
           if-no-files-found: warn
           retention-days: 14
