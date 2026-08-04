@@ -37,8 +37,15 @@ Generate it from this repository with:
 
 The generated React application is an internal administration surface, not the final evidence UX.
 Do not edit or commit files under `Generated/`; change the Markdown model or AppForge and regenerate.
-The accepted first production trial is recorded in
-[`evidence/appforge-production-trial-v0.json`](evidence/appforge-production-trial-v0.json).
+
+Accepted evidence:
+
+- [`appforge-production-trial-v0.json`](evidence/appforge-production-trial-v0.json) — first complete production package;
+- [`appforge-lifecycle-package-v1.json`](evidence/appforge-lifecycle-package-v1.json) — lifecycle fields, fresh initial migration, and zero-warning AppForge proof.
+
+The lifecycle proof is intentionally classified as a fresh-schema proof. Preservation of an existing
+migration chain is tracked separately in ENG-152 because the proof command removed the previous local
+package before generation.
 
 ## Implemented handwritten boundary
 
@@ -84,9 +91,9 @@ with warnings as errors.
 
 ## Remaining implementation plan
 
-1. Regenerate AppForge migrations for the extended manifest and processing-job fields.
+1. Port the page-grounded PDF adapter and its provenance contracts.
 2. Add outbox lease/dispatch and an S3-compatible immutable object store.
-3. Port PDF contracts and tests without coupling to capsule activation.
+3. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
 4. Port deterministic DOCX and XLSX adapters from EngDoc Essential.
 5. Add access, filename, signature, quota, revocation, audit, and protected download guards.
 6. Integrate LogicLens and EngDoc Essential through versioned generated clients.
