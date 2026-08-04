@@ -18,8 +18,12 @@
     "sourceHashes"
   ],
   "properties": {
-    "schemaVersion": {"const": "0.1"},
-    "caseId": {"$ref": "#/$defs/id"},
+    "schemaVersion": {
+      "const": "0.1"
+    },
+    "caseId": {
+      "$ref": "#/$defs/id"
+    },
     "family": {
       "enum": [
         "direct-favoured",
@@ -28,21 +32,53 @@
         "tool-adversarial"
       ]
     },
-    "question": {"type": "string", "minLength": 1, "maxLength": 12000},
-    "publicContext": {"type": "object"},
-    "minimumDslLevel": {"enum": ["DSL-A", "DSL-B", "DSL-C", "DSL-D"]},
+    "question": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 12000
+    },
+    "publicContext": {
+      "type": "object"
+    },
+    "minimumDslLevel": {
+      "enum": [
+        "DSL-A",
+        "DSL-B",
+        "DSL-C",
+        "DSL-D"
+      ]
+    },
     "goldClaims": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["claimId", "quoteOrMeaning", "target", "mandatory"],
+        "required": [
+          "claimId",
+          "quoteOrMeaning",
+          "target",
+          "mandatory"
+        ],
         "properties": {
-          "claimId": {"$ref": "#/$defs/id"},
-          "quoteOrMeaning": {"type": "string", "minLength": 1, "maxLength": 4000},
-          "target": {"$ref": "#/$defs/target"},
-          "mandatory": {"type": "boolean"},
-          "weight": {"type": "number", "minimum": 0, "maximum": 1}
+          "claimId": {
+            "$ref": "#/$defs/id"
+          },
+          "quoteOrMeaning": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "target": {
+            "$ref": "#/$defs/target"
+          },
+          "mandatory": {
+            "type": "boolean"
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
         }
       }
     },
@@ -51,9 +87,15 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["queryId", "operation", "target"],
+        "required": [
+          "queryId",
+          "operation",
+          "target"
+        ],
         "properties": {
-          "queryId": {"$ref": "#/$defs/id"},
+          "queryId": {
+            "$ref": "#/$defs/id"
+          },
           "operation": {
             "enum": [
               "strict-claim",
@@ -63,7 +105,9 @@
               "opinion"
             ]
           },
-          "target": {"$ref": "#/$defs/target"}
+          "target": {
+            "$ref": "#/$defs/target"
+          }
         }
       }
     },
@@ -71,35 +115,61 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "DSL-A": {"$ref": "#/$defs/expected"},
-        "DSL-B": {"$ref": "#/$defs/expected"},
-        "DSL-C": {"$ref": "#/$defs/expected"},
-        "DSL-D": {"$ref": "#/$defs/expected"}
+        "DSL-A": {
+          "$ref": "#/$defs/expected"
+        },
+        "DSL-B": {
+          "$ref": "#/$defs/expected"
+        },
+        "DSL-C": {
+          "$ref": "#/$defs/expected"
+        },
+        "DSL-D": {
+          "$ref": "#/$defs/expected"
+        }
       }
     },
     "answerRubric": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["requiredSignals", "forbiddenSignals"],
+      "required": [
+        "requiredSignals",
+        "forbiddenSignals"
+      ],
       "properties": {
         "requiredSignals": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1, "maxLength": 1000}
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
         },
         "forbiddenSignals": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1, "maxLength": 1000}
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
         }
       }
     },
-    "requiredAbstention": {"type": "boolean"},
+    "requiredAbstention": {
+      "type": "boolean"
+    },
     "sourceHashes": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": {"$ref": "#/$defs/hash"}
+      "items": {
+        "$ref": "#/$defs/hash"
+      }
     },
-    "notes": {"type": "string", "maxLength": 4000}
+    "notes": {
+      "type": "string",
+      "maxLength": 4000
+    }
   },
   "$defs": {
     "id": {
@@ -113,14 +183,25 @@
     "target": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["predicate", "arguments"],
+      "required": [
+        "predicate",
+        "arguments"
+      ],
       "properties": {
-        "predicate": {"$ref": "#/$defs/id"},
+        "predicate": {
+          "$ref": "#/$defs/id"
+        },
         "arguments": {
           "type": "array",
           "minItems": 1,
           "maxItems": 8,
-          "items": {"type": ["string", "integer", "boolean"]}
+          "items": {
+            "type": [
+              "string",
+              "integer",
+              "boolean"
+            ]
+          }
         }
       }
     },
@@ -129,28 +210,57 @@
       "additionalProperties": false,
       "properties": {
         "status": {
-          "enum": ["supported", "refuted", "unknown", "conflicting"]
+          "enum": [
+            "supported",
+            "refuted",
+            "unknown",
+            "conflicting"
+          ]
         },
-        "action": {"type": "string", "minLength": 1, "maxLength": 256},
+        "action": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
         "evidenceIds": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/evidenceId"
+          }
         },
         "ruleIds": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
         "warnings": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
         },
-        "allowedConclusion": {"type": "string", "minLength": 1, "maxLength": 256},
-        "observation": {"type": "object"},
-        "opinion": {"type": "object"}
+        "allowedConclusion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "observation": {
+          "type": "object"
+        },
+        "opinion": {
+          "type": "object"
+        }
       }
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^(?:(?:assertion|rule):)?[A-Za-z0-9][A-Za-z0-9._-]{0,255}$"
     }
   }
 }
