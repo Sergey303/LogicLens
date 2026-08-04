@@ -88,7 +88,7 @@ internal static class XlsxWorksheetParser
             "b" => new CellValue("boolean", formula, raw, Boolean(raw)),
             "str" => new CellValue("string", formula, raw, raw),
             "e" => new CellValue("error", formula, raw, raw),
-            "d" => new CellValue("date", formula, raw, raw),
+            "d" => new CellValue("date", formula, raw, Date(raw)),
             "n" => new CellValue("number", formula, raw, raw),
             _ => throw new InvalidDataException($"Unsupported XLSX cell type: {type}"),
         };
@@ -113,6 +113,24 @@ internal static class XlsxWorksheetParser
         null => null,
         _ => throw new InvalidDataException($"Invalid XLSX boolean value: {value}"),
     };
+
+    private static string? Date(string? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+        if (!DateTimeOffset.TryParse(
+            value,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal,
+            out var parsed
+        ))
+        {
+            throw new InvalidDataException($"Invalid XLSX date value: {value}");
+        }
+        return parsed.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
+    }
 
     private static string? Normalize(string? value)
     {
