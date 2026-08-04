@@ -84,6 +84,11 @@ Invoke-Native "Verify frozen DSL-B1 contracts" {
         (Join-Path $logicLens "tests\progressive_management_dsl_b1_contract_test.py")
 }
 
+Invoke-Native "Verify DSL-B1 scoring semantics" {
+    py -3 `
+        (Join-Path $logicLens "tests\progressive_management_dsl_b1_scoring_contract_test.py")
+}
+
 Invoke-Native "Validate source management world" {
     py -3 $capsuleTool `
         --contracts-root $contracts `
@@ -160,6 +165,13 @@ Copy-Item `
     -Destination (Join-Path $output "frame-preflight.json") `
     -Force
 
+$archive = "$output.zip"
+Compress-Archive `
+    -Path "$output\*" `
+    -DestinationPath $archive `
+    -CompressionLevel Optimal `
+    -Force
+
 $summary = Get-Content `
     (Join-Path $output "summary.json") `
     -Raw |
@@ -186,7 +198,6 @@ foreach ($metric in $summary.metrics) {
     Write-Host "    latency mean ms:           $($metric.latencyMeanMs)"
 }
 
-$archive = "$output.zip"
 if (-not (Test-Path $archive)) {
     throw "Expected experiment archive was not created: $archive"
 }
