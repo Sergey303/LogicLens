@@ -15,5 +15,8 @@
     <None Include="../fixtures/engdoc-confirmed-package-checklist.xlsx"
       Link="fixtures/engdoc-confirmed-package-checklist.xlsx"
       CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../fixtures/xlsx-source-proposal-fragment-v1.jsonl"
+      Link="fixtures/xlsx-source-proposal-fragment-v1.jsonl"
+      CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
