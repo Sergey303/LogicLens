@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+SELECTED_EVIDENCE_MISSING = "selected evidence was not retained"
+
 
 def assert_selected_retention(package: dict[str, Any]) -> None:
     """Reject packages that retain full PDF processing artifacts."""
@@ -15,6 +17,7 @@ def assert_selected_retention(package: dict[str, Any]) -> None:
     }
     leaked = paths & forbidden
     if leaked or any(path.endswith(".pdf") for path in paths):
-        raise AssertionError(f"no-source-retention violated: {sorted(leaked)}")
+        message = f"no-source-retention violated: {sorted(leaked)}"
+        raise AssertionError(message)
     if "evidence/selected-fragments.jsonl" not in paths:
-        raise AssertionError("selected evidence was not retained")
+        raise AssertionError(SELECTED_EVIDENCE_MISSING)
