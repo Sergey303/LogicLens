@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 CAPSULE_FILES = {
     "preparedFiles": [{"path": "prepared/assertions.json", "kind": "assertions"}],
@@ -14,7 +16,7 @@ CAPSULE_FILES = {
 }
 
 
-def write_json(path: Path, value: Any) -> None:
+def write_json(path: Path, value: object) -> None:
     """Write deterministic compact UTF-8 JSON with a trailing newline."""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
