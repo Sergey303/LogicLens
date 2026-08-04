@@ -16,6 +16,7 @@ on:
       - "tools/pdf_link_pipeline.py"
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
+      - "tests/source_activation_contract_test.py"
       - "tests/pdf_link_contract_test.py"
       - "tests/pdf_pypdf_contract_test.py"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
@@ -36,6 +37,7 @@ on:
       - "tools/pdf_link_pipeline.py"
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
+      - "tests/source_activation_contract_test.py"
       - "tests/pdf_link_contract_test.py"
       - "tests/pdf_pypdf_contract_test.py"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
@@ -78,6 +80,11 @@ jobs:
           python tests/source_pipeline_contract_test.py \
             | tee /tmp/source-pipeline.log
 
+      - name: Run staged activation contract
+        run: |
+          python tests/source_activation_contract_test.py \
+            | tee /tmp/source-activation.log
+
       - name: Run Poppler PDF link contract and real Prolog gate
         run: |
           python tests/pdf_link_contract_test.py \
@@ -98,6 +105,7 @@ jobs:
             /tmp/poppler-version.txt
             /tmp/pypdf-version.txt
             /tmp/source-pipeline.log
+            /tmp/source-activation.log
             /tmp/pdf-link-pipeline.log
             /tmp/pdf-pypdf-pipeline.log
           if-no-files-found: warn
