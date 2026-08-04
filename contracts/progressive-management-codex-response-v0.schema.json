@@ -1,7 +1,4 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://logiclens.local/contracts/progressive-management-codex-response-v0.schema.json",
-  "title": "Progressive management Codex response v0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -18,16 +15,24 @@
     "scopeStatement"
   ],
   "properties": {
-    "schemaVersion": {"const": "0.1"},
-    "answer": {
+    "schemaVersion": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 6000
+      "const": "0.1"
+    },
+    "answer": {
+      "type": "string"
     },
     "epistemicStatus": {
-      "enum": ["supported", "refuted", "unknown", "conflicting"]
+      "type": "string",
+      "enum": [
+        "supported",
+        "refuted",
+        "unknown",
+        "conflicting"
+      ]
     },
     "action": {
+      "type": "string",
       "enum": [
         "answer_with_source_scope",
         "explain_explicit_role_boundary",
@@ -36,44 +41,40 @@
       ]
     },
     "conclusionStrength": {
-      "enum": ["assert", "qualified", "abstain", "report_conflict"]
+      "type": "string",
+      "enum": [
+        "assert",
+        "qualified",
+        "abstain",
+        "report_conflict"
+      ]
     },
-    "abstain": {"type": "boolean"},
-    "usedVerifiedFrame": {"type": "boolean"},
+    "abstain": {
+      "type": "boolean"
+    },
+    "usedVerifiedFrame": {
+      "type": "boolean"
+    },
     "evidenceIds": {
       "type": "array",
-      "uniqueItems": true,
-      "maxItems": 64,
-      "items": {"$ref": "#/$defs/id"}
+      "items": {
+        "type": "string"
+      }
     },
     "proofNodeIds": {
       "type": "array",
-      "uniqueItems": true,
-      "maxItems": 128,
       "items": {
-        "type": "string",
-        "pattern": "^(?:assertion|rule):[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        "type": "string"
       }
     },
     "warnings": {
       "type": "array",
-      "uniqueItems": true,
-      "maxItems": 32,
       "items": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 128
+        "type": "string"
       }
     },
     "scopeStatement": {
-      "type": "string",
-      "maxLength": 1000
-    }
-  },
-  "$defs": {
-    "id": {
-      "type": "string",
-      "pattern": "^(?:rule:)?[A-Za-z0-9][A-Za-z0-9._-]{0,255}$"
+      "type": "string"
     }
   }
 }
