@@ -17,6 +17,8 @@ internal static class Program
         await OoxmlCompletionContractTests.DocxCompletionUsesSemanticFragmentIdentityAsync();
         await OoxmlCompletionContractTests.XlsxCompletionRetainsFormulaProvenanceAsync();
         await EngDocFixtureContractTests.CommittedEngDocXlsxIsParsedAsync();
+        await OoxmlSourceProposalBridgeContractTests.RealXlsxSelectionMatchesSharedFixtureAsync();
+        await OoxmlSourceProposalBridgeContractTests.DocxSelectionRetainsOnlyRequestedBlockAsync();
         Console.WriteLine("Document Evidence OOXML adapter contract tests passed.");
         return 0;
     }
