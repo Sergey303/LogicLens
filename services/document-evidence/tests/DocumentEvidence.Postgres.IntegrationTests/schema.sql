@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS "DocumentEvidenceOutbox";
+DROP TABLE IF EXISTS "DocumentFragments";
 DROP TABLE IF EXISTS "ProcessingJobs";
 DROP TABLE IF EXISTS "DocumentRevisions";
 DROP TABLE IF EXISTS "StoredObjects";
@@ -49,6 +50,17 @@ CREATE TABLE "ProcessingJobs" (
     "LeaseUntil" timestamptz NULL,
     "LastErrorCode" varchar(120) NULL,
     "LastError" varchar(2000) NULL
+);
+
+CREATE TABLE "DocumentFragments" (
+    "Id" uuid PRIMARY KEY,
+    "DocumentRevisionId" uuid NOT NULL REFERENCES "DocumentRevisions" ("Id"),
+    "Sequence" integer NOT NULL,
+    "Kind" varchar(40) NOT NULL,
+    "AnchorJson" varchar(2000) NOT NULL,
+    "Text" varchar(8000) NOT NULL,
+    "ContentHash" varchar(64) NOT NULL,
+    UNIQUE ("DocumentRevisionId", "Sequence")
 );
 
 CREATE TABLE "DocumentEvidenceOutbox" (
