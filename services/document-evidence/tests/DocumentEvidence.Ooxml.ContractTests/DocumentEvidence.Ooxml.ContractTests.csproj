@@ -11,4 +11,9 @@
     <ProjectReference Include="../../src/DocumentEvidence.Docx/DocumentEvidence.Docx.csproj" />
     <ProjectReference Include="../../src/DocumentEvidence.Xlsx/DocumentEvidence.Xlsx.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="../fixtures/engdoc-confirmed-package-checklist.xlsx"
+      Link="fixtures/engdoc-confirmed-package-checklist.xlsx"
+      CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
