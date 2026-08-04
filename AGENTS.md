@@ -58,8 +58,10 @@ Do not create orphan decision records or status notes.
 
 - [Repository overview](README.md)
 - [Documentation map](docs/README.md)
+  - [Linear project entry](docs/project/LINEAR.md)
   - [Product platform direction](docs/architecture/PRODUCT_PLATFORM_V0.md)
   - [Shared document evidence service](docs/architecture/DOCUMENT_EVIDENCE_SERVICE_V0.md)
+  - [AppForge generation boundary](docs/architecture/APPFORGE_GENERATION_BOUNDARY_V0.md)
   - [Epistemic DSL v0](docs/architecture/EPISTEMIC_DSL_V0.md)
   - [Capsule Contract v0](docs/architecture/CAPSULE_CONTRACT_V0.md)
   - [Source Proposal Pipeline v0](docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md)
