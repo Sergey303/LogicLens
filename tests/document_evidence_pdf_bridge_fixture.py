@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from capsule import canonical_json, schema_check, sha256
 from pdf_link_world_fixture import build_world, write_json
 from source_proposal.common import write_workspace
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 PROPOSAL_ID = "document-evidence-pdf-v1"
 SOURCE_ID = "document-evidence-pdf"
