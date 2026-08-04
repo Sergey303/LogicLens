@@ -2,7 +2,7 @@ from .common import SourcePipelineError, load_schemas
 from .acquire import snapshot_source, fragment_workspace, prepare_extraction
 from .proposal import import_assertion_proposal, import_grounding_review
 from .gate import execute_gate, verify_package
-from .activation import stage_activation
+from .activation import finalize_activation, stage_activation
 
 __all__ = [
     "SourcePipelineError",
@@ -15,4 +15,5 @@ __all__ = [
     "execute_gate",
     "verify_package",
     "stage_activation",
+    "finalize_activation",
 ]
