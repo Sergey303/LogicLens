@@ -11,7 +11,7 @@ public static class ProcessingJobStateMachine
         Guid leaseToken
     )
     {
-        Validate(job);
+        ProcessingJobRules.Validate(job);
         if (leaseToken == Guid.Empty)
         {
             throw new ArgumentException("Lease token is required.", nameof(leaseToken));
@@ -58,7 +58,7 @@ public static class ProcessingJobStateMachine
         DateTimeOffset now
     )
     {
-        DemandActiveLease(job, leaseToken, now);
+        ProcessingJobRules.DemandActiveLease(job, leaseToken, now);
         return job with
         {
             State = ProcessingJobState.Succeeded,
@@ -78,10 +78,8 @@ public static class ProcessingJobStateMachine
         TimeSpan maxDelay
     )
     {
-        DemandActiveLease(job, leaseToken, now);
-        error = DemandError(error);
-        ValidateDelays(baseDelay, maxDelay);
-
+        ProcessingJobRules.DemandActiveLease(job, leaseToken, now);
+        error = ProcessingJobRules.DemandError(error);
         if (job.Attempt >= job.MaxAttempts)
         {
             return job with
@@ -94,87 +92,14 @@ public static class ProcessingJobStateMachine
             };
         }
 
+        var backoff = ProcessingJobRules.ComputeBackoff(job.Attempt, baseDelay, maxDelay);
         return job with
         {
             State = ProcessingJobState.RetryScheduled,
-            AvailableAt = now + ComputeBackoff(job.Attempt, baseDelay, maxDelay),
+            AvailableAt = now + backoff,
             LeaseToken = null,
             LeaseUntil = null,
             LastError = error,
         };
-    }
-
-    private static void DemandActiveLease(
-        ProcessingJobSnapshot job,
-        Guid leaseToken,
-        DateTimeOffset now
-    )
-    {
-        Validate(job);
-        if (leaseToken == Guid.Empty || job.State != ProcessingJobState.Leased)
-        {
-            throw new InvalidOperationException("Processing job does not have an active lease.");
-        }
-        if (job.LeaseToken != leaseToken)
-        {
-            throw new InvalidOperationException("Processing job lease token is stale.");
-        }
-        if (job.LeaseUntil <= now)
-        {
-            throw new InvalidOperationException("Processing job lease has expired.");
-        }
-    }
-
-    private static TimeSpan ComputeBackoff(
-        int attempt,
-        TimeSpan baseDelay,
-        TimeSpan maxDelay
-    )
-    {
-        var exponent = Math.Clamp(attempt - 1, 0, 30);
-        var factor = 1L << exponent;
-        var ticks = baseDelay.Ticks > maxDelay.Ticks / factor
-            ? maxDelay.Ticks
-            : Math.Min(baseDelay.Ticks * factor, maxDelay.Ticks);
-        return TimeSpan.FromTicks(ticks);
-    }
-
-    private static void Validate(ProcessingJobSnapshot job)
-    {
-        ArgumentNullException.ThrowIfNull(job);
-        if (job.JobId == Guid.Empty || job.MaxAttempts <= 0)
-        {
-            throw new InvalidDataException("Processing job identity and MaxAttempts are required.");
-        }
-        if (job.Attempt < 0 || job.Attempt > job.MaxAttempts)
-        {
-            throw new InvalidDataException("Processing job attempt is outside its valid range.");
-        }
-        var hasLease = job.LeaseToken is not null || job.LeaseUntil is not null;
-        if ((job.State == ProcessingJobState.Leased) != hasLease
-            || (job.State == ProcessingJobState.Leased
-                && (job.LeaseToken is null || job.LeaseUntil is null)))
-        {
-            throw new InvalidDataException("Processing job lease fields do not match its state.");
-        }
-        if (job.State == ProcessingJobState.RetryScheduled && job.Attempt >= job.MaxAttempts)
-        {
-            throw new InvalidDataException("Exhausted processing job cannot remain retryable.");
-        }
-    }
-
-    private static string DemandError(string error)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(error);
-        error = error.Trim();
-        return error.Length <= 2000 ? error : error[..2000];
-    }
-
-    private static void ValidateDelays(TimeSpan baseDelay, TimeSpan maxDelay)
-    {
-        if (baseDelay <= TimeSpan.Zero || maxDelay < baseDelay)
-        {
-            throw new ArgumentOutOfRangeException(nameof(baseDelay));
-        }
     }
 }
