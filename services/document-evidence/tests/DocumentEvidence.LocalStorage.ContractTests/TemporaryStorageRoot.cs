@@ -13,7 +13,7 @@ internal sealed class TemporaryStorageRoot : IDisposable
     public string ResolveObjectKey(string objectKey)
     {
         var parts = objectKey.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        return Path.Combine([RootPath, .. parts]);
+        return Path.Combine([RootPath, "objects", .. parts]);
     }
 
     public void Dispose()
