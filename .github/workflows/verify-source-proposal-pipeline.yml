@@ -11,11 +11,13 @@ on:
       - "docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md"
       - "docs/architecture/PDF_LINK_PIPELINE_V0.md"
       - "prompts/generic/source-assertion-proposer.md"
+      - "requirements-pdf.txt"
       - "tools/source_pipeline.py"
       - "tools/pdf_link_pipeline.py"
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
+      - "tests/pdf_pypdf_contract_test.py"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
   push:
     branches:
@@ -29,11 +31,13 @@ on:
       - "docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md"
       - "docs/architecture/PDF_LINK_PIPELINE_V0.md"
       - "prompts/generic/source-assertion-proposer.md"
+      - "requirements-pdf.txt"
       - "tools/source_pipeline.py"
       - "tools/pdf_link_pipeline.py"
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
+      - "tests/pdf_pypdf_contract_test.py"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
 
 permissions:
@@ -56,22 +60,33 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install pinned SWI-Prolog, Poppler and JSON Schema validator
+      - name: Install pinned SWI-Prolog, Poppler and Python dependencies
         run: |
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox poppler-utils
           swipl --version | tee /tmp/swipl-version.txt
           grep --fixed-strings "SWI-Prolog version 9.0.4" /tmp/swipl-version.txt
           pdftotext -v 2>&1 | tee /tmp/poppler-version.txt
-          python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+          python -m pip install --disable-pip-version-check \
+            "jsonschema==4.23.0" \
+            -r requirements-pdf.txt
+          python -c "import pypdf; print(pypdf.__version__)" \
+            | tee /tmp/pypdf-version.txt
 
       - name: Run text source proposal contract
         run: |
-          python tests/source_pipeline_contract_test.py | tee /tmp/source-pipeline.log
+          python tests/source_pipeline_contract_test.py \
+            | tee /tmp/source-pipeline.log
 
-      - name: Run ephemeral PDF link contract and real Prolog gate
+      - name: Run Poppler PDF link contract and real Prolog gate
         run: |
-          python tests/pdf_link_contract_test.py | tee /tmp/pdf-link-pipeline.log
+          python tests/pdf_link_contract_test.py \
+            | tee /tmp/pdf-link-pipeline.log
+
+      - name: Run pure Python PDF fallback contract and real Prolog gate
+        run: |
+          python tests/pdf_pypdf_contract_test.py \
+            | tee /tmp/pdf-pypdf-pipeline.log
 
       - name: Upload verification logs
         if: always()
@@ -81,7 +96,9 @@ jobs:
           path: |
             /tmp/swipl-version.txt
             /tmp/poppler-version.txt
+            /tmp/pypdf-version.txt
             /tmp/source-pipeline.log
             /tmp/pdf-link-pipeline.log
+            /tmp/pdf-pypdf-pipeline.log
           if-no-files-found: warn
           retention-days: 14
