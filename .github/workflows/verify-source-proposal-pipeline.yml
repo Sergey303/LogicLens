@@ -16,6 +16,9 @@ on:
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
+      - "tests/document_evidence_pdf_bridge*.py"
+      - "services/document-evidence/src/DocumentEvidence.Pdf/PdfSourceProposalBridge.cs"
+      - "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
   push:
     branches:
@@ -34,6 +37,9 @@ on:
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
+      - "tests/document_evidence_pdf_bridge*.py"
+      - "services/document-evidence/src/DocumentEvidence.Pdf/PdfSourceProposalBridge.cs"
+      - "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
 
 permissions:
@@ -73,6 +79,11 @@ jobs:
         run: |
           python tests/pdf_link_contract_test.py | tee /tmp/pdf-link-pipeline.log
 
+      - name: Run Document Evidence selected-fragment bridge and Prolog gate
+        run: |
+          python tests/document_evidence_pdf_bridge_test.py \
+            | tee /tmp/document-evidence-pdf-bridge.log
+
       - name: Upload verification logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -83,5 +94,6 @@ jobs:
             /tmp/poppler-version.txt
             /tmp/source-pipeline.log
             /tmp/pdf-link-pipeline.log
+            /tmp/document-evidence-pdf-bridge.log
           if-no-files-found: warn
           retention-days: 14
