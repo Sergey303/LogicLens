@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import Any
 
 from capsule import canonical_json, schema_check, sha256
+from pdf_link_world_fixture import build_world, write_json
 from source_proposal.common import write_workspace
-from tests import pdf_link_contract_test as pdf_fixture
 
 PROPOSAL_ID = "document-evidence-pdf-v1"
 SOURCE_ID = "document-evidence-pdf"
@@ -21,7 +21,6 @@ def load_fragment(
     schemas: dict[str, dict[str, Any]],
 ) -> tuple[bytes, dict[str, Any]]:
     """Load and validate the shared C#-to-Python source fragment fixture."""
-    root = Path(root)
     path = (
         root
         / "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
@@ -40,10 +39,8 @@ def build_workspace(
     pdf_schemas: dict[str, dict[str, Any]],
 ) -> tuple[Path, Path, Path, dict[str, Any]]:
     """Create a fragmented no-source-retention workspace and deterministic seed."""
-    root = Path(root)
-    temporary = Path(temporary)
     fragment_bytes, fragment = load_fragment(root, schemas)
-    world = pdf_fixture.build_world(temporary)
+    world = build_world(temporary)
     source_manifest_path = world / "capsules/role-boundaries/sources/manifest.json"
     source_manifest = json.loads(source_manifest_path.read_text(encoding="utf-8"))
     source_manifest["sources"][0].update(
@@ -53,7 +50,7 @@ def build_workspace(
             "locator": "https://example.com/document-evidence.pdf",
         }
     )
-    pdf_fixture.write_json(source_manifest_path, source_manifest)
+    write_json(source_manifest_path, source_manifest)
 
     proposal = temporary / "proposal"
     (proposal / "snapshot").mkdir(parents=True)
@@ -84,7 +81,7 @@ def build_workspace(
     }
     write_workspace(proposal, workspace, schemas)
     seed_path = temporary / "seed.json"
-    pdf_fixture.write_json(seed_path, _seed())
+    write_json(seed_path, _seed())
     return world, proposal, seed_path, fragment
 
 
