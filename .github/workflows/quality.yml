@@ -50,4 +50,4 @@ jobs:
           git diff --name-only -z --diff-filter=ACMR "$base...HEAD" -- '*.py' \
             | xargs -0 -r ruff check
           git diff --name-only -z --diff-filter=ACMR "$base...HEAD" -- '*.py' \
-            | xargs -0 -r ruff format --diff
+            | xargs -0 -r ruff format --check
