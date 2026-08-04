@@ -123,6 +123,18 @@ jobs:
             --project services/document-evidence/tests/DocumentEvidence.Pdf.ContractTests/DocumentEvidence.Pdf.ContractTests.csproj \
             --no-build
 
+      - name: Build OOXML adapter contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Ooxml.ContractTests/DocumentEvidence.Ooxml.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run OOXML adapter contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Ooxml.ContractTests/DocumentEvidence.Ooxml.ContractTests.csproj \
+            --no-build
+
       - name: Build PostgreSQL lifecycle integrations
         run: |
           dotnet build \
