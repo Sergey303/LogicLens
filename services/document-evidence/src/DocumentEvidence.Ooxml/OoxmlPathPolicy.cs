@@ -5,7 +5,7 @@ internal static class OoxmlPathPolicy
     public static string DemandPartName(string name)
     {
         if (string.IsNullOrWhiteSpace(name)
-            || name.StartsWith('/', StringComparison.Ordinal)
+            || name.StartsWith("/", StringComparison.Ordinal)
             || name.Contains('\\', StringComparison.Ordinal)
             || name.Contains(':', StringComparison.Ordinal))
         {
@@ -25,7 +25,7 @@ internal static class OoxmlPathPolicy
     public static string ResolveInternalTarget(string sourcePart, string target)
     {
         if (string.IsNullOrWhiteSpace(target)
-            || target.StartsWith('/', StringComparison.Ordinal)
+            || target.StartsWith("/", StringComparison.Ordinal)
             || target.Contains('\\', StringComparison.Ordinal)
             || Uri.TryCreate(target, UriKind.Absolute, out _))
         {
