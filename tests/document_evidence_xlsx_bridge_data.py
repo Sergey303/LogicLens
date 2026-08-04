@@ -61,8 +61,7 @@ def configure_world(world: Path) -> None:
         "title": "EngDoc package check fixture",
         "locator": "repository://engdoc-confirmed-package-checklist.xlsx",
         "repositoryPath": (
-            "services/document-evidence/tests/fixtures/"
-            "engdoc-confirmed-package-checklist.xlsx"
+            "services/document-evidence/tests/fixtures/engdoc-confirmed-package-checklist.xlsx"
         ),
         "version": "demo-v0",
         "language": "en",
@@ -112,9 +111,7 @@ def review() -> dict[str, Any]:
                 "assertionId": "package-check.decision.confirmed",
                 "decision": "accept",
                 "grounding": "direct",
-                "evidenceQuotes": [
-                    {"fragmentId": FRAGMENT_ID, "quote": "Confirmed"}
-                ],
+                "evidenceQuotes": [{"fragmentId": FRAGMENT_ID, "quote": "Confirmed"}],
                 "note": "The selected worksheet cell directly records the decision.",
             }
         ],
