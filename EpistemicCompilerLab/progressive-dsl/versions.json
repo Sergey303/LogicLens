@@ -20,17 +20,22 @@
     {
       "id": "DSL-B",
       "runtimeVersion": "0.2.0",
-      "status": "planned",
+      "status": "experimental",
       "extends": "DSL-A",
       "capabilities": [
-        "logical-rule",
+        "ground-logical-rule",
         "all",
         "any",
-        "finite-exists",
         "not-explicit",
         "proof-dag",
         "cycle-rejection",
-        "safe-variable-validation"
+        "semantic-target-validation",
+        "python-prolog-cross-verification"
+      ],
+      "deferredCapabilities": [
+        "finite-exists",
+        "safe-variables",
+        "variable-substitution"
       ],
       "queryOperations": ["strict-claim", "derived-strict-claim"]
     },
