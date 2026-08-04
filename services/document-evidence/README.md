@@ -35,6 +35,12 @@ Generate it from this repository with:
   -AppForgeRoot D:\projects\ChatPilotGroup\AppForge
 ```
 
+Verify an existing local package without regenerating it:
+
+```powershell
+.\services\document-evidence\verify-generated-package.ps1
+```
+
 The generated React application is an internal administration surface, not the final evidence UX.
 Do not edit or commit files under `Generated/`; change the Markdown model or AppForge and regenerate.
 
