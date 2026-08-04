@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Exercise the text source proposal pipeline and tamper detection."""
 
 from __future__ import annotations
@@ -14,6 +13,9 @@ from source_pipeline_contract_data import candidate, review
 from source_pipeline_world_fixture import build_fixture
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_FRAGMENT_COUNT = 2
+TAMPER_ACCEPTED = "tampered package verified"
+LINK_ONLY_ACCEPTED = "link-only source was snapshotted"
 
 
 def main() -> int:
@@ -42,7 +44,10 @@ def main() -> int:
         )
         assert snapshot["stage"] == "snapshot"
         fragmented = source_proposal.fragment_workspace(workspace, schemas)
-        assert fragmented["artifacts"]["fragments"]["count"] == 2
+        assert (
+            fragmented["artifacts"]["fragments"]["count"]
+            == EXPECTED_FRAGMENT_COUNT
+        )
         source_proposal.prepare_extraction(
             world_root=world,
             proposal_root=workspace,
@@ -75,7 +80,7 @@ def main() -> int:
         swipl = shutil.which("swipl")
         original_gate = gate_module.run_swipl_gate
         if not swipl:
-            gate_module.run_swipl_gate = lambda *args, **kwargs: None
+            gate_module.run_swipl_gate = skip_swipl_gate
             swipl = "contract-test-stub"
         try:
             package = source_proposal.execute_gate(
@@ -100,11 +105,16 @@ def main() -> int:
     return 0
 
 
+def skip_swipl_gate(*_args: object, **_kwargs: object) -> None:
+    """Replace the Prolog subprocess only when SWI-Prolog is not installed."""
+
+
 def assert_tamper_is_rejected(source_proposal: object, root: Path, schemas: dict) -> None:
     """Prove package verification detects generated Prolog modification."""
     generated = root / "package/files/generated/source_proposal.pl"
     text = generated.read_text(encoding="utf-8")
-    assert "claim_status" in text and "contributes_to" in text
+    assert "claim_status" in text
+    assert "contributes_to" in text
     generated.write_text(text + "% tampered\n", encoding="utf-8")
     try:
         source_proposal.verify_package(
@@ -115,7 +125,7 @@ def assert_tamper_is_rejected(source_proposal: object, root: Path, schemas: dict
         )
     except source_proposal.SourcePipelineError:
         return
-    raise AssertionError("tampered package verified")
+    raise AssertionError(TAMPER_ACCEPTED)
 
 
 def assert_link_only_is_rejected(
@@ -141,7 +151,7 @@ def assert_link_only_is_rejected(
         )
     except source_proposal.SourcePipelineError:
         return
-    raise AssertionError("link-only source was snapshotted")
+    raise AssertionError(LINK_ONLY_ACCEPTED)
 
 
 if __name__ == "__main__":
