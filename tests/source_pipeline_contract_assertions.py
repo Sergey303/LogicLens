@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from pathlib import Path
 
-if TYPE_CHECKING:
-    from pathlib import Path
-
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 TAMPER_ACCEPTED = "tampered package verified"
 LINK_ONLY_ACCEPTED = "link-only source was snapshotted"
 
@@ -44,7 +42,6 @@ def assert_link_only_is_rejected(
     repository: Path,
     world: Path,
     schemas: dict,
-    contracts_root: Path,
 ) -> None:
     """Prove a link-only declaration cannot be snapshotted as source bytes."""
     try:
@@ -58,7 +55,7 @@ def assert_link_only_is_rejected(
             allow_network=False,
             max_bytes=100_000,
             schemas=schemas,
-            contracts_root=contracts_root,
+            contracts_root=REPOSITORY_ROOT / "contracts",
         )
     except source_proposal.SourcePipelineError:
         return
