@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from contract_fixture_support import write_json
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def write_semantics(world: Path) -> None:
@@ -17,12 +20,12 @@ def write_semantics(world: Path) -> None:
                 {
                     "id": "outcome.technical_direction",
                     "kind": "management_outcome",
-                    "labels": {"ru": "техническое направление"},
+                    "labels": {"en": "technical direction"},
                 },
                 {
                     "id": "outcome.people_development",
                     "kind": "management_outcome",
-                    "labels": {"ru": "развитие сотрудников"},
+                    "labels": {"en": "people development"},
                 },
             ],
         },
