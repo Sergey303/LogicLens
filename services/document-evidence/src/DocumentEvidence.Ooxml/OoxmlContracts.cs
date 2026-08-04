@@ -33,6 +33,7 @@ public sealed record OoxmlPart(
 public sealed class OoxmlPackageSnapshot
 {
     private readonly IReadOnlyDictionary<string, OoxmlPart> _parts;
+    private readonly IReadOnlyCollection<string> _partNames;
 
     internal OoxmlPackageSnapshot(
         OoxmlPackageIdentity identity,
@@ -41,10 +42,11 @@ public sealed class OoxmlPackageSnapshot
     {
         Identity = identity;
         _parts = parts;
+        _partNames = parts.Keys.ToArray();
     }
 
     public OoxmlPackageIdentity Identity { get; }
-    public IReadOnlyCollection<string> PartNames => _parts.Keys;
+    public IReadOnlyCollection<string> PartNames => _partNames;
 
     public OoxmlPart RequirePart(string name) =>
         _parts.TryGetValue(name, out var part)
