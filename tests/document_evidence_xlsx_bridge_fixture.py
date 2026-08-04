@@ -30,8 +30,7 @@ def build_workspace(
 ) -> tuple[Path, Path, Path, Path, dict[str, Any]]:
     """Create a fragmented local-file workspace and deterministic review inputs."""
     fragment_path = (
-        root
-        / "services/document-evidence/tests/fixtures/xlsx-source-proposal-fragment-v1.jsonl"
+        root / "services/document-evidence/tests/fixtures/xlsx-source-proposal-fragment-v1.jsonl"
     )
     fragment_bytes = fragment_path.read_bytes()
     fragment = json.loads(fragment_bytes)
