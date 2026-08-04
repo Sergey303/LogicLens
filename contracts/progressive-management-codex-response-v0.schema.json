@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/progressive-management-codex-response-v0.schema.json",
+  "title": "Progressive management Codex response v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "answer",
+    "epistemicStatus",
+    "action",
+    "conclusionStrength",
+    "abstain",
+    "usedVerifiedFrame",
+    "evidenceIds",
+    "proofNodeIds",
+    "warnings",
+    "scopeStatement"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "answer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 6000
+    },
+    "epistemicStatus": {
+      "enum": ["supported", "refuted", "unknown", "conflicting"]
+    },
+    "action": {
+      "enum": [
+        "answer_with_source_scope",
+        "explain_explicit_role_boundary",
+        "abstain_and_request_context",
+        "report_conflict_and_compare_models"
+      ]
+    },
+    "conclusionStrength": {
+      "enum": ["assert", "qualified", "abstain", "report_conflict"]
+    },
+    "abstain": {"type": "boolean"},
+    "usedVerifiedFrame": {"type": "boolean"},
+    "evidenceIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "proofNodeIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 128,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:assertion|rule):[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 32,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "scopeStatement": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^(?:rule:)?[A-Za-z0-9][A-Za-z0-9._-]{0,255}$"
+    }
+  }
+}
