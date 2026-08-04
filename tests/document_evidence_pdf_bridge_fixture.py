@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any
+from pathlib import Path
+from typing import Any
 
 from capsule import canonical_json, schema_check, sha256
 from source_proposal.common import write_workspace
 from tests import pdf_link_contract_test as pdf_fixture
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 PROPOSAL_ID = "document-evidence-pdf-v1"
 SOURCE_ID = "document-evidence-pdf"
@@ -23,6 +21,7 @@ def load_fragment(
     schemas: dict[str, dict[str, Any]],
 ) -> tuple[bytes, dict[str, Any]]:
     """Load and validate the shared C#-to-Python source fragment fixture."""
+    root = Path(root)
     path = (
         root
         / "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
@@ -41,6 +40,8 @@ def build_workspace(
     pdf_schemas: dict[str, dict[str, Any]],
 ) -> tuple[Path, Path, Path, dict[str, Any]]:
     """Create a fragmented no-source-retention workspace and deterministic seed."""
+    root = Path(root)
+    temporary = Path(temporary)
     fragment_bytes, fragment = load_fragment(root, schemas)
     world = pdf_fixture.build_world(temporary)
     source_manifest_path = world / "capsules/role-boundaries/sources/manifest.json"
@@ -114,7 +115,7 @@ def _pdf_record(
             "configurationHash": "sha256:" + "c" * 64,
         },
         "documentIr": {
-            "path": "service://document-evidence/revisions/rev-1/ir",
+            "path": "document/canonical-document-ir.json",
             "hash": "sha256:" + "d" * 64,
             "pageCount": 1,
             "blockCount": 1,
