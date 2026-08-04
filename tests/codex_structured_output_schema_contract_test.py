@@ -2,6 +2,7 @@
 """Fail closed when a Codex output schema leaves the supported strict subset."""
 from __future__ import annotations
 
+import copy
 import json
 from pathlib import Path
 from typing import Any
@@ -73,6 +74,19 @@ def validate_node(node: Any, path: str) -> None:
         fail(f"{path}: this response contract only permits string const values")
 
 
+def expect_rejected(schema: dict[str, Any], expected_fragment: str) -> None:
+    try:
+        validate_node(schema, "root")
+    except AssertionError as exc:
+        if expected_fragment not in str(exc):
+            fail(
+                f"negative schema failed for the wrong reason: "
+                f"expected {expected_fragment!r}, got {str(exc)!r}"
+            )
+        return
+    fail("invalid strict-output schema was unexpectedly accepted")
+
+
 def main() -> int:
     schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
     validate_node(schema, "root")
@@ -93,6 +107,18 @@ def main() -> int:
     actual = set(schema["properties"])
     if actual != expected:
         fail(f"response field set changed: expected {sorted(expected)}, got {sorted(actual)}")
+
+    missing_type = copy.deepcopy(schema)
+    del missing_type["properties"]["schemaVersion"]["type"]
+    expect_rejected(missing_type, "must declare an explicit type")
+
+    unsupported_keyword = copy.deepcopy(schema)
+    unsupported_keyword["properties"]["answer"]["maxLength"] = 6000
+    expect_rejected(unsupported_keyword, "unsupported strict-output keywords")
+
+    optional_property = copy.deepcopy(schema)
+    optional_property["required"].remove("scopeStatement")
+    expect_rejected(optional_property, "every property must be required")
 
     print("Codex structured-output schema contract passed")
     return 0
