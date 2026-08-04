@@ -1,0 +1,58 @@
+{
+  "kind": "logiclens-appforge-production-trial",
+  "version": 1,
+  "observedAtUtc": "2026-08-04T12:34:09.392Z",
+  "cgr": {
+    "status": "success",
+    "exitCode": 0,
+    "sourceArchive": "cgr-output-2026-08-04T12-34-09-392Z.zip"
+  },
+  "generator": {
+    "repository": "Sergey303/AppForge",
+    "commit": "b30aea6cd8aa60ab9865e2d0cf383955a20ae50b",
+    "name": "AppForge.MdToDomain",
+    "version": "0.1.0"
+  },
+  "spec": {
+    "path": "services/document-evidence/spec/document-evidence.md",
+    "sha256": "eda92de5c6baca45923a6875dfd6ed4b7cefe68d64d0ac6001269ab42007c5c7"
+  },
+  "identity": {
+    "modelId": "Document Evidence Operational Model",
+    "solutionFileName": "DocumentEvidenceOperationalModel.slnx",
+    "projectFileName": "DocumentEvidenceOperationalModel.Persistence.csproj",
+    "assemblyFileName": "DocumentEvidenceOperationalModel.Persistence.dll",
+    "dbContextName": "DocumentEvidenceOperationalModelDbContext",
+    "databaseName": "document_evidence_operational_model"
+  },
+  "backend": {
+    "entities": 5,
+    "relationships": 4,
+    "indexes": 8,
+    "controllers": 5,
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "migrationAction": "initial-created",
+    "createTableOperations": 22,
+    "idempotentSqlCreateTableStatements": 23
+  },
+  "frontend": {
+    "productionGateFiles": 1220,
+    "viteModules": 528,
+    "largestJavaScriptChunkKb": 1138.24,
+    "largestJavaScriptChunkGzipKb": 276.04,
+    "chunkSizeWarningObserved": true
+  },
+  "evidence": {
+    "packageManifestSha256": "0cd710d8ac95427800a972a249701575cec20327eaa0f5f13c7ff9dec26d4119",
+    "generatedTreeSha256BeforeReceipt": "05a17757f756d33ad6a02c787cdb7f3568165bd10c87d7c0329797474f83a9c1"
+  },
+  "result": {
+    "allEightStagesCompleted": true,
+    "backendContractJsonCreated": true,
+    "typeScriptCreated": true,
+    "reactPrimeReactCreated": true,
+    "viteDistCreated": true,
+    "deployPresetCreated": true
+  }
+}
