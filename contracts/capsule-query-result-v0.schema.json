@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/capsule-query-result-v0.schema.json",
+  "title": "LogicLens capsule query result v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "queryHash",
+    "package",
+    "query",
+    "predicate",
+    "status",
+    "action",
+    "reason",
+    "evidence",
+    "dependencyGroups",
+    "warnings",
+    "runtime"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "queryHash": {"$ref": "#/$defs/hash"},
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["worldId", "capsuleId", "capsuleVersion", "packageHash"],
+      "properties": {
+        "worldId": {"$ref": "#/$defs/id"},
+        "capsuleId": {"$ref": "#/$defs/id"},
+        "capsuleVersion": {"$ref": "#/$defs/version"},
+        "packageHash": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "query": {"$ref": "#/$defs/query"},
+    "predicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "valueSpace", "world", "negation", "argumentTypes"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "valueSpace": {"const": "strict_claim"},
+        "world": {"const": "open"},
+        "negation": {"const": "explicit_evidence"},
+        "argumentTypes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {"$ref": "#/$defs/id"}
+        }
+      }
+    },
+    "status": {
+      "enum": ["supported", "refuted", "unknown", "conflicting"]
+    },
+    "action": {
+      "enum": [
+        "answer_with_source_scope",
+        "explain_explicit_role_boundary",
+        "abstain_and_request_context",
+        "report_conflict_and_compare_models"
+      ]
+    },
+    "reason": {
+      "enum": [
+        "loaded_evidence_supports_claim",
+        "loaded_evidence_explicitly_opposes_claim",
+        "insufficient_loaded_evidence",
+        "incompatible_loaded_assertions"
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["support", "oppose"],
+      "properties": {
+        "support": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidence"}
+        },
+        "oppose": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidence"}
+        }
+      }
+    },
+    "dependencyGroups": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "context-dependent",
+          "local-only",
+          "insufficient-loaded-evidence",
+          "incompatible-loaded-assertions"
+        ]
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "semantics", "verifiedAgainstGeneratedAssertions"],
+      "properties": {
+        "engine": {"const": "swi-prolog"},
+        "semantics": {"const": "strict-support-oppose-open-world"},
+        "verifiedAgainstGeneratedAssertions": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "operation", "target"],
+      "properties": {
+        "schemaVersion": {"const": "0.1"},
+        "operation": {"const": "strict-claim"},
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["predicate", "arguments"],
+          "properties": {
+            "predicate": {"$ref": "#/$defs/id"},
+            "arguments": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {"type": ["string", "integer", "boolean"]}
+            }
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "locator"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"type": "string", "minLength": 1, "maxLength": 128},
+        "title": {"type": "string", "minLength": 1, "maxLength": 512},
+        "locator": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "version": {"type": "string", "minLength": 1, "maxLength": 256},
+        "language": {"type": "string", "minLength": 1, "maxLength": 32},
+        "licenseId": {"type": "string", "minLength": 1, "maxLength": 256},
+        "licenseStatus": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assertionId",
+        "stance",
+        "dependencyGroup",
+        "provenance",
+        "sources",
+        "generalisability"
+      ],
+      "properties": {
+        "assertionId": {"$ref": "#/$defs/id"},
+        "stance": {"enum": ["support", "oppose"]},
+        "dependencyGroup": {"$ref": "#/$defs/id"},
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 1024}
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/source"}
+        },
+        "generalisability": {
+          "enum": ["universal", "context-dependent", "local"]
+        },
+        "scope": {"type": "object"},
+        "note": {"type": "string", "maxLength": 2000}
+      }
+    }
+  }
+}
