@@ -45,7 +45,9 @@ Accepted evidence:
 
 The lifecycle proof is intentionally classified as a fresh-schema proof. Preservation of an existing
 migration chain is tracked separately in ENG-152 because the proof command removed the previous local
-package before generation.
+package before generation. The CGR process itself returned exit code 1 only after all eight AppForge
+stages completed: its post-proof snippet used the nonexistent PowerShell parameter
+`Select-Object -Single`.
 
 ## Implemented handwritten boundary
 
