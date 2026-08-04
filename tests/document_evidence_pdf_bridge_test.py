@@ -1,33 +1,35 @@
-#!/usr/bin/env python3
+"""Verify retained Document Evidence PDF fragments through the real Prolog gate."""
+
 from __future__ import annotations
 
+import importlib
 import json
 import sys
 import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "tools"))
-sys.path.insert(0, str(ROOT / "tests"))
-
-import source_proposal as sp
-from document_evidence_pdf_bridge_fixture import build_workspace
-from source_proposal.pdf_link import load_pdf_schemas, resolve_pdf_seed
 
 
 def main() -> int:
+    """Build, review, gate, and verify one shared selected-fragment fixture."""
+    sys.path[:0] = [str(ROOT), str(ROOT / "tools")]
+    sp = importlib.import_module("source_proposal")
+    bridge_fixture = importlib.import_module("tests.document_evidence_pdf_bridge_fixture")
+    pdf_link = importlib.import_module("source_proposal.pdf_link")
     schemas = sp.load_schemas(ROOT / "contracts")
-    pdf_schemas = load_pdf_schemas(ROOT / "contracts")
+    pdf_schemas = pdf_link.load_pdf_schemas(ROOT / "contracts")
+
     with tempfile.TemporaryDirectory(prefix="document-evidence-bridge-") as temp_name:
         temporary = Path(temp_name)
-        world, proposal, seed_path, fragment = build_workspace(
+        world, proposal, seed_path, fragment = bridge_fixture.build_workspace(
             root=ROOT,
             temporary=temporary,
             schemas=schemas,
             pdf_schemas=pdf_schemas,
         )
         resolved = temporary / "resolved"
-        resolve_pdf_seed(
+        pdf_link.resolve_pdf_seed(
             proposal_root=proposal,
             seed_path=seed_path,
             output=resolved,
@@ -70,8 +72,8 @@ def main() -> int:
         selected_path = package_root / "files/evidence/selected-fragments.jsonl"
         selected = json.loads(selected_path.read_bytes())
         if selected != fragment or package["gate"]["status"] != "passed":
-            raise AssertionError("Document Evidence provenance changed before the SWI-Prolog gate")
-    print("Document Evidence PDF bridge to SWI-Prolog passed")
+            message = "Document Evidence provenance changed before the SWI-Prolog gate"
+            raise AssertionError(message)
     return 0
 
 
