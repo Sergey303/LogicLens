@@ -11,6 +11,9 @@
 **/__pycache__/
 *.py[cod]
 
+# Reproducible local generator output
+/services/document-evidence/Generated/
+
 # Prepared local runtime
 .logiclens/
 
