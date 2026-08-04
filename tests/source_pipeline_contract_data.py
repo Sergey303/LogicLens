@@ -58,7 +58,7 @@ def review(fragment_id: str) -> dict[str, Any]:
                 "evidenceQuotes": [
                     {
                         "fragmentId": fragment_id,
-                        "quote": "Team Lead задаёт локальное техническое направление",
+                        "quote": "Team Lead sets local technical direction",
                     }
                 ],
                 "note": "The source directly names the role and technical direction.",
@@ -70,7 +70,7 @@ def review(fragment_id: str) -> dict[str, Any]:
                 "evidenceQuotes": [
                     {
                         "fragmentId": fragment_id,
-                        "quote": "Engineering Manager отвечает за развитие сотрудников",
+                        "quote": "Engineering Manager owns employee development",
                     }
                 ],
                 "note": "The source explicitly names people development.",
