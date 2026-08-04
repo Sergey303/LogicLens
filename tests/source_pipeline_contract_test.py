@@ -23,6 +23,49 @@ def write_json(path: Path, value: object) -> None:
     )
 
 
+def write_jsonl(path: Path, values: list[dict[str, object]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "".join(
+            json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n"
+            for value in values
+        ),
+        encoding="utf-8",
+    )
+
+
+def write_minimal_capsule_assets(capsule: Path) -> None:
+    write_jsonl(
+        capsule / "prepared" / "assertions.jsonl",
+        [
+            {
+                "assertionId": "fixture.accepted",
+                "target": {
+                    "predicate": "contributes_to",
+                    "arguments": [
+                        "role.team_lead",
+                        "outcome.technical_direction",
+                    ],
+                },
+                "stance": "support",
+                "provenance": ["internal-learning-model#fixture"],
+                "dependencyGroup": "fixture.accepted",
+                "generalisability": "local",
+            }
+        ],
+    )
+    rules = capsule / "rules" / "rules.pl"
+    rules.parent.mkdir(parents=True, exist_ok=True)
+    rules.write_text(
+        ":- module(fixture_rules, [fixture_rule/1]).\nfixture_rule(ok).\n",
+        encoding="utf-8",
+    )
+    overview = capsule / "learning" / "overview.md"
+    overview.parent.mkdir(parents=True, exist_ok=True)
+    overview.write_text("# Fixture capsule\n", encoding="utf-8")
+    write_jsonl(capsule / "tests" / "cases.jsonl", [{"id": "case-1"}])
+
+
 def write_minimal_module(world: Path) -> None:
     module = world / "modules" / "fixture"
     write_json(
@@ -58,11 +101,14 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
     world = repo / "worlds" / "management"
     capsule = world / "capsules" / "role-boundaries"
 
-    (repo / "curriculum").mkdir(parents=True)
-    (repo / "curriculum" / "00-learning-model.md").write_text(
+    curriculum = repo / "curriculum" / "00-learning-model.md"
+    curriculum.parent.mkdir(parents=True)
+    curriculum.write_text(
         "# Роли в сценариях\n\n"
-        "Team Lead задаёт локальное техническое направление и управляет техническими рисками.\n\n"
-        "Engineering Manager отвечает за развитие сотрудников и здоровье команды.\n\n"
+        "Team Lead задаёт локальное техническое направление и управляет "
+        "техническими рисками.\n\n"
+        "Engineering Manager отвечает за развитие сотрудников и здоровье "
+        "команды.\n\n"
         "# Ограничение\n\n"
         "Отсутствие сведений не считается опровержением.\n",
         encoding="utf-8",
@@ -74,7 +120,7 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
             "schemaVersion": "0.1",
             "worldId": "management",
             "title": "Management",
-            "description": "fixture",
+            "description": "Source proposal contract fixture",
             "languages": ["ru"],
             "semantic": {
                 "vocabulary": "semantic/vocabulary.json",
@@ -168,12 +214,21 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
             "languages": ["ru"],
             "status": "draft",
             "sourceManifest": "sources/manifest.json",
-            "preparedFiles": [],
-            "ruleFiles": [],
-            "learningFiles": [],
-            "testFiles": [],
+            "preparedFiles": [
+                {"path": "prepared/assertions.jsonl", "kind": "assertions"}
+            ],
+            "ruleFiles": [{"path": "rules/rules.pl", "kind": "rules"}],
+            "learningFiles": [
+                {"path": "learning/overview.md", "kind": "overview"}
+            ],
+            "testFiles": [
+                {"path": "tests/cases.jsonl", "kind": "test-cases"}
+            ],
             "exports": {"predicates": [], "profiles": []},
-            "requires": {"capsuleContract": "0.1", "epistemicDsl": "0.1"},
+            "requires": {
+                "capsuleContract": "0.1",
+                "epistemicDsl": "0.1",
+            },
         },
     )
     write_json(
@@ -212,16 +267,18 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
             ],
         },
     )
+    write_minimal_capsule_assets(capsule)
     write_minimal_module(world)
     return repo, world
 
 
 def main() -> int:
     schemas = sp.load_schemas(ROOT / "contracts")
-    with tempfile.TemporaryDirectory(prefix="source-pipeline-test-") as td:
-        root = Path(td)
+    with tempfile.TemporaryDirectory(prefix="source-pipeline-test-") as temp_name:
+        root = Path(temp_name)
         repo, world = build_fixture(root)
         workspace = root / "proposal"
+
         ws = sp.snapshot_source(
             world_root=world,
             capsule_id="management.role-boundaries",
@@ -235,12 +292,14 @@ def main() -> int:
             contracts_root=ROOT / "contracts",
         )
         assert ws["stage"] == "snapshot"
+
         ws = sp.fragment_workspace(workspace, schemas)
         assert ws["artifacts"]["fragments"]["count"] == 2
+
         ws = sp.prepare_extraction(
             world_root=world,
             proposal_root=workspace,
-            prompt_path=ROOT / "prompts/generic/source-assertion-proposer.md",
+            prompt_path=ROOT / "prompts" / "generic" / "source-assertion-proposer.md",
             schemas=schemas,
             contracts_root=ROOT / "contracts",
         )
@@ -249,6 +308,7 @@ def main() -> int:
             "fragments",
         )
         fragment_id = fragments[0]["fragmentId"]
+
         candidate = {
             "schemaVersion": "0.1",
             "proposalId": "internal-learning-model-v0",
@@ -295,6 +355,7 @@ def main() -> int:
             schemas=schemas,
             contracts_root=ROOT / "contracts",
         )
+
         review = {
             "schemaVersion": "0.1",
             "reviewId": "review-001",
@@ -346,7 +407,7 @@ def main() -> int:
         assert ws["artifacts"]["review"]["class"] == "provisional"
 
         swipl = shutil.which("swipl")
-        original = gate_module.run_swipl_gate
+        original_gate = gate_module.run_swipl_gate
         if not swipl:
             gate_module.run_swipl_gate = lambda *args, **kwargs: None
             swipl = "contract-test-stub"
@@ -367,12 +428,18 @@ def main() -> int:
                 schemas=schemas,
             )
         finally:
-            gate_module.run_swipl_gate = original
+            gate_module.run_swipl_gate = original_gate
 
-        generated = root / "package/files/generated/source_proposal.pl"
-        text = generated.read_text(encoding="utf-8")
-        assert "claim_status" in text and "contributes_to" in text
-        generated.write_text(text + "% tampered\n", encoding="utf-8")
+        generated = (
+            root / "package" / "files" / "generated" / "source_proposal.pl"
+        )
+        generated_text = generated.read_text(encoding="utf-8")
+        assert "claim_status" in generated_text
+        assert "contributes_to" in generated_text
+        generated.write_text(
+            generated_text + "% tampered\n",
+            encoding="utf-8",
+        )
         try:
             sp.verify_package(
                 package_root=root / "package",
