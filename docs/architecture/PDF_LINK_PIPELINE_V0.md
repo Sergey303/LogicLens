@@ -15,7 +15,7 @@ public HTTPS PDF
   -> bounded temporary download
   -> MIME and PDF magic validation
   -> SHA-256 fingerprint
-  -> Poppler native-text adapter
+  -> native-text adapter (Poppler or pypdf)
   -> Canonical Document IR
   -> page/block fragments
   -> assertion seed or model proposal
@@ -42,9 +42,22 @@ public HTTPS PDF
   },
   "snapshotPolicy": "ephemeral-read",
   "reader": {
-    "kind": "poppler-layout"
+    "kind": "auto-layout"
   }
 }
+```
+
+Reader modes:
+
+- `auto-layout`: use Poppler when both `pdfinfo` and `pdftotext` are available; otherwise use the pinned pure-Python parser;
+- `poppler-layout`: require Poppler and fail when it is unavailable;
+- `pypdf-layout`: require `pypdf` and never start a system PDF process;
+- `docling-http`: reserved by the manifest contract, but not enabled by the v0 runtime.
+
+Install the portable parser dependency with:
+
+```powershell
+py -3 -m pip install -r requirements-pdf.txt
 ```
 
 An optional `expectedSha256` pins a known revision. A mismatch stops the pipeline and requires an explicit new source revision.
@@ -58,8 +71,8 @@ The reader must:
 - enforce a byte limit;
 - require PDF media type or PDF magic bytes;
 - calculate SHA-256 before semantic processing;
-- use a temporary directory for source bytes;
-- delete the temporary PDF after parsing;
+- use memory or a temporary directory for source bytes;
+- delete temporary PDF bytes after parsing;
 - never copy the PDF into a proposal workspace or package.
 
 A temporary workspace may contain full Canonical Document IR and fragments while a proposal is being prepared and reviewed. It must be created outside the repository and deleted after the gate.
@@ -80,7 +93,7 @@ Document
       confidence
 ```
 
-The v0 Poppler adapter provides native text, page dimensions, blocks and reading order. Geometry is optional. OCR and VLM fallbacks are future adapters and must preserve the same contract.
+Both native-text adapters produce page dimensions, blocks, reading order and explicit processor provenance. Geometry is optional. The processor name and pinned version are included in the IR and PDF link record, so Poppler and pypdf results cannot be confused.
 
 ## CLI
 
@@ -92,6 +105,8 @@ python tools/pdf_link_pipeline.py ingest `
   --proposal-id <proposal-id> `
   --output <temporary-workspace>
 ```
+
+Use `--poppler-prefix <directory>` when Poppler is installed outside `PATH`. On Windows the resolver checks both extensionless names and `.exe` files.
 
 The command directly creates a source-proposal workspace at stage `fragmented`.
 
@@ -138,4 +153,4 @@ Verification rejects a PDF package containing `.pdf`, full IR, full fragments, o
 
 ## Current parser limit
 
-v0 uses `pdfinfo` and `pdftotext -layout` from Poppler. A PDF without usable native text fails safely and requires a future OCR/Docling adapter. The system must not silently treat an empty text layer as evidence.
+Poppler and pypdf extract only an existing text layer. They are not OCR systems. A scanned or otherwise textless PDF fails safely and requires a future OCR/Docling adapter; an empty text layer is never silently accepted as evidence.
