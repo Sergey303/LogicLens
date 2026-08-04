@@ -1,0 +1,66 @@
+{
+  "endpointKey": "post:/api/documentrevisions",
+  "domainKey": "documentrevisions",
+  "kind": "mutation",
+  "controllerName": "DocumentRevisionController",
+  "methodName": "Create",
+  "httpMethod": "POST",
+  "routeTemplate": "/api/documentrevisions",
+  "authorization": {
+    "anonymousAllowed": false,
+    "requiresAuthentication": true,
+    "policyNames": []
+  },
+  "transport": {
+    "bodyKind": "json",
+    "requestContentType": "application/json",
+    "responseKind": "json",
+    "responseContentType": "application/json",
+    "transportKind": null,
+    "operationMode": null,
+    "cancellable": true,
+    "supportsProgress": null,
+    "progressEventKeys": [],
+    "completionEventKeys": [],
+    "resultDelivery": null,
+    "acceptedMimeTypes": [],
+    "maxFileSizeBytes": null,
+    "fileNameSource": null,
+    "inputs": [],
+    "requestBody": {
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentRevisionRequest",
+      "required": true
+    },
+    "multipartParts": [],
+    "response": {
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto",
+      "contentDisposition": null,
+      "fileNameSource": null
+    }
+  },
+  "featureKeys": [],
+  "policyKeys": [
+    "DocumentRevision.Create"
+  ],
+  "capabilityKeys": [],
+  "providerKeys": [],
+  "environmentScopes": [],
+  "disabledReasonKey": null,
+  "errorRefs": [
+    "document.revision.validation_failed"
+  ],
+  "invalidatesEndpointKeys": [
+    "get:/api/documentrevisions",
+    "get:/api/documentrevisions/lookup",
+    "get:/api/documentrevisions/options/{field}",
+    "get:/api/documentrevisions/suggest/{field}",
+    "get:/api/documentrevisions/{id}"
+  ],
+  "realtimeLinks": [],
+  "frontendAction": null,
+  "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentRevisionRequest",
+  "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto",
+  "invalidatedByRealtimeEventKeys": []
+}

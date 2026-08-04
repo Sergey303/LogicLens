@@ -1,0 +1,444 @@
+{
+  "DomainKey": "storedobjects",
+  "Endpoints": [
+    {
+      "EndpointKey": "get:/api/storedobjects",
+      "Kind": "query",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "List",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/storedobjects",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStoredObjectRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStoredObjectResult"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStoredObjectResult",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "List(ListStoredObjectRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "post:/api/storedobjects",
+      "Kind": "mutation",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "Create",
+      "HttpMethod": "POST",
+      "RouteTemplate": "/api/storedobjects",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateStoredObjectRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateStoredObjectRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Create"
+      ],
+      "ErrorRefs": [
+        "stored.object.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/storedobjects",
+        "get:/api/storedobjects/lookup",
+        "get:/api/storedobjects/options/{field}",
+        "get:/api/storedobjects/suggest/{field}",
+        "get:/api/storedobjects/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "Create(CreateStoredObjectRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/storedobjects/lookup",
+      "Kind": "query",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "Lookup",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/storedobjects/lookup",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupStoredObjectRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectLookupDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectLookupDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "Lookup(LookupStoredObjectRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/storedobjects/options/{field}",
+      "Kind": "query",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "Options",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/storedobjects/options/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectOptionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectOptionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "Options(String field, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/storedobjects/suggest/{field}",
+      "Kind": "query",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "Suggest",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/storedobjects/suggest/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          },
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestStoredObjectRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectSuggestionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectSuggestionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "Suggest(String field, SuggestStoredObjectRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "delete:/api/storedobjects/{id}",
+      "Kind": "mutation",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "Delete",
+      "HttpMethod": "DELETE",
+      "RouteTemplate": "/api/storedobjects/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "none",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Cancellable": true
+      },
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Delete"
+      ],
+      "ErrorRefs": [
+        "stored.object.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/storedobjects",
+        "get:/api/storedobjects/lookup",
+        "get:/api/storedobjects/options/{field}",
+        "get:/api/storedobjects/suggest/{field}",
+        "get:/api/storedobjects/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "Delete(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/storedobjects/{id}",
+      "Kind": "query",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "Get",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/storedobjects/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Read"
+      ],
+      "ErrorRefs": [
+        "stored.object.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "Get(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "put:/api/storedobjects/{id}",
+      "Kind": "mutation",
+      "ControllerName": "StoredObjectController",
+      "MethodName": "Update",
+      "HttpMethod": "PUT",
+      "RouteTemplate": "/api/storedobjects/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateStoredObjectRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateStoredObjectRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "StoredObject.Update"
+      ],
+      "ErrorRefs": [
+        "stored.object.not_found",
+        "stored.object.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/storedobjects",
+        "get:/api/storedobjects/lookup",
+        "get:/api/storedobjects/options/{field}",
+        "get:/api/storedobjects/suggest/{field}",
+        "get:/api/storedobjects/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "storedobjects"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+        "MethodClrSignature": "Update(Guid id, UpdateStoredObjectRequest request, CancellationToken cancellationToken)"
+      }
+    }
+  ]
+}

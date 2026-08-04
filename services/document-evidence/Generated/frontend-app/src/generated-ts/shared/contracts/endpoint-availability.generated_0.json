@@ -1,0 +1,110 @@
+{
+  "delete:/api/documentfragments/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Delete"
+    ]
+  },
+  "delete:/api/documentrevisions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Delete"
+    ]
+  },
+  "delete:/api/documents/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Delete"
+    ]
+  },
+  "delete:/api/permissions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Delete"
+    ]
+  },
+  "delete:/api/processingjobs/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Delete"
+    ]
+  },
+  "delete:/api/rolepermissions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Delete"
+    ]
+  },
+  "delete:/api/roles/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Delete"
+    ]
+  },
+  "delete:/api/staffpositionassignments/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Delete"
+    ]
+  },
+  "delete:/api/staffpositionroles/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Delete"
+    ]
+  },
+  "delete:/api/staffpositions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Delete"
+    ]
+  },
+  "delete:/api/storedobjects/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Delete"
+    ]
+  },
+  "get:/api/documentfragments": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Read"
+    ]
+  },
+  "get:/api/documentfragments/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Read"
+    ]
+  },
+  "get:/api/documentfragments/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Read"
+    ]
+  },
+  "get:/api/documentfragments/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Read"
+    ]
+  },
+  "get:/api/documentfragments/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Read"
+    ]
+  },
+  "get:/api/documentrevisions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Read"
+    ]
+  },
+  "get:/api/documentrevisions/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Read"
+    ]
+  }
+}

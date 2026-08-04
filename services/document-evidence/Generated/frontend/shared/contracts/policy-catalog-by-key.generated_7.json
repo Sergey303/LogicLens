@@ -1,0 +1,40 @@
+{
+  "StoredObject.Read": {
+    "PolicyKey": "StoredObject.Read",
+    "DomainKey": "storedobjects",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/storedobjects"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/storedobjects/lookup"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/storedobjects/options/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/storedobjects/suggest/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/storedobjects/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StoredObject.Update": {
+    "PolicyKey": "StoredObject.Update",
+    "DomainKey": "storedobjects",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "put:/api/storedobjects/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  }
+}

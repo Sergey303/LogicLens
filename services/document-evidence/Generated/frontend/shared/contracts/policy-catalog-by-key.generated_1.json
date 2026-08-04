@@ -1,0 +1,100 @@
+{
+  "DocumentFragment.Read": {
+    "PolicyKey": "DocumentFragment.Read",
+    "DomainKey": "documentfragments",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentfragments"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentfragments/lookup"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentfragments/options/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentfragments/suggest/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentfragments/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "DocumentFragment.Update": {
+    "PolicyKey": "DocumentFragment.Update",
+    "DomainKey": "documentfragments",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "put:/api/documentfragments/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "DocumentRevision.Create": {
+    "PolicyKey": "DocumentRevision.Create",
+    "DomainKey": "documentrevisions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "post:/api/documentrevisions"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "DocumentRevision.Delete": {
+    "PolicyKey": "DocumentRevision.Delete",
+    "DomainKey": "documentrevisions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "delete:/api/documentrevisions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "DocumentRevision.Read": {
+    "PolicyKey": "DocumentRevision.Read",
+    "DomainKey": "documentrevisions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentrevisions"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentrevisions/lookup"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentrevisions/options/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentrevisions/suggest/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/documentrevisions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "DocumentRevision.Update": {
+    "PolicyKey": "DocumentRevision.Update",
+    "DomainKey": "documentrevisions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "put:/api/documentrevisions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  }
+}

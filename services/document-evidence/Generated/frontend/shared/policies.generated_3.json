@@ -1,0 +1,102 @@
+{
+  "Policies": [
+    {
+      "PolicyKey": "ProcessingJob.Read",
+      "DomainKey": "processingjobs",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "ProcessingJob.Update",
+      "DomainKey": "processingjobs",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/processingjobs/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Create",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/roles"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Delete",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/roles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Read",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Update",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/roles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    }
+  ]
+}

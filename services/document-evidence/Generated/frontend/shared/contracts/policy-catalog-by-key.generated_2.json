@@ -1,0 +1,84 @@
+{
+  "Permission.Create": {
+    "PolicyKey": "Permission.Create",
+    "DomainKey": "permissions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "post:/api/permissions"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "Permission.Delete": {
+    "PolicyKey": "Permission.Delete",
+    "DomainKey": "permissions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "delete:/api/permissions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "Permission.Read": {
+    "PolicyKey": "Permission.Read",
+    "DomainKey": "permissions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/permissions"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/permissions/lookup"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/permissions/options/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/permissions/suggest/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/permissions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "Permission.Update": {
+    "PolicyKey": "Permission.Update",
+    "DomainKey": "permissions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "put:/api/permissions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "ProcessingJob.Create": {
+    "PolicyKey": "ProcessingJob.Create",
+    "DomainKey": "processingjobs",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "post:/api/processingjobs"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "ProcessingJob.Delete": {
+    "PolicyKey": "ProcessingJob.Delete",
+    "DomainKey": "processingjobs",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "delete:/api/processingjobs/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  }
+}

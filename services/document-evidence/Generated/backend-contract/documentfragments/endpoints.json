@@ -1,0 +1,444 @@
+{
+  "DomainKey": "documentfragments",
+  "Endpoints": [
+    {
+      "EndpointKey": "get:/api/documentfragments",
+      "Kind": "query",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "List",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documentfragments",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentResult"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentResult",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "List(ListDocumentFragmentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "post:/api/documentfragments",
+      "Kind": "mutation",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "Create",
+      "HttpMethod": "POST",
+      "RouteTemplate": "/api/documentfragments",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentFragmentRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentFragmentRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Create"
+      ],
+      "ErrorRefs": [
+        "document.fragment.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/documentfragments",
+        "get:/api/documentfragments/lookup",
+        "get:/api/documentfragments/options/{field}",
+        "get:/api/documentfragments/suggest/{field}",
+        "get:/api/documentfragments/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "Create(CreateDocumentFragmentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documentfragments/lookup",
+      "Kind": "query",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "Lookup",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documentfragments/lookup",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupDocumentFragmentRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentLookupDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentLookupDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "Lookup(LookupDocumentFragmentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documentfragments/options/{field}",
+      "Kind": "query",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "Options",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documentfragments/options/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentOptionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentOptionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "Options(String field, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documentfragments/suggest/{field}",
+      "Kind": "query",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "Suggest",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documentfragments/suggest/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          },
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestDocumentFragmentRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentSuggestionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentSuggestionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "Suggest(String field, SuggestDocumentFragmentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "delete:/api/documentfragments/{id}",
+      "Kind": "mutation",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "Delete",
+      "HttpMethod": "DELETE",
+      "RouteTemplate": "/api/documentfragments/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "none",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Cancellable": true
+      },
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Delete"
+      ],
+      "ErrorRefs": [
+        "document.fragment.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/documentfragments",
+        "get:/api/documentfragments/lookup",
+        "get:/api/documentfragments/options/{field}",
+        "get:/api/documentfragments/suggest/{field}",
+        "get:/api/documentfragments/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "Delete(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documentfragments/{id}",
+      "Kind": "query",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "Get",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documentfragments/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Read"
+      ],
+      "ErrorRefs": [
+        "document.fragment.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "Get(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "put:/api/documentfragments/{id}",
+      "Kind": "mutation",
+      "ControllerName": "DocumentFragmentController",
+      "MethodName": "Update",
+      "HttpMethod": "PUT",
+      "RouteTemplate": "/api/documentfragments/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentFragmentRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentFragmentRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "DocumentFragment.Update"
+      ],
+      "ErrorRefs": [
+        "document.fragment.not_found",
+        "document.fragment.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/documentfragments",
+        "get:/api/documentfragments/lookup",
+        "get:/api/documentfragments/options/{field}",
+        "get:/api/documentfragments/suggest/{field}",
+        "get:/api/documentfragments/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documentfragments"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+        "MethodClrSignature": "Update(Guid id, UpdateDocumentFragmentRequest request, CancellationToken cancellationToken)"
+      }
+    }
+  ]
+}

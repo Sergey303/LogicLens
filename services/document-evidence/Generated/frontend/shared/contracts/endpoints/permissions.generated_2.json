@@ -1,0 +1,71 @@
+{
+  "get:/api/permissions/lookup": {
+    "endpointKey": "get:/api/permissions/lookup",
+    "domainKey": "permissions",
+    "kind": "query",
+    "controllerName": "PermissionController",
+    "methodName": "Lookup",
+    "httpMethod": "GET",
+    "routeTemplate": "/api/permissions/lookup",
+    "routeAliases": [],
+    "tags": [
+      "permissions"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.PermissionController",
+      "MethodClrSignature": "Lookup(LookupPermissionRequest request, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "none",
+      "requestContentType": null,
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [
+        {
+          "inputKey": "request",
+          "bindingSource": "query",
+          "name": "request",
+          "wireName": "request",
+          "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupPermissionRequest",
+          "nullable": false,
+          "required": true
+        }
+      ],
+      "requestBody": null,
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionLookupDto>",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Read"
+    ],
+    "errorRefs": [],
+    "invalidatesEndpointKeys": [],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": null,
+    "responseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionLookupDto>",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}

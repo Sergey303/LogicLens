@@ -1,0 +1,86 @@
+{
+  "Policies": [
+    {
+      "PolicyKey": "Document.Create",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/documents"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Document.Delete",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/documents/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Document.Read",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Document.Update",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/documents/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentFragment.Create",
+      "DomainKey": "documentfragments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/documentfragments"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentFragment.Delete",
+      "DomainKey": "documentfragments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/documentfragments/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "put:/api/storedobjects/{id}": {
+    "endpointKey": "put:/api/storedobjects/{id}",
+    "domainKey": "storedobjects",
+    "kind": "mutation",
+    "controllerName": "StoredObjectController",
+    "methodName": "Update",
+    "httpMethod": "PUT",
+    "routeTemplate": "/api/storedobjects/{id}",
+    "routeAliases": [],
+    "tags": [
+      "storedobjects"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+      "MethodClrSignature": "Update(Guid id, UpdateStoredObjectRequest request, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "json",
+      "requestContentType": "application/json",
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [
+        {
+          "inputKey": "id",
+          "bindingSource": "route",
+          "name": "id",
+          "wireName": "id",
+          "typeRef": "shared:guid",
+          "nullable": false,
+          "required": true
+        }
+      ],
+      "requestBody": {
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateStoredObjectRequest",
+        "required": true
+      },
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Update"
+    ],
+    "errorRefs": [
+      "stored.object.not_found",
+      "stored.object.validation_failed"
+    ],
+    "invalidatesEndpointKeys": [
+      "get:/api/storedobjects",
+      "get:/api/storedobjects/lookup",
+      "get:/api/storedobjects/options/{field}",
+      "get:/api/storedobjects/suggest/{field}",
+      "get:/api/storedobjects/{id}"
+    ],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateStoredObjectRequest",
+    "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}

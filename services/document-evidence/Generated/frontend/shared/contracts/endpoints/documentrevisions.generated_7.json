@@ -1,0 +1,83 @@
+{
+  "put:/api/documentrevisions/{id}": {
+    "endpointKey": "put:/api/documentrevisions/{id}",
+    "domainKey": "documentrevisions",
+    "kind": "mutation",
+    "controllerName": "DocumentRevisionController",
+    "methodName": "Update",
+    "httpMethod": "PUT",
+    "routeTemplate": "/api/documentrevisions/{id}",
+    "routeAliases": [],
+    "tags": [
+      "documentrevisions"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentRevisionController",
+      "MethodClrSignature": "Update(Guid id, UpdateDocumentRevisionRequest request, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "json",
+      "requestContentType": "application/json",
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [
+        {
+          "inputKey": "id",
+          "bindingSource": "route",
+          "name": "id",
+          "wireName": "id",
+          "typeRef": "shared:guid",
+          "nullable": false,
+          "required": true
+        }
+      ],
+      "requestBody": {
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentRevisionRequest",
+        "required": true
+      },
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Update"
+    ],
+    "errorRefs": [
+      "document.revision.not_found",
+      "document.revision.validation_failed"
+    ],
+    "invalidatesEndpointKeys": [
+      "get:/api/documentrevisions",
+      "get:/api/documentrevisions/lookup",
+      "get:/api/documentrevisions/options/{field}",
+      "get:/api/documentrevisions/suggest/{field}",
+      "get:/api/documentrevisions/{id}"
+    ],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentRevisionRequest",
+    "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "Policies": [
+    {
+      "PolicyKey": "RolePermission.Create",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/rolepermissions"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "RolePermission.Delete",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/rolepermissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "RolePermission.Read",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "RolePermission.Update",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/rolepermissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPosition.Create",
+      "DomainKey": "staffpositions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/staffpositions"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPosition.Delete",
+      "DomainKey": "staffpositions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/staffpositions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    }
+  ]
+}

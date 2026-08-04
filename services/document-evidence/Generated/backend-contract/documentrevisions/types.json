@@ -1,0 +1,507 @@
+{
+  "DomainKey": "documentrevisions",
+  "Types": [
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentRevisionRequest",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Adapter",
+          "WireName": "adapter",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "AdapterVersion",
+          "WireName": "adapterVersion",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "DocumentId",
+          "WireName": "documentId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "ManifestHash",
+          "WireName": "manifestHash",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "RevisionNumber",
+          "WireName": "revisionNumber",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "State",
+          "WireName": "state",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StoredObjectId",
+          "WireName": "storedObjectId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Adapter",
+          "WireName": "adapter",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "AdapterVersion",
+          "WireName": "adapterVersion",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "DocumentId",
+          "WireName": "documentId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Id",
+          "WireName": "id",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "ManifestHash",
+          "WireName": "manifestHash",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "RevisionNumber",
+          "WireName": "revisionNumber",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "State",
+          "WireName": "state",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StoredObjectId",
+          "WireName": "storedObjectId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionLookupDto",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionOptionDto",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionSuggestionDto",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionFilter",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Operator",
+          "WireName": "operator",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Values",
+          "WireName": "values",
+          "TypeRef": "array<shared:string>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionRequest",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Filters",
+          "WireName": "filters",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionFilter>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sort",
+          "WireName": "sort",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionSort>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionResult",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Items",
+          "WireName": "items",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "TotalCount",
+          "WireName": "totalCount",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionSort",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Direction",
+          "WireName": "direction",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupDocumentRevisionRequest",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestDocumentRevisionRequest",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentRevisionRequest",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Adapter",
+          "WireName": "adapter",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "AdapterVersion",
+          "WireName": "adapterVersion",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "DocumentId",
+          "WireName": "documentId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "ManifestHash",
+          "WireName": "manifestHash",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "RevisionNumber",
+          "WireName": "revisionNumber",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "State",
+          "WireName": "state",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StoredObjectId",
+          "WireName": "storedObjectId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto>",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionLookupDto>",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionLookupDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionOptionDto>",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionOptionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionSuggestionDto>",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentRevisionSuggestionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionFilter>",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionFilter"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionSort>",
+      "OwningDomainKey": "documentrevisions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRevisionSort"
+    }
+  ]
+}

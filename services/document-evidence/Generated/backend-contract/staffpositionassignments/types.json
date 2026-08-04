@@ -1,0 +1,549 @@
+{
+  "DomainKey": "staffpositionassignments",
+  "Types": [
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateStaffPositionAssignmentRequest",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "AssignmentKind",
+          "WireName": "assignmentKind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "EndsAt",
+          "WireName": "endsAt",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "EndsAtUtc",
+          "WireName": "endsAtUtc",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "IsActive",
+          "WireName": "isActive",
+          "TypeRef": "shared:boolean",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Reason",
+          "WireName": "reason",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "StaffPositionId",
+          "WireName": "staffPositionId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StartsAt",
+          "WireName": "startsAt",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StartsAtUtc",
+          "WireName": "startsAtUtc",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "UserId",
+          "WireName": "userId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentFilter",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Operator",
+          "WireName": "operator",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Values",
+          "WireName": "values",
+          "TypeRef": "array<shared:string>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentRequest",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Filters",
+          "WireName": "filters",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentFilter>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sort",
+          "WireName": "sort",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentSort>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentResult",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Items",
+          "WireName": "items",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentDto>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "TotalCount",
+          "WireName": "totalCount",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentSort",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Direction",
+          "WireName": "direction",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupStaffPositionAssignmentRequest",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentDto",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "AssignmentKind",
+          "WireName": "assignmentKind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "EndsAt",
+          "WireName": "endsAt",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "EndsAtUtc",
+          "WireName": "endsAtUtc",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Id",
+          "WireName": "id",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "IsActive",
+          "WireName": "isActive",
+          "TypeRef": "shared:boolean",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Reason",
+          "WireName": "reason",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "StaffPositionId",
+          "WireName": "staffPositionId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StartsAt",
+          "WireName": "startsAt",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StartsAtUtc",
+          "WireName": "startsAtUtc",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "UserId",
+          "WireName": "userId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentLookupDto",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentOptionDto",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentSuggestionDto",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestStaffPositionAssignmentRequest",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateStaffPositionAssignmentRequest",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "AssignmentKind",
+          "WireName": "assignmentKind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "EndsAt",
+          "WireName": "endsAt",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "EndsAtUtc",
+          "WireName": "endsAtUtc",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "IsActive",
+          "WireName": "isActive",
+          "TypeRef": "shared:boolean",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Reason",
+          "WireName": "reason",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "StaffPositionId",
+          "WireName": "staffPositionId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StartsAt",
+          "WireName": "startsAt",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "StartsAtUtc",
+          "WireName": "startsAtUtc",
+          "TypeRef": "shared:datetimeoffset",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "UserId",
+          "WireName": "userId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentFilter>",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentFilter"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentSort>",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListStaffPositionAssignmentSort"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentDto>",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentLookupDto>",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentLookupDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentOptionDto>",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentOptionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentSuggestionDto>",
+      "OwningDomainKey": "staffpositionassignments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionAssignmentSuggestionDto"
+    }
+  ]
+}

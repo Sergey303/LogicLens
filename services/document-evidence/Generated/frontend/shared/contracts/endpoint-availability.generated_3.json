@@ -1,0 +1,110 @@
+{
+  "get:/api/staffpositionroles/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Read"
+    ]
+  },
+  "get:/api/staffpositionroles/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Read"
+    ]
+  },
+  "get:/api/staffpositions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Read"
+    ]
+  },
+  "get:/api/staffpositions/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Read"
+    ]
+  },
+  "get:/api/staffpositions/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Read"
+    ]
+  },
+  "get:/api/staffpositions/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Read"
+    ]
+  },
+  "get:/api/staffpositions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Read"
+    ]
+  },
+  "get:/api/storedobjects": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Read"
+    ]
+  },
+  "get:/api/storedobjects/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Read"
+    ]
+  },
+  "get:/api/storedobjects/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Read"
+    ]
+  },
+  "get:/api/storedobjects/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Read"
+    ]
+  },
+  "get:/api/storedobjects/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Read"
+    ]
+  },
+  "post:/api/documentfragments": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Create"
+    ]
+  },
+  "post:/api/documentrevisions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Create"
+    ]
+  },
+  "post:/api/documents": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Create"
+    ]
+  },
+  "post:/api/permissions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Create"
+    ]
+  },
+  "post:/api/processingjobs": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Create"
+    ]
+  },
+  "post:/api/rolepermissions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Create"
+    ]
+  }
+}

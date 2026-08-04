@@ -1,0 +1,56 @@
+{
+  "kind": "appforge-generated-admin-production-package",
+  "version": 2,
+  "generatedAtUtc": "2026-08-04T12:33:48.9676450Z",
+  "spec": {
+    "inputPath": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\spec\\document-evidence.md",
+    "fullPath": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\spec\\document-evidence.md",
+    "sha256": "eda92de5c6baca45923a6875dfd6ed4b7cefe68d64d0ac6001269ab42007c5c7"
+  },
+  "generator": {
+    "name": "AppForge.MdToDomain",
+    "version": "0.1.0",
+    "entrypoint": "scripts/quality/run-md-ef-core-production-package.ps1"
+  },
+  "generatedIdentity": {
+    "modelId": "Document Evidence Operational Model",
+    "solutionName": "DocumentEvidenceOperationalModel",
+    "solutionFileName": "DocumentEvidenceOperationalModel.slnx",
+    "projectName": "DocumentEvidenceOperationalModel.Persistence",
+    "projectFileName": "DocumentEvidenceOperationalModel.Persistence.csproj",
+    "assemblyName": "DocumentEvidenceOperationalModel.Persistence",
+    "assemblyFileName": "DocumentEvidenceOperationalModel.Persistence.dll",
+    "rootNamespace": "DocumentEvidenceOperationalModel",
+    "dbContextName": "DocumentEvidenceOperationalModelDbContext",
+    "databaseName": "document_evidence_operational_model"
+  },
+  "runtimeProfile": "production",
+  "generatedOutputRoots": {
+    "packageRoot": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated",
+    "backend": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend",
+    "backendContract": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend-contract",
+    "frontend": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\frontend",
+    "frontendApp": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\frontend-app",
+    "deploy": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\deploy\\production",
+    "manifest": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\manifest",
+    "docs": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\docs"
+  },
+  "verificationCommands": [
+    "dotnet build \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend\\DocumentEvidenceOperationalModel.Persistence.csproj\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend\\DocumentEvidenceOperationalModel.slnx\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend\\Migrations\\AppForgeGeneratedMigrations.idempotent.sql\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend-contract\\meta\\domains.json\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\frontend\\runtime\\httpClient.ts\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\frontend-app\\dist\\index.html\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\deploy\\production\\docker-compose.production.yml\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\deploy\\production\\.env.production.example\"",
+    "Test-Path \"D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\manifest\\package-manifest.json\""
+  ],
+  "notes": [
+    "Project, solution, assembly, database and DbContext identity are derived from the source model and stored in the backend generation manifest.",
+    "This package preserves an existing EF migration chain when a previous package is supplied or the same OutputRoot is regenerated with -Clean.",
+    "This package includes full-chain idempotent migration SQL under backend/Migrations.",
+    "This package includes canonical backend-contract JSON, domain-scoped TypeScript, generated React/PrimeReact admin components and pages, and a built Vite bundle.",
+    "This package includes a self-contained single-VPS Docker Compose deploy preset under deploy/production."
+  ]
+}

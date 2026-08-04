@@ -1,0 +1,486 @@
+{
+  "DomainKey": "documentfragments",
+  "Types": [
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentFragmentRequest",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "AnchorJson",
+          "WireName": "anchorJson",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "ContentHash",
+          "WireName": "contentHash",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "DocumentRevisionId",
+          "WireName": "documentRevisionId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Kind",
+          "WireName": "kind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sequence",
+          "WireName": "sequence",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Text",
+          "WireName": "text",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "AnchorJson",
+          "WireName": "anchorJson",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "ContentHash",
+          "WireName": "contentHash",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "DocumentRevisionId",
+          "WireName": "documentRevisionId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Id",
+          "WireName": "id",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Kind",
+          "WireName": "kind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sequence",
+          "WireName": "sequence",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Text",
+          "WireName": "text",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentLookupDto",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentOptionDto",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentSuggestionDto",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentFilter",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Operator",
+          "WireName": "operator",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Values",
+          "WireName": "values",
+          "TypeRef": "array<shared:string>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentRequest",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Filters",
+          "WireName": "filters",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentFilter>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sort",
+          "WireName": "sort",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentSort>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentResult",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Items",
+          "WireName": "items",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "TotalCount",
+          "WireName": "totalCount",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentSort",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Direction",
+          "WireName": "direction",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupDocumentFragmentRequest",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestDocumentFragmentRequest",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentFragmentRequest",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "AnchorJson",
+          "WireName": "anchorJson",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "ContentHash",
+          "WireName": "contentHash",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "DocumentRevisionId",
+          "WireName": "documentRevisionId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Kind",
+          "WireName": "kind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sequence",
+          "WireName": "sequence",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Text",
+          "WireName": "text",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto>",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentLookupDto>",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentLookupDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentOptionDto>",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentOptionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentSuggestionDto>",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentSuggestionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentFilter>",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentFilter"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentSort>",
+      "OwningDomainKey": "documentfragments",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFragmentSort"
+    }
+  ]
+}

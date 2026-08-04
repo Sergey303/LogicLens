@@ -1,0 +1,72 @@
+{
+  "post:/api/storedobjects": {
+    "endpointKey": "post:/api/storedobjects",
+    "domainKey": "storedobjects",
+    "kind": "mutation",
+    "controllerName": "StoredObjectController",
+    "methodName": "Create",
+    "httpMethod": "POST",
+    "routeTemplate": "/api/storedobjects",
+    "routeAliases": [],
+    "tags": [
+      "storedobjects"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StoredObjectController",
+      "MethodClrSignature": "Create(CreateStoredObjectRequest request, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "json",
+      "requestContentType": "application/json",
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [],
+      "requestBody": {
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateStoredObjectRequest",
+        "required": true
+      },
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Create"
+    ],
+    "errorRefs": [
+      "stored.object.validation_failed"
+    ],
+    "invalidatesEndpointKeys": [
+      "get:/api/storedobjects",
+      "get:/api/storedobjects/lookup",
+      "get:/api/storedobjects/options/{field}",
+      "get:/api/storedobjects/suggest/{field}",
+      "get:/api/storedobjects/{id}"
+    ],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateStoredObjectRequest",
+    "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StoredObjectDto",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}

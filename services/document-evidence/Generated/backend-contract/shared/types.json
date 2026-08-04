@@ -1,0 +1,15 @@
+{
+  "DomainKey": "shared",
+  "Types": [
+    {
+      "TypeKey": "array<shared:string>",
+      "OwningDomainKey": "shared",
+      "IsShared": true,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "shared:string"
+    }
+  ]
+}

@@ -1,0 +1,444 @@
+{
+  "DomainKey": "documents",
+  "Endpoints": [
+    {
+      "EndpointKey": "get:/api/documents",
+      "Kind": "query",
+      "ControllerName": "DocumentController",
+      "MethodName": "List",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documents",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentResult"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentResult",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "List(ListDocumentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "post:/api/documents",
+      "Kind": "mutation",
+      "ControllerName": "DocumentController",
+      "MethodName": "Create",
+      "HttpMethod": "POST",
+      "RouteTemplate": "/api/documents",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Create"
+      ],
+      "ErrorRefs": [
+        "document.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/documents",
+        "get:/api/documents/lookup",
+        "get:/api/documents/options/{field}",
+        "get:/api/documents/suggest/{field}",
+        "get:/api/documents/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "Create(CreateDocumentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documents/lookup",
+      "Kind": "query",
+      "ControllerName": "DocumentController",
+      "MethodName": "Lookup",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documents/lookup",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupDocumentRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentLookupDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentLookupDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "Lookup(LookupDocumentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documents/options/{field}",
+      "Kind": "query",
+      "ControllerName": "DocumentController",
+      "MethodName": "Options",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documents/options/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentOptionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentOptionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "Options(String field, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documents/suggest/{field}",
+      "Kind": "query",
+      "ControllerName": "DocumentController",
+      "MethodName": "Suggest",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documents/suggest/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          },
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestDocumentRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentSuggestionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentSuggestionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "Suggest(String field, SuggestDocumentRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "delete:/api/documents/{id}",
+      "Kind": "mutation",
+      "ControllerName": "DocumentController",
+      "MethodName": "Delete",
+      "HttpMethod": "DELETE",
+      "RouteTemplate": "/api/documents/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "none",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Cancellable": true
+      },
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Delete"
+      ],
+      "ErrorRefs": [
+        "document.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/documents",
+        "get:/api/documents/lookup",
+        "get:/api/documents/options/{field}",
+        "get:/api/documents/suggest/{field}",
+        "get:/api/documents/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "Delete(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/documents/{id}",
+      "Kind": "query",
+      "ControllerName": "DocumentController",
+      "MethodName": "Get",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/documents/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Read"
+      ],
+      "ErrorRefs": [
+        "document.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "Get(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "put:/api/documents/{id}",
+      "Kind": "mutation",
+      "ControllerName": "DocumentController",
+      "MethodName": "Update",
+      "HttpMethod": "PUT",
+      "RouteTemplate": "/api/documents/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Document.Update"
+      ],
+      "ErrorRefs": [
+        "document.not_found",
+        "document.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/documents",
+        "get:/api/documents/lookup",
+        "get:/api/documents/options/{field}",
+        "get:/api/documents/suggest/{field}",
+        "get:/api/documents/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "documents"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentController",
+        "MethodClrSignature": "Update(Guid id, UpdateDocumentRequest request, CancellationToken cancellationToken)"
+      }
+    }
+  ]
+}

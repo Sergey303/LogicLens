@@ -1,0 +1,110 @@
+{
+  "Document.Create": {
+    "policyKey": "Document.Create",
+    "policyKind": "availability"
+  },
+  "Document.Delete": {
+    "policyKey": "Document.Delete",
+    "policyKind": "availability"
+  },
+  "Document.Read": {
+    "policyKey": "Document.Read",
+    "policyKind": "availability"
+  },
+  "Document.Update": {
+    "policyKey": "Document.Update",
+    "policyKind": "availability"
+  },
+  "DocumentFragment.Create": {
+    "policyKey": "DocumentFragment.Create",
+    "policyKind": "availability"
+  },
+  "DocumentFragment.Delete": {
+    "policyKey": "DocumentFragment.Delete",
+    "policyKind": "availability"
+  },
+  "DocumentFragment.Read": {
+    "policyKey": "DocumentFragment.Read",
+    "policyKind": "availability"
+  },
+  "DocumentFragment.Update": {
+    "policyKey": "DocumentFragment.Update",
+    "policyKind": "availability"
+  },
+  "DocumentRevision.Create": {
+    "policyKey": "DocumentRevision.Create",
+    "policyKind": "availability"
+  },
+  "DocumentRevision.Delete": {
+    "policyKey": "DocumentRevision.Delete",
+    "policyKind": "availability"
+  },
+  "DocumentRevision.Read": {
+    "policyKey": "DocumentRevision.Read",
+    "policyKind": "availability"
+  },
+  "DocumentRevision.Update": {
+    "policyKey": "DocumentRevision.Update",
+    "policyKind": "availability"
+  },
+  "Permission.Create": {
+    "policyKey": "Permission.Create",
+    "policyKind": "availability"
+  },
+  "Permission.Delete": {
+    "policyKey": "Permission.Delete",
+    "policyKind": "availability"
+  },
+  "Permission.Read": {
+    "policyKey": "Permission.Read",
+    "policyKind": "availability"
+  },
+  "Permission.Update": {
+    "policyKey": "Permission.Update",
+    "policyKind": "availability"
+  },
+  "ProcessingJob.Create": {
+    "policyKey": "ProcessingJob.Create",
+    "policyKind": "availability"
+  },
+  "ProcessingJob.Delete": {
+    "policyKey": "ProcessingJob.Delete",
+    "policyKind": "availability"
+  },
+  "ProcessingJob.Read": {
+    "policyKey": "ProcessingJob.Read",
+    "policyKind": "availability"
+  },
+  "ProcessingJob.Update": {
+    "policyKey": "ProcessingJob.Update",
+    "policyKind": "availability"
+  },
+  "Role.Create": {
+    "policyKey": "Role.Create",
+    "policyKind": "availability"
+  },
+  "Role.Delete": {
+    "policyKey": "Role.Delete",
+    "policyKind": "availability"
+  },
+  "Role.Read": {
+    "policyKey": "Role.Read",
+    "policyKind": "availability"
+  },
+  "Role.Update": {
+    "policyKey": "Role.Update",
+    "policyKind": "availability"
+  },
+  "RolePermission.Create": {
+    "policyKey": "RolePermission.Create",
+    "policyKind": "availability"
+  },
+  "RolePermission.Delete": {
+    "policyKey": "RolePermission.Delete",
+    "policyKind": "availability"
+  },
+  "RolePermission.Read": {
+    "policyKey": "RolePermission.Read",
+    "policyKind": "availability"
+  }
+}

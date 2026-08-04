@@ -1,0 +1,83 @@
+{
+  "put:/api/documentfragments/{id}": {
+    "endpointKey": "put:/api/documentfragments/{id}",
+    "domainKey": "documentfragments",
+    "kind": "mutation",
+    "controllerName": "DocumentFragmentController",
+    "methodName": "Update",
+    "httpMethod": "PUT",
+    "routeTemplate": "/api/documentfragments/{id}",
+    "routeAliases": [],
+    "tags": [
+      "documentfragments"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.DocumentFragmentController",
+      "MethodClrSignature": "Update(Guid id, UpdateDocumentFragmentRequest request, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "json",
+      "requestContentType": "application/json",
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [
+        {
+          "inputKey": "id",
+          "bindingSource": "route",
+          "name": "id",
+          "wireName": "id",
+          "typeRef": "shared:guid",
+          "nullable": false,
+          "required": true
+        }
+      ],
+      "requestBody": {
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentFragmentRequest",
+        "required": true
+      },
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Update"
+    ],
+    "errorRefs": [
+      "document.fragment.not_found",
+      "document.fragment.validation_failed"
+    ],
+    "invalidatesEndpointKeys": [
+      "get:/api/documentfragments",
+      "get:/api/documentfragments/lookup",
+      "get:/api/documentfragments/options/{field}",
+      "get:/api/documentfragments/suggest/{field}",
+      "get:/api/documentfragments/{id}"
+    ],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentFragmentRequest",
+    "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}

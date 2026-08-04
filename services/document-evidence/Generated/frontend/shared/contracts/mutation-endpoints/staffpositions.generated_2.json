@@ -1,0 +1,83 @@
+{
+  "put:/api/staffpositions/{id}": {
+    "endpointKey": "put:/api/staffpositions/{id}",
+    "domainKey": "staffpositions",
+    "kind": "mutation",
+    "controllerName": "StaffPositionController",
+    "methodName": "Update",
+    "httpMethod": "PUT",
+    "routeTemplate": "/api/staffpositions/{id}",
+    "routeAliases": [],
+    "tags": [
+      "staffpositions"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.StaffPositionController",
+      "MethodClrSignature": "Update(Guid id, UpdateStaffPositionRequest request, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "json",
+      "requestContentType": "application/json",
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [
+        {
+          "inputKey": "id",
+          "bindingSource": "route",
+          "name": "id",
+          "wireName": "id",
+          "typeRef": "shared:guid",
+          "nullable": false,
+          "required": true
+        }
+      ],
+      "requestBody": {
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateStaffPositionRequest",
+        "required": true
+      },
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionDto",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Update"
+    ],
+    "errorRefs": [
+      "staff.position.not_found",
+      "staff.position.validation_failed"
+    ],
+    "invalidatesEndpointKeys": [
+      "get:/api/staffpositions",
+      "get:/api/staffpositions/lookup",
+      "get:/api/staffpositions/options/{field}",
+      "get:/api/staffpositions/suggest/{field}",
+      "get:/api/staffpositions/{id}"
+    ],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateStaffPositionRequest",
+    "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionDto",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}

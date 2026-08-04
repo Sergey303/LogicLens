@@ -1,0 +1,444 @@
+{
+  "DomainKey": "processingjobs",
+  "Endpoints": [
+    {
+      "EndpointKey": "get:/api/processingjobs",
+      "Kind": "query",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "List",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/processingjobs",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListProcessingJobRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListProcessingJobResult"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListProcessingJobResult",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "List(ListProcessingJobRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "post:/api/processingjobs",
+      "Kind": "mutation",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "Create",
+      "HttpMethod": "POST",
+      "RouteTemplate": "/api/processingjobs",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateProcessingJobRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateProcessingJobRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Create"
+      ],
+      "ErrorRefs": [
+        "processing.job.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/processingjobs",
+        "get:/api/processingjobs/lookup",
+        "get:/api/processingjobs/options/{field}",
+        "get:/api/processingjobs/suggest/{field}",
+        "get:/api/processingjobs/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "Create(CreateProcessingJobRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/processingjobs/lookup",
+      "Kind": "query",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "Lookup",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/processingjobs/lookup",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupProcessingJobRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobLookupDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobLookupDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "Lookup(LookupProcessingJobRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/processingjobs/options/{field}",
+      "Kind": "query",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "Options",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/processingjobs/options/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobOptionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobOptionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "Options(String field, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/processingjobs/suggest/{field}",
+      "Kind": "query",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "Suggest",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/processingjobs/suggest/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          },
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestProcessingJobRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobSuggestionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobSuggestionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "Suggest(String field, SuggestProcessingJobRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "delete:/api/processingjobs/{id}",
+      "Kind": "mutation",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "Delete",
+      "HttpMethod": "DELETE",
+      "RouteTemplate": "/api/processingjobs/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "none",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Cancellable": true
+      },
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Delete"
+      ],
+      "ErrorRefs": [
+        "processing.job.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/processingjobs",
+        "get:/api/processingjobs/lookup",
+        "get:/api/processingjobs/options/{field}",
+        "get:/api/processingjobs/suggest/{field}",
+        "get:/api/processingjobs/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "Delete(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/processingjobs/{id}",
+      "Kind": "query",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "Get",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/processingjobs/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Read"
+      ],
+      "ErrorRefs": [
+        "processing.job.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "Get(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "put:/api/processingjobs/{id}",
+      "Kind": "mutation",
+      "ControllerName": "ProcessingJobController",
+      "MethodName": "Update",
+      "HttpMethod": "PUT",
+      "RouteTemplate": "/api/processingjobs/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateProcessingJobRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateProcessingJobRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "ProcessingJob.Update"
+      ],
+      "ErrorRefs": [
+        "processing.job.not_found",
+        "processing.job.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/processingjobs",
+        "get:/api/processingjobs/lookup",
+        "get:/api/processingjobs/options/{field}",
+        "get:/api/processingjobs/suggest/{field}",
+        "get:/api/processingjobs/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "processingjobs"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.ProcessingJobController",
+        "MethodClrSignature": "Update(Guid id, UpdateProcessingJobRequest request, CancellationToken cancellationToken)"
+      }
+    }
+  ]
+}

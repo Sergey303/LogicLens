@@ -1,0 +1,26 @@
+{
+  "Codes": [
+    "document.fragment.not_found",
+    "document.fragment.validation_failed",
+    "document.not_found",
+    "document.revision.not_found",
+    "document.revision.validation_failed",
+    "document.validation_failed",
+    "permission.not_found",
+    "permission.validation_failed",
+    "processing.job.not_found",
+    "processing.job.validation_failed",
+    "role.not_found",
+    "role.permission.not_found",
+    "role.permission.validation_failed",
+    "role.validation_failed",
+    "staff.position.assignment.not_found",
+    "staff.position.assignment.validation_failed",
+    "staff.position.not_found",
+    "staff.position.role.not_found",
+    "staff.position.role.validation_failed",
+    "staff.position.validation_failed",
+    "stored.object.not_found",
+    "stored.object.validation_failed"
+  ]
+}

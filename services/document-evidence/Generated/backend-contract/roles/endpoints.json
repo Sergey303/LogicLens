@@ -1,0 +1,444 @@
+{
+  "DomainKey": "roles",
+  "Endpoints": [
+    {
+      "EndpointKey": "get:/api/roles",
+      "Kind": "query",
+      "ControllerName": "RoleController",
+      "MethodName": "List",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/roles",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListRoleRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListRoleResult"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListRoleResult",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "List(ListRoleRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "post:/api/roles",
+      "Kind": "mutation",
+      "ControllerName": "RoleController",
+      "MethodName": "Create",
+      "HttpMethod": "POST",
+      "RouteTemplate": "/api/roles",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateRoleRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateRoleRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Create"
+      ],
+      "ErrorRefs": [
+        "role.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/roles",
+        "get:/api/roles/lookup",
+        "get:/api/roles/options/{field}",
+        "get:/api/roles/suggest/{field}",
+        "get:/api/roles/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "Create(CreateRoleRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/roles/lookup",
+      "Kind": "query",
+      "ControllerName": "RoleController",
+      "MethodName": "Lookup",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/roles/lookup",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupRoleRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleLookupDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleLookupDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "Lookup(LookupRoleRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/roles/options/{field}",
+      "Kind": "query",
+      "ControllerName": "RoleController",
+      "MethodName": "Options",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/roles/options/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleOptionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleOptionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "Options(String field, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/roles/suggest/{field}",
+      "Kind": "query",
+      "ControllerName": "RoleController",
+      "MethodName": "Suggest",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/roles/suggest/{field}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "field",
+            "BindingSource": "route",
+            "Name": "field",
+            "WireName": "field",
+            "TypeRef": "shared:string",
+            "Nullable": false,
+            "Required": true
+          },
+          {
+            "InputKey": "request",
+            "BindingSource": "query",
+            "Name": "request",
+            "WireName": "request",
+            "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestRoleRequest",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleSuggestionDto>"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleSuggestionDto>",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Read"
+      ],
+      "ErrorRefs": [],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "Suggest(String field, SuggestRoleRequest request, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "delete:/api/roles/{id}",
+      "Kind": "mutation",
+      "ControllerName": "RoleController",
+      "MethodName": "Delete",
+      "HttpMethod": "DELETE",
+      "RouteTemplate": "/api/roles/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "none",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Cancellable": true
+      },
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Delete"
+      ],
+      "ErrorRefs": [
+        "role.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/roles",
+        "get:/api/roles/lookup",
+        "get:/api/roles/options/{field}",
+        "get:/api/roles/suggest/{field}",
+        "get:/api/roles/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "Delete(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "get:/api/roles/{id}",
+      "Kind": "query",
+      "ControllerName": "RoleController",
+      "MethodName": "Get",
+      "HttpMethod": "GET",
+      "RouteTemplate": "/api/roles/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "none",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleDto"
+        },
+        "Cancellable": true
+      },
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Read"
+      ],
+      "ErrorRefs": [
+        "role.not_found"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "Get(Guid id, CancellationToken cancellationToken)"
+      }
+    },
+    {
+      "EndpointKey": "put:/api/roles/{id}",
+      "Kind": "mutation",
+      "ControllerName": "RoleController",
+      "MethodName": "Update",
+      "HttpMethod": "PUT",
+      "RouteTemplate": "/api/roles/{id}",
+      "RouteAliases": [],
+      "Transport": {
+        "BodyKind": "json",
+        "RequestContentType": "application/json",
+        "ResponseKind": "json",
+        "ResponseContentType": "application/json",
+        "Inputs": [
+          {
+            "InputKey": "id",
+            "BindingSource": "route",
+            "Name": "id",
+            "WireName": "id",
+            "TypeRef": "shared:guid",
+            "Nullable": false,
+            "Required": true
+          }
+        ],
+        "RequestBody": {
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateRoleRequest",
+          "Required": true
+        },
+        "MultipartParts": [],
+        "Response": {
+          "ResponseKind": "json",
+          "ResponseContentType": "application/json",
+          "TypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleDto"
+        },
+        "Cancellable": true
+      },
+      "RequestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateRoleRequest",
+      "ResponseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleDto",
+      "FeatureKeys": [],
+      "PolicyKeys": [
+        "Role.Update"
+      ],
+      "ErrorRefs": [
+        "role.not_found",
+        "role.validation_failed"
+      ],
+      "Authorization": {
+        "AnonymousAllowed": false,
+        "PolicyNames": []
+      },
+      "InvalidatesEndpointKeys": [
+        "get:/api/roles",
+        "get:/api/roles/lookup",
+        "get:/api/roles/options/{field}",
+        "get:/api/roles/suggest/{field}",
+        "get:/api/roles/{id}"
+      ],
+      "InvalidatedByRealtimeEventKeys": [],
+      "Tags": [
+        "roles"
+      ],
+      "Source": {
+        "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+        "MethodClrSignature": "Update(Guid id, UpdateRoleRequest request, CancellationToken cancellationToken)"
+      }
+    }
+  ]
+}

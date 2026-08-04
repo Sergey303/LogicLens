@@ -1,0 +1,102 @@
+{
+  "documentfragments": [
+    "get:/api/documentfragments",
+    "post:/api/documentfragments",
+    "get:/api/documentfragments/lookup",
+    "get:/api/documentfragments/options/{field}",
+    "get:/api/documentfragments/suggest/{field}",
+    "delete:/api/documentfragments/{id}",
+    "get:/api/documentfragments/{id}",
+    "put:/api/documentfragments/{id}"
+  ],
+  "documentrevisions": [
+    "get:/api/documentrevisions",
+    "post:/api/documentrevisions",
+    "get:/api/documentrevisions/lookup",
+    "get:/api/documentrevisions/options/{field}",
+    "get:/api/documentrevisions/suggest/{field}",
+    "delete:/api/documentrevisions/{id}",
+    "get:/api/documentrevisions/{id}",
+    "put:/api/documentrevisions/{id}"
+  ],
+  "documents": [
+    "get:/api/documents",
+    "post:/api/documents",
+    "get:/api/documents/lookup",
+    "get:/api/documents/options/{field}",
+    "get:/api/documents/suggest/{field}",
+    "delete:/api/documents/{id}",
+    "get:/api/documents/{id}",
+    "put:/api/documents/{id}"
+  ],
+  "permissions": [
+    "get:/api/permissions",
+    "post:/api/permissions",
+    "get:/api/permissions/lookup",
+    "get:/api/permissions/options/{field}",
+    "get:/api/permissions/suggest/{field}",
+    "delete:/api/permissions/{id}",
+    "get:/api/permissions/{id}",
+    "put:/api/permissions/{id}"
+  ],
+  "processingjobs": [
+    "get:/api/processingjobs",
+    "post:/api/processingjobs",
+    "get:/api/processingjobs/lookup",
+    "get:/api/processingjobs/options/{field}",
+    "get:/api/processingjobs/suggest/{field}",
+    "delete:/api/processingjobs/{id}",
+    "get:/api/processingjobs/{id}",
+    "put:/api/processingjobs/{id}"
+  ],
+  "rolepermissions": [
+    "get:/api/rolepermissions",
+    "post:/api/rolepermissions",
+    "get:/api/rolepermissions/lookup",
+    "get:/api/rolepermissions/options/{field}",
+    "get:/api/rolepermissions/suggest/{field}",
+    "delete:/api/rolepermissions/{id}",
+    "get:/api/rolepermissions/{id}",
+    "put:/api/rolepermissions/{id}"
+  ],
+  "roles": [
+    "get:/api/roles",
+    "post:/api/roles",
+    "get:/api/roles/lookup",
+    "get:/api/roles/options/{field}",
+    "get:/api/roles/suggest/{field}",
+    "delete:/api/roles/{id}",
+    "get:/api/roles/{id}",
+    "put:/api/roles/{id}"
+  ],
+  "staffpositionassignments": [
+    "get:/api/staffpositionassignments",
+    "post:/api/staffpositionassignments",
+    "get:/api/staffpositionassignments/lookup",
+    "get:/api/staffpositionassignments/options/{field}",
+    "get:/api/staffpositionassignments/suggest/{field}",
+    "delete:/api/staffpositionassignments/{id}",
+    "get:/api/staffpositionassignments/{id}",
+    "put:/api/staffpositionassignments/{id}"
+  ],
+  "staffpositionroles": [
+    "get:/api/staffpositionroles",
+    "post:/api/staffpositionroles",
+    "get:/api/staffpositionroles/lookup",
+    "get:/api/staffpositionroles/options/{field}",
+    "get:/api/staffpositionroles/suggest/{field}",
+    "delete:/api/staffpositionroles/{id}",
+    "get:/api/staffpositionroles/{id}",
+    "put:/api/staffpositionroles/{id}"
+  ],
+  "staffpositions": [
+    "get:/api/staffpositions",
+    "post:/api/staffpositions",
+    "get:/api/staffpositions/lookup",
+    "get:/api/staffpositions/options/{field}",
+    "get:/api/staffpositions/suggest/{field}",
+    "delete:/api/staffpositions/{id}",
+    "get:/api/staffpositions/{id}",
+    "put:/api/staffpositions/{id}"
+  ]
+}

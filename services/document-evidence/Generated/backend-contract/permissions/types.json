@@ -1,0 +1,402 @@
+{
+  "DomainKey": "permissions",
+  "Types": [
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreatePermissionRequest",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Code",
+          "WireName": "code",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Name",
+          "WireName": "name",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionFilter",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Operator",
+          "WireName": "operator",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Values",
+          "WireName": "values",
+          "TypeRef": "array<shared:string>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionRequest",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Filters",
+          "WireName": "filters",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionFilter>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sort",
+          "WireName": "sort",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionSort>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionResult",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Items",
+          "WireName": "items",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionDto>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "TotalCount",
+          "WireName": "totalCount",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionSort",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Direction",
+          "WireName": "direction",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupPermissionRequest",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionDto",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Code",
+          "WireName": "code",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Id",
+          "WireName": "id",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Name",
+          "WireName": "name",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionLookupDto",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionOptionDto",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionSuggestionDto",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestPermissionRequest",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdatePermissionRequest",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Code",
+          "WireName": "code",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Name",
+          "WireName": "name",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionFilter>",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionFilter"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionSort>",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListPermissionSort"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionDto>",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionLookupDto>",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionLookupDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionOptionDto>",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionOptionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionSuggestionDto>",
+      "OwningDomainKey": "permissions",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.PermissionSuggestionDto"
+    }
+  ]
+}

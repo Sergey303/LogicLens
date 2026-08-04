@@ -1,0 +1,100 @@
+{
+  "StaffPosition.Read": {
+    "PolicyKey": "StaffPosition.Read",
+    "DomainKey": "staffpositions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositions"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositions/lookup"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositions/options/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositions/suggest/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPosition.Update": {
+    "PolicyKey": "StaffPosition.Update",
+    "DomainKey": "staffpositions",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "put:/api/staffpositions/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPositionAssignment.Create": {
+    "PolicyKey": "StaffPositionAssignment.Create",
+    "DomainKey": "staffpositionassignments",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "post:/api/staffpositionassignments"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPositionAssignment.Delete": {
+    "PolicyKey": "StaffPositionAssignment.Delete",
+    "DomainKey": "staffpositionassignments",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "delete:/api/staffpositionassignments/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPositionAssignment.Read": {
+    "PolicyKey": "StaffPositionAssignment.Read",
+    "DomainKey": "staffpositionassignments",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionassignments"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionassignments/lookup"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionassignments/options/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionassignments/suggest/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionassignments/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPositionAssignment.Update": {
+    "PolicyKey": "StaffPositionAssignment.Update",
+    "DomainKey": "staffpositionassignments",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "put:/api/staffpositionassignments/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  }
+}

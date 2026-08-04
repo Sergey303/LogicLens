@@ -1,0 +1,89 @@
+{
+  "Errors": [
+    {
+      "ErrorFamilyKey": "RolePermissionApi",
+      "Codes": [
+        "role.permission.not_found",
+        "role.permission.validation_failed"
+      ],
+      "Entries": [
+        {
+          "Code": "role.permission.not_found",
+          "Domain": "shared"
+        },
+        {
+          "Code": "role.permission.validation_failed",
+          "Domain": "shared"
+        }
+      ]
+    },
+    {
+      "ErrorFamilyKey": "StaffPositionApi",
+      "Codes": [
+        "staff.position.not_found",
+        "staff.position.validation_failed"
+      ],
+      "Entries": [
+        {
+          "Code": "staff.position.not_found",
+          "Domain": "shared"
+        },
+        {
+          "Code": "staff.position.validation_failed",
+          "Domain": "shared"
+        }
+      ]
+    },
+    {
+      "ErrorFamilyKey": "StaffPositionAssignmentApi",
+      "Codes": [
+        "staff.position.assignment.not_found",
+        "staff.position.assignment.validation_failed"
+      ],
+      "Entries": [
+        {
+          "Code": "staff.position.assignment.not_found",
+          "Domain": "shared"
+        },
+        {
+          "Code": "staff.position.assignment.validation_failed",
+          "Domain": "shared"
+        }
+      ]
+    },
+    {
+      "ErrorFamilyKey": "StaffPositionRoleApi",
+      "Codes": [
+        "staff.position.role.not_found",
+        "staff.position.role.validation_failed"
+      ],
+      "Entries": [
+        {
+          "Code": "staff.position.role.not_found",
+          "Domain": "shared"
+        },
+        {
+          "Code": "staff.position.role.validation_failed",
+          "Domain": "shared"
+        }
+      ]
+    },
+    {
+      "ErrorFamilyKey": "StoredObjectApi",
+      "Codes": [
+        "stored.object.not_found",
+        "stored.object.validation_failed"
+      ],
+      "Entries": [
+        {
+          "Code": "stored.object.not_found",
+          "Domain": "shared"
+        },
+        {
+          "Code": "stored.object.validation_failed",
+          "Domain": "shared"
+        }
+      ]
+    }
+  ]
+}

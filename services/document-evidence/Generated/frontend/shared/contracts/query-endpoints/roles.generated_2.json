@@ -1,0 +1,71 @@
+{
+  "get:/api/roles/options/{field}": {
+    "endpointKey": "get:/api/roles/options/{field}",
+    "domainKey": "roles",
+    "kind": "query",
+    "controllerName": "RoleController",
+    "methodName": "Options",
+    "httpMethod": "GET",
+    "routeTemplate": "/api/roles/options/{field}",
+    "routeAliases": [],
+    "tags": [
+      "roles"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RoleController",
+      "MethodClrSignature": "Options(String field, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "none",
+      "requestContentType": null,
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [
+        {
+          "inputKey": "field",
+          "bindingSource": "route",
+          "name": "field",
+          "wireName": "field",
+          "typeRef": "shared:string",
+          "nullable": false,
+          "required": true
+        }
+      ],
+      "requestBody": null,
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleOptionDto>",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Read"
+    ],
+    "errorRefs": [],
+    "invalidatesEndpointKeys": [],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": null,
+    "responseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RoleOptionDto>",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}

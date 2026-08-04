@@ -1,0 +1,507 @@
+{
+  "DomainKey": "documents",
+  "Types": [
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentRequest",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "CurrentRevisionNumber",
+          "WireName": "currentRevisionNumber",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "DisplayName",
+          "WireName": "displayName",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "IsRevoked",
+          "WireName": "isRevoked",
+          "TypeRef": "shared:boolean",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "MediaType",
+          "WireName": "mediaType",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "SourceKind",
+          "WireName": "sourceKind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "State",
+          "WireName": "state",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "WorkspaceId",
+          "WireName": "workspaceId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "CurrentRevisionNumber",
+          "WireName": "currentRevisionNumber",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "DisplayName",
+          "WireName": "displayName",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Id",
+          "WireName": "id",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "IsRevoked",
+          "WireName": "isRevoked",
+          "TypeRef": "shared:boolean",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "MediaType",
+          "WireName": "mediaType",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "SourceKind",
+          "WireName": "sourceKind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "State",
+          "WireName": "state",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "WorkspaceId",
+          "WireName": "workspaceId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentLookupDto",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentOptionDto",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentSuggestionDto",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Label",
+          "WireName": "label",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFilter",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Operator",
+          "WireName": "operator",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Value",
+          "WireName": "value",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Values",
+          "WireName": "values",
+          "TypeRef": "array<shared:string>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentRequest",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Filters",
+          "WireName": "filters",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFilter>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Sort",
+          "WireName": "sort",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentSort>",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentResult",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Items",
+          "WireName": "items",
+          "TypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto>",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Page",
+          "WireName": "page",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "PageSize",
+          "WireName": "pageSize",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "TotalCount",
+          "WireName": "totalCount",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentSort",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Direction",
+          "WireName": "direction",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "Field",
+          "WireName": "field",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupDocumentRequest",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestDocumentRequest",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "Query",
+          "WireName": "query",
+          "TypeRef": "shared:string",
+          "Nullable": true,
+          "Required": false
+        },
+        {
+          "Name": "Take",
+          "WireName": "take",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateDocumentRequest",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "object",
+      "Nullable": false,
+      "Properties": [
+        {
+          "Name": "CurrentRevisionNumber",
+          "WireName": "currentRevisionNumber",
+          "TypeRef": "shared:int32",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "DisplayName",
+          "WireName": "displayName",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "IsRevoked",
+          "WireName": "isRevoked",
+          "TypeRef": "shared:boolean",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "MediaType",
+          "WireName": "mediaType",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "SourceKind",
+          "WireName": "sourceKind",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "State",
+          "WireName": "state",
+          "TypeRef": "shared:string",
+          "Nullable": false,
+          "Required": true
+        },
+        {
+          "Name": "WorkspaceId",
+          "WireName": "workspaceId",
+          "TypeRef": "shared:guid",
+          "Nullable": false,
+          "Required": true
+        }
+      ],
+      "TypeArguments": []
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto>",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentLookupDto>",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentLookupDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentOptionDto>",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentOptionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentSuggestionDto>",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentSuggestionDto"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFilter>",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentFilter"
+    },
+    {
+      "TypeKey": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentSort>",
+      "OwningDomainKey": "documents",
+      "IsShared": false,
+      "Kind": "array",
+      "Nullable": false,
+      "Properties": [],
+      "TypeArguments": [],
+      "ElementTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ListDocumentSort"
+    }
+  ]
+}

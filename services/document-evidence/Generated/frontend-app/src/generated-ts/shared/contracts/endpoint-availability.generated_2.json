@@ -1,0 +1,110 @@
+{
+  "get:/api/rolepermissions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Read"
+    ]
+  },
+  "get:/api/rolepermissions/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Read"
+    ]
+  },
+  "get:/api/rolepermissions/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Read"
+    ]
+  },
+  "get:/api/rolepermissions/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Read"
+    ]
+  },
+  "get:/api/rolepermissions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Read"
+    ]
+  },
+  "get:/api/roles": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Read"
+    ]
+  },
+  "get:/api/roles/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Read"
+    ]
+  },
+  "get:/api/roles/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Read"
+    ]
+  },
+  "get:/api/roles/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Read"
+    ]
+  },
+  "get:/api/roles/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Read"
+    ]
+  },
+  "get:/api/staffpositionassignments": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Read"
+    ]
+  },
+  "get:/api/staffpositionassignments/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Read"
+    ]
+  },
+  "get:/api/staffpositionassignments/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Read"
+    ]
+  },
+  "get:/api/staffpositionassignments/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Read"
+    ]
+  },
+  "get:/api/staffpositionassignments/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Read"
+    ]
+  },
+  "get:/api/staffpositionroles": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Read"
+    ]
+  },
+  "get:/api/staffpositionroles/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Read"
+    ]
+  },
+  "get:/api/staffpositionroles/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Read"
+    ]
+  }
+}

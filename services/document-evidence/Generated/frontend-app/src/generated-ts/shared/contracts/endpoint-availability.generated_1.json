@@ -1,0 +1,110 @@
+{
+  "get:/api/documentrevisions/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Read"
+    ]
+  },
+  "get:/api/documentrevisions/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Read"
+    ]
+  },
+  "get:/api/documentrevisions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Read"
+    ]
+  },
+  "get:/api/documents": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Read"
+    ]
+  },
+  "get:/api/documents/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Read"
+    ]
+  },
+  "get:/api/documents/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Read"
+    ]
+  },
+  "get:/api/documents/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Read"
+    ]
+  },
+  "get:/api/documents/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Read"
+    ]
+  },
+  "get:/api/permissions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Read"
+    ]
+  },
+  "get:/api/permissions/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Read"
+    ]
+  },
+  "get:/api/permissions/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Read"
+    ]
+  },
+  "get:/api/permissions/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Read"
+    ]
+  },
+  "get:/api/permissions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Read"
+    ]
+  },
+  "get:/api/processingjobs": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Read"
+    ]
+  },
+  "get:/api/processingjobs/lookup": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Read"
+    ]
+  },
+  "get:/api/processingjobs/options/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Read"
+    ]
+  },
+  "get:/api/processingjobs/suggest/{field}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Read"
+    ]
+  },
+  "get:/api/processingjobs/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Read"
+    ]
+  }
+}

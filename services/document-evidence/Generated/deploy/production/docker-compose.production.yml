@@ -1,0 +1,126 @@
+name: appforge-production
+
+x-api-build: &api-build
+  context: ../..
+  dockerfile: deploy/production/api.Dockerfile
+  args:
+    APPFORGE_GENERATED_PROJECT: "backend/DocumentEvidenceOperationalModel.Persistence.csproj"
+    APPFORGE_ASSEMBLY: "DocumentEvidenceOperationalModel.Persistence.dll"
+
+x-api-environment: &api-environment
+  ASPNETCORE_ENVIRONMENT: "Production"
+  ASPNETCORE_URLS: "http://+:8080"
+  ConnectionStrings__Default: "Host=db;Port=5432;Database=${APPFORGE_POSTGRES_DB:?set APPFORGE_POSTGRES_DB};Username=${APPFORGE_POSTGRES_USER:?set APPFORGE_POSTGRES_USER};Password=${APPFORGE_POSTGRES_PASSWORD:?set APPFORGE_POSTGRES_PASSWORD}"
+  Cors__AllowedOrigins__0: "${APPFORGE_PUBLIC_ORIGIN:?set APPFORGE_PUBLIC_ORIGIN}"
+  ForwardedHeaders__KnownNetworks__0: "${APPFORGE_FORWARDED_KNOWN_NETWORK:-172.16.0.0/12}"
+  RateLimiting__Api__PermitLimit: "${APPFORGE_RATE_LIMIT_PER_MINUTE:-120}"
+  RateLimiting__Api__WindowSeconds: "${APPFORGE_RATE_LIMIT_WINDOW_SECONDS:-60}"
+  RateLimiting__Api__QueueLimit: "${APPFORGE_RATE_LIMIT_QUEUE_LIMIT:-0}"
+  RequestLimits__RequestBodyLimitBytes: "${APPFORGE_REQUEST_BODY_LIMIT_BYTES:-10485760}"
+  RequestLimits__MultipartBodyLengthLimitBytes: "${APPFORGE_MULTIPART_LIMIT_BYTES:-10485760}"
+  AppForge__Email__Mode: "${APPFORGE_EMAIL_MODE:?set APPFORGE_EMAIL_MODE=Smtp for production email flows}"
+  AppForge__Email__Smtp__Host: "${APPFORGE_EMAIL_SMTP_HOST:?set APPFORGE_EMAIL_SMTP_HOST}"
+  AppForge__Email__Smtp__Port: "${APPFORGE_EMAIL_SMTP_PORT:-587}"
+  AppForge__Email__Smtp__From: "${APPFORGE_EMAIL_SMTP_FROM:?set APPFORGE_EMAIL_SMTP_FROM}"
+  AppForge__Email__Smtp__UserName: "${APPFORGE_EMAIL_SMTP_USERNAME:-}"
+  AppForge__Email__Smtp__Password: "${APPFORGE_EMAIL_SMTP_PASSWORD:-}"
+  AppForge__Email__Smtp__EnableSsl: "${APPFORGE_EMAIL_SMTP_ENABLE_SSL:-true}"
+  AppForge__Email__Templates__PublicBaseUrl: "${APPFORGE_PUBLIC_ORIGIN:?set APPFORGE_PUBLIC_ORIGIN}"
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: "${APPFORGE_POSTGRES_DB:?set APPFORGE_POSTGRES_DB}"
+      POSTGRES_USER: "${APPFORGE_POSTGRES_USER:?set APPFORGE_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${APPFORGE_POSTGRES_PASSWORD:?set APPFORGE_POSTGRES_PASSWORD}"
+    volumes:
+      - appforge_db_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  api:
+    build: *api-build
+    environment: *api-environment
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/health/ready >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  api-migrate:
+    profiles:
+      - migrate
+    build: *api-build
+    environment: *api-environment
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["--appforge-migrate-only"]
+    restart: "no"
+
+  api-seed:
+    profiles:
+      - seed
+    build: *api-build
+    environment:
+      <<: *api-environment
+      APPFORGE_ADMIN_EMAIL: "${APPFORGE_ADMIN_EMAIL:?set APPFORGE_ADMIN_EMAIL}"
+      APPFORGE_ADMIN_PASSWORD: "${APPFORGE_ADMIN_PASSWORD:?set APPFORGE_ADMIN_PASSWORD}"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["--appforge-seed-only"]
+    restart: "no"
+
+  web:
+    build:
+      context: ../..
+      dockerfile: deploy/production/web.Dockerfile
+      args:
+        APPFORGE_FRONTEND_ROOT: "frontend-app"
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  reverse-proxy:
+    build:
+      context: ../..
+      dockerfile: deploy/production/proxy.Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    ports:
+      - "${APPFORGE_HTTP_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  appforge_db_data:

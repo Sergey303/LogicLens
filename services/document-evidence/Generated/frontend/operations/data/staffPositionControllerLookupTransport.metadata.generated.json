@@ -1,0 +1,65 @@
+{
+  "endpointKey": "get:/api/staffpositions/lookup",
+  "domainKey": "staffpositions",
+  "kind": "query",
+  "controllerName": "StaffPositionController",
+  "methodName": "Lookup",
+  "httpMethod": "GET",
+  "routeTemplate": "/api/staffpositions/lookup",
+  "authorization": {
+    "anonymousAllowed": false,
+    "requiresAuthentication": true,
+    "policyNames": []
+  },
+  "transport": {
+    "bodyKind": "none",
+    "requestContentType": null,
+    "responseKind": "json",
+    "responseContentType": "application/json",
+    "transportKind": null,
+    "operationMode": null,
+    "cancellable": true,
+    "supportsProgress": null,
+    "progressEventKeys": [],
+    "completionEventKeys": [],
+    "resultDelivery": null,
+    "acceptedMimeTypes": [],
+    "maxFileSizeBytes": null,
+    "fileNameSource": null,
+    "inputs": [
+      {
+        "inputKey": "request",
+        "bindingSource": "query",
+        "name": "request",
+        "wireName": "request",
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupStaffPositionRequest",
+        "nullable": false,
+        "required": true
+      }
+    ],
+    "requestBody": null,
+    "multipartParts": [],
+    "response": {
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "typeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionLookupDto>",
+      "contentDisposition": null,
+      "fileNameSource": null
+    }
+  },
+  "featureKeys": [],
+  "policyKeys": [
+    "StaffPosition.Read"
+  ],
+  "capabilityKeys": [],
+  "providerKeys": [],
+  "environmentScopes": [],
+  "disabledReasonKey": null,
+  "errorRefs": [],
+  "invalidatesEndpointKeys": [],
+  "realtimeLinks": [],
+  "frontendAction": null,
+  "requestTypeRef": null,
+  "responseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.StaffPositionLookupDto>",
+  "invalidatedByRealtimeEventKeys": []
+}

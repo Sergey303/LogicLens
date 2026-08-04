@@ -1,0 +1,84 @@
+{
+  "StaffPositionRole.Create": {
+    "PolicyKey": "StaffPositionRole.Create",
+    "DomainKey": "staffpositionroles",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "post:/api/staffpositionroles"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPositionRole.Delete": {
+    "PolicyKey": "StaffPositionRole.Delete",
+    "DomainKey": "staffpositionroles",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "delete:/api/staffpositionroles/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPositionRole.Read": {
+    "PolicyKey": "StaffPositionRole.Read",
+    "DomainKey": "staffpositionroles",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionroles"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionroles/lookup"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionroles/options/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionroles/suggest/{field}"
+      },
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "get:/api/staffpositionroles/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StaffPositionRole.Update": {
+    "PolicyKey": "StaffPositionRole.Update",
+    "DomainKey": "staffpositionroles",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "put:/api/staffpositionroles/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StoredObject.Create": {
+    "PolicyKey": "StoredObject.Create",
+    "DomainKey": "storedobjects",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "post:/api/storedobjects"
+      }
+    ],
+    "PolicyKind": "availability"
+  },
+  "StoredObject.Delete": {
+    "PolicyKey": "StoredObject.Delete",
+    "DomainKey": "storedobjects",
+    "DeclaredBy": [
+      {
+        "SourceKind": "endpoint",
+        "SourceKey": "delete:/api/storedobjects/{id}"
+      }
+    ],
+    "PolicyKind": "availability"
+  }
+}

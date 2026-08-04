@@ -1,0 +1,74 @@
+{
+  "endpointKey": "get:/api/documents/suggest/{field}",
+  "domainKey": "documents",
+  "kind": "query",
+  "controllerName": "DocumentController",
+  "methodName": "Suggest",
+  "httpMethod": "GET",
+  "routeTemplate": "/api/documents/suggest/{field}",
+  "authorization": {
+    "anonymousAllowed": false,
+    "requiresAuthentication": true,
+    "policyNames": []
+  },
+  "transport": {
+    "bodyKind": "none",
+    "requestContentType": null,
+    "responseKind": "json",
+    "responseContentType": "application/json",
+    "transportKind": null,
+    "operationMode": null,
+    "cancellable": true,
+    "supportsProgress": null,
+    "progressEventKeys": [],
+    "completionEventKeys": [],
+    "resultDelivery": null,
+    "acceptedMimeTypes": [],
+    "maxFileSizeBytes": null,
+    "fileNameSource": null,
+    "inputs": [
+      {
+        "inputKey": "field",
+        "bindingSource": "route",
+        "name": "field",
+        "wireName": "field",
+        "typeRef": "shared:string",
+        "nullable": false,
+        "required": true
+      },
+      {
+        "inputKey": "request",
+        "bindingSource": "query",
+        "name": "request",
+        "wireName": "request",
+        "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.SuggestDocumentRequest",
+        "nullable": false,
+        "required": true
+      }
+    ],
+    "requestBody": null,
+    "multipartParts": [],
+    "response": {
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "typeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentSuggestionDto>",
+      "contentDisposition": null,
+      "fileNameSource": null
+    }
+  },
+  "featureKeys": [],
+  "policyKeys": [
+    "Document.Read"
+  ],
+  "capabilityKeys": [],
+  "providerKeys": [],
+  "environmentScopes": [],
+  "disabledReasonKey": null,
+  "errorRefs": [],
+  "invalidatesEndpointKeys": [],
+  "realtimeLinks": [],
+  "frontendAction": null,
+  "requestTypeRef": null,
+  "responseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentSuggestionDto>",
+  "invalidatedByRealtimeEventKeys": []
+}

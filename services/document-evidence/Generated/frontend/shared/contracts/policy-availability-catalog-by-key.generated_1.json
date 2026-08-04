@@ -1,0 +1,70 @@
+{
+  "RolePermission.Update": {
+    "policyKey": "RolePermission.Update",
+    "policyKind": "availability"
+  },
+  "StaffPosition.Create": {
+    "policyKey": "StaffPosition.Create",
+    "policyKind": "availability"
+  },
+  "StaffPosition.Delete": {
+    "policyKey": "StaffPosition.Delete",
+    "policyKind": "availability"
+  },
+  "StaffPosition.Read": {
+    "policyKey": "StaffPosition.Read",
+    "policyKind": "availability"
+  },
+  "StaffPosition.Update": {
+    "policyKey": "StaffPosition.Update",
+    "policyKind": "availability"
+  },
+  "StaffPositionAssignment.Create": {
+    "policyKey": "StaffPositionAssignment.Create",
+    "policyKind": "availability"
+  },
+  "StaffPositionAssignment.Delete": {
+    "policyKey": "StaffPositionAssignment.Delete",
+    "policyKind": "availability"
+  },
+  "StaffPositionAssignment.Read": {
+    "policyKey": "StaffPositionAssignment.Read",
+    "policyKind": "availability"
+  },
+  "StaffPositionAssignment.Update": {
+    "policyKey": "StaffPositionAssignment.Update",
+    "policyKind": "availability"
+  },
+  "StaffPositionRole.Create": {
+    "policyKey": "StaffPositionRole.Create",
+    "policyKind": "availability"
+  },
+  "StaffPositionRole.Delete": {
+    "policyKey": "StaffPositionRole.Delete",
+    "policyKind": "availability"
+  },
+  "StaffPositionRole.Read": {
+    "policyKey": "StaffPositionRole.Read",
+    "policyKind": "availability"
+  },
+  "StaffPositionRole.Update": {
+    "policyKey": "StaffPositionRole.Update",
+    "policyKind": "availability"
+  },
+  "StoredObject.Create": {
+    "policyKey": "StoredObject.Create",
+    "policyKind": "availability"
+  },
+  "StoredObject.Delete": {
+    "policyKey": "StoredObject.Delete",
+    "policyKind": "availability"
+  },
+  "StoredObject.Read": {
+    "policyKey": "StoredObject.Read",
+    "policyKind": "availability"
+  },
+  "StoredObject.Update": {
+    "policyKey": "StoredObject.Update",
+    "policyKind": "availability"
+  }
+}

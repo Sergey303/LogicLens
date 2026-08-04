@@ -1,0 +1,66 @@
+{
+  "endpointKey": "post:/api/documentfragments",
+  "domainKey": "documentfragments",
+  "kind": "mutation",
+  "controllerName": "DocumentFragmentController",
+  "methodName": "Create",
+  "httpMethod": "POST",
+  "routeTemplate": "/api/documentfragments",
+  "authorization": {
+    "anonymousAllowed": false,
+    "requiresAuthentication": true,
+    "policyNames": []
+  },
+  "transport": {
+    "bodyKind": "json",
+    "requestContentType": "application/json",
+    "responseKind": "json",
+    "responseContentType": "application/json",
+    "transportKind": null,
+    "operationMode": null,
+    "cancellable": true,
+    "supportsProgress": null,
+    "progressEventKeys": [],
+    "completionEventKeys": [],
+    "resultDelivery": null,
+    "acceptedMimeTypes": [],
+    "maxFileSizeBytes": null,
+    "fileNameSource": null,
+    "inputs": [],
+    "requestBody": {
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentFragmentRequest",
+      "required": true
+    },
+    "multipartParts": [],
+    "response": {
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+      "contentDisposition": null,
+      "fileNameSource": null
+    }
+  },
+  "featureKeys": [],
+  "policyKeys": [
+    "DocumentFragment.Create"
+  ],
+  "capabilityKeys": [],
+  "providerKeys": [],
+  "environmentScopes": [],
+  "disabledReasonKey": null,
+  "errorRefs": [
+    "document.fragment.validation_failed"
+  ],
+  "invalidatesEndpointKeys": [
+    "get:/api/documentfragments",
+    "get:/api/documentfragments/lookup",
+    "get:/api/documentfragments/options/{field}",
+    "get:/api/documentfragments/suggest/{field}",
+    "get:/api/documentfragments/{id}"
+  ],
+  "realtimeLinks": [],
+  "frontendAction": null,
+  "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.CreateDocumentFragmentRequest",
+  "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.DocumentFragmentDto",
+  "invalidatedByRealtimeEventKeys": []
+}

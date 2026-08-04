@@ -1,0 +1,10 @@
+{
+  "kind": "logiclens-appforge-generation-receipt",
+  "version": 2,
+  "appForgeCommit": "b30aea6cd8aa60ab9865e2d0cf383955a20ae50b",
+  "modelId": "Document Evidence Operational Model",
+  "projectFileName": "DocumentEvidenceOperationalModel.Persistence.csproj",
+  "sourceSpecSha256": "eda92de5c6baca45923a6875dfd6ed4b7cefe68d64d0ac6001269ab42007c5c7",
+  "packageManifestSha256": "0cd710d8ac95427800a972a249701575cec20327eaa0f5f13c7ff9dec26d4119",
+  "generatedTreeSha256BeforeReceipt": "05a17757f756d33ad6a02c787cdb7f3568165bd10c87d7c0329797474f83a9c1"
+}

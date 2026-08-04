@@ -1,0 +1,664 @@
+{
+  "Policies": [
+    {
+      "PolicyKey": "Document.Create",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/documents"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Document.Delete",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/documents/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Document.Read",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documents/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Document.Update",
+      "DomainKey": "documents",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/documents/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentFragment.Create",
+      "DomainKey": "documentfragments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/documentfragments"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentFragment.Delete",
+      "DomainKey": "documentfragments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/documentfragments/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentFragment.Read",
+      "DomainKey": "documentfragments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentfragments"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentfragments/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentfragments/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentfragments/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentfragments/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentFragment.Update",
+      "DomainKey": "documentfragments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/documentfragments/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentRevision.Create",
+      "DomainKey": "documentrevisions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/documentrevisions"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentRevision.Delete",
+      "DomainKey": "documentrevisions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/documentrevisions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentRevision.Read",
+      "DomainKey": "documentrevisions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentrevisions"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentrevisions/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentrevisions/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentrevisions/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/documentrevisions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "DocumentRevision.Update",
+      "DomainKey": "documentrevisions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/documentrevisions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Permission.Create",
+      "DomainKey": "permissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/permissions"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Permission.Delete",
+      "DomainKey": "permissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/permissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Permission.Read",
+      "DomainKey": "permissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/permissions"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/permissions/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/permissions/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/permissions/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/permissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Permission.Update",
+      "DomainKey": "permissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/permissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "ProcessingJob.Create",
+      "DomainKey": "processingjobs",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/processingjobs"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "ProcessingJob.Delete",
+      "DomainKey": "processingjobs",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/processingjobs/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "ProcessingJob.Read",
+      "DomainKey": "processingjobs",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/processingjobs/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "ProcessingJob.Update",
+      "DomainKey": "processingjobs",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/processingjobs/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Create",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/roles"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Delete",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/roles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Read",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/roles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "Role.Update",
+      "DomainKey": "roles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/roles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "RolePermission.Create",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/rolepermissions"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "RolePermission.Delete",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/rolepermissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "RolePermission.Read",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/rolepermissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "RolePermission.Update",
+      "DomainKey": "rolepermissions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/rolepermissions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPosition.Create",
+      "DomainKey": "staffpositions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/staffpositions"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPosition.Delete",
+      "DomainKey": "staffpositions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/staffpositions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPosition.Read",
+      "DomainKey": "staffpositions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositions"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositions/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositions/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositions/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPosition.Update",
+      "DomainKey": "staffpositions",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/staffpositions/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionAssignment.Create",
+      "DomainKey": "staffpositionassignments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/staffpositionassignments"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionAssignment.Delete",
+      "DomainKey": "staffpositionassignments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/staffpositionassignments/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionAssignment.Read",
+      "DomainKey": "staffpositionassignments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionassignments"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionassignments/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionassignments/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionassignments/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionassignments/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionAssignment.Update",
+      "DomainKey": "staffpositionassignments",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/staffpositionassignments/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionRole.Create",
+      "DomainKey": "staffpositionroles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/staffpositionroles"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionRole.Delete",
+      "DomainKey": "staffpositionroles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/staffpositionroles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionRole.Read",
+      "DomainKey": "staffpositionroles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionroles"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionroles/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionroles/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionroles/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/staffpositionroles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StaffPositionRole.Update",
+      "DomainKey": "staffpositionroles",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/staffpositionroles/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StoredObject.Create",
+      "DomainKey": "storedobjects",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "post:/api/storedobjects"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StoredObject.Delete",
+      "DomainKey": "storedobjects",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "delete:/api/storedobjects/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StoredObject.Read",
+      "DomainKey": "storedobjects",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/storedobjects"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/storedobjects/lookup"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/storedobjects/options/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/storedobjects/suggest/{field}"
+        },
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "get:/api/storedobjects/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    },
+    {
+      "PolicyKey": "StoredObject.Update",
+      "DomainKey": "storedobjects",
+      "DeclaredBy": [
+        {
+          "SourceKind": "endpoint",
+          "SourceKey": "put:/api/storedobjects/{id}"
+        }
+      ],
+      "PolicyKind": "availability"
+    }
+  ]
+}

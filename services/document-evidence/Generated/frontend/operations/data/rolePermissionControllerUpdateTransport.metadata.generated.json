@@ -1,0 +1,77 @@
+{
+  "endpointKey": "put:/api/rolepermissions/{id}",
+  "domainKey": "rolepermissions",
+  "kind": "mutation",
+  "controllerName": "RolePermissionController",
+  "methodName": "Update",
+  "httpMethod": "PUT",
+  "routeTemplate": "/api/rolepermissions/{id}",
+  "authorization": {
+    "anonymousAllowed": false,
+    "requiresAuthentication": true,
+    "policyNames": []
+  },
+  "transport": {
+    "bodyKind": "json",
+    "requestContentType": "application/json",
+    "responseKind": "json",
+    "responseContentType": "application/json",
+    "transportKind": null,
+    "operationMode": null,
+    "cancellable": true,
+    "supportsProgress": null,
+    "progressEventKeys": [],
+    "completionEventKeys": [],
+    "resultDelivery": null,
+    "acceptedMimeTypes": [],
+    "maxFileSizeBytes": null,
+    "fileNameSource": null,
+    "inputs": [
+      {
+        "inputKey": "id",
+        "bindingSource": "route",
+        "name": "id",
+        "wireName": "id",
+        "typeRef": "shared:guid",
+        "nullable": false,
+        "required": true
+      }
+    ],
+    "requestBody": {
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateRolePermissionRequest",
+      "required": true
+    },
+    "multipartParts": [],
+    "response": {
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RolePermissionDto",
+      "contentDisposition": null,
+      "fileNameSource": null
+    }
+  },
+  "featureKeys": [],
+  "policyKeys": [
+    "RolePermission.Update"
+  ],
+  "capabilityKeys": [],
+  "providerKeys": [],
+  "environmentScopes": [],
+  "disabledReasonKey": null,
+  "errorRefs": [
+    "role.permission.not_found",
+    "role.permission.validation_failed"
+  ],
+  "invalidatesEndpointKeys": [
+    "get:/api/rolepermissions",
+    "get:/api/rolepermissions/lookup",
+    "get:/api/rolepermissions/options/{field}",
+    "get:/api/rolepermissions/suggest/{field}",
+    "get:/api/rolepermissions/{id}"
+  ],
+  "realtimeLinks": [],
+  "frontendAction": null,
+  "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateRolePermissionRequest",
+  "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.RolePermissionDto",
+  "invalidatedByRealtimeEventKeys": []
+}

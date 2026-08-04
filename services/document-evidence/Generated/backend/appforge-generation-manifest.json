@@ -1,0 +1,22 @@
+{
+  "kind": "appforge-md-ef-core-generation",
+  "version": 1,
+  "modelId": "Document Evidence Operational Model",
+  "identity": {
+    "solutionName": "DocumentEvidenceOperationalModel",
+    "solutionFileName": "DocumentEvidenceOperationalModel.slnx",
+    "projectName": "DocumentEvidenceOperationalModel.Persistence",
+    "projectFileName": "DocumentEvidenceOperationalModel.Persistence.csproj",
+    "assemblyName": "DocumentEvidenceOperationalModel.Persistence",
+    "assemblyFileName": "DocumentEvidenceOperationalModel.Persistence.dll",
+    "rootNamespace": "DocumentEvidenceOperationalModel",
+    "dbContextName": "DocumentEvidenceOperationalModelDbContext",
+    "databaseName": "document_evidence_operational_model"
+  },
+  "runtimeProfile": "production",
+  "databaseProvider": "PostgreSQL",
+  "databaseProviderKey": "postgres",
+  "features": {
+    "employeeVacations": false
+  }
+}

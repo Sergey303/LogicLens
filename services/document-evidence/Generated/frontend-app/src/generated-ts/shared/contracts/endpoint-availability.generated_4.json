@@ -1,0 +1,98 @@
+{
+  "post:/api/roles": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Create"
+    ]
+  },
+  "post:/api/staffpositionassignments": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Create"
+    ]
+  },
+  "post:/api/staffpositionroles": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Create"
+    ]
+  },
+  "post:/api/staffpositions": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Create"
+    ]
+  },
+  "post:/api/storedobjects": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Create"
+    ]
+  },
+  "put:/api/documentfragments/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentFragment.Update"
+    ]
+  },
+  "put:/api/documentrevisions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "DocumentRevision.Update"
+    ]
+  },
+  "put:/api/documents/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Document.Update"
+    ]
+  },
+  "put:/api/permissions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Permission.Update"
+    ]
+  },
+  "put:/api/processingjobs/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "ProcessingJob.Update"
+    ]
+  },
+  "put:/api/rolepermissions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Update"
+    ]
+  },
+  "put:/api/roles/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "Role.Update"
+    ]
+  },
+  "put:/api/staffpositionassignments/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionAssignment.Update"
+    ]
+  },
+  "put:/api/staffpositionroles/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPositionRole.Update"
+    ]
+  },
+  "put:/api/staffpositions/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StaffPosition.Update"
+    ]
+  },
+  "put:/api/storedobjects/{id}": {
+    "featureKeys": [],
+    "policyKeys": [
+      "StoredObject.Update"
+    ]
+  }
+}

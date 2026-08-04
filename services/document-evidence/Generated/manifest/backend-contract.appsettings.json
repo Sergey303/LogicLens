@@ -1,0 +1,26 @@
+{
+  "Assemblies": {
+    "Api": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend\\bin\\Debug\\net10.0\\DocumentEvidenceOperationalModel.Persistence.dll",
+    "Realtime": null,
+    "Contracts": []
+  },
+  "Output": {
+    "Root": "D:\\projects\\ChatPilotGroup\\WorkTrees\\LogicLens-shared-document-service\\services\\document-evidence\\Generated\\backend-contract"
+  },
+  "Environment": {
+    "EnvironmentKey": "generated-admin-production-package"
+  },
+  "Passes": {
+    "EmitCodeContract": true
+  },
+  "Domains": {
+    "ControllerOverrides": {},
+    "TypeOverrides": {},
+    "FeatureOverrides": {},
+    "PolicyOverrides": {},
+    "CapabilityOverrides": {},
+    "ProviderOverrides": {},
+    "DisabledReasonOverrides": {},
+    "EndpointKindOverrides": {}
+  }
+}

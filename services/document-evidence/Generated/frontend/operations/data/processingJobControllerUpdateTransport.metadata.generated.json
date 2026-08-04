@@ -1,0 +1,77 @@
+{
+  "endpointKey": "put:/api/processingjobs/{id}",
+  "domainKey": "processingjobs",
+  "kind": "mutation",
+  "controllerName": "ProcessingJobController",
+  "methodName": "Update",
+  "httpMethod": "PUT",
+  "routeTemplate": "/api/processingjobs/{id}",
+  "authorization": {
+    "anonymousAllowed": false,
+    "requiresAuthentication": true,
+    "policyNames": []
+  },
+  "transport": {
+    "bodyKind": "json",
+    "requestContentType": "application/json",
+    "responseKind": "json",
+    "responseContentType": "application/json",
+    "transportKind": null,
+    "operationMode": null,
+    "cancellable": true,
+    "supportsProgress": null,
+    "progressEventKeys": [],
+    "completionEventKeys": [],
+    "resultDelivery": null,
+    "acceptedMimeTypes": [],
+    "maxFileSizeBytes": null,
+    "fileNameSource": null,
+    "inputs": [
+      {
+        "inputKey": "id",
+        "bindingSource": "route",
+        "name": "id",
+        "wireName": "id",
+        "typeRef": "shared:guid",
+        "nullable": false,
+        "required": true
+      }
+    ],
+    "requestBody": {
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateProcessingJobRequest",
+      "required": true
+    },
+    "multipartParts": [],
+    "response": {
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto",
+      "contentDisposition": null,
+      "fileNameSource": null
+    }
+  },
+  "featureKeys": [],
+  "policyKeys": [
+    "ProcessingJob.Update"
+  ],
+  "capabilityKeys": [],
+  "providerKeys": [],
+  "environmentScopes": [],
+  "disabledReasonKey": null,
+  "errorRefs": [
+    "processing.job.not_found",
+    "processing.job.validation_failed"
+  ],
+  "invalidatesEndpointKeys": [
+    "get:/api/processingjobs",
+    "get:/api/processingjobs/lookup",
+    "get:/api/processingjobs/options/{field}",
+    "get:/api/processingjobs/suggest/{field}",
+    "get:/api/processingjobs/{id}"
+  ],
+  "realtimeLinks": [],
+  "frontendAction": null,
+  "requestTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.UpdateProcessingJobRequest",
+  "responseTypeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.ProcessingJobDto",
+  "invalidatedByRealtimeEventKeys": []
+}

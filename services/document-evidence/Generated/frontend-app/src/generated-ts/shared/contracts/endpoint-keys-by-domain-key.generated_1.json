@@ -1,0 +1,12 @@
+{
+  "storedobjects": [
+    "get:/api/storedobjects",
+    "post:/api/storedobjects",
+    "get:/api/storedobjects/lookup",
+    "get:/api/storedobjects/options/{field}",
+    "get:/api/storedobjects/suggest/{field}",
+    "delete:/api/storedobjects/{id}",
+    "get:/api/storedobjects/{id}",
+    "put:/api/storedobjects/{id}"
+  ]
+}

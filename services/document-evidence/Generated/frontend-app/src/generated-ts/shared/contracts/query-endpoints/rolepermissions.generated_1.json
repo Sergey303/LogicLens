@@ -1,0 +1,71 @@
+{
+  "get:/api/rolepermissions/lookup": {
+    "endpointKey": "get:/api/rolepermissions/lookup",
+    "domainKey": "rolepermissions",
+    "kind": "query",
+    "controllerName": "RolePermissionController",
+    "methodName": "Lookup",
+    "httpMethod": "GET",
+    "routeTemplate": "/api/rolepermissions/lookup",
+    "routeAliases": [],
+    "tags": [
+      "rolepermissions"
+    ],
+    "authorization": {
+      "anonymousAllowed": false,
+      "requiresAuthentication": true,
+      "policyNames": []
+    },
+    "source": {
+      "ControllerClrType": "LogicLens.DocumentEvidence.Generated.Api.Controllers.RolePermissionController",
+      "MethodClrSignature": "Lookup(LookupRolePermissionRequest request, CancellationToken cancellationToken)"
+    },
+    "transport": {
+      "bodyKind": "none",
+      "requestContentType": null,
+      "responseKind": "json",
+      "responseContentType": "application/json",
+      "transportKind": null,
+      "operationMode": null,
+      "cancellable": true,
+      "supportsProgress": null,
+      "progressEventKeys": [],
+      "completionEventKeys": [],
+      "resultDelivery": null,
+      "acceptedMimeTypes": [],
+      "maxFileSizeBytes": null,
+      "fileNameSource": null,
+      "inputs": [
+        {
+          "inputKey": "request",
+          "bindingSource": "query",
+          "name": "request",
+          "wireName": "request",
+          "typeRef": "LogicLens.DocumentEvidence.Generated.Api.Contracts.LookupRolePermissionRequest",
+          "nullable": false,
+          "required": true
+        }
+      ],
+      "requestBody": null,
+      "multipartParts": [],
+      "response": {
+        "responseKind": "json",
+        "responseContentType": "application/json",
+        "typeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RolePermissionLookupDto>",
+        "contentDisposition": null,
+        "fileNameSource": null
+      }
+    },
+    "featureKeys": [],
+    "policyKeys": [
+      "RolePermission.Read"
+    ],
+    "errorRefs": [],
+    "invalidatesEndpointKeys": [],
+    "realtimeLinks": [],
+    "frontendAction": null,
+    "requestTypeRef": null,
+    "responseTypeRef": "array<LogicLens.DocumentEvidence.Generated.Api.Contracts.RolePermissionLookupDto>",
+    "invalidatedByRealtimeEventKeys": []
+  }
+}
