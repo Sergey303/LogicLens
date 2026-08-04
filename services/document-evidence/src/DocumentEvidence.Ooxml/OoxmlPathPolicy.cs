@@ -24,17 +24,27 @@ internal static class OoxmlPathPolicy
 
     public static string ResolveInternalTarget(string sourcePart, string target)
     {
-        if (string.IsNullOrWhiteSpace(target)
-            || target.StartsWith("/", StringComparison.Ordinal)
-            || target.Contains('\\', StringComparison.Ordinal)
-            || Uri.TryCreate(target, UriKind.Absolute, out _))
+        var normalized = target.Trim();
+        var packageAbsolute = normalized.StartsWith("/", StringComparison.Ordinal);
+        if (normalized.Length == 0
+            || normalized.StartsWith("//", StringComparison.Ordinal)
+            || normalized.Contains("//", StringComparison.Ordinal)
+            || normalized.Contains('\\', StringComparison.Ordinal)
+            || (!packageAbsolute && Uri.TryCreate(normalized, UriKind.Absolute, out _)))
         {
             throw new InvalidDataException($"Unsafe OOXML relationship target: {target}");
         }
-        var baseSegments = sourcePart.Split('/').SkipLast(1).ToList();
-        foreach (var segment in target.Split('/'))
+        var targetPath = packageAbsolute ? normalized[1..] : normalized;
+        if (targetPath.Length == 0)
         {
-            if (segment is "" or ".")
+            throw new InvalidDataException($"Unsafe OOXML relationship target: {target}");
+        }
+        var baseSegments = packageAbsolute
+            ? new List<string>()
+            : sourcePart.Split('/').SkipLast(1).ToList();
+        foreach (var segment in targetPath.Split('/'))
+        {
+            if (segment == ".")
             {
                 continue;
             }
@@ -46,6 +56,10 @@ internal static class OoxmlPathPolicy
                 }
                 baseSegments.RemoveAt(baseSegments.Count - 1);
                 continue;
+            }
+            if (segment.Length == 0)
+            {
+                throw new InvalidDataException($"Unsafe OOXML relationship target: {target}");
             }
             baseSegments.Add(segment);
         }
