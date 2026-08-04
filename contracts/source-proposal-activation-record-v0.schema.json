@@ -27,7 +27,7 @@
       "type": "string",
       "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,255}$"
     },
-    "status": {"const": "staged"},
+    "status": {"enum": ["staged", "activated"]},
     "proposalId": {
       "type": "string",
       "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
