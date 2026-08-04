@@ -3,11 +3,30 @@
   "linearIssue": "ENG-145",
   "branch": "agent/document-evidence-ooxml-adapters",
   "base": "agent/document-evidence-pdf-adapter",
-  "status": "pending-ci",
-  "requiredGates": [
-    "repository guard",
-    "warnings-as-errors OOXML build",
-    "OOXML runtime contract tests",
-    "existing application, generated adapter, storage, PDF and PostgreSQL regressions"
+  "status": "accepted-initial-slice",
+  "acceptedHead": "f46c298aaa02587ebe3054751a635f32b73e4fbf",
+  "workflow": {
+    "name": "Repository quality",
+    "runId": 30945630476,
+    "conclusion": "success"
+  },
+  "proof": {
+    "repositoryGuard": "success",
+    "warnings": 0,
+    "errors": 0,
+    "ooxmlRuntimeContracts": 9,
+    "postgresImage": "postgres:17-alpine",
+    "regressions": [
+      "application boundary",
+      "generated adapter",
+      "immutable storage",
+      "PDF adapter",
+      "PostgreSQL lifecycle"
+    ]
+  },
+  "remaining": [
+    "map DOCX and XLSX IR into processing completion payloads",
+    "verify representative committed EngDoc Sentinel DOCX and XLSX artifacts",
+    "prove selected-evidence retention and source-proposal bridge"
   ]
 }
