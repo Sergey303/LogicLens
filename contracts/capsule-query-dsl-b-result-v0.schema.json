@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/capsule-query-dsl-b-result-v0.schema.json",
+  "title": "LogicLens DSL-B capsule query result v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "dslLevel",
+    "queryHash",
+    "package",
+    "query",
+    "status",
+    "action",
+    "reason",
+    "evidence",
+    "proof",
+    "warnings",
+    "runtime"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "dslLevel": {"const": "DSL-B"},
+    "queryHash": {"$ref": "#/$defs/hash"},
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["worldId", "capsuleId", "capsuleVersion", "packageHash"],
+      "properties": {
+        "worldId": {"$ref": "#/$defs/id"},
+        "capsuleId": {"$ref": "#/$defs/id"},
+        "capsuleVersion": {"$ref": "#/$defs/version"},
+        "packageHash": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "query": {"type": "object"},
+    "status": {"enum": ["supported", "refuted", "unknown", "conflicting"]},
+    "action": {
+      "enum": [
+        "answer_with_source_scope",
+        "explain_explicit_role_boundary",
+        "abstain_and_request_context",
+        "report_conflict_and_compare_models"
+      ]
+    },
+    "reason": {
+      "enum": [
+        "loaded_or_derived_evidence_supports_claim",
+        "loaded_or_derived_evidence_explicitly_opposes_claim",
+        "insufficient_loaded_or_derived_evidence",
+        "incompatible_loaded_or_derived_evidence"
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["support", "oppose"],
+      "properties": {
+        "support": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "oppose": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supportRoots", "opposeRoots", "nodes"],
+      "properties": {
+        "supportRoots": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nodeId"}
+        },
+        "opposeRoots": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nodeId"}
+        },
+        "nodes": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/node"}
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "insufficient-loaded-or-derived-evidence",
+          "incompatible-loaded-or-derived-evidence",
+          "derived-evidence-present",
+          "not-explicit-premise-used",
+          "context-dependent",
+          "local-only"
+        ]
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine",
+        "semantics",
+        "verifiedAgainstGeneratedAssertions",
+        "verifiedAgainstLogicalRules"
+      ],
+      "properties": {
+        "engine": {"const": "python-reference+swi-prolog"},
+        "semantics": {"const": "ground-logical-rules-open-world"},
+        "verifiedAgainstGeneratedAssertions": {"const": true},
+        "verifiedAgainstLogicalRules": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$"
+    },
+    "nodeId": {
+      "type": "string",
+      "pattern": "^(assertion|rule):[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predicate", "arguments"],
+      "properties": {
+        "predicate": {"$ref": "#/$defs/id"},
+        "arguments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {"type": ["string", "integer", "boolean"]}
+        }
+      }
+    },
+    "node": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["nodeId", "kind", "target", "stance", "assertionId"],
+          "properties": {
+            "nodeId": {"$ref": "#/$defs/nodeId"},
+            "kind": {"const": "assertion"},
+            "target": {"$ref": "#/$defs/target"},
+            "stance": {"enum": ["support", "oppose"]},
+            "assertionId": {"$ref": "#/$defs/id"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nodeId",
+            "kind",
+            "target",
+            "stance",
+            "ruleId",
+            "operator",
+            "premises"
+          ],
+          "properties": {
+            "nodeId": {"$ref": "#/$defs/nodeId"},
+            "kind": {"const": "rule"},
+            "target": {"$ref": "#/$defs/target"},
+            "stance": {"enum": ["support", "oppose"]},
+            "ruleId": {"$ref": "#/$defs/id"},
+            "operator": {"enum": ["all", "any"]},
+            "premises": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/nodeId"}
+            },
+            "usedNotExplicit": {"type": "boolean"}
+          }
+        }
+      ]
+    }
+  }
+}
