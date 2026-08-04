@@ -1,4 +1,5 @@
 """Reusable rules for the repository quality guard."""
+
 from __future__ import annotations
 
 import re
