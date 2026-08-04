@@ -13,20 +13,12 @@ public static class OoxmlPackageReader
         ArgumentNullException.ThrowIfNull(source);
         limits ??= new OoxmlPackageLimits();
         DemandLimits(limits);
-        var packageBytes = await ReadBoundedAsync(
+        var packageBytes = await OoxmlBoundedStreams.ReadPackageAsync(
             source,
             limits.MaxPackageBytes,
             cancellationToken
         );
-        if (packageBytes.Length < 4
-            || packageBytes[0] != (byte)'P'
-            || packageBytes[1] != (byte)'K'
-            || packageBytes[2] != 3
-            || packageBytes[3] != 4)
-        {
-            throw new InvalidDataException("OOXML package ZIP signature is missing.");
-        }
-
+        DemandZipSignature(packageBytes);
         var parts = ReadParts(packageBytes, limits);
         var core = OoxmlCorePropertiesReader.Read(
             parts.GetValueOrDefault("docProps/core.xml")
@@ -58,25 +50,19 @@ public static class OoxmlPackageReader
                 continue;
             }
             var name = OoxmlPathPolicy.DemandPartName(entry.FullName);
-            if (parts.Count >= limits.MaxEntries)
-            {
-                throw new InvalidDataException("OOXML package exceeds the entry limit.");
-            }
-            if (entry.Length < 0 || entry.Length > limits.MaxEntryBytes)
-            {
-                throw new InvalidDataException($"OOXML part exceeds its byte limit: {name}");
-            }
+            DemandEntryLimits(parts.Count, entry.Length, total, limits, name);
             total = checked(total + entry.Length);
-            if (total > limits.MaxUncompressedBytes)
-            {
-                throw new InvalidDataException("OOXML package exceeds the uncompressed byte limit.");
-            }
             if (parts.ContainsKey(name))
             {
                 throw new InvalidDataException($"Duplicate OOXML part name: {name}");
             }
             using var entryStream = entry.Open();
-            var content = ReadEntry(entryStream, entry.Length, limits.MaxEntryBytes, name);
+            var content = OoxmlBoundedStreams.ReadPart(
+                entryStream,
+                entry.Length,
+                limits.MaxEntryBytes,
+                name
+            );
             parts.Add(name, new OoxmlPart(name, content, OoxmlHashing.Sha256(content)));
         }
         if (parts.Count == 0)
@@ -86,63 +72,38 @@ public static class OoxmlPackageReader
         return parts;
     }
 
-    private static byte[] ReadEntry(
-        Stream stream,
-        long declaredLength,
-        long maxBytes,
+    private static void DemandEntryLimits(
+        int count,
+        long entryLength,
+        long currentTotal,
+        OoxmlPackageLimits limits,
         string name
     )
     {
-        using var output = new MemoryStream(
-            declaredLength <= int.MaxValue ? (int)declaredLength : 0
-        );
-        var buffer = new byte[81_920];
-        long total = 0;
-        while (true)
+        if (count >= limits.MaxEntries)
         {
-            var read = stream.Read(buffer, 0, buffer.Length);
-            if (read == 0)
-            {
-                break;
-            }
-            total = checked(total + read);
-            if (total > maxBytes)
-            {
-                throw new InvalidDataException($"OOXML part expands beyond its limit: {name}");
-            }
-            output.Write(buffer, 0, read);
+            throw new InvalidDataException("OOXML package exceeds the entry limit.");
         }
-        if (total != declaredLength)
+        if (entryLength < 0 || entryLength > limits.MaxEntryBytes)
         {
-            throw new InvalidDataException($"OOXML part length changed while reading: {name}");
+            throw new InvalidDataException($"OOXML part exceeds its byte limit: {name}");
         }
-        return output.ToArray();
+        if (checked(currentTotal + entryLength) > limits.MaxUncompressedBytes)
+        {
+            throw new InvalidDataException("OOXML package exceeds the uncompressed byte limit.");
+        }
     }
 
-    private static async Task<byte[]> ReadBoundedAsync(
-        Stream source,
-        long maxBytes,
-        CancellationToken cancellationToken
-    )
+    private static void DemandZipSignature(byte[] packageBytes)
     {
-        using var output = new MemoryStream();
-        var buffer = new byte[81_920];
-        long total = 0;
-        while (true)
+        if (packageBytes.Length < 4
+            || packageBytes[0] != (byte)'P'
+            || packageBytes[1] != (byte)'K'
+            || packageBytes[2] != 3
+            || packageBytes[3] != 4)
         {
-            var read = await source.ReadAsync(buffer, cancellationToken);
-            if (read == 0)
-            {
-                break;
-            }
-            total = checked(total + read);
-            if (total > maxBytes)
-            {
-                throw new InvalidDataException("OOXML package exceeds the package byte limit.");
-            }
-            await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+            throw new InvalidDataException("OOXML package ZIP signature is missing.");
         }
-        return output.ToArray();
     }
 
     private static void DemandLimits(OoxmlPackageLimits limits)
