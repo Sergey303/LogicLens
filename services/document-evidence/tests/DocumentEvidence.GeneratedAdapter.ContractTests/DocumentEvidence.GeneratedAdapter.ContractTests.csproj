@@ -7,6 +7,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../src/DocumentEvidence.GeneratedAdapter/DocumentEvidence.GeneratedAdapter.csproj" />
   </ItemGroup>
 </Project>
