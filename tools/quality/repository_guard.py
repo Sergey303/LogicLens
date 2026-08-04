@@ -33,10 +33,7 @@ def git(*args: str) -> list[str]:
 
 
 def changed_files(
-    base: str | None,
-    *,
-    staged: bool,
-    all_files: bool,
+    base: str | None, *, staged: bool, all_files: bool,
 ) -> list[Path]:
     """Return the selected tracked file set."""
     if all_files:
