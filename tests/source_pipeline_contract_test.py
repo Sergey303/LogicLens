@@ -48,10 +48,7 @@ def main() -> int:
         )
         assert snapshot["stage"] == "snapshot"
         fragmented = source_proposal.fragment_workspace(workspace, schemas)
-        assert (
-            fragmented["artifacts"]["fragments"]["count"]
-            == EXPECTED_FRAGMENT_COUNT
-        )
+        assert fragmented["artifacts"]["fragments"]["count"] == EXPECTED_FRAGMENT_COUNT
         source_proposal.prepare_extraction(
             world_root=world,
             proposal_root=workspace,
