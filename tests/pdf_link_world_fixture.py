@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from contract_fixture_support import (
     CAPSULE_FILES,
@@ -10,6 +10,9 @@ from contract_fixture_support import (
     write_json,
     write_minimal_module,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 CAPSULE_ID = "management.role-boundaries"
 
