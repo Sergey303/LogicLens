@@ -18,8 +18,12 @@ internal static class PdfCompletionContractTests
         var first = PdfProcessingCompletionFactory.Create(revisionId, completedAt, extraction);
         var second = PdfProcessingCompletionFactory.Create(revisionId, completedAt, extraction);
 
-        TestAssert.Equal(first.Manifest.ManifestSha256, second.Manifest.ManifestSha256);
-        TestAssert.Equal(3, first.Fragments.Count);
+        TestAssert.Equal(
+            first.Manifest.ManifestSha256,
+            second.Manifest.ManifestSha256,
+            "Parser manifest identity must be deterministic."
+        );
+        TestAssert.Equal(3, first.Fragments.Count, "Every extracted block must become one fragment.");
         TestAssert.True(
             first.Fragments.Select(item => item.FragmentId)
                 .SequenceEqual(second.Fragments.Select(item => item.FragmentId)),
@@ -33,6 +37,10 @@ internal static class PdfCompletionContractTests
             first.Fragments[0].AnchorJson.Contains("\"pageNumber\":1", StringComparison.Ordinal),
             "Persisted anchors must retain page provenance."
         );
-        TestAssert.Equal(extraction.Document.IrSha256, first.Manifest.IrSha256);
+        TestAssert.Equal(
+            extraction.Document.IrSha256,
+            first.Manifest.IrSha256,
+            "Completion manifest must retain canonical IR identity."
+        );
     }
 }
