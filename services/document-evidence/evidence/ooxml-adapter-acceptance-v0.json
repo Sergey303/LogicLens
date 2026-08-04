@@ -3,35 +3,62 @@
   "linearIssue": "ENG-145",
   "branch": "agent/document-evidence-ooxml-adapters",
   "base": "agent/document-evidence-pdf-adapter",
-  "status": "accepted-processing-completion-slice",
-  "acceptedHead": "928a99cc58a2aff29ef41a3a04346213d0049876",
-  "workflow": {
-    "name": "Repository quality",
-    "runId": 30946143250,
-    "conclusion": "success"
+  "status": "accepted-xlsx-selected-evidence-slice",
+  "acceptedHead": "031a2c4887e109dd1d8b0f36b30fa5bf9543d2c9",
+  "workflows": {
+    "repositoryQuality": {
+      "runId": 30948372704,
+      "conclusion": "success"
+    },
+    "sourceProposal": {
+      "runId": 30948372251,
+      "conclusion": "success",
+      "swipl": "9.0.4"
+    },
+    "zeroEpoch": {
+      "runId": 30948373508,
+      "conclusion": "success"
+    }
   },
   "proof": {
     "repositoryGuard": "success",
     "warnings": 0,
     "errors": 0,
-    "ooxmlRuntimeContracts": 11,
+    "ooxmlRuntimeContracts": 15,
     "postgresImage": "postgres:17-alpine",
+    "realXlsx": {
+      "sourceRepository": "Sergey303/EngDocSentinel",
+      "sourceCommit": "916b19bf9a3047c1cb0e2bed9a1dab7bb084608a",
+      "fixture": "services/document-evidence/tests/fixtures/engdoc-confirmed-package-checklist.xlsx",
+      "artifactSha256": "61550775c9466c711781ee2555e9b3c9a3871471c2b3d28588d4d183474bde9c",
+      "gitBlobSha": "051b5ffb9edb28ed1802b648406d8b574169c7dd",
+      "selectedCell": "Package Check!D9",
+      "selectedText": "Confirmed"
+    },
     "completionInvariants": [
       "fragment sequences are contiguous",
       "ZIP order and timestamp changes do not change fragment IDs",
       "raw artifact SHA-256 remains in the parser manifest",
       "XLSX formula, raw and cached values remain distinct"
     ],
+    "selectedEvidenceInvariants": [
+      "C# export is byte-for-byte equal to the shared JSONL fixture",
+      "source-fragment-v0 validates PDF, DOCX and XLSX anchors through strict oneOf branches",
+      "only the selected worksheet cell enters the accepted package",
+      "full workbook bytes, complete cell set and extraction request are not retained",
+      "typed proposal, direct grounding and package verification pass through real SWI-Prolog"
+    ],
     "regressions": [
       "application boundary",
       "generated adapter",
       "immutable storage",
-      "PDF adapter",
-      "PostgreSQL lifecycle"
+      "PDF adapter and selected-fragment bridge",
+      "PostgreSQL lifecycle",
+      "zero-epoch local run"
     ]
   },
   "remaining": [
-    "verify representative committed EngDoc Sentinel DOCX and XLSX artifacts",
-    "prove selected-evidence retention and source-proposal bridge"
+    "verify a representative committed EngDoc Sentinel DOCX artifact byte-for-byte",
+    "run the selected DOCX evidence bridge against that committed artifact"
   ]
 }
