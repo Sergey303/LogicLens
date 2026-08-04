@@ -61,14 +61,26 @@ jobs:
           git diff --name-only -z --diff-filter=ACMR "$base...HEAD" -- '*.py' \
             | xargs -0 -r ruff format --check
 
-      - name: Build document boundary contracts
+      - name: Build application boundary contracts
         run: |
           dotnet build \
             services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj \
             --nologo --warnaserror
 
-      - name: Run document boundary contracts
+      - name: Run application boundary contracts
         run: |
           dotnet run \
             --project services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj \
+            --no-build
+
+      - name: Build generated adapter contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.GeneratedAdapter.ContractTests/DocumentEvidence.GeneratedAdapter.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run generated adapter contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.GeneratedAdapter.ContractTests/DocumentEvidence.GeneratedAdapter.ContractTests.csproj \
             --no-build
