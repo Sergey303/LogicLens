@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Exercise the text source proposal pipeline and tamper detection."""
 
 from __future__ import annotations
