@@ -3,20 +3,20 @@
   "linearIssue": "ENG-145",
   "branch": "agent/document-evidence-ooxml-adapters",
   "base": "agent/document-evidence-pdf-adapter",
-  "status": "accepted-xlsx-selected-evidence-slice",
-  "acceptedHead": "031a2c4887e109dd1d8b0f36b30fa5bf9543d2c9",
+  "status": "remote-slices-accepted-local-docx-pending",
+  "acceptedRemoteHead": "9747c71f85f6df821da8ffeb343747fe11f33104",
   "workflows": {
     "repositoryQuality": {
-      "runId": 30948372704,
+      "runId": 30949327285,
       "conclusion": "success"
     },
     "sourceProposal": {
-      "runId": 30948372251,
+      "runId": 30949327290,
       "conclusion": "success",
       "swipl": "9.0.4"
     },
     "zeroEpoch": {
-      "runId": 30948373508,
+      "runId": 30949327608,
       "conclusion": "success"
     }
   },
@@ -57,8 +57,19 @@
       "zero-epoch local run"
     ]
   },
+  "localDocxGate": {
+    "status": "prepared-not-executed",
+    "runner": "services/document-evidence/verify-engdoc-docx.ps1",
+    "instructions": "services/document-evidence/docs/ENGDOC_DOCX_LOCAL_GATE.md",
+    "sourceRepository": "Sergey303/EngDocSentinel",
+    "sourceCommit": "916b19bf9a3047c1cb0e2bed9a1dab7bb084608a",
+    "sourceRelativePath": "datasets/synthetic/demo-v0/generated/confirmed-power-conflict/01-technical-specification.docx",
+    "expectedArtifactSha256": "bbd051dce7fd1e351175677c2c4c5bb8f14e2ba96c5a0f63298dd3a2f318023c",
+    "expectedGitBlobSha": "a0f3803eeb6b75a88a7a06c1ba308d1584793ec7",
+    "proofPath": ".artifacts/document-evidence/engdoc-docx-local-proof-v0.json"
+  },
   "remaining": [
-    "verify a representative committed EngDoc Sentinel DOCX artifact byte-for-byte",
-    "run the selected DOCX evidence bridge against that committed artifact"
+    "execute the SHA-verified local committed DOCX gate",
+    "review and retain the emitted local proof before marking ENG-145 Done"
   ]
 }
