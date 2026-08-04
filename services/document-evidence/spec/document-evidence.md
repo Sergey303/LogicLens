@@ -49,6 +49,7 @@ Namespace: LogicLens.DocumentEvidence.Generated
 | Adapter | string | false | false | 120 |
 | AdapterVersion | string | false | false | 80 |
 | ManifestHash | string | false | false | 64 |
+| ManifestJson | string | false | false | 8000 |
 
 | Navigation | Target | ForeignKey | Required | Inverse |
 |---|---|---|---:|---|
@@ -69,9 +70,13 @@ Namespace: LogicLens.DocumentEvidence.Generated
 | Kind | string | true | false | 80 |
 | State | string | true | false | 40 |
 | Attempt | int | true | false | |
+| MaxAttempts | int | true | false | |
 | IdempotencyKey | string | true | false | 160 |
+| AvailableAt | DateTime | true | false | |
+| LeaseToken | Guid | false | false | |
 | LeaseUntil | DateTime | false | false | |
 | LastErrorCode | string | false | false | 120 |
+| LastError | string | false | false | 2000 |
 
 | Navigation | Target | ForeignKey | Required | Inverse |
 |---|---|---|---:|---|
