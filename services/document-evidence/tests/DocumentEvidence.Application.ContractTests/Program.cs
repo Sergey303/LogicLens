@@ -13,6 +13,13 @@ internal static class Program
         await UploadServiceContractTests.ReplayAvoidsObjectWriteAsync();
         await UploadServiceContractTests.NewUploadBuildsDeterministicManifestAsync();
         await UploadServiceContractTests.ConflictingCommitResultIsRejectedAsync();
+        ProcessingJobLeaseContractTests.FirstLeaseOwnsAttemptAndBlocksSecondWorker();
+        ProcessingJobLeaseContractTests.ExpiredLeaseCanBeReclaimed();
+        await ProcessingJobLeaseContractTests.StaleOrExpiredLeaseCannotCompleteAsync();
+        ProcessingJobLeaseContractTests.ActiveLeaseCompletesAndTerminalCannotRelock();
+        ProcessingJobFailureContractTests.FailureSchedulesDeterministicBackoff();
+        ProcessingJobFailureContractTests.RetryCannotLeaseBeforeAvailableAt();
+        ProcessingJobFailureContractTests.FinalAttemptBecomesTerminal();
         Console.WriteLine("Document Evidence boundary contract tests passed.");
         return 0;
     }
