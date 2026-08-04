@@ -44,6 +44,7 @@ $AppForgeRoot = (Resolve-Path $AppForgeRoot).Path
 $spec = (Resolve-Path (Join-Path $PSScriptRoot "spec\document-evidence.md")).Path
 $output = Join-Path $PSScriptRoot "Generated"
 $runner = Join-Path $AppForgeRoot "scripts\quality\run-md-ef-core-production-package.ps1"
+$existingManifest = Join-Path $output "manifest\package-manifest.json"
 
 Assert-File $runner "AppForge production package runner"
 
@@ -55,6 +56,12 @@ if ($dirty -and -not $AllowDirtyAppForge) {
 
 $appForgeCommit = (& git -C $AppForgeRoot rev-parse HEAD).Trim()
 Assert-LastExitCode "Reading AppForge commit"
+
+if ((Test-Path -LiteralPath $output -PathType Container) -and
+    -not (Test-Path -LiteralPath $existingManifest -PathType Leaf)) {
+    Write-Host "Removing incomplete generated package: $output"
+    Remove-Item -LiteralPath $output -Recurse -Force
+}
 
 $arguments = @{
     SpecPath = $spec
