@@ -10,34 +10,45 @@ Read first:
 - [AppForge generation boundary](../../docs/architecture/APPFORGE_GENERATION_BOUNDARY_V0.md);
 - [product platform direction](../../docs/architecture/PRODUCT_PLATFORM_V0.md);
 - [PDF Link Pipeline v0](../../docs/architecture/PDF_LINK_PIPELINE_V0.md);
-- [Source Proposal Pipeline v0](../../docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md);
-- [operational AppForge model](spec/document-evidence.md).
+- [Source Proposal Pipeline v0](../../docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md).
 
-## Generate the replaceable CRUD contour
+## Generated package
+
+AppForge consumes [`spec/document-evidence.md`](spec/document-evidence.md) and writes the complete
+replaceable production package under `Generated/`:
+
+```text
+Generated/
+  backend/          EF Core/PostgreSQL/API and migrations
+  backend-contract/ canonical JSON contract
+  frontend/         TypeScript bindings and React/PrimeReact resources
+  frontend-app/     production Vite app and dist
+  deploy/           Docker Compose production preset
+  manifest/         package manifest and LogicLens receipt
+  docs/             generated package runbook
+```
+
+Generate it from this repository with:
 
 ```powershell
 .\services\document-evidence\generate-appforge.ps1 `
   -AppForgeRoot D:\projects\ChatPilotGroup\AppForge
 ```
 
-The wrapper generates a production PostgreSQL backend under `Generated/`, verifies its manifest,
-records AppForge/source hashes, and builds the generated solution. Generated output is never edited
-by hand. Use `-SkipBuild` only for a generation-only diagnostic run.
+The generated React application is an internal administration surface, not the final evidence UX.
+Do not edit files under `Generated/`; change the Markdown model or AppForge and regenerate.
 
-The generated controllers are not the public service boundary yet. Workspace/object authorization,
-safe upload, immutable bytes, processing jobs, parser adapters, and source anchors remain
-handwritten modules around the generated persistence contour.
+## Handwritten implementation plan
 
-## Initial implementation plan
-
-1. Generate and verify the operational CRUD contour from the Markdown model.
-2. Isolate generated persistence/API behind handwritten application interfaces.
-3. Add content-addressed local storage, then an S3-compatible implementation.
+1. Compose the generated operational package behind a handwritten service facade.
+2. Add content-addressed local storage, then an S3-compatible implementation.
+3. Add idempotent upload completion, outbox, leased processing jobs, retries, and terminal states.
 4. Port PDF contracts and tests from LogicLens without coupling to capsule activation.
 5. Port multi-format adapters and reproducible fixtures from EngDoc Essential.
 6. Add ChatPilot-derived access, filename, signature, quota, and storage-root guards.
-7. Add durable processing jobs, manifests, hashes, and revocation invalidation.
-8. Integrate LogicLens through generated clients and typed source anchors.
+7. Add revocation invalidation, protected download plans, manifests, and hashes.
+8. Integrate LogicLens and EngDoc Essential through versioned generated service clients.
 
 The first vertical slice is PDF upload or registered link -> immutable revision -> deterministic
-fragments -> permitted retrieval. Model-based assertion proposals remain outside this service.
+fragments -> permitted retrieval -> LogicLens typed proposal. Model-based assertion proposals remain
+outside the document service and cannot accept themselves.
