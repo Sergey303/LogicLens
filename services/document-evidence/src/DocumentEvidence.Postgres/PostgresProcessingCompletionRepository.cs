@@ -1,4 +1,3 @@
-using System.Text.Json;
 using KnowledgePilot.LogicLens.DocumentEvidence.Application.Contracts;
 using KnowledgePilot.LogicLens.DocumentEvidence.Application.Ports;
 using Npgsql;
@@ -34,7 +33,13 @@ public sealed class PostgresProcessingCompletionRepository : IProcessingCompleti
         {
             await InsertFragmentAsync(connection, transaction, fragment, cancellationToken);
         }
-        await InsertOutboxAsync(connection, transaction, expectedJob.JobId, completion, cancellationToken);
+        await PostgresProcessingCompletionOutbox.InsertAsync(
+            connection,
+            transaction,
+            expectedJob.JobId,
+            completion,
+            cancellationToken
+        );
         await transaction.CommitAsync(cancellationToken);
         return true;
     }
@@ -110,40 +115,6 @@ public sealed class PostgresProcessingCompletionRepository : IProcessingCompleti
         command.Parameters.AddWithValue("anchorJson", fragment.AnchorJson);
         command.Parameters.AddWithValue("text", fragment.Text);
         command.Parameters.AddWithValue("contentHash", fragment.ContentHash);
-        await command.ExecuteNonQueryAsync(cancellationToken);
-    }
-
-    private static async Task InsertOutboxAsync(
-        NpgsqlConnection connection,
-        NpgsqlTransaction transaction,
-        Guid jobId,
-        ProcessingCompletionPayload completion,
-        CancellationToken cancellationToken
-    )
-    {
-        await using var command = new NpgsqlCommand(
-            PostgresProcessingCompletionSql.InsertOutbox,
-            connection,
-            transaction
-        );
-        command.Parameters.AddWithValue("id", Guid.NewGuid());
-        command.Parameters.AddWithValue(
-            "eventKey",
-            $"revision:{completion.RevisionId}:processed:{completion.Manifest.ManifestSha256}"
-        );
-        command.Parameters.AddWithValue("revisionId", completion.RevisionId);
-        command.Parameters.AddWithValue(
-            "payloadJson",
-            JsonSerializer.Serialize(new {
-                jobId,
-                revisionId = completion.RevisionId,
-                completion.Manifest.Adapter,
-                completion.Manifest.AdapterVersion,
-                completion.Manifest.ManifestSha256,
-                fragmentCount = completion.Fragments.Count,
-            })
-        );
-        command.Parameters.AddWithValue("completedAt", completion.CompletedAt.UtcDateTime);
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
