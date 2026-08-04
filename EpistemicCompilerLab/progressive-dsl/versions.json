@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "0.1",
+  "programId": "logiclens.progressive-epistemic-dsl",
+  "levels": [
+    {
+      "id": "DSL-A",
+      "runtimeVersion": "0.1.0",
+      "status": "implemented",
+      "capabilities": [
+        "typed-strict-predicates",
+        "support-oppose",
+        "open-world-status",
+        "provenance",
+        "scope",
+        "dependency-groups",
+        "python-prolog-cross-verification"
+      ],
+      "queryOperations": ["strict-claim"]
+    },
+    {
+      "id": "DSL-B",
+      "runtimeVersion": "0.2.0",
+      "status": "planned",
+      "extends": "DSL-A",
+      "capabilities": [
+        "logical-rule",
+        "all",
+        "any",
+        "finite-exists",
+        "not-explicit",
+        "proof-dag",
+        "cycle-rejection",
+        "safe-variable-validation"
+      ],
+      "queryOperations": ["strict-claim", "derived-strict-claim"]
+    },
+    {
+      "id": "DSL-C",
+      "runtimeVersion": "0.3.0",
+      "status": "planned",
+      "extends": "DSL-B",
+      "capabilities": [
+        "point-observation",
+        "bounded-observation",
+        "normal-observation",
+        "typed-units",
+        "allowlisted-conversions",
+        "deterministic-numerical-kernels"
+      ],
+      "queryOperations": [
+        "strict-claim",
+        "derived-strict-claim",
+        "observation",
+        "numeric-comparison"
+      ]
+    },
+    {
+      "id": "DSL-D",
+      "runtimeVersion": "0.4.0",
+      "status": "planned",
+      "extends": "DSL-C",
+      "capabilities": [
+        "binomial-opinion",
+        "belief-disbelief-uncertainty-base-rate",
+        "projected-probability",
+        "dependency-aware-fusion",
+        "conflict-index",
+        "allowed-conclusion"
+      ],
+      "queryOperations": [
+        "strict-claim",
+        "derived-strict-claim",
+        "observation",
+        "numeric-comparison",
+        "opinion"
+      ]
+    }
+  ]
+}
