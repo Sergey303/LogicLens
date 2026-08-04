@@ -4,6 +4,9 @@ namespace KnowledgePilot.LogicLens.DocumentEvidence.Ooxml.ContractTests;
 
 internal static class OoxmlSecurityContractTests
 {
+    private const string OfficeDocumentRelationship =
+        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
+
     public static async Task CanonicalIdentityIgnoresZipOrderAndTimestampAsync()
     {
         var firstBytes = DocxFixture.Build(
@@ -35,6 +38,30 @@ internal static class OoxmlSecurityContractTests
             "2026-08-04T12:00:00.0000000+00:00",
             first.Identity.CoreProperties.CreatedUtc,
             "Core timestamps must be canonical UTC values."
+        );
+    }
+
+    public static async Task PackageAbsoluteRelationshipIsResolvedAsync()
+    {
+        var packageBytes = OoxmlTestZip.Build([
+            ("[Content_Types].xml", "<Types />"),
+            ("word/document.xml", "<document />"),
+            ("_rels/.rels", $"""
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="{OfficeDocumentRelationship}"
+                    Target="/word/document.xml" />
+                </Relationships>
+                """),
+        ]);
+        var package = await ReadAsync(packageBytes);
+        var relationships = OoxmlRelationships.Read(package, "_rels/.rels", "");
+        TestAssert.Equal(
+            "word/document.xml",
+            OoxmlRelationships.DemandSingleTargetByType(
+                relationships,
+                OfficeDocumentRelationship
+            ),
+            "Package-absolute internal relationship was not resolved from ZIP root."
         );
     }
 
