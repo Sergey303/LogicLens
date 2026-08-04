@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from contract_fixture_support import (
     CAPSULE_FILES,
@@ -11,6 +11,9 @@ from contract_fixture_support import (
     write_minimal_module,
 )
 from source_pipeline_semantic_fixture import write_semantics
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 CAPSULE_ID = "management.role-boundaries"
 
@@ -23,10 +26,10 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
     curriculum = repository / "curriculum/00-learning-model.md"
     curriculum.parent.mkdir(parents=True)
     curriculum.write_text(
-        "# Роли в сценариях\n\n"
-        "Team Lead задаёт локальное техническое направление и управляет техническими рисками.\n\n"
-        "Engineering Manager отвечает за развитие сотрудников и здоровье команды.\n\n"
-        "# Ограничение\n\nОтсутствие сведений не считается опровержением.\n",
+        "# Roles in scenarios\n\n"
+        "Team Lead sets local technical direction and manages technical risks.\n\n"
+        "Engineering Manager owns employee development and team health.\n\n"
+        "# Limitation\n\nMissing information is not contradictory evidence.\n",
         encoding="utf-8",
     )
     write_json(
@@ -36,7 +39,7 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
             "worldId": "management",
             "title": "Management",
             "description": "fixture",
-            "languages": ["ru"],
+            "languages": ["en"],
             "semantic": {
                 "vocabulary": "semantic/vocabulary.json",
                 "predicates": "semantic/predicates.json",
@@ -64,7 +67,7 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
             "worldId": "management",
             "title": "Role boundaries",
             "description": "fixture",
-            "languages": ["ru"],
+            "languages": ["en"],
             "status": "draft",
             "sourceManifest": "sources/manifest.json",
             **CAPSULE_FILES,
@@ -84,7 +87,7 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
                     "title": "Learning model",
                     "locator": "https://example.invalid/internal",
                     "repositoryPath": "curriculum/00-learning-model.md",
-                    "language": "ru",
+                    "language": "en",
                     "license": {
                         "id": "internal",
                         "status": "internal",
