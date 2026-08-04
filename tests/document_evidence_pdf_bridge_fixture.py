@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from capsule import canonical_json, schema_check, sha256
 from source_proposal.common import write_workspace
@@ -11,7 +11,6 @@ from tests import pdf_link_contract_test as pdf_fixture
 
 if TYPE_CHECKING:
     from pathlib import Path
-    from typing import Any
 
 PROPOSAL_ID = "document-evidence-pdf-v1"
 SOURCE_ID = "document-evidence-pdf"
