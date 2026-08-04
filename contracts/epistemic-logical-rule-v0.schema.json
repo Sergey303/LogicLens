@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/epistemic-logical-rule-v0.schema.json",
+  "title": "LogicLens ground logical rule v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "ruleId",
+    "head",
+    "body",
+    "generalisability"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "ruleId": {"$ref": "#/$defs/id"},
+    "head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "stance"],
+      "properties": {
+        "target": {"$ref": "#/$defs/target"},
+        "stance": {"enum": ["support", "oppose"]}
+      }
+    },
+    "body": {"$ref": "#/$defs/expression"},
+    "scope": {"type": "object"},
+    "generalisability": {
+      "enum": ["universal", "context-dependent", "local"]
+    },
+    "note": {"type": "string", "maxLength": 2000}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "value": {"type": ["string", "integer", "boolean"]},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predicate", "arguments"],
+      "properties": {
+        "predicate": {"$ref": "#/$defs/id"},
+        "arguments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {"$ref": "#/$defs/value"}
+        }
+      }
+    },
+    "claimCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim", "requires"],
+      "properties": {
+        "claim": {"$ref": "#/$defs/target"},
+        "requires": {"enum": ["supported", "refuted"]}
+      }
+    },
+    "notExplicitCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["notExplicit"],
+      "properties": {
+        "notExplicit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["target", "stance"],
+          "properties": {
+            "target": {"$ref": "#/$defs/target"},
+            "stance": {"enum": ["support", "oppose"]}
+          }
+        }
+      }
+    },
+    "condition": {
+      "oneOf": [
+        {"$ref": "#/$defs/claimCondition"},
+        {"$ref": "#/$defs/notExplicitCondition"}
+      ]
+    },
+    "expression": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["all"],
+          "properties": {
+            "all": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 32,
+              "items": {"$ref": "#/$defs/condition"}
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["any"],
+          "properties": {
+            "any": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 32,
+              "items": {"$ref": "#/$defs/condition"}
+            }
+          }
+        }
+      ]
+    }
+  }
+}
