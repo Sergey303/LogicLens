@@ -15,6 +15,7 @@ internal static class Program
         await XlsxContractTests.UnsupportedCellTypeFailsClosedAsync();
         await OoxmlCompletionContractTests.DocxCompletionUsesSemanticFragmentIdentityAsync();
         await OoxmlCompletionContractTests.XlsxCompletionRetainsFormulaProvenanceAsync();
+        await EngDocFixtureContractTests.CommittedEngDocXlsxIsParsedAsync();
         Console.WriteLine("Document Evidence OOXML adapter contract tests passed.");
         return 0;
     }
