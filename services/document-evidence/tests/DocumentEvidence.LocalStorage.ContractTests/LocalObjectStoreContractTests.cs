@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using KnowledgePilot.LogicLens.DocumentEvidence.Application.Contracts;
 
 namespace KnowledgePilot.LogicLens.DocumentEvidence.LocalStorage.ContractTests;
 
@@ -54,7 +55,7 @@ internal static class LocalObjectStoreContractTests
         return new LocalImmutableObjectStore(new LocalObjectStoreOptions(rootPath));
     }
 
-    private static Task<Application.Contracts.StoredObjectReference> PutAsync(
+    private static Task<StoredObjectReference> PutAsync(
         LocalImmutableObjectStore store,
         byte[] payload
     )
