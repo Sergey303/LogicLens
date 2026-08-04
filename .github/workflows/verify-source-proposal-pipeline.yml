@@ -63,7 +63,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install pinned SWI-Prolog, Poppler and JSON Schema validator
+        shell: bash
         run: |
+          set -o pipefail
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox poppler-utils
           swipl --version | tee /tmp/swipl-version.txt
@@ -72,15 +74,21 @@ jobs:
           python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
 
       - name: Run text source proposal contract
+        shell: bash
         run: |
+          set -o pipefail
           python tests/source_pipeline_contract_test.py | tee /tmp/source-pipeline.log
 
       - name: Run ephemeral PDF link contract and real Prolog gate
+        shell: bash
         run: |
+          set -o pipefail
           python tests/pdf_link_contract_test.py | tee /tmp/pdf-link-pipeline.log
 
       - name: Run Document Evidence selected-fragment bridge and Prolog gate
+        shell: bash
         run: |
+          set -o pipefail
           python tests/document_evidence_pdf_bridge_test.py \
             | tee /tmp/document-evidence-pdf-bridge.log
 
