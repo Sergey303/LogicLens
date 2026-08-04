@@ -61,14 +61,14 @@ jobs:
           git diff --name-only -z --diff-filter=ACMR "$base...HEAD" -- '*.py' \
             | xargs -0 -r ruff format --check
 
-      - name: Build handwritten document boundary
+      - name: Build document boundary contracts
         run: |
           dotnet build \
-            services/document-evidence/src/DocumentEvidence.Application/DocumentEvidence.Application.csproj \
+            services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj \
             --nologo --warnaserror
 
       - name: Run document boundary contracts
         run: |
           dotnet run \
             --project services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj \
-            --no-restore
+            --no-build
