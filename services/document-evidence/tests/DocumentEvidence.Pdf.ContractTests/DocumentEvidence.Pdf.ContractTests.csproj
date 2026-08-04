@@ -8,5 +8,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/DocumentEvidence.Pdf/DocumentEvidence.Pdf.csproj" />
+    <None Include="../fixtures/pdf-source-proposal-fragment-v1.jsonl"
+          Link="pdf-source-proposal-fragment-v1.jsonl"
+          CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
