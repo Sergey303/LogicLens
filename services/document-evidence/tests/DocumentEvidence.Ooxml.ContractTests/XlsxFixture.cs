@@ -71,6 +71,7 @@ internal static class XlsxFixture
                 </row>
                 <row r="2">
                   <c r="C2" t="inlineStr"><is><t>Inline value</t></is></c>
+                  <c r="D2" t="d"><v>2026-08-04T15:00:00+03:00</v></c>
                 </row>
               </sheetData>
             </worksheet>
