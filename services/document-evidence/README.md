@@ -8,14 +8,13 @@ Read first:
 - [service-specific agent rules](AGENTS.md);
 - [architecture contract](../../docs/architecture/DOCUMENT_EVIDENCE_SERVICE_V0.md);
 - [AppForge generation boundary](../../docs/architecture/APPFORGE_GENERATION_BOUNDARY_V0.md);
-- [product platform direction](../../docs/architecture/PRODUCT_PLATFORM_V0.md);
 - [PDF Link Pipeline v0](../../docs/architecture/PDF_LINK_PIPELINE_V0.md);
 - [Source Proposal Pipeline v0](../../docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md).
 
 ## Generated package
 
-AppForge consumes [`spec/document-evidence.md`](spec/document-evidence.md) and writes the complete
-replaceable production package under the ignored local `Generated/` directory:
+AppForge consumes [`spec/document-evidence.md`](spec/document-evidence.md) and writes the replaceable
+production package under ignored local `Generated/`:
 
 ```text
 Generated/
@@ -25,87 +24,75 @@ Generated/
   frontend-app/     production Vite app and dist
   deploy/           Docker Compose production preset
   manifest/         package manifest and LogicLens receipt
-  docs/             generated package runbook
 ```
-
-Generate it from this repository with:
 
 ```powershell
 .\services\document-evidence\generate-appforge.ps1 `
   -AppForgeRoot D:\projects\ChatPilotGroup\AppForge
-```
-
-Verify an existing local package without regenerating it:
-
-```powershell
 .\services\document-evidence\verify-generated-package.ps1
 ```
 
-The generated React application is an internal administration surface, not the final evidence UX.
-Do not edit or commit files under `Generated/`; change the Markdown model or AppForge and regenerate.
+Do not edit or commit `Generated/`. Accepted generation evidence:
 
-Accepted evidence:
+- [`appforge-production-trial-v0.json`](evidence/appforge-production-trial-v0.json);
+- [`appforge-lifecycle-package-v1.json`](evidence/appforge-lifecycle-package-v1.json);
+- [`strict-generated-package-proof-v1.json`](evidence/strict-generated-package-proof-v1.json).
 
-- [`appforge-production-trial-v0.json`](evidence/appforge-production-trial-v0.json) — first complete production package;
-- [`appforge-lifecycle-package-v1.json`](evidence/appforge-lifecycle-package-v1.json) — lifecycle fields, fresh initial migration, and zero-warning AppForge proof.
+The accepted lifecycle package is a fresh-schema proof. Upgrade migration continuity is ENG-152.
 
-The lifecycle proof is intentionally classified as a fresh-schema proof. Preservation of an existing
-migration chain is tracked separately in ENG-152 because the proof command removed the previous local
-package before generation. The CGR process itself returned exit code 1 only after all eight AppForge
-stages completed: its post-proof snippet used the nonexistent PowerShell parameter
-`Select-Object -Single`.
+## Handwritten boundary and lifecycle
 
-## Implemented handwritten boundary
-
-`src/DocumentEvidence.Application` contains stable handwritten contracts, access policy ports, and
-the facade. It has no EF Core, AppForge DTO, generated namespace, database-path, or blob-path dependency.
-Authorization runs before any generated metadata or fragment lookup.
+`src/DocumentEvidence.Application` owns stable contracts and access-first policy. It has no EF Core,
+AppForge DTO, generated namespace, database-path, or blob-path dependency.
 
 `src/DocumentEvidence.GeneratedAdapter` maps AppForge JSON, checks document/revision/workspace identity,
-validates the generation receipt, and exposes an `IHttpClientBuilder` for credentials and telemetry.
+validates generation receipts, and exposes an `IHttpClientBuilder` for credentials and telemetry.
 
-```csharp
-services
-    .AddAppForgeGeneratedOperationalStore(generatedApiBaseAddress, receiptPath)
-    .AddHttpMessageHandler<DocumentEvidenceServiceCredentialHandler>();
-```
+`src/DocumentEvidence.LocalStorage` provides content-addressed immutable local objects:
 
-## Implemented immutable lifecycle
+- lowercase SHA-256 addressing, never display names or caller paths;
+- fsynced random staging files;
+- POSIX `link(2)` or Windows `CreateHardLinkW` create-once promotion;
+- concurrent duplicate convergence without overwrite;
+- size/hash verification on duplicate writes and reads;
+- storage-root containment and webroot isolation.
 
-`src/DocumentEvidence.LocalStorage` implements a local content-addressed object store:
+`src/DocumentEvidence.Postgres` implements Npgsql 10 lifecycle transactions against PostgreSQL 17:
 
-- addressing uses only lowercase SHA-256, never display names or caller paths;
-- bytes are fsynced to random staging files before promotion;
-- POSIX `link(2)` or Windows `CreateHardLinkW` provides create-once promotion;
-- concurrent duplicate writes converge without overwrite;
-- duplicate and read paths verify size and SHA-256;
-- storage roots cannot overlap a configured web root or escape through input.
-
-The application layer defines deterministic revision manifests, replay-safe upload completion,
-processing-job lease/retry/terminal transitions, stale-token rejection, and coarse transaction/CAS ports.
-
-`src/DocumentEvidence.Postgres` implements those ports with Npgsql 10 against PostgreSQL 17:
-
-- a locked document row serializes revision numbering;
-- StoredObject dedupe validates key, size, and media type;
-- revision, processing job, document pointer, and handwritten outbox insert share one transaction;
-- a unique conflict becomes a replay only when the original completion can be read back;
+- locked document rows serialize revision numbers;
+- revision, job, document pointer, and handwritten outbox share one transaction;
+- unique conflicts become replay only after reading the original completion;
 - processing transitions use compare-and-swap over state, attempt, availability, lease, and error;
 - outbox failure rolls back every generated-table change.
 
-The outbox schema is versioned in [`db/001_document_evidence_outbox.sql`](db/001_document_evidence_outbox.sql).
-Repository quality runs application, generated-adapter, local-storage, and live PostgreSQL 17 integrations
-with warnings as errors.
+The outbox schema is [`db/001_document_evidence_outbox.sql`](db/001_document_evidence_outbox.sql).
+
+## Page-grounded PDF adapter
+
+`src/DocumentEvidence.Pdf` is a deterministic trusted adapter. It:
+
+- validates byte limits, `%PDF-` signature, and optional pinned SHA-256 before Poppler;
+- calls `pdfinfo` and `pdftotext -bbox-layout -enc UTF-8` through a narrow process port;
+- emits canonical pages and blocks with reading order, bbox, word IDs, normalized text, and hashes;
+- records artifact, parser version, parser configuration, and IR hashes;
+- rejects PDFs with no usable native text instead of silently inventing evidence;
+- retains only explicitly selected blocks for downstream packages;
+- contains no LLM or OCR path in trusted extraction.
+
+Validation includes fake-process security/determinism contracts and a real Ubuntu Poppler integration.
+The accepted real proof is
+[`poppler-page-grounded-adapter-v1.json`](evidence/poppler-page-grounded-adapter-v1.json).
 
 ## Remaining implementation plan
 
-1. Port the page-grounded PDF adapter and its provenance contracts.
-2. Add outbox lease/dispatch and an S3-compatible immutable object store.
-3. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
-4. Port deterministic DOCX and XLSX adapters from EngDoc Essential.
-5. Add access, filename, signature, quota, revocation, audit, and protected download guards.
-6. Integrate LogicLens and EngDoc Essential through versioned generated clients.
+1. Persist PDF fragments and parser manifests through processing completion.
+2. Bridge retained PDF evidence into the source-proposal/SWI-Prolog gate.
+3. Prove revocation and access denial before byte lookup or streaming.
+4. Add outbox dispatch and an S3-compatible immutable object store.
+5. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
+6. Port deterministic DOCX and XLSX adapters from EngDoc Essential.
+7. Add quota, audit, protected download, and revocation invalidation guards.
 
-The first vertical slice remains PDF upload or registered link -> immutable revision -> deterministic
-fragments -> permitted retrieval -> LogicLens typed proposal. Model-based assertion proposals remain
-outside the document service and cannot accept themselves.
+The vertical slice remains PDF upload or registered link -> immutable revision -> deterministic fragments
+-> permitted retrieval -> LogicLens typed proposal. Models cannot enter trusted extraction or accept their
+own proposals.
