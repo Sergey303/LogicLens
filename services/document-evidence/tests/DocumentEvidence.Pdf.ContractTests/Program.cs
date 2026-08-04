@@ -11,6 +11,7 @@ internal static class Program
         await PdfDeterminismContractTests.AnchorsArePageGroundedAsync();
         await PdfRetentionContractTests.OnlySelectedEvidenceIsRetainedAsync();
         await PdfCompletionContractTests.CompletionPayloadIsDeterministicAsync();
+        await PdfSourceProposalBridgeContractTests.ExportMatchesSharedSourceFragmentFixtureAsync();
         Console.WriteLine("Document Evidence PDF adapter contract tests passed.");
         return 0;
     }
