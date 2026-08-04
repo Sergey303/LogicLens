@@ -64,7 +64,7 @@ def build_workspace(
             "snapshot": {
                 "metadataPath": "snapshot/ooxml-record.json",
                 "hash": SNAPSHOT_HASH,
-                "retentionPolicy": "selected-evidence-only",
+                "retentionPolicy": "no-source-retention",
             },
             "fragments": {
                 "path": "fragments/fragments.jsonl",
