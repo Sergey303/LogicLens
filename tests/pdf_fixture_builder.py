@@ -28,7 +28,8 @@ def make_pdf(text: str) -> bytes:
     for offset in offsets[1:]:
         content.extend(f"{offset:010d} 00000 n \n".encode("ascii"))
     content.extend(
-        f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\n"
-        f"startxref\n{xref}\n%%EOF\n".encode("ascii")
+        f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode(
+            "ascii"
+        )
     )
     return bytes(content)
