@@ -1,0 +1,26 @@
+{
+  "kind": "logiclens-strict-generated-package-proof",
+  "version": 1,
+  "observedAtUtc": "2026-08-04T15:01:56.891Z",
+  "sourceArchive": "cgr-output-2026-08-04T15-01-56-891Z.zip",
+  "status": "success",
+  "exitCode": 0,
+  "generatorCommit": "b30aea6cd8aa60ab9865e2d0cf383955a20ae50b",
+  "sourceSpecSha256": "918cea46776063abe5876a0c78f16cd6f9ddca00ddc69767682f1282e8f09418",
+  "lifecycleFields": [
+    "ManifestJson",
+    "MaxAttempts",
+    "AvailableAt",
+    "LeaseToken",
+    "LastError"
+  ],
+  "migrationSqlSha256": "d7bcfa5b70209ebdefeb14c4dec9d7ed27461fca8e39977806d042df4e4288f7",
+  "packageManifestSha256": "498008cb82703b1d9c73e207165729dab34668ceae6307a85f022122b30da795",
+  "generatedTreeSha256BeforeReceipt": "842dca6c2e93d4f54a5973244e5b13ec4fd291fb00516b1de139162a7a44cf91",
+  "assertions": {
+    "lifecycleFieldsVerifiedInIdempotentSql": true,
+    "generatedBackendWarningsAsErrorsBuildPassed": true,
+    "buildWarnings": 0,
+    "buildErrors": 0
+  }
+}
