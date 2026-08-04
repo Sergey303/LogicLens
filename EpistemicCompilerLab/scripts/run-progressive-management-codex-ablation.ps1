@@ -61,6 +61,9 @@ $runner = Join-Path `
     $logicLens `
     "EpistemicCompilerLab\progressive-dsl\management-course\run_codex_dsl_ablation.py"
 $contracts = Join-Path $logicLens "contracts"
+$schemaContract = Join-Path `
+    $logicLens `
+    "tests\codex_structured_output_schema_contract_test.py"
 
 Invoke-Native "Check Codex CLI" {
     & $Codex --version
@@ -68,6 +71,10 @@ Invoke-Native "Check Codex CLI" {
 
 Invoke-Native "Check SWI-Prolog" {
     & $Swipl --version
+}
+
+Invoke-Native "Verify Codex structured-output schema" {
+    py -3 $schemaContract
 }
 
 Invoke-Native "Validate source management world" {
