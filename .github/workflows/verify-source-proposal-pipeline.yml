@@ -17,8 +17,12 @@ on:
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
       - "tests/document_evidence_pdf_bridge*.py"
+      - "tests/document_evidence_xlsx_bridge*.py"
       - "services/document-evidence/src/DocumentEvidence.Pdf/PdfSourceProposalBridge.cs"
-      - "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
+      - "services/document-evidence/src/DocumentEvidence.Ooxml/OoxmlSource*.cs"
+      - "services/document-evidence/src/DocumentEvidence.Docx/DocxEvidenceSelector.cs"
+      - "services/document-evidence/src/DocumentEvidence.Xlsx/XlsxEvidenceSelector.cs"
+      - "services/document-evidence/tests/fixtures/*-source-proposal-fragment-v1.jsonl"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
   push:
     branches:
@@ -38,8 +42,12 @@ on:
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
       - "tests/document_evidence_pdf_bridge*.py"
+      - "tests/document_evidence_xlsx_bridge*.py"
       - "services/document-evidence/src/DocumentEvidence.Pdf/PdfSourceProposalBridge.cs"
-      - "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
+      - "services/document-evidence/src/DocumentEvidence.Ooxml/OoxmlSource*.cs"
+      - "services/document-evidence/src/DocumentEvidence.Docx/DocxEvidenceSelector.cs"
+      - "services/document-evidence/src/DocumentEvidence.Xlsx/XlsxEvidenceSelector.cs"
+      - "services/document-evidence/tests/fixtures/*-source-proposal-fragment-v1.jsonl"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
 
 permissions:
@@ -85,12 +93,19 @@ jobs:
           set -o pipefail
           python tests/pdf_link_contract_test.py | tee /tmp/pdf-link-pipeline.log
 
-      - name: Run Document Evidence selected-fragment bridge and Prolog gate
+      - name: Run PDF selected-fragment bridge and Prolog gate
         shell: bash
         run: |
           set -o pipefail
           python tests/document_evidence_pdf_bridge_test.py \
             | tee /tmp/document-evidence-pdf-bridge.log
+
+      - name: Run XLSX selected-fragment bridge and Prolog gate
+        shell: bash
+        run: |
+          set -o pipefail
+          python tests/document_evidence_xlsx_bridge_test.py \
+            | tee /tmp/document-evidence-xlsx-bridge.log
 
       - name: Upload verification logs
         if: always()
@@ -103,5 +118,6 @@ jobs:
             /tmp/source-pipeline.log
             /tmp/pdf-link-pipeline.log
             /tmp/document-evidence-pdf-bridge.log
+            /tmp/document-evidence-xlsx-bridge.log
           if-no-files-found: warn
           retention-days: 14
