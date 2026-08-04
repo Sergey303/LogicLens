@@ -67,7 +67,7 @@ validates generation receipts, and exposes an `IHttpClientBuilder` for credentia
 
 The outbox schema is [`db/001_document_evidence_outbox.sql`](db/001_document_evidence_outbox.sql).
 
-## Page-grounded PDF adapter
+## Page-grounded PDF evidence vertical slice
 
 `src/DocumentEvidence.Pdf` is a deterministic trusted adapter. It:
 
@@ -76,23 +76,40 @@ The outbox schema is [`db/001_document_evidence_outbox.sql`](db/001_document_evi
 - emits canonical pages and blocks with reading order, bbox, word IDs, normalized text, and hashes;
 - records artifact, parser version, parser configuration, and IR hashes;
 - rejects PDFs with no usable native text instead of silently inventing evidence;
-- retains only explicitly selected blocks for downstream packages;
 - contains no LLM or OCR path in trusted extraction.
 
-Validation includes fake-process security/determinism contracts and a real Ubuntu Poppler integration.
-The accepted real proof is
-[`poppler-page-grounded-adapter-v1.json`](evidence/poppler-page-grounded-adapter-v1.json).
+Processing completion converts extracted blocks into deterministic fragment IDs and contiguous sequence
+numbers. PostgreSQL atomically persists parser manifest, fragments, job success, and outbox event. A
+stale lease leaves job, revision, fragments, and outbox unchanged.
+
+Protected byte reads execute in this order:
+
+```text
+authorization -> workspace/revision metadata -> revocation -> immutable bytes
+```
+
+Denied access stops before metadata lookup. Revocation stops before object lookup. Physical storage keys
+never cross the application boundary.
+
+`PdfSourceProposalBridge` exports only selected blocks to the existing `source-fragment-v0` contract.
+The fragment retains page, bbox, word IDs, Poppler version, artifact hash, and canonical text hash. The
+same JSONL fixture is checked by C# and then passed through JSON Schema, grounding review, package
+retention checks, and the real SWI-Prolog gate. Full PDF bytes, canonical IR, and the complete fragment
+set are excluded from the accepted package.
+
+Accepted PDF evidence:
+
+- [`poppler-page-grounded-adapter-v1.json`](evidence/poppler-page-grounded-adapter-v1.json);
+- [`pdf-source-proposal-bridge-v1.json`](evidence/pdf-source-proposal-bridge-v1.json).
 
 ## Remaining implementation plan
 
-1. Persist PDF fragments and parser manifests through processing completion.
-2. Bridge retained PDF evidence into the source-proposal/SWI-Prolog gate.
-3. Prove revocation and access denial before byte lookup or streaming.
-4. Add outbox dispatch and an S3-compatible immutable object store.
-5. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
-6. Port deterministic DOCX and XLSX adapters from EngDoc Essential.
-7. Add quota, audit, protected download, and revocation invalidation guards.
+1. Add outbox dispatch and an S3-compatible immutable object store.
+2. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
+3. Port deterministic DOCX and XLSX adapters from EngDoc Essential.
+4. Add quota, audit, protected download response, and revocation invalidation guards.
+5. Publish versioned service clients and events for LogicLens and EngDoc Essential.
 
-The vertical slice remains PDF upload or registered link -> immutable revision -> deterministic fragments
--> permitted retrieval -> LogicLens typed proposal. Models cannot enter trusted extraction or accept their
-own proposals.
+The vertical slice is now PDF bytes -> immutable revision -> deterministic fragments -> permitted
+retrieval -> selected evidence -> typed proposal -> verified SWI-Prolog decision frame. Models cannot
+enter trusted extraction or accept their own proposals.
