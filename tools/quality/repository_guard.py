@@ -1,4 +1,5 @@
 """Check changed handwritten files and the Markdown navigation tree."""
+
 from __future__ import annotations
 
 import argparse
