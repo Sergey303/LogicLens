@@ -20,6 +20,7 @@ def main() -> int:
     source_common = importlib.import_module("source_proposal.common")
     capsule = importlib.import_module("capsule")
     pdf_link = importlib.import_module("source_proposal.pdf_link")
+    assertions = importlib.import_module("pdf_link_contract_assertions")
     data = importlib.import_module("pdf_link_contract_data")
     pdf_builder = importlib.import_module("pdf_fixture_builder")
     world_fixture = importlib.import_module("pdf_link_world_fixture")
@@ -68,7 +69,15 @@ def main() -> int:
             schemas=schemas,
             pdf_schemas=pdf_schemas,
         )
-        run_proposal_gate(source_proposal, world, proposal, resolved, root, schemas)
+        package = run_proposal_gate(
+            source_proposal,
+            world,
+            proposal,
+            resolved,
+            root,
+            schemas,
+        )
+        assertions.assert_selected_retention(package)
     return 0
 
 
@@ -101,7 +110,7 @@ def run_proposal_gate(
     resolved: Path,
     root: Path,
     schemas: dict[str, dict[str, Any]],
-) -> None:
+) -> dict[str, Any]:
     """Review, execute, and verify selected-evidence-only packaging."""
     source_proposal.prepare_extraction(
         world_root=world,
@@ -136,16 +145,7 @@ def run_proposal_gate(
         timeout_seconds=20,
         schemas=schemas,
     )
-    paths = {item["path"] for item in package["files"]}
-    forbidden = {
-        "document/canonical-document-ir.json",
-        "fragments/fragments.jsonl",
-        "extraction/extraction-request.json",
-    }
-    if paths & forbidden or any(path.endswith(".pdf") for path in paths):
-        raise AssertionError(f"no-source-retention violated: {sorted(paths & forbidden)}")
-    if "evidence/selected-fragments.jsonl" not in paths:
-        raise AssertionError("selected evidence was not retained")
+    return package
 
 
 if __name__ == "__main__":
