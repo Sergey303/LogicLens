@@ -17,6 +17,7 @@ source manifest
   -> generated Prolog and tests
   -> mandatory SWI-Prolog execution gate
   -> non-active proposal package
+  -> explicitly staged capsule revision
 ```
 
 A passed package is evidence that the proposal is structurally valid, source-addressable and executable. It is not evidence that the source is true, that the assertion is universally applicable, or that the proposal has been promoted into an active capsule.
@@ -32,6 +33,7 @@ A passed package is evidence that the proposal is structurally valid, source-add
 - Inference is not accepted as a source assertion; it must become a reviewed rule.
 - Agent reviews are marked `provisional`; human reviews are marked `human-reviewed`.
 - Passing the execution gate never activates or merges a proposal.
+- Activation writes a separate staged world and never edits the source world in place.
 
 ## Workspace stages
 
@@ -118,9 +120,30 @@ python tools/source_pipeline.py verify `
 
 Verification checks the package and lock hashes, exact file set, every file hash, review hash and optionally re-executes the SWI-Prolog tests.
 
+### 8. Stage activation
+
+```powershell
+python tools/source_pipeline.py stage-activation `
+  --package <proposal-package> `
+  --world-root <current-world> `
+  --output-world-root <staged-world> `
+  --expected-current-version 0.1.0 `
+  --new-version 0.1.1 `
+  --allow-provisional `
+  --swipl swipl
+```
+
+The command verifies the package again, checks its world, capsule, source-manifest binding, current capsule version, approved assertion count and current semantic identifiers. It rejects duplicate assertion IDs and non-increasing versions.
+
+A `provisional` package is rejected unless the operator supplies `--allow-provisional`. The activation record then preserves `approvalMode: provisional-override`; human-reviewed packages use `approvalMode: human-reviewed`.
+
+The command copies the world into a separate output directory, appends approved assertions, records the package hash and assertion IDs, increments the capsule version, patch-increments every affected module version and updates its capsule dependency. The staged world must pass the normal world validator before it becomes visible at the output path.
+
+The command does not edit, commit or merge the source repository. Applying the staged diff remains an explicit repository operation followed by the capsule and module regression suites.
+
 ## Promotion boundary
 
-v0 deliberately has no automatic promotion command. A later contract must compare accepted capsule assertions with the gated proposal, preserve provenance and dependency groups, run the full capsule regression suite and require an explicit promotion decision.
+A staged world is still not an automatic production promotion. Before applying it, the domain repository must review the diff, add or update domain-level status cases and learning scenarios where necessary, run capsule compilation and module-run verification, and intentionally commit the selected files.
 
 ## Weak-model contract
 
