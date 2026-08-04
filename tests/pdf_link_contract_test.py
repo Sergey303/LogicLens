@@ -17,6 +17,7 @@ def main() -> int:
     """Run the PDF link vertical slice against real Poppler and SWI-Prolog."""
     sys.path[:0] = [str(ROOT / "tests"), str(ROOT / "tools"), str(ROOT)]
     source_proposal = importlib.import_module("source_proposal")
+    source_common = importlib.import_module("source_proposal.common")
     capsule = importlib.import_module("capsule")
     pdf_link = importlib.import_module("source_proposal.pdf_link")
     data = importlib.import_module("pdf_link_contract_data")
@@ -34,6 +35,7 @@ def main() -> int:
         proposal = root / "proposal"
         proposal.mkdir()
         document_ir = extract_document_ir(pdf_link, capsule, pdf, data)
+        capsule.schema_check(document_ir, pdf_schemas["documentIr"], "fixture document IR")
         document_path = proposal / "document/canonical-document-ir.json"
         document_path.parent.mkdir(parents=True)
         document_path.write_bytes(capsule.canonical_json(document_ir))
@@ -55,7 +57,7 @@ def main() -> int:
             capsule.sha256(fragments_path.read_bytes()),
             len(fragments),
         )
-        pdf_link.write_workspace(proposal, workspace, schemas)
+        source_common.write_workspace(proposal, workspace, schemas)
         seed_path = root / "seed.json"
         world_fixture.write_json(seed_path, data.seed())
         resolved = root / "resolved"
@@ -76,7 +78,7 @@ def extract_document_ir(
     pdf: bytes,
     data: Any,
 ) -> dict[str, Any]:
-    """Extract and validate canonical document IR from the deterministic PDF."""
+    """Extract and hash canonical document IR from the deterministic PDF."""
     document_ir = pdf_link.parse_pdf_with_poppler(
         content=pdf,
         proposal_id=data.PROPOSAL_ID,
