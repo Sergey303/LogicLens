@@ -13,6 +13,8 @@ internal static class Program
         await XlsxContractTests.WorkbookAnchorsAndValuesAreStableAsync();
         await XlsxContractTests.ExternalWorksheetRelationshipFailsClosedAsync();
         await XlsxContractTests.UnsupportedCellTypeFailsClosedAsync();
+        await OoxmlCompletionContractTests.DocxCompletionUsesSemanticFragmentIdentityAsync();
+        await OoxmlCompletionContractTests.XlsxCompletionRetainsFormulaProvenanceAsync();
         Console.WriteLine("Document Evidence OOXML adapter contract tests passed.");
         return 0;
     }
