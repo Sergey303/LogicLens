@@ -85,7 +85,7 @@ public static class PdfSourceProposalBridge
                         artifactSha256 = $"sha256:{evidence.ArtifactSha256}",
                     },
                     text = chunks[chunkIndex],
-                    textHash = $"sha256:{PdfHashing.Sha256(chunks[chunkIndex])}",
+                    textHash = $"sha256:{SourceFragmentTextHash(chunks[chunkIndex])}",
                 };
                 output.Append(JsonSerializer.Serialize(row, JsonOptions)).Append('\n');
             }
@@ -101,6 +101,14 @@ public static class PdfSourceProposalBridge
             chunks.Add(text.Substring(offset, Math.Min(MaxFragmentChars, text.Length - offset)));
         }
         return chunks;
+    }
+
+    private static string SourceFragmentTextHash(string text)
+    {
+        var normalized = text.Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace('\r', '\n')
+            .TrimEnd() + "\n";
+        return PdfHashing.Sha256(normalized);
     }
 
     private static void DemandSafeId(string value, string name)
