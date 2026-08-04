@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "0.1",
+  "linearIssue": "ENG-145",
+  "branch": "agent/document-evidence-ooxml-adapters",
+  "base": "agent/document-evidence-pdf-adapter",
+  "status": "pending-ci",
+  "requiredGates": [
+    "repository guard",
+    "warnings-as-errors OOXML build",
+    "OOXML runtime contract tests",
+    "existing application, generated adapter, storage, PDF and PostgreSQL regressions"
+  ]
+}
