@@ -4,10 +4,15 @@ This index is the stable navigation root below [`AGENTS.md`](../AGENTS.md).
 Architecture documents define contracts and boundaries; code and executable tests remain the
 implementation truth.
 
+## Project planning
+
+- [Linear project entry](project/LINEAR.md)
+
 ## Current platform direction
 
 - [Product platform direction](architecture/PRODUCT_PLATFORM_V0.md)
 - [Shared document evidence service](architecture/DOCUMENT_EVIDENCE_SERVICE_V0.md)
+- [AppForge generation boundary](architecture/APPFORGE_GENERATION_BOUNDARY_V0.md)
 - [Epistemic DSL v0](architecture/EPISTEMIC_DSL_V0.md)
 - [Capsule Contract v0](architecture/CAPSULE_CONTRACT_V0.md)
 - [Source Proposal Pipeline v0](architecture/SOURCE_PROPOSAL_PIPELINE_V0.md)
