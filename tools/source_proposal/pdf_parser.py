@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import urllib.error
 import urllib.request
+from io import BytesIO
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,11 @@ from capsule import canonical_json, sha256
 from .acquire import SafeRedirectHandler, validate_public_https_url
 from .common import SourcePipelineError
 from .pdf_common import PDF_MEDIA_TYPES
+
+
+SUPPORTED_PDF_READERS = frozenset(
+    {"auto-layout", "poppler-layout", "pypdf-layout"}
+)
 
 
 def fetch_pdf(url: str, max_bytes: int) -> tuple[bytes, dict[str, Any]]:
@@ -49,6 +55,56 @@ def fetch_pdf(url: str, max_bytes: int) -> tuple[bytes, dict[str, Any]]:
     }
 
 
+def parse_pdf(
+    *,
+    content: bytes,
+    proposal_id: str,
+    source_id: str,
+    source_uri: str,
+    content_hash: str,
+    reader_kind: str,
+    poppler_prefix: str | None,
+) -> dict[str, Any]:
+    if reader_kind not in SUPPORTED_PDF_READERS:
+        raise SourcePipelineError(f"unsupported PDF reader: {reader_kind}")
+    if reader_kind == "poppler-layout":
+        return parse_pdf_with_poppler(
+            content=content,
+            proposal_id=proposal_id,
+            source_id=source_id,
+            source_uri=source_uri,
+            content_hash=content_hash,
+            poppler_prefix=poppler_prefix,
+        )
+    if reader_kind == "pypdf-layout":
+        return parse_pdf_with_pypdf(
+            content=content,
+            proposal_id=proposal_id,
+            source_id=source_id,
+            source_uri=source_uri,
+            content_hash=content_hash,
+        )
+    if (
+        find_executable("pdfinfo", poppler_prefix)
+        and find_executable("pdftotext", poppler_prefix)
+    ):
+        return parse_pdf_with_poppler(
+            content=content,
+            proposal_id=proposal_id,
+            source_id=source_id,
+            source_uri=source_uri,
+            content_hash=content_hash,
+            poppler_prefix=poppler_prefix,
+        )
+    return parse_pdf_with_pypdf(
+        content=content,
+        proposal_id=proposal_id,
+        source_id=source_id,
+        source_uri=source_uri,
+        content_hash=content_hash,
+    )
+
+
 def parse_pdf_with_poppler(
     *,
     content: bytes,
@@ -75,7 +131,14 @@ def parse_pdf_with_poppler(
         pdf_path.write_bytes(content)
         info = run_process([pdfinfo, str(pdf_path)], cwd=temp)
         run_process(
-            [pdftotext, "-layout", "-enc", "UTF-8", str(pdf_path), str(text_path)],
+            [
+                pdftotext,
+                "-layout",
+                "-enc",
+                "UTF-8",
+                str(pdf_path),
+                str(text_path),
+            ],
             cwd=temp,
         )
         text = text_path.read_text(encoding="utf-8", errors="strict")
@@ -87,18 +150,128 @@ def parse_pdf_with_poppler(
         page_texts.pop()
     if page_count != len(page_texts):
         raise SourcePipelineError(
-            f"Poppler page count mismatch: pdfinfo={page_count}, pdftotext={len(page_texts)}"
+            "Poppler page count mismatch: "
+            f"pdfinfo={page_count}, pdftotext={len(page_texts)}"
         )
+    dimensions = [(width, height)] * page_count
+    return build_document_ir(
+        content=content,
+        proposal_id=proposal_id,
+        source_id=source_id,
+        source_uri=source_uri,
+        content_hash=content_hash,
+        processor_name="poppler-layout",
+        processor_version=version,
+        configuration_hash=configuration_hash,
+        page_texts=page_texts,
+        page_dimensions=dimensions,
+    )
+
+
+def parse_pdf_with_pypdf(
+    *,
+    content: bytes,
+    proposal_id: str,
+    source_id: str,
+    source_uri: str,
+    content_hash: str,
+) -> dict[str, Any]:
+    try:
+        import pypdf
+        from pypdf import PdfReader
+        from pypdf.errors import PdfReadError
+    except ImportError as exc:
+        raise SourcePipelineError(
+            "pypdf is required when Poppler is unavailable; "
+            "install requirements-pdf.txt"
+        ) from exc
+
+    try:
+        reader = PdfReader(BytesIO(content), strict=False)
+        if reader.is_encrypted:
+            raise SourcePipelineError(
+                "encrypted PDF sources are not supported by the ephemeral reader"
+            )
+        pages = list(reader.pages)
+        page_texts = [
+            (
+                page.extract_text(
+                    extraction_mode="layout",
+                    layout_mode_space_vertically=False,
+                )
+                or ""
+            )
+            for page in pages
+        ]
+        dimensions = [
+            (float(page.mediabox.width), float(page.mediabox.height))
+            for page in pages
+        ]
+    except SourcePipelineError:
+        raise
+    except (PdfReadError, OSError, ValueError, TypeError) as exc:
+        raise SourcePipelineError(f"pypdf parser failed: {exc}") from exc
+
+    configuration = {
+        "adapter": "pypdf-layout",
+        "extractionMode": "layout",
+        "spaceVertically": False,
+        "blockSegmentation": "blank-line-v1",
+    }
+    return build_document_ir(
+        content=content,
+        proposal_id=proposal_id,
+        source_id=source_id,
+        source_uri=source_uri,
+        content_hash=content_hash,
+        processor_name="pypdf-layout",
+        processor_version=getattr(pypdf, "__version__", "unknown"),
+        configuration_hash=sha256(canonical_json(configuration)),
+        page_texts=page_texts,
+        page_dimensions=dimensions,
+    )
+
+
+def build_document_ir(
+    *,
+    content: bytes,
+    proposal_id: str,
+    source_id: str,
+    source_uri: str,
+    content_hash: str,
+    processor_name: str,
+    processor_version: str,
+    configuration_hash: str,
+    page_texts: list[str],
+    page_dimensions: list[tuple[float, float]],
+) -> dict[str, Any]:
+    if not page_texts:
+        raise SourcePipelineError("PDF parser reported zero pages")
+    if len(page_texts) != len(page_dimensions):
+        raise SourcePipelineError("PDF parser page metadata mismatch")
 
     pages: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
-    for page_number, page_text in enumerate(page_texts, 1):
-        blocks = page_blocks(source_id, page_number, page_text, version)
+    for page_number, (page_text, dimensions) in enumerate(
+        zip(page_texts, page_dimensions, strict=True),
+        1,
+    ):
+        width, height = dimensions
+        blocks = page_blocks(
+            source_id,
+            page_number,
+            page_text,
+            processor_name,
+            processor_version,
+        )
         if not blocks:
             warnings.append(
                 {
                     "code": "empty-text-page",
-                    "message": "Poppler produced no usable native text for this page.",
+                    "message": (
+                        f"{processor_name} produced no usable native text "
+                        "for this page."
+                    ),
                     "severity": "warning",
                     "pageNumber": page_number,
                 }
@@ -117,7 +290,8 @@ def parse_pdf_with_poppler(
 
     if not any(page["blocks"] for page in pages):
         raise SourcePipelineError(
-            "PDF has no usable native text; OCR/Docling fallback is required and is not enabled in v0"
+            "PDF has no usable native text; OCR/Docling fallback is required "
+            "and is not enabled in v0"
         )
 
     return {
@@ -132,8 +306,8 @@ def parse_pdf_with_poppler(
             "retained": False,
         },
         "processor": {
-            "name": "poppler-layout",
-            "version": version,
+            "name": processor_name,
+            "version": processor_version,
             "configurationHash": configuration_hash,
         },
         "pages": pages,
@@ -141,14 +315,21 @@ def parse_pdf_with_poppler(
     }
 
 
-def resolve_executable(name: str, prefix: str | None) -> str:
+def find_executable(name: str, prefix: str | None) -> str | None:
     if prefix:
-        candidate = Path(prefix) / name
-        if candidate.is_file():
-            return str(candidate)
-    resolved = shutil.which(name)
+        for candidate_name in (name, f"{name}.exe"):
+            candidate = Path(prefix) / candidate_name
+            if candidate.is_file():
+                return str(candidate)
+    return shutil.which(name)
+
+
+def resolve_executable(name: str, prefix: str | None) -> str:
+    resolved = find_executable(name, prefix)
     if not resolved:
-        raise SourcePipelineError(f"required Poppler executable not found: {name}")
+        raise SourcePipelineError(
+            f"required Poppler executable not found: {name}"
+        )
     return resolved
 
 
@@ -162,7 +343,11 @@ def poppler_version(pdftotext: str) -> str:
         timeout=10,
     )
     output = (result.stderr or result.stdout).splitlines()
-    match = re.search(r"version\s+([^\s]+)", output[0] if output else "", re.I)
+    match = re.search(
+        r"version\s+([^\s]+)",
+        output[0] if output else "",
+        re.I,
+    )
     return match.group(1) if match else "unknown"
 
 
@@ -193,24 +378,45 @@ def parse_pdfinfo_int(info: str, name: str) -> int:
 
 
 def parse_page_size(info: str) -> tuple[float, float]:
-    match = re.search(r"^Page size:\s*([0-9.]+)\s+x\s+([0-9.]+)\s+pts", info, re.M)
+    match = re.search(
+        r"^Page size:\s*([0-9.]+)\s+x\s+([0-9.]+)\s+pts",
+        info,
+        re.M,
+    )
     if not match:
         return 1.0, 1.0
     return float(match.group(1)), float(match.group(2))
 
 
-def page_blocks(source_id: str, page_number: int, text: str, processor_version: str) -> list[dict[str, Any]]:
+def page_blocks(
+    source_id: str,
+    page_number: int,
+    text: str,
+    processor_name: str,
+    processor_version: str,
+) -> list[dict[str, Any]]:
     normalized = text.replace("\u00a0", " ").strip("\n")
-    groups = [group.strip() for group in re.split(r"\n\s*\n", normalized) if group.strip()]
+    groups = [
+        group.strip()
+        for group in re.split(r"\n\s*\n", normalized)
+        if group.strip()
+    ]
     if not groups and normalized.strip():
-        groups = [line.strip() for line in normalized.splitlines() if line.strip()]
+        groups = [
+            line.strip()
+            for line in normalized.splitlines()
+            if line.strip()
+        ]
     blocks: list[dict[str, Any]] = []
     for ordinal, group in enumerate(groups, 1):
         clean = re.sub(r"[ \t]+", " ", group).strip()
         if not clean:
             continue
         content_hash = hashlib.sha256(clean.encode("utf-8")).hexdigest()
-        block_id = f"{source_id}:p{page_number:04d}:b{ordinal:04d}:{content_hash[:12]}"
+        block_id = (
+            f"{source_id}:p{page_number:04d}:"
+            f"b{ordinal:04d}:{content_hash[:12]}"
+        )
         blocks.append(
             {
                 "blockId": block_id,
@@ -220,7 +426,7 @@ def page_blocks(source_id: str, page_number: int, text: str, processor_version: 
                 "language": None,
                 "source": {
                     "method": "native",
-                    "processorName": "poppler-layout",
+                    "processorName": processor_name,
                     "processorVersion": processor_version,
                 },
                 "confidence": 1.0,
@@ -234,6 +440,10 @@ def classify_block(text: str) -> str:
     first = text.splitlines()[0].strip()
     if first.startswith(("•", "- ", "* ", "●")):
         return "list"
-    if len(first) <= 120 and not first.endswith((".", ";", ":")) and len(text.splitlines()) <= 2:
+    if (
+        len(first) <= 120
+        and not first.endswith((".", ";", ":"))
+        and len(text.splitlines()) <= 2
+    ):
         return "heading"
     return "paragraph"
