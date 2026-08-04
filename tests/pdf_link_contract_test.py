@@ -55,9 +55,7 @@ def main() -> int:
         fragments = pdf_link.fragments_from_ir(document_ir, record["snapshotHash"])
         fragments_path = proposal / "fragments/fragments.jsonl"
         fragments_path.parent.mkdir(parents=True)
-        fragments_path.write_bytes(
-            b"".join(capsule.canonical_json(item) for item in fragments)
-        )
+        fragments_path.write_bytes(b"".join(capsule.canonical_json(item) for item in fragments))
         workspace = data.workspace(
             record["snapshotHash"],
             document_hash,
