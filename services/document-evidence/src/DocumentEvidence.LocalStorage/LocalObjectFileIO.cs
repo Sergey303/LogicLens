@@ -30,7 +30,7 @@ internal static class LocalObjectFileIO
     {
         try
         {
-            File.Move(stagingPath, objectPath, overwrite: false);
+            _ = File.CreateHardLink(objectPath, stagingPath);
             return true;
         }
         catch (IOException) when (File.Exists(objectPath))
