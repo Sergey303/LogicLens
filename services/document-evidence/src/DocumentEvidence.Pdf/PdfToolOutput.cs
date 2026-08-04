@@ -2,8 +2,13 @@ using System.Text.RegularExpressions;
 
 namespace KnowledgePilot.LogicLens.DocumentEvidence.Pdf;
 
-internal static partial class PdfToolOutput
+internal static class PdfToolOutput
 {
+    private static readonly Regex VersionRegex = new(
+        @"version\s+([^\s]+)",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled
+    );
+
     public static string DemandSuccess(PdfProcessResult result, string tool)
     {
         if (result.ExitCode != 0)
@@ -27,10 +32,7 @@ internal static partial class PdfToolOutput
         var output = string.IsNullOrWhiteSpace(result.StandardError)
             ? result.StandardOutput
             : result.StandardError;
-        var match = VersionRegex().Match(output);
+        var match = VersionRegex.Match(output);
         return match.Success ? match.Groups[1].Value : "unknown";
     }
-
-    [GeneratedRegex(@"version\s+([^\s]+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex VersionRegex();
 }
