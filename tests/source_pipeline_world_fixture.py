@@ -10,6 +10,7 @@ from contract_fixture_support import (
     write_json,
     write_minimal_module,
 )
+from source_pipeline_semantic_fixture import write_semantics
 
 CAPSULE_ID = "management.role-boundaries"
 
@@ -53,56 +54,7 @@ def build_fixture(root: Path) -> tuple[Path, Path]:
             ],
         },
     )
-    write_json(
-        world / "semantic/vocabulary.json",
-        {
-            "schemaVersion": "0.1",
-            "concepts": [
-                {
-                    "id": "outcome.technical_direction",
-                    "kind": "management_outcome",
-                    "labels": {"ru": "техническое направление"},
-                },
-                {
-                    "id": "outcome.people_development",
-                    "kind": "management_outcome",
-                    "labels": {"ru": "развитие сотрудников"},
-                },
-            ],
-        },
-    )
-    write_json(
-        world / "semantic/predicates.json",
-        {
-            "schemaVersion": "0.1",
-            "predicates": [
-                {
-                    "id": "contributes_to",
-                    "arguments": [
-                        {"name": "role", "type": "role"},
-                        {"name": "outcome", "type": "management_outcome"},
-                    ],
-                    "valueSpace": "strict_claim",
-                    "world": "open",
-                    "negation": "explicit_evidence",
-                }
-            ],
-        },
-    )
-    write_json(
-        world / "semantic/roles.json",
-        {
-            "schemaVersion": "0.1",
-            "roles": [
-                {"id": "role.team_lead", "title": "Team Lead"},
-                {"id": "role.engineering_manager", "title": "Engineering Manager"},
-            ],
-        },
-    )
-    write_json(
-        world / "semantic/competencies.json",
-        {"schemaVersion": "0.1", "competencies": []},
-    )
+    write_semantics(world)
     write_json(
         capsule / "capsule.json",
         {
