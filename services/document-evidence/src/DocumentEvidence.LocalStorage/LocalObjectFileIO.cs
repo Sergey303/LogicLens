@@ -28,15 +28,7 @@ internal static class LocalObjectFileIO
 
     public static bool TryPromote(string stagingPath, string objectPath)
     {
-        try
-        {
-            _ = File.CreateHardLink(objectPath, stagingPath);
-            return true;
-        }
-        catch (IOException) when (File.Exists(objectPath))
-        {
-            return false;
-        }
+        return AtomicFilePromotion.TryCreateHardLink(stagingPath, objectPath);
     }
 
     public static async Task DemandContentMatchAsync(
