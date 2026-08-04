@@ -1,1 +1,181 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://logiclens.local/contracts/source-manifest-v0.schema.json","title":"LogicLens source manifest v0","type":"object","additionalProperties":false,"required":["schemaVersion","capsuleId","sources"],"properties":{"schemaVersion":{"const":"0.1"},"capsuleId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},"sources":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["id","kind","title","locator","license","snapshotPolicy"],"properties":{"id":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},"kind":{"enum":["web-page","web-guide","repository-file","local-file","dataset","book-reference","pdf-document"]},"title":{"type":"string","minLength":1,"maxLength":512},"locator":{"type":"string","minLength":1,"maxLength":4096},"repositoryPath":{"type":"string","minLength":1,"maxLength":4096,"pattern":"^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"},"version":{"type":"string","maxLength":256},"language":{"type":"string","pattern":"^[a-z]{2}(?:-[A-Z]{2})?$"},"license":{"type":"object","additionalProperties":false,"required":["id","status","attribution"],"properties":{"id":{"type":"string","minLength":1,"maxLength":128},"status":{"enum":["confirmed","review-required","restricted","internal"]},"url":{"type":"string","maxLength":4096},"attribution":{"type":"string","minLength":1,"maxLength":2000}}},"snapshotPolicy":{"enum":["link-only","allowed-text-snapshot","allowed-download","internal-reference","ephemeral-read"]},"expectedSha256":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},"reader":{"type":"object","additionalProperties":false,"required":["kind"],"properties":{"kind":{"enum":["poppler-layout","docling-http"]},"version":{"type":"string","maxLength":128},"notes":{"type":"string","maxLength":1000}}},"notes":{"type":"string","maxLength":2000}},"allOf":[{"if":{"properties":{"kind":{"const":"pdf-document"}},"required":["kind"]},"then":{"required":["reader"],"properties":{"locator":{"type":"string","pattern":"^https://"},"snapshotPolicy":{"const":"ephemeral-read"}}}}]}}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/source-manifest-v0.schema.json",
+  "title": "LogicLens source manifest v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "capsuleId",
+    "sources"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1"
+    },
+    "capsuleId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "locator",
+          "license",
+          "snapshotPolicy"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+          },
+          "kind": {
+            "enum": [
+              "web-page",
+              "web-guide",
+              "repository-file",
+              "local-file",
+              "dataset",
+              "book-reference",
+              "pdf-document"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "repositoryPath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"
+          },
+          "version": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "language": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+          },
+          "license": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "status",
+              "attribution"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "status": {
+                "enum": [
+                  "confirmed",
+                  "review-required",
+                  "restricted",
+                  "internal"
+                ]
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 4096
+              },
+              "attribution": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            }
+          },
+          "snapshotPolicy": {
+            "enum": [
+              "link-only",
+              "allowed-text-snapshot",
+              "allowed-download",
+              "internal-reference",
+              "ephemeral-read"
+            ]
+          },
+          "expectedSha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "reader": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "auto-layout",
+                  "poppler-layout",
+                  "pypdf-layout",
+                  "docling-http"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 1000
+              }
+            }
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "pdf-document"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [
+                "reader"
+              ],
+              "properties": {
+                "locator": {
+                  "type": "string",
+                  "pattern": "^https://"
+                },
+                "snapshotPolicy": {
+                  "const": "ephemeral-read"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
