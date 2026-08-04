@@ -20,12 +20,10 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="document-evidence-xlsx-") as temp_name:
         temporary = Path(temp_name)
-        world, proposal, candidate_path, review_path, fragment = (
-            bridge_fixture.build_workspace(
-                root=ROOT,
-                temporary=temporary,
-                schemas=schemas,
-            )
+        world, proposal, candidate_path, review_path, fragment = bridge_fixture.build_workspace(
+            root=ROOT,
+            temporary=temporary,
+            schemas=schemas,
         )
         sp.prepare_extraction(
             world_root=world,
@@ -65,10 +63,7 @@ def main() -> int:
         if selected != fragment or package["gate"]["status"] != "passed":
             message = "XLSX provenance changed before the SWI-Prolog gate"
             raise AssertionError(message)
-        if (
-            selected["text"] != "Confirmed"
-            or selected["sourceAnchor"]["cellReference"] != "D9"
-        ):
+        if selected["text"] != "Confirmed" or selected["sourceAnchor"]["cellReference"] != "D9":
             message = "Selected XLSX cell evidence changed"
             raise AssertionError(message)
     return 0
