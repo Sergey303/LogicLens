@@ -70,16 +70,7 @@ def stage_activation(
         )
     require_newer_version(old_version, new_version)
 
-    assertion_entries = [
-        item
-        for item in capsule_manifest["preparedFiles"]
-        if item["kind"] == "assertions"
-    ]
-    if len(assertion_entries) != 1:
-        raise SourcePipelineError(
-            "activation requires exactly one prepared assertions file"
-        )
-    assertion_relative = assertion_entries[0]["path"]
+    assertion_relative = prepared_assertion_path(capsule_manifest)
     existing = json_lines(
         declared_file(capsule["root"], assertion_relative, "prepared assertions"),
         "prepared assertions",
@@ -115,10 +106,7 @@ def stage_activation(
     root = world_root.resolve()
     output = output_world_root.resolve()
     reject_overlapping_paths(root, output)
-    if output.exists() and (not output.is_dir() or any(output.iterdir())):
-        raise SourcePipelineError(
-            f"activation output must be absent or empty: {output}"
-        )
+    require_empty_output(output)
     output.parent.mkdir(parents=True, exist_ok=True)
 
     capsule_item = next(
@@ -199,14 +187,8 @@ def stage_activation(
             "assertionIds": approved_ids,
             "modules": module_updates,
         }
-        activation["activationHash"] = domain_hash(
-            ACTIVATION_DOMAIN,
-            activation,
-        )
-        activation_schema = json_object(
-            contracts_root / "source-proposal-activation-record-v0.schema.json",
-            "source proposal activation schema",
-        )
+        activation["activationHash"] = compute_activation_hash(activation)
+        activation_schema = load_activation_schema(contracts_root)
         schema_check(
             activation,
             activation_schema,
@@ -237,6 +219,345 @@ def stage_activation(
     except Exception:
         shutil.rmtree(temporary, ignore_errors=True)
         raise
+
+
+def finalize_activation(
+    *,
+    source_world_root: Path,
+    staged_world_root: Path,
+    output_world_root: Path,
+    activation_id: str,
+    expected_activation_hash: str,
+    approve_provisional: bool,
+    contracts_root: Path,
+) -> dict[str, Any]:
+    source_root = source_world_root.resolve()
+    staged_root = staged_world_root.resolve()
+    output = output_world_root.resolve()
+    reject_overlapping_paths(source_root, output)
+    reject_overlapping_paths(staged_root, output)
+    require_empty_output(output)
+
+    source_world = validate_world(source_root, contracts_root)
+    staged_world = validate_world(staged_root, contracts_root)
+    if source_world["manifest"]["worldId"] != staged_world["manifest"]["worldId"]:
+        raise SourcePipelineError("source and staged worlds do not match")
+
+    capsule_id, activation_relative, activation = find_activation_record(
+        staged_world,
+        activation_id,
+        contracts_root,
+    )
+    verify_activation_hash(activation)
+    if activation["status"] != "staged":
+        raise SourcePipelineError("activation record is not staged")
+    if activation["activationHash"] != expected_activation_hash:
+        raise SourcePipelineError("staged activation hash mismatch")
+    if activation["reviewClass"] == "provisional" and not approve_provisional:
+        raise SourcePipelineError(
+            "provisional activation finalization requires "
+            "explicit --approve-provisional"
+        )
+    if activation["worldId"] != source_world["manifest"]["worldId"]:
+        raise SourcePipelineError("activation world identity mismatch")
+    if activation["capsuleId"] != capsule_id:
+        raise SourcePipelineError("activation capsule identity mismatch")
+
+    compare_staged_derivation(
+        source_world=source_world,
+        staged_world=staged_world,
+        activation=activation,
+        activation_relative=activation_relative,
+    )
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = Path(
+        tempfile.mkdtemp(prefix=output.name + ".tmp-", dir=output.parent)
+    )
+    try:
+        shutil.copytree(staged_root, temporary, dirs_exist_ok=True, symlinks=True)
+        capsule_item = next(
+            item
+            for item in staged_world["manifest"]["capsules"]
+            if item["id"] == capsule_id
+        )
+        record_path = temporary / capsule_item["path"] / activation_relative
+        activated = deepcopy(activation)
+        activated["status"] = "activated"
+        activated["activationHash"] = compute_activation_hash(activated)
+        schema_check(
+            activated,
+            load_activation_schema(contracts_root),
+            "activated source proposal record",
+        )
+        record_path.write_bytes(canonical_json(activated))
+        validate_world(temporary, contracts_root)
+        if output.exists():
+            output.rmdir()
+        temporary.replace(output)
+        return activated
+    except Exception:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise
+
+
+def compare_staged_derivation(
+    *,
+    source_world: dict[str, Any],
+    staged_world: dict[str, Any],
+    activation: dict[str, Any],
+    activation_relative: str,
+) -> None:
+    source_root: Path = source_world["root"]
+    staged_root: Path = staged_world["root"]
+    capsule_id = activation["capsuleId"]
+    source_capsule = source_world["capsules"].get(capsule_id)
+    staged_capsule = staged_world["capsules"].get(capsule_id)
+    if source_capsule is None or staged_capsule is None:
+        raise SourcePipelineError("activation capsule is missing")
+
+    source_manifest = source_capsule["manifest"]
+    staged_manifest = staged_capsule["manifest"]
+    if source_manifest["version"] != activation["oldCapsuleVersion"]:
+        raise SourcePipelineError("source capsule version changed after staging")
+    if staged_manifest["version"] != activation["newCapsuleVersion"]:
+        raise SourcePipelineError("staged capsule version mismatch")
+
+    assertion_relative = prepared_assertion_path(source_manifest)
+    if prepared_assertion_path(staged_manifest) != assertion_relative:
+        raise SourcePipelineError("prepared assertions path changed during staging")
+
+    capsule_item = next(
+        item
+        for item in source_world["manifest"]["capsules"]
+        if item["id"] == capsule_id
+    )
+    capsule_manifest_relative = (
+        Path(capsule_item["path"]) / "capsule.json"
+    ).as_posix()
+    assertion_world_relative = (
+        Path(capsule_item["path"]) / assertion_relative
+    ).as_posix()
+    activation_world_relative = (
+        Path(capsule_item["path"]) / activation_relative
+    ).as_posix()
+
+    expected_capsule_manifest = deepcopy(source_manifest)
+    expected_capsule_manifest["version"] = activation["newCapsuleVersion"]
+    expected_entry = {
+        "path": activation_relative,
+        "kind": "other",
+        "description": (
+            "Source proposal activation record for "
+            f"{activation['proposalId']}."
+        ),
+    }
+    expected_capsule_manifest["preparedFiles"].append(expected_entry)
+    if staged_manifest != expected_capsule_manifest:
+        raise SourcePipelineError(
+            "staged capsule manifest contains changes outside activation"
+        )
+
+    source_assertions = json_lines(
+        declared_file(
+            source_capsule["root"],
+            assertion_relative,
+            "source prepared assertions",
+        ),
+        "source prepared assertions",
+    )
+    staged_assertions = json_lines(
+        declared_file(
+            staged_capsule["root"],
+            assertion_relative,
+            "staged prepared assertions",
+        ),
+        "staged prepared assertions",
+    )
+    if staged_assertions[: len(source_assertions)] != source_assertions:
+        raise SourcePipelineError("existing assertions changed during staging")
+    added = staged_assertions[len(source_assertions) :]
+    added_ids = [item["assertionId"] for item in added]
+    if added_ids != activation["assertionIds"]:
+        raise SourcePipelineError("staged assertion set does not match activation")
+    if len({item["assertionId"] for item in staged_assertions}) != len(
+        staged_assertions
+    ):
+        raise SourcePipelineError("staged assertions contain duplicate IDs")
+
+    allowed = {
+        capsule_manifest_relative,
+        assertion_world_relative,
+        activation_world_relative,
+    }
+    module_updates = {
+        item["moduleId"]: item for item in activation["modules"]
+    }
+    if len(module_updates) != len(activation["modules"]):
+        raise SourcePipelineError("activation contains duplicate module IDs")
+    source_modules = {
+        item["id"]: item for item in source_world["manifest"]["modules"]
+    }
+    staged_modules = {
+        item["id"]: item for item in staged_world["manifest"]["modules"]
+    }
+    if source_modules != staged_modules:
+        raise SourcePipelineError("world module registry changed during staging")
+
+    for module_id, module_item in source_modules.items():
+        relative = (Path(module_item["path"]) / "module.json").as_posix()
+        source_module = json_object(
+            source_root / relative,
+            f"source module {module_id}",
+        )
+        staged_module = json_object(
+            staged_root / relative,
+            f"staged module {module_id}",
+        )
+        expected_module = deepcopy(source_module)
+        update = module_updates.get(module_id)
+        matching = [
+            item
+            for item in expected_module["usesCapsules"]
+            if item["id"] == capsule_id
+        ]
+        if update is None:
+            if matching:
+                raise SourcePipelineError(
+                    f"activation omits dependent module {module_id}"
+                )
+        else:
+            if (
+                update["oldVersion"] != source_module["version"]
+                or update["newVersion"] != staged_module["version"]
+            ):
+                raise SourcePipelineError(
+                    f"activation module version mismatch: {module_id}"
+                )
+            expected_module["version"] = update["newVersion"]
+            if not matching:
+                raise SourcePipelineError(
+                    f"activation lists unrelated module {module_id}"
+                )
+            for dependency in matching:
+                if dependency["version"] != activation["oldCapsuleVersion"]:
+                    raise SourcePipelineError(
+                        f"source module dependency mismatch: {module_id}"
+                    )
+                dependency["version"] = activation["newCapsuleVersion"]
+        if staged_module != expected_module:
+            raise SourcePipelineError(
+                f"staged module contains unrelated changes: {module_id}"
+            )
+        if update is not None:
+            allowed.add(relative)
+
+    compare_world_file_sets(
+        source_root=source_root,
+        staged_root=staged_root,
+        allowed_changes=allowed,
+        required_added={activation_world_relative},
+    )
+
+
+def compare_world_file_sets(
+    *,
+    source_root: Path,
+    staged_root: Path,
+    allowed_changes: set[str],
+    required_added: set[str],
+) -> None:
+    source_files = {
+        path.relative_to(source_root).as_posix(): path
+        for path in source_root.rglob("*")
+        if path.is_file()
+    }
+    staged_files = {
+        path.relative_to(staged_root).as_posix(): path
+        for path in staged_root.rglob("*")
+        if path.is_file()
+    }
+    added = set(staged_files) - set(source_files)
+    removed = set(source_files) - set(staged_files)
+    if added != required_added or removed:
+        raise SourcePipelineError(
+            "staged world file set mismatch; "
+            f"added={sorted(added)}, removed={sorted(removed)}"
+        )
+    for relative in sorted(set(source_files).intersection(staged_files)):
+        if relative in allowed_changes:
+            continue
+        if source_files[relative].read_bytes() != staged_files[relative].read_bytes():
+            raise SourcePipelineError(
+                f"unrelated staged file changed: {relative}"
+            )
+
+
+def find_activation_record(
+    staged_world: dict[str, Any],
+    activation_id: str,
+    contracts_root: Path,
+) -> tuple[str, str, dict[str, Any]]:
+    relative = f"activations/{activation_id}.json"
+    matches: list[tuple[str, str, dict[str, Any]]] = []
+    schema = load_activation_schema(contracts_root)
+    for capsule_id, capsule in staged_world["capsules"].items():
+        declared = {
+            item["path"] for item in capsule["manifest"]["preparedFiles"]
+        }
+        if relative not in declared:
+            continue
+        record = json_object(
+            declared_file(capsule["root"], relative, "activation record"),
+            "activation record",
+        )
+        schema_check(record, schema, "source proposal activation record")
+        matches.append((capsule_id, relative, record))
+    if len(matches) != 1:
+        raise SourcePipelineError(
+            f"expected exactly one activation record {activation_id}, "
+            f"found {len(matches)}"
+        )
+    return matches[0]
+
+
+def prepared_assertion_path(capsule_manifest: dict[str, Any]) -> str:
+    entries = [
+        item
+        for item in capsule_manifest["preparedFiles"]
+        if item["kind"] == "assertions"
+    ]
+    if len(entries) != 1:
+        raise SourcePipelineError(
+            "activation requires exactly one prepared assertions file"
+        )
+    return entries[0]["path"]
+
+
+def load_activation_schema(contracts_root: Path) -> dict[str, Any]:
+    return json_object(
+        contracts_root / "source-proposal-activation-record-v0.schema.json",
+        "source proposal activation schema",
+    )
+
+
+def compute_activation_hash(activation: dict[str, Any]) -> str:
+    payload = deepcopy(activation)
+    payload.pop("activationHash", None)
+    return domain_hash(ACTIVATION_DOMAIN, payload)
+
+
+def verify_activation_hash(activation: dict[str, Any]) -> None:
+    supplied = activation.get("activationHash")
+    if supplied != compute_activation_hash(activation):
+        raise SourcePipelineError("source proposal activation hash mismatch")
+
+
+def require_empty_output(output: Path) -> None:
+    if output.exists() and (not output.is_dir() or any(output.iterdir())):
+        raise SourcePipelineError(
+            f"activation output must be absent or empty: {output}"
+        )
 
 
 def require_newer_version(old_version: str, new_version: str) -> None:
