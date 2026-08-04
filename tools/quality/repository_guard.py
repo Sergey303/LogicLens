@@ -26,15 +26,11 @@ GENERATED_SUFFIXES = (
 
 def git(*args: str) -> list[str]:
     """Run Git and return non-empty output lines."""
-    result = subprocess.run(
-        ["git", *args], check=True, text=True, capture_output=True,
-    )
+    result = subprocess.run(["git", *args], check=True, text=True, capture_output=True)
     return [line for line in result.stdout.splitlines() if line]
 
 
-def changed_files(
-    base: str | None, *, staged: bool, all_files: bool,
-) -> list[Path]:
+def changed_files(base: str | None, *, staged: bool, all_files: bool) -> list[Path]:
     """Return the selected tracked file set."""
     if all_files:
         names = git("ls-files")
@@ -68,7 +64,7 @@ def is_owned_text(path: Path) -> bool:
     return True
 
 
-def markdown_targets(path: Path, root: Path, errors: list[str]) -> set[Path]:
+def markdown_targets(path: Path, root: Path, errors: list[str], *, report: bool) -> set[Path]:
     """Return valid local Markdown targets and record broken links."""
     targets: set[Path] = set()
     text = path.read_text(encoding="utf-8")
@@ -78,17 +74,19 @@ def markdown_targets(path: Path, root: Path, errors: list[str]) -> set[Path]:
             continue
         resolved = (path.parent / target).resolve()
         if root not in resolved.parents and resolved != root:
-            errors.append(f"Markdown link escapes repository: {path} -> {target}")
+            if report:
+                errors.append(f"Markdown link escapes repository: {path} -> {target}")
             continue
         if not resolved.exists():
-            errors.append(f"Broken Markdown link: {path} -> {target}")
+            if report:
+                errors.append(f"Broken Markdown link: {path} -> {target}")
             continue
         if resolved.suffix.lower() == ".md":
             targets.add(resolved)
     return targets
 
 
-def reachable_markdown(root: Path, errors: list[str]) -> set[Path]:
+def reachable_markdown(root: Path, errors: list[str], checked: set[Path]) -> set[Path]:
     """Traverse the Markdown graph starting at root AGENTS.md."""
     start = root / "AGENTS.md"
     if not start.is_file():
@@ -101,7 +99,9 @@ def reachable_markdown(root: Path, errors: list[str]) -> set[Path]:
         if current in seen:
             continue
         seen.add(current)
-        pending.extend(markdown_targets(current, root, errors) - seen)
+        pending.extend(
+            markdown_targets(current, root, errors, report=current in checked) - seen,
+        )
     return seen
 
 
@@ -129,12 +129,12 @@ def main() -> int:
         if relative.suffix.lower() == ".cs" and PARTIAL_DECLARATION.search(text):
             errors.append(f"{relative}: handwritten partial declarations are forbidden")
 
-    reachable = reachable_markdown(root, errors)
+    checked = {(root / path).resolve() for path in files if path.suffix.lower() == ".md"}
+    reachable = reachable_markdown(root, errors, checked)
     for relative in files:
         if relative.suffix.lower() != ".md" or is_generated(relative):
             continue
-        absolute = (root / relative).resolve()
-        if absolute not in reachable:
+        if (root / relative).resolve() not in reachable:
             errors.append(f"{relative}: Markdown file is not reachable from AGENTS.md")
 
     if errors:
