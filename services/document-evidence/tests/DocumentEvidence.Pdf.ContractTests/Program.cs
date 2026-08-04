@@ -10,6 +10,7 @@ internal static class Program
         await PdfDeterminismContractTests.ExtractionIsDeterministicAsync();
         await PdfDeterminismContractTests.AnchorsArePageGroundedAsync();
         await PdfRetentionContractTests.OnlySelectedEvidenceIsRetainedAsync();
+        await PdfCompletionContractTests.CompletionPayloadIsDeterministicAsync();
         Console.WriteLine("Document Evidence PDF adapter contract tests passed.");
         return 0;
     }
