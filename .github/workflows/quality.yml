@@ -111,6 +111,18 @@ jobs:
             --project services/document-evidence/tests/DocumentEvidence.LocalStorage.ContractTests/DocumentEvidence.LocalStorage.ContractTests.csproj \
             --no-build
 
+      - name: Build PDF adapter contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Pdf.ContractTests/DocumentEvidence.Pdf.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run PDF adapter contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Pdf.ContractTests/DocumentEvidence.Pdf.ContractTests.csproj \
+            --no-build
+
       - name: Build PostgreSQL lifecycle integrations
         run: |
           dotnet build \
