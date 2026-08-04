@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Check changed handwritten files and the Markdown navigation tree."""
 from __future__ import annotations
 
@@ -33,7 +32,12 @@ def git(*args: str) -> list[str]:
     return [line for line in result.stdout.splitlines() if line]
 
 
-def changed_files(base: str | None, staged: bool, all_files: bool) -> list[Path]:
+def changed_files(
+    base: str | None,
+    *,
+    staged: bool,
+    all_files: bool,
+) -> list[Path]:
     """Return the selected tracked file set."""
     if all_files:
         names = git("ls-files")
@@ -114,7 +118,7 @@ def main() -> int:
     args = parser.parse_args()
 
     root = Path(git("rev-parse", "--show-toplevel")[0]).resolve()
-    files = changed_files(args.base, args.staged, args.all)
+    files = changed_files(args.base, staged=args.staged, all_files=args.all)
     errors: list[str] = []
 
     for relative in files:
