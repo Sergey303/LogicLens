@@ -30,6 +30,17 @@ def write_json(path: Path, value: object) -> None:
     )
 
 
+def write_jsonl(path: Path, values: list[dict[str, object]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "".join(
+            json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n"
+            for value in values
+        ),
+        encoding="utf-8",
+    )
+
+
 def make_pdf(text: str) -> bytes:
     escaped = (
         text.replace("\\", "\\\\")
@@ -70,6 +81,38 @@ def make_pdf(text: str) -> bytes:
     return bytes(content)
 
 
+def write_minimal_capsule_assets(capsule: Path) -> None:
+    write_jsonl(
+        capsule / "prepared" / "assertions.jsonl",
+        [
+            {
+                "assertionId": "fixture.accepted",
+                "target": {
+                    "predicate": "owns_outcome",
+                    "arguments": [
+                        "role.product_owner",
+                        "outcome.product_value",
+                    ],
+                },
+                "stance": "support",
+                "provenance": ["scrum-guide-2020#fixture"],
+                "dependencyGroup": "fixture.accepted",
+                "generalisability": "local",
+            }
+        ],
+    )
+    rules = capsule / "rules" / "rules.pl"
+    rules.parent.mkdir(parents=True, exist_ok=True)
+    rules.write_text(
+        ":- module(fixture_rules, [fixture_rule/1]).\nfixture_rule(ok).\n",
+        encoding="utf-8",
+    )
+    overview = capsule / "learning" / "overview.md"
+    overview.parent.mkdir(parents=True, exist_ok=True)
+    overview.write_text("# Fixture capsule\n", encoding="utf-8")
+    write_jsonl(capsule / "tests" / "cases.jsonl", [{"id": "case-1"}])
+
+
 def write_minimal_module(world: Path) -> None:
     module = world / "modules" / "fixture"
     write_json(
@@ -103,6 +146,7 @@ def write_minimal_module(world: Path) -> None:
 def build_world(root: Path) -> Path:
     world = root / "world"
     capsule = world / "capsules" / "role-boundaries"
+
     write_json(
         world / "world.json",
         {
@@ -194,12 +238,21 @@ def build_world(root: Path) -> Path:
             "languages": ["en"],
             "status": "draft",
             "sourceManifest": "sources/manifest.json",
-            "preparedFiles": [],
-            "ruleFiles": [],
-            "learningFiles": [],
-            "testFiles": [],
+            "preparedFiles": [
+                {"path": "prepared/assertions.jsonl", "kind": "assertions"}
+            ],
+            "ruleFiles": [{"path": "rules/rules.pl", "kind": "rules"}],
+            "learningFiles": [
+                {"path": "learning/overview.md", "kind": "overview"}
+            ],
+            "testFiles": [
+                {"path": "tests/cases.jsonl", "kind": "test-cases"}
+            ],
             "exports": {"predicates": [], "profiles": []},
-            "requires": {"capsuleContract": "0.1", "epistemicDsl": "0.1"},
+            "requires": {
+                "capsuleContract": "0.1",
+                "epistemicDsl": "0.1",
+            },
         },
     )
     write_json(
@@ -226,6 +279,7 @@ def build_world(root: Path) -> Path:
             ],
         },
     )
+    write_minimal_capsule_assets(capsule)
     write_minimal_module(world)
     return world
 
@@ -355,6 +409,7 @@ def main() -> int:
                         "version": "2020-11",
                     },
                     "generalisability": "context-dependent",
+                    "groundingClass": "direct",
                     "evidence": [{"pageNumber": 1, "quote": quote}],
                     "reviewNote": (
                         "The fixture directly states Product Owner "
@@ -378,9 +433,7 @@ def main() -> int:
         sp.prepare_extraction(
             world_root=world,
             proposal_root=proposal,
-            prompt_path=(
-                ROOT / "prompts" / "generic" / "source-assertion-proposer.md"
-            ),
+            prompt_path=ROOT / "prompts" / "generic" / "source-assertion-proposer.md",
             schemas=schemas,
             contracts_root=ROOT / "contracts",
         )
@@ -418,9 +471,10 @@ def main() -> int:
             "fragments/fragments.jsonl",
             "extraction/extraction-request.json",
         }
-        if paths & forbidden or any(path.endswith(".pdf") for path in paths):
+        leaked = paths & forbidden
+        if leaked or any(path.endswith(".pdf") for path in paths):
             raise AssertionError(
-                f"no-source-retention violated: {sorted(paths & forbidden)}"
+                f"no-source-retention violated: {sorted(leaked)}"
             )
         if "evidence/selected-fragments.jsonl" not in paths:
             raise AssertionError("selected evidence was not retained")
