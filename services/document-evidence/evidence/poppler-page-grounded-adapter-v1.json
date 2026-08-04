@@ -1,0 +1,34 @@
+{
+  "kind": "logiclens-document-evidence-poppler-proof",
+  "version": 1,
+  "observedAtUtc": "2026-08-04T15:19:32.085Z",
+  "workflow": {
+    "name": "Verify document evidence PDF adapter",
+    "runId": 30923517025,
+    "headCommit": "582c587de83f44d2ff45a1b29a478c12a8a5ac26",
+    "status": "success"
+  },
+  "runtime": {
+    "os": "ubuntu-24.04",
+    "dotnetSdk": "10.0.302",
+    "popplerVersion": "24.02.0"
+  },
+  "fixture": {
+    "kind": "generated-minimal-pdf",
+    "pageCount": 1,
+    "expectedTexts": [
+      "Evidence Heading",
+      "First grounded paragraph."
+    ]
+  },
+  "result": {
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "blockCount": 2,
+    "pageGroundedAnchors": true,
+    "boundingBoxesPresent": true,
+    "selectedEvidenceRetentionPassed": true,
+    "repeatedExtractionDeterministic": true,
+    "irSha256": "e364f9fe7230ba6828730c91ea97cef7de6ff15c613aaa10df7854745f0f0069"
+  }
+}
