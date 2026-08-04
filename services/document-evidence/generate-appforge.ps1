@@ -1,8 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$AppForgeRoot = "D:\projects\ChatPilotGroup\AppForge",
-    [switch]$AllowDirtyAppForge,
-    [switch]$SkipBuild
+    [string]$PreviousPackageRoot = "",
+    [switch]$AllowDirtyAppForge
 )
 
 $ErrorActionPreference = "Stop"
@@ -16,6 +16,7 @@ function Assert-LastExitCode([string]$Operation) {
 
 function Get-StableTreeHash([string]$Root) {
     $records = Get-ChildItem -Path $Root -Recurse -File |
+        Where-Object { $_.Name -ne "logiclens-generation-receipt.json" } |
         Sort-Object FullName |
         ForEach-Object {
             $relative = [IO.Path]::GetRelativePath($Root, $_.FullName).Replace("\", "/")
@@ -23,8 +24,8 @@ function Get-StableTreeHash([string]$Root) {
             "$relative`t$hash"
         }
 
-    $payload = [Text.Encoding]::UTF8.GetBytes(($records -join "`n") + "`n")
-    $stream = [IO.MemoryStream]::new($payload)
+    $bytes = [Text.Encoding]::UTF8.GetBytes(($records -join "`n") + "`n")
+    $stream = [IO.MemoryStream]::new($bytes)
     try {
         return (Get-FileHash -Algorithm SHA256 -InputStream $stream).Hash.ToLowerInvariant()
     }
@@ -33,14 +34,18 @@ function Get-StableTreeHash([string]$Root) {
     }
 }
 
+function Assert-File([string]$Path, [string]$Label) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        throw "$Label is missing: $Path"
+    }
+}
+
 $AppForgeRoot = (Resolve-Path $AppForgeRoot).Path
 $spec = (Resolve-Path (Join-Path $PSScriptRoot "spec\document-evidence.md")).Path
 $output = Join-Path $PSScriptRoot "Generated"
-$cli = Join-Path $AppForgeRoot "src\experimental\md_ef_core\cli.py"
+$runner = Join-Path $AppForgeRoot "scripts\quality\run-md-ef-core-production-package.ps1"
 
-if (-not (Test-Path $cli -PathType Leaf)) {
-    throw "AppForge MD EF CLI was not found: $cli"
-}
+Assert-File $runner "AppForge production package runner"
 
 $dirty = & git -C $AppForgeRoot status --porcelain
 Assert-LastExitCode "Reading AppForge status"
@@ -51,51 +56,59 @@ if ($dirty -and -not $AllowDirtyAppForge) {
 $appForgeCommit = (& git -C $AppForgeRoot rev-parse HEAD).Trim()
 Assert-LastExitCode "Reading AppForge commit"
 
-& python $cli `
-    --repo-root $AppForgeRoot `
-    --spec $spec `
-    --output $output `
-    --runtime-profile production `
-    --database-provider Postgres `
-    --clean
-Assert-LastExitCode "AppForge generation"
-
-$manifestPath = Join-Path $output "appforge-generation-manifest.json"
-if (-not (Test-Path $manifestPath -PathType Leaf)) {
-    throw "Generated manifest is missing: $manifestPath"
+$arguments = @{
+    SpecPath = $spec
+    OutputRoot = $output
+    Clean = $true
+}
+if ($PreviousPackageRoot) {
+    $arguments.PreviousPackageRoot = (Resolve-Path $PreviousPackageRoot).Path
 }
 
+& $runner @arguments
+Assert-LastExitCode "AppForge production package generation"
+
+$manifestPath = Join-Path $output "manifest\package-manifest.json"
+Assert-File $manifestPath "Production package manifest"
 $manifest = Get-Content -Raw -Encoding UTF8 $manifestPath | ConvertFrom-Json
+
+if ($manifest.kind -ne "appforge-generated-admin-production-package") {
+    throw "Unexpected package kind: $($manifest.kind)"
+}
 if ($manifest.runtimeProfile -ne "production") {
     throw "Unexpected runtime profile: $($manifest.runtimeProfile)"
 }
-if ($manifest.databaseProvider -ne "PostgreSQL") {
-    throw "Unexpected database provider: $($manifest.databaseProvider)"
+
+$identity = $manifest.generatedIdentity
+$projectPath = Join-Path $output "backend\$($identity.projectFileName)"
+$requiredFiles = @(
+    $projectPath,
+    (Join-Path $output "backend-contract\meta\domains.json"),
+    (Join-Path $output "frontend\runtime\httpClient.ts"),
+    (Join-Path $output "frontend-app\dist\index.html"),
+    (Join-Path $output "deploy\production\docker-compose.production.yml")
+)
+foreach ($path in $requiredFiles) {
+    Assert-File $path "Generated production artifact"
 }
 
 $receipt = [ordered]@{
     kind = "logiclens-appforge-generation-receipt"
-    version = 1
+    version = 2
     appForgeCommit = $appForgeCommit
+    modelId = $identity.modelId
+    projectFileName = $identity.projectFileName
     sourceSpecSha256 = (Get-FileHash -Algorithm SHA256 -Path $spec).Hash.ToLowerInvariant()
-    appForgeManifestSha256 = (Get-FileHash -Algorithm SHA256 -Path $manifestPath).Hash.ToLowerInvariant()
+    packageManifestSha256 = (Get-FileHash -Algorithm SHA256 -Path $manifestPath).Hash.ToLowerInvariant()
     generatedTreeSha256BeforeReceipt = Get-StableTreeHash $output
 }
-$receiptJson = ($receipt | ConvertTo-Json -Depth 4) + "`n"
-$utf8NoBom = [Text.UTF8Encoding]::new($false)
-[IO.File]::WriteAllText(
-    (Join-Path $output "logiclens-generation-receipt.json"),
-    $receiptJson,
-    $utf8NoBom
-)
+$receiptPath = Join-Path $output "manifest\logiclens-generation-receipt.json"
+$receiptJson = ($receipt | ConvertTo-Json -Depth 5) + "`n"
+[IO.File]::WriteAllText($receiptPath, $receiptJson, [Text.UTF8Encoding]::new($false))
 
-if (-not $SkipBuild) {
-    & dotnet build (Join-Path $output "GeneratedClinic.slnx") --nologo
-    Assert-LastExitCode "Generated solution build"
-}
-
-Write-Host "Document Evidence AppForge generation passed."
+Write-Host "Document Evidence AppForge production package passed."
 Write-Host "AppForge commit: $appForgeCommit"
-Write-Host "Spec: $spec"
+Write-Host "Model: $($identity.modelId)"
+Write-Host "Backend project: $($identity.projectFileName)"
 Write-Host "Output: $output"
 Write-Host "Generated tree hash: $($receipt.generatedTreeSha256BeforeReceipt)"
