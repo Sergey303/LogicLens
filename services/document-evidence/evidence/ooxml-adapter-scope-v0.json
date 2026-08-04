@@ -21,5 +21,7 @@
     "DocumentEvidence.Docx",
     "DocumentEvidence.Xlsx"
   ],
-  "status": "implementation-under-validation"
+  "status": "validated-initial-slice",
+  "acceptedHead": "f46c298aaa02587ebe3054751a635f32b73e4fbf",
+  "workflowRunId": 30945630476
 }
