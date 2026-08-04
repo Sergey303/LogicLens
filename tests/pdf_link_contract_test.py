@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Exercise ephemeral PDF extraction, proposal, retention, and Prolog gates."""
 
 from __future__ import annotations
@@ -8,9 +7,9 @@ import shutil
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+POPPLER_REQUIRED = "Poppler is required for pdf_link_contract_test.py"
 
 
 def main() -> int:
@@ -22,11 +21,12 @@ def main() -> int:
     pdf_link = importlib.import_module("source_proposal.pdf_link")
     assertions = importlib.import_module("pdf_link_contract_assertions")
     data = importlib.import_module("pdf_link_contract_data")
+    gate_fixture = importlib.import_module("pdf_link_gate_fixture")
     ir_fixture = importlib.import_module("pdf_link_ir_fixture")
     pdf_builder = importlib.import_module("pdf_fixture_builder")
     world_fixture = importlib.import_module("pdf_link_world_fixture")
     if not shutil.which("pdftotext") or not shutil.which("pdfinfo"):
-        raise SystemExit("Poppler is required for pdf_link_contract_test.py")
+        raise SystemExit(POPPLER_REQUIRED)
     schemas = source_proposal.load_schemas(ROOT / "contracts")
     pdf_schemas = pdf_link.load_pdf_schemas(ROOT / "contracts")
     pdf = pdf_builder.make_pdf(data.QUOTE)
@@ -36,7 +36,12 @@ def main() -> int:
         world = world_fixture.build_world(root)
         proposal = root / "proposal"
         proposal.mkdir()
-        document_ir = ir_fixture.extract_document_ir(pdf_link, capsule, pdf, data)
+        document_ir = ir_fixture.extract_document_ir(
+            pdf,
+            data.PROPOSAL_ID,
+            data.SOURCE_ID,
+            data.SOURCE_URI,
+        )
         capsule.schema_check(document_ir, pdf_schemas["documentIr"], "fixture document IR")
         document_path = proposal / "document/canonical-document-ir.json"
         document_path.parent.mkdir(parents=True)
@@ -70,8 +75,7 @@ def main() -> int:
             schemas=schemas,
             pdf_schemas=pdf_schemas,
         )
-        package = run_proposal_gate(
-            source_proposal,
+        package = gate_fixture.run_proposal_gate(
             world,
             proposal,
             resolved,
@@ -80,51 +84,6 @@ def main() -> int:
         )
         assertions.assert_selected_retention(package)
     return 0
-
-
-def run_proposal_gate(
-    source_proposal: Any,
-    world: Path,
-    proposal: Path,
-    resolved: Path,
-    root: Path,
-    schemas: dict[str, dict[str, Any]],
-) -> dict[str, Any]:
-    """Review, execute, and verify selected-evidence-only packaging."""
-    source_proposal.prepare_extraction(
-        world_root=world,
-        proposal_root=proposal,
-        prompt_path=ROOT / "prompts/generic/source-assertion-proposer.md",
-        schemas=schemas,
-        contracts_root=ROOT / "contracts",
-    )
-    source_proposal.import_assertion_proposal(
-        world_root=world,
-        proposal_root=proposal,
-        candidate_path=resolved / "assertion-candidate.json",
-        schemas=schemas,
-        contracts_root=ROOT / "contracts",
-    )
-    source_proposal.import_grounding_review(
-        proposal_root=proposal,
-        review_path=resolved / "grounding-review.json",
-        schemas=schemas,
-    )
-    package_root = root / "package"
-    package = source_proposal.execute_gate(
-        proposal_root=proposal,
-        output=package_root,
-        swipl="swipl",
-        timeout_seconds=20,
-        schemas=schemas,
-    )
-    source_proposal.verify_package(
-        package_root=package_root,
-        swipl="swipl",
-        timeout_seconds=20,
-        schemas=schemas,
-    )
-    return package
 
 
 if __name__ == "__main__":
