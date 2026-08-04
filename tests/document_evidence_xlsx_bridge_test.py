@@ -15,9 +15,7 @@ def main() -> int:
     """Build, review, gate, and verify one selected worksheet-cell fixture."""
     sys.path[:0] = [str(ROOT / "tests"), str(ROOT), str(ROOT / "tools")]
     sp = importlib.import_module("source_proposal")
-    bridge_fixture = importlib.import_module(
-        "document_evidence_xlsx_bridge_fixture"
-    )
+    bridge_fixture = importlib.import_module("document_evidence_xlsx_bridge_fixture")
     schemas = sp.load_schemas(ROOT / "contracts")
 
     with tempfile.TemporaryDirectory(prefix="document-evidence-xlsx-") as temp_name:
@@ -67,8 +65,12 @@ def main() -> int:
         if selected != fragment or package["gate"]["status"] != "passed":
             message = "XLSX provenance changed before the SWI-Prolog gate"
             raise AssertionError(message)
-        if selected["text"] != "Confirmed" or selected["sourceAnchor"]["cellReference"] != "D9":
-            raise AssertionError("Selected XLSX cell evidence changed")
+        if (
+            selected["text"] != "Confirmed"
+            or selected["sourceAnchor"]["cellReference"] != "D9"
+        ):
+            message = "Selected XLSX cell evidence changed"
+            raise AssertionError(message)
     return 0
 
 
