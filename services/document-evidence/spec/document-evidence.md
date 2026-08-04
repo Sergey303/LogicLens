@@ -1,14 +1,10 @@
 # Document Evidence Operational Model
-
-This AppForge input defines only the replaceable EF Core/API contour.
-Generated controllers stay internal until the handwritten workspace-access facade is present.
-Bytes, parsing, proposals, capsules, and Prolog decisions stay handwritten.
+AppForge input for the replaceable operational/admin contour. Trusted storage, parsing, provenance,
+capsules, and Prolog decisions remain handwritten.
 
 ## Entity Document
-
 Table: Documents
 Namespace: LogicLens.DocumentEvidence.Generated
-
 | Property | Type | Required | Key | MaxLength |
 |---|---|---:|---:|---:|
 | Id | Guid | true | true | |
@@ -26,10 +22,8 @@ Namespace: LogicLens.DocumentEvidence.Generated
 | IX_Documents_WorkspaceId_State | WorkspaceId, State | false |
 
 ## Entity StoredObject
-
 Table: StoredObjects
 Namespace: LogicLens.DocumentEvidence.Generated
-
 | Property | Type | Required | Key | MaxLength |
 |---|---|---:|---:|---:|
 | Id | Guid | true | true | |
@@ -43,10 +37,8 @@ Namespace: LogicLens.DocumentEvidence.Generated
 | UX_StoredObjects_Sha256 | Sha256 | true |
 
 ## Entity DocumentRevision
-
 Table: DocumentRevisions
 Namespace: LogicLens.DocumentEvidence.Generated
-
 | Property | Type | Required | Key | MaxLength |
 |---|---|---:|---:|---:|
 | Id | Guid | true | true | |
@@ -68,10 +60,8 @@ Namespace: LogicLens.DocumentEvidence.Generated
 | UX_DocumentRevisions_DocumentId_RevisionNumber | DocumentId, RevisionNumber | true |
 
 ## Entity ProcessingJob
-
 Table: ProcessingJobs
 Namespace: LogicLens.DocumentEvidence.Generated
-
 | Property | Type | Required | Key | MaxLength |
 |---|---|---:|---:|---:|
 | Id | Guid | true | true | |
@@ -93,10 +83,8 @@ Namespace: LogicLens.DocumentEvidence.Generated
 | IX_ProcessingJobs_State_LeaseUntil | State, LeaseUntil | false |
 
 ## Entity DocumentFragment
-
 Table: DocumentFragments
 Namespace: LogicLens.DocumentEvidence.Generated
-
 | Property | Type | Required | Key | MaxLength |
 |---|---|---:|---:|---:|
 | Id | Guid | true | true | |
@@ -115,3 +103,39 @@ Namespace: LogicLens.DocumentEvidence.Generated
 |---|---|---:|
 | UX_DocumentFragments_Revision_Sequence | DocumentRevisionId, Sequence | true |
 | IX_DocumentFragments_ContentHash | ContentHash | false |
+
+## Security: Document
+| Operation | Roles | Scope | OwnerField |
+|---|---|---|---|
+| Read | DocumentEvidenceAdmin | All | |
+| Create | DocumentEvidenceAdmin | All | |
+| Update | DocumentEvidenceAdmin | All | |
+| Delete | DocumentEvidenceAdmin | All | |
+## Security: StoredObject
+| Operation | Roles | Scope | OwnerField |
+|---|---|---|---|
+| Read | DocumentEvidenceAdmin | All | |
+| Create | DocumentEvidenceAdmin | All | |
+| Update | DocumentEvidenceAdmin | All | |
+| Delete | DocumentEvidenceAdmin | All | |
+## Security: DocumentRevision
+| Operation | Roles | Scope | OwnerField |
+|---|---|---|---|
+| Read | DocumentEvidenceAdmin | All | |
+| Create | DocumentEvidenceAdmin | All | |
+| Update | DocumentEvidenceAdmin | All | |
+| Delete | DocumentEvidenceAdmin | All | |
+## Security: ProcessingJob
+| Operation | Roles | Scope | OwnerField |
+|---|---|---|---|
+| Read | DocumentEvidenceAdmin | All | |
+| Create | DocumentEvidenceAdmin | All | |
+| Update | DocumentEvidenceAdmin | All | |
+| Delete | DocumentEvidenceAdmin | All | |
+## Security: DocumentFragment
+| Operation | Roles | Scope | OwnerField |
+|---|---|---|---|
+| Read | DocumentEvidenceAdmin | All | |
+| Create | DocumentEvidenceAdmin | All | |
+| Update | DocumentEvidenceAdmin | All | |
+| Delete | DocumentEvidenceAdmin | All | |
