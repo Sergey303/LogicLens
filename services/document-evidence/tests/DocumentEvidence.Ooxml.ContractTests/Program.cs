@@ -5,6 +5,7 @@ internal static class Program
     public static async Task<int> Main()
     {
         await OoxmlSecurityContractTests.CanonicalIdentityIgnoresZipOrderAndTimestampAsync();
+        await OoxmlSecurityContractTests.PackageAbsoluteRelationshipIsResolvedAsync();
         await OoxmlSecurityContractTests.TraversalPartIsRejectedAsync();
         await OoxmlSecurityContractTests.CaseInsensitiveDuplicatePartIsRejectedAsync();
         await OoxmlSecurityContractTests.PackageAndExpansionLimitsAreEnforcedAsync();
