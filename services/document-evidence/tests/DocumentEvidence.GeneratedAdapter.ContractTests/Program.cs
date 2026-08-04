@@ -7,6 +7,8 @@ internal static class Program
         await AdapterContractTests.FindDocumentMapsExpectedRouteAsync();
         await AdapterContractTests.ListFragmentsValidatesAndPaginatesAsync();
         await AdapterContractTests.WorkspaceMismatchStopsBeforeFragmentLookupAsync();
+        GeneratedPackageIdentityTests.ValidReceiptRegistersDiagnosticsAndStore();
+        await GeneratedPackageIdentityTests.InvalidReceiptFailsBeforeHttpAsync();
         Console.WriteLine("Document Evidence generated adapter contract tests passed.");
         return 0;
     }
