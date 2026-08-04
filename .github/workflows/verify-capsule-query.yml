@@ -1,17 +1,21 @@
-name: Verify capsule query contract
+name: Verify capsule query contracts
 
 on:
   pull_request:
     paths:
       - "tools/capsule.py"
       - "tools/capsule_query.py"
+      - "tools/capsule_query_dsl_b.py"
       - "contracts/capsule-query-*.schema.json"
+      - "contracts/epistemic-logical-rule-v0.schema.json"
       - "contracts/prepared-assertion-v0.schema.json"
       - "contracts/capsule-*.schema.json"
       - "contracts/knowledge-world-v0.schema.json"
       - "tests/capsule_contract_test.py"
       - "tests/capsule_query_contract_test.py"
+      - "tests/capsule_query_dsl_b_contract_test.py"
       - "docs/architecture/CAPSULE_QUERY_V0.md"
+      - "EpistemicCompilerLab/progressive-dsl/**"
       - ".github/workflows/verify-capsule-query.yml"
   push:
     branches:
@@ -19,13 +23,17 @@ on:
     paths:
       - "tools/capsule.py"
       - "tools/capsule_query.py"
+      - "tools/capsule_query_dsl_b.py"
       - "contracts/capsule-query-*.schema.json"
+      - "contracts/epistemic-logical-rule-v0.schema.json"
       - "contracts/prepared-assertion-v0.schema.json"
       - "contracts/capsule-*.schema.json"
       - "contracts/knowledge-world-v0.schema.json"
       - "tests/capsule_contract_test.py"
       - "tests/capsule_query_contract_test.py"
+      - "tests/capsule_query_dsl_b_contract_test.py"
       - "docs/architecture/CAPSULE_QUERY_V0.md"
+      - "EpistemicCompilerLab/progressive-dsl/**"
       - ".github/workflows/verify-capsule-query.yml"
 
 permissions:
@@ -56,18 +64,24 @@ jobs:
           python -m pip install --disable-pip-version-check \
             "jsonschema==4.23.0"
 
-      - name: Verify capsule query contract
+      - name: Verify DSL-A capsule query contract
         run: |
           python tests/capsule_query_contract_test.py \
-            | tee /tmp/capsule-query-contract.log
+            | tee /tmp/capsule-query-dsl-a-contract.log
+
+      - name: Verify DSL-B logical query contract
+        run: |
+          python tests/capsule_query_dsl_b_contract_test.py \
+            | tee /tmp/capsule-query-dsl-b-contract.log
 
       - name: Upload verification logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: capsule-query-contract
+          name: capsule-query-contracts
           path: |
             /tmp/swipl-version.txt
-            /tmp/capsule-query-contract.log
+            /tmp/capsule-query-dsl-a-contract.log
+            /tmp/capsule-query-dsl-b-contract.log
           if-no-files-found: warn
           retention-days: 14
