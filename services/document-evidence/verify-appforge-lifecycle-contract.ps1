@@ -57,10 +57,12 @@ if (-not (Test-Path -LiteralPath $migrationSql -PathType Leaf)) {
 $contractCorpus = Get-Corpus $contractRoot @(".json")
 $backendCorpus = Get-Corpus $backendRoot @(".cs")
 $migrationCorpus = Get-Corpus $migrationsRoot @(".cs", ".sql")
+$migrationSqlCorpus = Get-Content -LiteralPath $migrationSql -Raw -Encoding UTF8
 
 Assert-Fields $contractCorpus $requiredFields "canonical backend contract"
 Assert-Fields $backendCorpus $requiredFields "C# backend"
 Assert-Fields $migrationCorpus $requiredFields "EF migration chain"
+Assert-Fields $migrationSqlCorpus $requiredFields "idempotent migration SQL"
 
 $result = [ordered]@{
     kind = "logiclens-appforge-lifecycle-contract-proof"
