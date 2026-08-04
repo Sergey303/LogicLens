@@ -4,7 +4,10 @@ from __future__ import annotations
 import shutil
 
 import pdf_link_contract_test as base
-from source_proposal.pdf_link import parse_pdf_with_pypdf
+from source_proposal.pdf_link import (
+    fragments_from_ir,
+    parse_pdf_with_pypdf,
+)
 
 
 def parse_with_pypdf(
@@ -26,7 +29,66 @@ def parse_with_pypdf(
     )
 
 
+def verify_evidence_unit_segmentation() -> None:
+    quote = (
+        "The Product Owner is accountable for maximizing the value of the "
+        "product resulting from the work of the Scrum Team."
+    )
+    text = (
+        "Product Owner\n"
+        "Unrelated introductory sentence.\n"
+        "The Product Owner is accountable for maximizing the value of the "
+        "product resulting from the work of\n"
+        "the Scrum Team. How this is done may vary widely across "
+        "organizations.\n"
+        "Unrelated trailing sentence.\n"
+    )
+    ir = {
+        "proposalId": "segmentation-v0",
+        "sourceId": "scrum-guide-2020",
+        "pages": [
+            {
+                "pageNumber": 6,
+                "blocks": [
+                    {
+                        "blockId": (
+                            "scrum-guide-2020:p0006:b0001:"
+                            "000000000000"
+                        ),
+                        "kind": "paragraph",
+                        "text": text,
+                        "normalizedText": text,
+                    }
+                ],
+            }
+        ],
+    }
+    fragments = fragments_from_ir(
+        ir,
+        "sha256:" + ("0" * 64),
+    )
+    matches = [
+        item
+        for item in fragments
+        if quote in item["text"]
+    ]
+    if len(matches) != 1:
+        raise AssertionError(
+            f"expected one quote fragment, received {len(matches)}"
+        )
+    if matches[0]["text"] != quote:
+        raise AssertionError(
+            "review quote was retained with unrelated page text"
+        )
+    if any(len(item["text"]) > 500 for item in fragments):
+        raise AssertionError(
+            "evidence unit segmentation retained an oversized fixture unit"
+        )
+
+
 def main() -> int:
+    verify_evidence_unit_segmentation()
+
     original_parser = base.parse_pdf_with_poppler
     original_which = shutil.which
 
