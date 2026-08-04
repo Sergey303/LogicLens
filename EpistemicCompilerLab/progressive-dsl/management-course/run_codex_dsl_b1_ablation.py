@@ -2,6 +2,7 @@
 """Run DSL-B1 with separate task accuracy and condition-safety metrics."""
 from __future__ import annotations
 
+import subprocess
 import sys
 from typing import Any
 
@@ -85,6 +86,6 @@ base.aggregate = aggregate
 if __name__ == "__main__":
     try:
         raise SystemExit(base.main())
-    except (base.ExperimentError, OSError) as exc:
+    except (base.ExperimentError, OSError, subprocess.SubprocessError) as exc:
         print(f"Progressive management DSL-B1 ablation failed: {exc}", file=sys.stderr)
         raise SystemExit(1) from exc
