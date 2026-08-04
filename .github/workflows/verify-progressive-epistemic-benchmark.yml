@@ -4,16 +4,34 @@ on:
   pull_request:
     paths:
       - "contracts/progressive-epistemic-case-v0.schema.json"
+      - "contracts/progressive-management-codex-response-v0.schema.json"
+      - "contracts/capsule-query-*.schema.json"
+      - "contracts/epistemic-logical-rule-v0.schema.json"
       - "EpistemicCompilerLab/progressive-dsl/**"
+      - "EpistemicCompilerLab/scripts/invoke_codex_json.py"
+      - "tools/capsule.py"
+      - "tools/capsule_query.py"
+      - "tools/capsule_query_dsl_b.py"
+      - "tests/capsule_contract_test.py"
       - "tests/progressive_epistemic_case_contract_test.py"
+      - "tests/progressive_management_codex_ablation_contract_test.py"
       - ".github/workflows/verify-progressive-epistemic-benchmark.yml"
   push:
     branches:
       - main
     paths:
       - "contracts/progressive-epistemic-case-v0.schema.json"
+      - "contracts/progressive-management-codex-response-v0.schema.json"
+      - "contracts/capsule-query-*.schema.json"
+      - "contracts/epistemic-logical-rule-v0.schema.json"
       - "EpistemicCompilerLab/progressive-dsl/**"
+      - "EpistemicCompilerLab/scripts/invoke_codex_json.py"
+      - "tools/capsule.py"
+      - "tools/capsule_query.py"
+      - "tools/capsule_query_dsl_b.py"
+      - "tests/capsule_contract_test.py"
       - "tests/progressive_epistemic_case_contract_test.py"
+      - "tests/progressive_management_codex_ablation_contract_test.py"
       - ".github/workflows/verify-progressive-epistemic-benchmark.yml"
 
 permissions:
@@ -36,19 +54,32 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install schema dependency
-        run: python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
+      - name: Install SWI-Prolog and schema dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version | tee /tmp/swipl-version.txt
+          python -m pip install --disable-pip-version-check \
+            "jsonschema==4.23.0"
 
-      - name: Verify frozen DSL-A management cases
+      - name: Verify frozen management cases
         run: |
           python tests/progressive_epistemic_case_contract_test.py \
             | tee /tmp/progressive-epistemic-benchmark.log
+
+      - name: Verify offline Codex ablation runner
+        run: |
+          python tests/progressive_management_codex_ablation_contract_test.py \
+            | tee /tmp/progressive-management-codex-ablation.log
 
       - name: Upload benchmark verification
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: progressive-epistemic-benchmark
-          path: /tmp/progressive-epistemic-benchmark.log
+          path: |
+            /tmp/swipl-version.txt
+            /tmp/progressive-epistemic-benchmark.log
+            /tmp/progressive-management-codex-ablation.log
           if-no-files-found: warn
           retention-days: 14
