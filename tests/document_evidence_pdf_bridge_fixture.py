@@ -23,10 +23,7 @@ def load_fragment(
     schemas: dict[str, dict[str, Any]],
 ) -> tuple[bytes, dict[str, Any]]:
     """Load and validate the shared C#-to-Python source fragment fixture."""
-    path = (
-        root
-        / "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
-    )
+    path = root / "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl"
     content = path.read_bytes()
     fragment = json.loads(content)
     schema_check(fragment, schemas["fragment"], "Document Evidence bridge fragment")
