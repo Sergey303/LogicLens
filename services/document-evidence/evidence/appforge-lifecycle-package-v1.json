@@ -50,7 +50,8 @@
     ],
     "verifiedInCanonicalBackendContract": true,
     "verifiedInGeneratedCSharp": true,
-    "verifiedInEfMigrationChain": true
+    "verifiedInEfMigrationChainCorpus": true,
+    "directIdempotentSqlFieldListingCaptured": false
   },
   "frontend": {
     "productionGateFiles": 1220,
@@ -76,6 +77,7 @@
   },
   "notes": [
     "The CGR process returned exit code 1 only after package generation completed, because the post-proof command used the nonexistent PowerShell parameter Select-Object -Single.",
-    "The command removed the previous Generated directory before running AppForge, so this archive proves a fresh initial migration, not preservation of an existing migration chain."
+    "The command removed the previous Generated directory before running AppForge, so this archive proves a fresh initial migration, not preservation of an existing migration chain.",
+    "The wrapper verified lifecycle fields in the combined EF migration corpus and recorded the idempotent SQL hash. The later diagnostic Select-String command printed no direct SQL field matches before the unrelated Select-Object failure, so direct SQL field listing is not claimed by this evidence file."
   ]
 }
