@@ -84,3 +84,15 @@ jobs:
           dotnet run \
             --project services/document-evidence/tests/DocumentEvidence.GeneratedAdapter.ContractTests/DocumentEvidence.GeneratedAdapter.ContractTests.csproj \
             --no-build
+
+      - name: Build immutable storage contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.LocalStorage.ContractTests/DocumentEvidence.LocalStorage.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run immutable storage contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.LocalStorage.ContractTests/DocumentEvidence.LocalStorage.ContractTests.csproj \
+            --no-build
