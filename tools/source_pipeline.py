@@ -10,6 +10,7 @@ from capsule import CapsuleError
 from source_proposal import (
     SourcePipelineError,
     execute_gate,
+    finalize_activation,
     fragment_workspace,
     import_assertion_proposal,
     import_grounding_review,
@@ -77,15 +78,23 @@ def parse_args() -> argparse.Namespace:
     verify.add_argument("--swipl")
     verify.add_argument("--timeout-seconds", type=int, default=30)
 
-    activate = commands.add_parser("stage-activation")
-    activate.add_argument("--package", required=True, type=Path)
-    activate.add_argument("--world-root", required=True, type=Path)
-    activate.add_argument("--output-world-root", required=True, type=Path)
-    activate.add_argument("--expected-current-version", required=True)
-    activate.add_argument("--new-version", required=True)
-    activate.add_argument("--allow-provisional", action="store_true")
-    activate.add_argument("--swipl", default="swipl")
-    activate.add_argument("--timeout-seconds", type=int, default=30)
+    stage = commands.add_parser("stage-activation")
+    stage.add_argument("--package", required=True, type=Path)
+    stage.add_argument("--world-root", required=True, type=Path)
+    stage.add_argument("--output-world-root", required=True, type=Path)
+    stage.add_argument("--expected-current-version", required=True)
+    stage.add_argument("--new-version", required=True)
+    stage.add_argument("--allow-provisional", action="store_true")
+    stage.add_argument("--swipl", default="swipl")
+    stage.add_argument("--timeout-seconds", type=int, default=30)
+
+    finalize = commands.add_parser("finalize-activation")
+    finalize.add_argument("--source-world-root", required=True, type=Path)
+    finalize.add_argument("--staged-world-root", required=True, type=Path)
+    finalize.add_argument("--output-world-root", required=True, type=Path)
+    finalize.add_argument("--activation-id", required=True)
+    finalize.add_argument("--expected-activation-hash", required=True)
+    finalize.add_argument("--approve-provisional", action="store_true")
     return parser.parse_args()
 
 
@@ -187,6 +196,22 @@ def main() -> int:
             f"{item['oldCapsuleVersion']} -> {item['newCapsuleVersion']}"
         )
         print(f"Assertions: {len(item['assertionIds'])}")
+        print(f"Activation hash: {item['activationHash']}")
+        print(f"Output world: {args.output_world_root.resolve()}")
+        return 0
+
+    if args.command == "finalize-activation":
+        item = finalize_activation(
+            source_world_root=args.source_world_root,
+            staged_world_root=args.staged_world_root,
+            output_world_root=args.output_world_root,
+            activation_id=args.activation_id,
+            expected_activation_hash=args.expected_activation_hash,
+            approve_provisional=args.approve_provisional,
+            contracts_root=args.contracts_root,
+        )
+        print(f"Finalized source proposal activation: {item['activationId']}")
+        print(f"Status: {item['status']}")
         print(f"Activation hash: {item['activationHash']}")
         print(f"Output world: {args.output_world_root.resolve()}")
         return 0
