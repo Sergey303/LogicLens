@@ -34,10 +34,9 @@ def build_package(root: Path, repo: Path, world: Path, schemas: dict) -> Path:
     sp.prepare_extraction(
         world_root=world,
         proposal_root=workspace,
-        prompt_path=ROOT
-        / "prompts"
-        / "generic"
-        / "source-assertion-proposer.md",
+        prompt_path=(
+            ROOT / "prompts" / "generic" / "source-assertion-proposer.md"
+        ),
         schemas=schemas,
         contracts_root=ROOT / "contracts",
     )
@@ -127,8 +126,17 @@ def build_package(root: Path, repo: Path, world: Path, schemas: dict) -> Path:
     return package
 
 
+def expect_failure(action, message: str) -> None:
+    try:
+        action()
+    except sp.SourcePipelineError:
+        return
+    raise AssertionError(message)
+
+
 def main() -> int:
     schemas = sp.load_schemas(ROOT / "contracts")
+    contracts = ROOT / "contracts"
     with tempfile.TemporaryDirectory(
         prefix="source-activation-test-"
     ) as temp_name:
@@ -136,8 +144,8 @@ def main() -> int:
         repo, world = base.build_fixture(root)
         package = build_package(root, repo, world, schemas)
 
-        try:
-            sp.stage_activation(
+        expect_failure(
+            lambda: sp.stage_activation(
                 package_root=package,
                 world_root=world,
                 output_world_root=root / "rejected",
@@ -147,14 +155,10 @@ def main() -> int:
                 swipl=None,
                 timeout_seconds=20,
                 schemas=schemas,
-                contracts_root=ROOT / "contracts",
-            )
-        except sp.SourcePipelineError:
-            pass
-        else:
-            raise AssertionError(
-                "provisional activation succeeded without override"
-            )
+                contracts_root=contracts,
+            ),
+            "provisional activation succeeded without override",
+        )
 
         staged = root / "staged-world"
         activation = sp.stage_activation(
@@ -167,18 +171,18 @@ def main() -> int:
             swipl=None,
             timeout_seconds=20,
             schemas=schemas,
-            contracts_root=ROOT / "contracts",
+            contracts_root=contracts,
         )
         assert activation["status"] == "staged"
         assert activation["approvalMode"] == "provisional-override"
         assert activation["assertionIds"] == ["fixture.activation.support"]
 
-        validated = validate_world(staged, ROOT / "contracts")
+        validated = validate_world(staged, contracts)
         capsule = validated["capsules"]["management.role-boundaries"]
         assert capsule["manifest"]["version"] == "0.1.1"
         assertions = json_lines(
             capsule["root"] / "prepared" / "assertions.jsonl",
-            "activated assertions",
+            "staged assertions",
         )
         assert {item["assertionId"] for item in assertions} == {
             "fixture.accepted",
@@ -186,22 +190,89 @@ def main() -> int:
         }
         module = json_object(
             staged / "modules" / "fixture" / "module.json",
-            "activated module",
+            "staged module",
         )
         assert module["version"] == "0.1.1"
         assert module["usesCapsules"] == [
             {"id": "management.role-boundaries", "version": "0.1.1"}
         ]
-        record = json_object(
+        record_path = (
             capsule["root"]
             / "activations"
-            / "activation-fixture-v0-0.1.1.json",
-            "activation record",
+            / "activation-fixture-v0-0.1.1.json"
         )
+        record = json_object(record_path, "activation record")
         assert record["packageHash"] == activation["packageHash"]
 
-        try:
-            sp.stage_activation(
+        expect_failure(
+            lambda: sp.finalize_activation(
+                source_world_root=world,
+                staged_world_root=staged,
+                output_world_root=root / "no-approval",
+                activation_id=activation["activationId"],
+                expected_activation_hash=activation["activationHash"],
+                approve_provisional=False,
+                contracts_root=contracts,
+            ),
+            "provisional finalization succeeded without approval",
+        )
+        expect_failure(
+            lambda: sp.finalize_activation(
+                source_world_root=world,
+                staged_world_root=staged,
+                output_world_root=root / "wrong-hash",
+                activation_id=activation["activationId"],
+                expected_activation_hash="sha256:" + "0" * 64,
+                approve_provisional=True,
+                contracts_root=contracts,
+            ),
+            "finalization accepted the wrong staged hash",
+        )
+
+        activated_world = root / "activated-world"
+        activated = sp.finalize_activation(
+            source_world_root=world,
+            staged_world_root=staged,
+            output_world_root=activated_world,
+            activation_id=activation["activationId"],
+            expected_activation_hash=activation["activationHash"],
+            approve_provisional=True,
+            contracts_root=contracts,
+        )
+        assert activated["status"] == "activated"
+        assert activated["activationHash"] != activation["activationHash"]
+        validate_world(activated_world, contracts)
+        activated_record = json_object(
+            activated_world
+            / "capsules"
+            / "role-boundaries"
+            / "activations"
+            / "activation-fixture-v0-0.1.1.json",
+            "activated record",
+        )
+        assert activated_record == activated
+
+        tampered = root / "tampered-staged"
+        shutil.copytree(staged, tampered)
+        (tampered / "README.md").write_text(
+            "# unrelated staged edit\n",
+            encoding="utf-8",
+        )
+        expect_failure(
+            lambda: sp.finalize_activation(
+                source_world_root=world,
+                staged_world_root=tampered,
+                output_world_root=root / "tampered-output",
+                activation_id=activation["activationId"],
+                expected_activation_hash=activation["activationHash"],
+                approve_provisional=True,
+                contracts_root=contracts,
+            ),
+            "finalization accepted an unrelated staged edit",
+        )
+
+        expect_failure(
+            lambda: sp.stage_activation(
                 package_root=package,
                 world_root=staged,
                 output_world_root=root / "duplicate",
@@ -211,12 +282,10 @@ def main() -> int:
                 swipl=None,
                 timeout_seconds=20,
                 schemas=schemas,
-                contracts_root=ROOT / "contracts",
-            )
-        except sp.SourcePipelineError:
-            pass
-        else:
-            raise AssertionError("duplicate assertion activation succeeded")
+                contracts_root=contracts,
+            ),
+            "duplicate assertion activation succeeded",
+        )
 
     print("Source proposal activation contract verification passed")
     return 0
