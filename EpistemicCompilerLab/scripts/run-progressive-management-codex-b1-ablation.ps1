@@ -60,7 +60,7 @@ $cases = Join-Path `
     "EpistemicCompilerLab\progressive-dsl\management-course\cases-dsl-b1-v0.jsonl"
 $runner = Join-Path `
     $logicLens `
-    "EpistemicCompilerLab\progressive-dsl\management-course\run_codex_dsl_ablation.py"
+    "EpistemicCompilerLab\progressive-dsl\management-course\run_codex_dsl_b1_ablation.py"
 $frameVerifier = Join-Path `
     $logicLens `
     "EpistemicCompilerLab\progressive-dsl\management-course\verify_progressive_management_frames.py"
@@ -176,12 +176,14 @@ Write-Host "  DSL-B1 hash:$($summary.hashes.dslBPackage)"
 foreach ($metric in $summary.metrics) {
     Write-Host ""
     Write-Host "  $($metric.condition)"
-    Write-Host "    task status accuracy:  $($metric.taskStatusAccuracy)"
-    Write-Host "    frame status accuracy: $($metric.frameStatusAccuracy)"
-    Write-Host "    evidence exact rate:   $($metric.evidenceExactRate)"
-    Write-Host "    proof-node recall:     $($metric.meanProofNodeRecall)"
-    Write-Host "    warning recall:        $($metric.meanWarningRecall)"
-    Write-Host "    latency mean ms:       $($metric.latencyMeanMs)"
+    Write-Host "    task status accuracy:      $($metric.taskStatusAccuracy)"
+    Write-Host "    condition status accuracy: $($metric.conditionStatusAccuracy)"
+    Write-Host "    condition abstention:      $($metric.conditionAbstentionAccuracy)"
+    Write-Host "    frame status accuracy:     $($metric.frameStatusAccuracy)"
+    Write-Host "    evidence exact rate:       $($metric.evidenceExactRate)"
+    Write-Host "    proof-node recall:         $($metric.meanProofNodeRecall)"
+    Write-Host "    warning recall:            $($metric.meanWarningRecall)"
+    Write-Host "    latency mean ms:           $($metric.latencyMeanMs)"
 }
 
 $archive = "$output.zip"
