@@ -10,6 +10,9 @@ internal static class Program
     {
         await AllowsStoreLookupOnlyAfterAuthorizationAsync();
         await DenialPreventsStoreLookupAsync();
+        await UploadServiceContractTests.ReplayAvoidsObjectWriteAsync();
+        await UploadServiceContractTests.NewUploadBuildsDeterministicManifestAsync();
+        await UploadServiceContractTests.ConflictingCommitResultIsRejectedAsync();
         Console.WriteLine("Document Evidence boundary contract tests passed.");
         return 0;
     }
