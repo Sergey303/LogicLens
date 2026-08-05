@@ -7,6 +7,7 @@ import importlib
 import json
 import shutil
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +27,7 @@ def write_receipt(
     fragment_bytes: bytes,
     fragment: dict[str, Any],
     package: dict[str, Any],
-    canonical_json: Any,
+    canonical_json: Callable[[dict[str, Any]], bytes],
 ) -> bytes:
     """Write the stable verified-decision receipt."""
     receipt = {
@@ -139,4 +140,4 @@ def run(fragment_path: Path, service_receipt_path: Path, output: Path) -> None:
         package,
         capsule.canonical_json,
     )
-    print(receipt.decode("utf-8"))
+    sys.stdout.write(receipt.decode("utf-8") + "\n")
