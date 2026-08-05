@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "0.1",
+  "scenario": "eng-148-pdf-fragment-proposal-swi",
+  "status": "accepted",
+  "proofSource": "local-cgr",
+  "testedCommit": "4377fee82bf9b259239710c348c4e48b5c505ad0",
+  "acceptedBase": "c9d8a3e0329cac4244bc1383bdfa200038096450",
+  "branch": "agent/document-evidence-immutable-storage",
+  "runs": 2,
+  "repositoryGuardFiles": 18,
+  "ruffStatus": "passed",
+  "build": {
+    "status": "passed",
+    "warnings": 0,
+    "errors": 0
+  },
+  "service": {
+    "openApiSha256": "sha256:aed6a56d75f877a76fcd0bac2743d7f83ac6160be58ff98601f15ceef658606c",
+    "pdfSha256": "sha256:f1ad9c6b755bd2e947e31b5dfdadab4708a1884f03f3b993a989920aaa6c803a",
+    "revisionId": "f05cbb38-a2f5-9e5a-a861-9a26116110dc",
+    "manifestSha256": "ab0ddd309ead568ebed0033378d834f7094219dc39442506c9f5402a6e3e2477",
+    "processingState": "Ready",
+    "fragmentCount": 2,
+    "selectedFragmentSha256": "sha256:a66ea8666949d3d55d1f4e6783c7e4bebdba01eb2ce0bca4cbeaab895893b203",
+    "parserVersion": "25.07.0"
+  },
+  "decision": {
+    "gateStatus": "passed",
+    "decisionStatus": "verified",
+    "reviewClass": "provisional",
+    "activation": "not-performed",
+    "selectedFragmentId": "document-evidence-pdf#p-0001-b-0002",
+    "packageSha256": "sha256:79245b24798043990e47aee8564c7071e030ffcd2ba3213322e57b88a7181137",
+    "serviceReceiptSha256": "sha256:e03c850b7d723dfcf2758e10835e7f0a089b8ef05f38355c3b78455482279666",
+    "modelOutputAcceptedAutomatically": false
+  },
+  "determinism": {
+    "treeSha256": "sha256:c348ee34e62044e3f3849176837d9f0ff05d5943c7706b6b43d8e0530afa11f0",
+    "byteIdenticalAcrossRuns": true
+  },
+  "boundary": {
+    "consumerReadsDatabase": false,
+    "consumerReadsBlobPath": false
+  },
+  "observations": [
+    "Both supplied CGR archives contained identical command output and differed only by metadata creation timestamp.",
+    "CGR reported process exit 1 after the verifier emitted its success receipt; this is a runner exit-code propagation issue, not a failed proof."
+  ]
+}
