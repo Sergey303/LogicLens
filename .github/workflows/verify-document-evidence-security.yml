@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - agent/document-evidence-immutable-storage
 
 permissions:
   contents: read
@@ -15,11 +16,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
+
+      - name: Check repository invariants
+        run: python tools/quality/repository_guard.py --base "$(git rev-parse HEAD^)"
 
       - name: Build security contracts
         run: |
