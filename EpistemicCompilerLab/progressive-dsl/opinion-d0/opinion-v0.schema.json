@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/epistemic/opinion-d0/opinion-v0.schema.json",
+  "title": "LogicLens DSL-D0 opinion fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "opinionId",
+    "target",
+    "level",
+    "sourceMode",
+    "policyId",
+    "scope",
+    "dependencyGroups",
+    "provenance"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "opinionId": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predicate", "arguments"],
+      "properties": {
+        "predicate": {"type": "string"},
+        "arguments": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "level": {"enum": ["predicate", "answer"]},
+    "sourceMode": {"enum": ["direct-opinion", "evidence-counts", "missing"]},
+    "opinion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["belief", "disbelief", "uncertainty", "baseRate"],
+      "properties": {
+        "belief": {"type": "string"},
+        "disbelief": {"type": "string"},
+        "uncertainty": {"type": "string"},
+        "baseRate": {"type": "string"}
+      }
+    },
+    "evidenceCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative", "priorWeight", "baseRate"],
+      "properties": {
+        "positive": {"type": "integer", "minimum": 0},
+        "negative": {"type": "integer", "minimum": 0},
+        "priorWeight": {"type": "integer", "minimum": 1},
+        "baseRate": {"type": "string"}
+      }
+    },
+    "conflictIndex": {"type": "string"},
+    "policyId": {"type": "string"},
+    "aggregationPolicyId": {"type": "string"},
+    "scope": {"type": "object"},
+    "dependencyGroups": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "fragment", "title", "locator"],
+        "properties": {
+          "sourceId": {"type": "string"},
+          "fragment": {"type": "string"},
+          "title": {"type": "string"},
+          "locator": {"type": "string"}
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"sourceMode": {"const": "direct-opinion"}}, "required": ["sourceMode"]},
+      "then": {"required": ["opinion", "conflictIndex"]}
+    },
+    {
+      "if": {"properties": {"sourceMode": {"const": "evidence-counts"}}, "required": ["sourceMode"]},
+      "then": {"required": ["evidenceCounts", "aggregationPolicyId"]}
+    },
+    {
+      "if": {"properties": {"sourceMode": {"const": "missing"}}, "required": ["sourceMode"]},
+      "then": {
+        "properties": {
+          "provenance": {"maxItems": 0},
+          "dependencyGroups": {"maxItems": 0}
+        }
+      }
+    }
+  ]
+}
