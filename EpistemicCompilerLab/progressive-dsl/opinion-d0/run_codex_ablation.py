@@ -66,7 +66,7 @@ def numbers(frame: dict[str,Any]) -> dict[str,str]:
             "conflictIndex":frame["conflictIndex"]}
 
 def payload(case: dict[str,Any], frame: dict[str,Any], condition: str) -> dict[str,Any]:
-    out={"schemaVersion":"0.1","condition":condition,"caseId":case["caseId"],
+    out={"schemaVersion":"0.1","condition":condition,
          "question":case["question"],"scope":frame["scope"]}
     if condition=="scalar": out["projectedProbability"]=frame["projectedProbability"]
     elif condition=="raw":
