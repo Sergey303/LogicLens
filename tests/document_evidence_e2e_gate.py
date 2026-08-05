@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 Sergey Leshtaev
 """CLI for the ENG-148 client-selected PDF evidence gate."""
 
 from __future__ import annotations
