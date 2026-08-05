@@ -28,11 +28,11 @@ Invoke-Native "Verify frozen DSL-D2 contracts" { py -3 (Join-Path $d2Root "verif
 Invoke-Native "Verify offline DSL-D2 runner and scorer" {
     py -3 (Join-Path $d2Root "run_codex_ablation.py") --root $d2Root --output-root $offline --fake-provider --skip-prolog --repetitions 1
 }
-$args=@((Join-Path $d2Root "run_codex_ablation.py"),"--root",$d2Root,"--output-root",$output,"--codex",$Codex,
+$arguments=@((Join-Path $d2Root "run_codex_ablation.py"),"--root",$d2Root,"--output-root",$output,"--codex",$Codex,
  "--swipl",$Swipl,"--timeout-seconds","$TimeoutSeconds","--repetitions","$Repetitions",
  "--conditions","metadata_absent","naive_independent","raw_declared","verified")
-if ($Model) { $args += @("--model",$Model) }
-Invoke-Native "Run DSL-D2 dependency-aware fusion ablation" { py -3 @args }
+if ($Model) { $arguments += @("--model",$Model) }
+Invoke-Native "Run DSL-D2 dependency-aware fusion ablation" { py -3 @arguments }
 foreach ($name in @("reports-v0.jsonl","cases-v0.jsonl","README.md","report-v0.schema.json","case-v0.schema.json","codex-response-v0.schema.json","prompt-v0.md")) {
     Copy-Item (Join-Path $d2Root $name) (Join-Path $output $name) -Force
 }
