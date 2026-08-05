@@ -13,6 +13,7 @@ on:
       - "EpistemicCompilerLab/progressive-dsl/**"
       - "EpistemicCompilerLab/scripts/invoke_codex_json.py"
       - "EpistemicCompilerLab/scripts/run-progressive-management-codex-d0-ablation.ps1"
+      - "EpistemicCompilerLab/scripts/run-progressive-management-codex-d1-ablation.ps1"
       - "tools/capsule.py"
       - "tools/capsule_query.py"
       - "tools/capsule_query_dsl_b.py"
@@ -42,6 +43,7 @@ on:
       - "EpistemicCompilerLab/progressive-dsl/**"
       - "EpistemicCompilerLab/scripts/invoke_codex_json.py"
       - "EpistemicCompilerLab/scripts/run-progressive-management-codex-d0-ablation.ps1"
+      - "EpistemicCompilerLab/scripts/run-progressive-management-codex-d1-ablation.ps1"
       - "tools/capsule.py"
       - "tools/capsule_query.py"
       - "tools/capsule_query_dsl_b.py"
@@ -135,6 +137,20 @@ jobs:
             --skip-prolog \
             | tee /tmp/progressive-management-dsl-d0-ablation.log
 
+      - name: Verify frozen DSL-D1 exact boundary contracts
+        run: |
+          python EpistemicCompilerLab/progressive-dsl/opinion-d1/verify_contract.py \
+            | tee /tmp/progressive-management-dsl-d1.log
+
+      - name: Verify DSL-D1 Python and SWI-Prolog boundary runner
+        run: |
+          python EpistemicCompilerLab/progressive-dsl/opinion-d1/run_codex_ablation.py \
+            --root EpistemicCompilerLab/progressive-dsl/opinion-d1 \
+            --output-root /tmp/progressive-management-dsl-d1-offline \
+            --fake-provider \
+            --repetitions 1 \
+            | tee /tmp/progressive-management-dsl-d1-ablation.log
+
       - name: Verify offline role-frame Codex ablation runner
         run: |
           python tests/progressive_management_codex_ablation_contract_test.py \
@@ -156,6 +172,8 @@ jobs:
             /tmp/progressive-management-dsl-c-ablation.log
             /tmp/progressive-management-dsl-d0.log
             /tmp/progressive-management-dsl-d0-ablation.log
+            /tmp/progressive-management-dsl-d1.log
+            /tmp/progressive-management-dsl-d1-ablation.log
             /tmp/progressive-management-codex-ablation.log
           if-no-files-found: warn
           retention-days: 14
