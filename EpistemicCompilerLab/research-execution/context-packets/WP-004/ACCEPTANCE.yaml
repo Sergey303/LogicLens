@@ -1,0 +1,40 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+linear_issue: ENG-156
+acceptance_gate: GATE-001
+command_contracts:
+- name: context_packet_preflight
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py
+  - --package
+  - WP-004
+  stage: pre_start
+  must_exit_zero_when: packet and input manifests are intact
+- name: package_acceptance_1
+  working_directory: EpistemicCompilerLab
+  argv:
+  - python
+  - research-execution/scripts/validate_causal_design.py
+  - --contrasts
+  - research-execution/CAUSAL_CONTRASTS.yaml
+  - --modes
+  - research-execution/MODE_CONTRACTS
+  - --estimands
+  - research-execution/ESTIMANDS.yaml
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+checks:
+  artifact:
+  - 'All declared deliverables exist and validate: contrasts, mode contracts, alternatives,
+    baseline rule, estimands.'
+  scientific:
+  - One interpretable primary contrast; strongest baseline only by frozen DEV rule.
+  independence:
+  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions
+    and declare prior roles/conflicts.
+  adversarial:
+  - M11–M14 can falsify LLM necessity, copying, field reliance and length.
+  reproducibility:
+  - A clean reviewer can repeat the commands from hashes and manifests.

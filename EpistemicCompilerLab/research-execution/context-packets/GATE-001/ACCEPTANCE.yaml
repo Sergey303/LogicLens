@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+work_package_id: GATE-001
+linear_issue: ENG-159
+acceptance_gate: GATE-001
+command_contracts:
+- name: context_packet_preflight
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py
+  - --package
+  - GATE-001
+  stage: pre_start
+  must_exit_zero_when: packet and input manifests are intact
+- name: package_acceptance_1
+  working_directory: EpistemicCompilerLab
+  argv:
+  - python
+  - research-execution/scripts/validate_gate.py
+  - --gate
+  - research-execution/gates/GATE-001.json
+  - --required
+  - WP-001
+  - WP-002
+  - WP-003
+  - WP-004
+  - WP-005
+  - WP-006
+  - WP-007
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+checks:
+  artifact:
+  - GATE-001 decision artifact validates and every input hash/review resolves.
+  scientific:
+  - Every mandatory criterion has evidence and strongest unresolved objection.
+  independence:
+  - Gatekeeper is not producer/reviewer of critical inputs; identity/session/conflict
+    record passes.
+  adversarial:
+  - REVISE/REJECT/PIVOT alternatives were attacked; no Blocker suppressed.
+  reproducibility:
+  - A second operator can rerun all checks without oral instructions.

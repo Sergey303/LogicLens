@@ -1,0 +1,6 @@
+EpistemicCompilerLab/research-execution/oracle/SEMANTIC_SPEC.md
+EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md
+EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+EpistemicCompilerLab/research-execution/oracle/DEPENDENCY_AUDIT_PLAN.md
+EpistemicCompilerLab/research-execution/context-packets/WP-005
+EpistemicCompilerLab/research-execution/handoffs/WP-005.json

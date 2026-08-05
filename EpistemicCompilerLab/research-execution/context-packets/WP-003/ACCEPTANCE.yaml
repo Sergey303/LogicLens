@@ -1,0 +1,42 @@
+schema_version: 1.0.0
+work_package_id: WP-003
+linear_issue: ENG-155
+acceptance_gate: GATE-001
+command_contracts:
+- name: context_packet_preflight
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py
+  - --package
+  - WP-003
+  stage: pre_start
+  must_exit_zero_when: packet and input manifests are intact
+- name: package_acceptance_1
+  working_directory: EpistemicCompilerLab
+  argv:
+  - python
+  - research-execution/scripts/validate_related_work.py
+  - --matrix
+  - research-execution/RELATED_WORK_MATRIX.csv
+  - --log
+  - research-execution/RELATED_WORK_SEARCH_LOG.yaml
+  - --min-primary
+  - '30'
+  - --min-nearest
+  - '3'
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+checks:
+  artifact:
+  - 'All declared deliverables exist and validate: matrix, novelty boundary, nearest
+    work, search log.'
+  scientific:
+  - Every novelty sentence is a positive comparison and search saturation is documented.
+  independence:
+  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions
+    and declare prior roles/conflicts.
+  adversarial:
+  - Exact prior work and convenient-baseline selection are actively attacked.
+  reproducibility:
+  - A clean reviewer can repeat the commands from hashes and manifests.

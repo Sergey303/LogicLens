@@ -1,0 +1,6 @@
+EpistemicCompilerLab/research-execution/feasibility/RESOURCE_ENVELOPE.yaml
+EpistemicCompilerLab/research-execution/feasibility/ANNOTATION_STAFFING_PLAN.md
+EpistemicCompilerLab/research-execution/feasibility/COMPUTE_BUDGET.md
+EpistemicCompilerLab/research-execution/feasibility/CONTINGENCY_TREE.md
+EpistemicCompilerLab/research-execution/context-packets/WP-007
+EpistemicCompilerLab/research-execution/handoffs/WP-007.json

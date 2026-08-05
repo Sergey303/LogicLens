@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "GATE-001",
+  "hash_algorithm": "sha256",
+  "files": [
+    {
+      "path": "EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml",
+      "sha256": "0ce4406a94530a43a23bd62e2500e704d3ec0778cc34108f43920087128d556e"
+    },
+    {
+      "path": "EpistemicCompilerLab/research-execution/schemas/work-package.schema.json",
+      "sha256": "a68ef6c36da28a374927ca465461ae372afe535eb2ca1c6f7458e366c3733160"
+    },
+    {
+      "path": "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json",
+      "sha256": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee"
+    },
+    {
+      "path": "EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json",
+      "sha256": "4f3943cd5aea669a49650d75c82314830aed7c870bf59ce34cd262d4ef17209c"
+    },
+    {
+      "path": "EpistemicCompilerLab/research-execution/CRITICAL_PATH.md",
+      "sha256": "f551b3f854a9e3d06ec63be2b2e9f1481a0d50333b9b10ad5bea07f21f79ae54"
+    },
+    {
+      "path": "EpistemicCompilerLab/research-execution/ENG-153_INDEPENDENT_REVIEW_ROUND2_2026-08-06.md",
+      "sha256": "4358d003f7f2480374bf72c3b59eaeae9873e30542385d5fae7a7ed6d364196b"
+    }
+  ]
+}

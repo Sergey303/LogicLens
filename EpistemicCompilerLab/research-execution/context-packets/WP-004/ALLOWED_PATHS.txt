@@ -1,0 +1,7 @@
+EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml
+EpistemicCompilerLab/research-execution/MODE_CONTRACTS
+EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md
+EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml
+EpistemicCompilerLab/research-execution/ESTIMANDS.yaml
+EpistemicCompilerLab/research-execution/context-packets/WP-004
+EpistemicCompilerLab/research-execution/handoffs/WP-004.json

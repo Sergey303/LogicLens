@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-007",
+  "schema_path": "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json",
+  "schema_sha256": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee",
+  "required_status": "ready_for_review",
+  "handoff_path": "EpistemicCompilerLab/research-execution/handoffs/WP-007.json"
+}

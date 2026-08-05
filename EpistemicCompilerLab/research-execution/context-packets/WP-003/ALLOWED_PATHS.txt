@@ -1,0 +1,6 @@
+EpistemicCompilerLab/research-execution/RELATED_WORK_MATRIX.csv
+EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY.md
+EpistemicCompilerLab/research-execution/NEAREST_PRIOR_WORK.md
+EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG.yaml
+EpistemicCompilerLab/research-execution/context-packets/WP-003
+EpistemicCompilerLab/research-execution/handoffs/WP-003.json

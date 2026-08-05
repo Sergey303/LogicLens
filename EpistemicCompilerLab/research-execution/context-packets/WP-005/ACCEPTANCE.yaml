@@ -1,0 +1,38 @@
+schema_version: 1.0.0
+work_package_id: WP-005
+linear_issue: ENG-157
+acceptance_gate: GATE-001
+command_contracts:
+- name: context_packet_preflight
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py
+  - --package
+  - WP-005
+  stage: pre_start
+  must_exit_zero_when: packet and input manifests are intact
+- name: package_acceptance_1
+  working_directory: EpistemicCompilerLab
+  argv:
+  - python
+  - research-execution/scripts/validate_oracle_boundary.py
+  - --boundary
+  - research-execution/oracle/INDEPENDENCE_BOUNDARY.md
+  - --mutations
+  - research-execution/oracle/MUTATION_MATRIX.yaml
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+checks:
+  artifact:
+  - 'All declared deliverables exist and validate: semantic spec, independence boundary,
+    mutation matrix, dependency plan.'
+  scientific:
+  - Oracle B is implementable without A imports/calls/generated expected frames.
+  independence:
+  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions
+    and declare prior roles/conflicts.
+  adversarial:
+  - Circular gold, production dependency and missed mutation fail closed.
+  reproducibility:
+  - A clean reviewer can repeat the commands from hashes and manifests.

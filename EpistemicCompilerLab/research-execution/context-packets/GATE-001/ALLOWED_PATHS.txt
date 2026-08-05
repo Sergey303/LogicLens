@@ -1,0 +1,5 @@
+EpistemicCompilerLab/research-execution/gates
+EpistemicCompilerLab/research-execution/handoffs
+Non-sealed Linear W0 records.
+EpistemicCompilerLab/research-execution/context-packets/GATE-001
+EpistemicCompilerLab/research-execution/handoffs/GATE-001.json

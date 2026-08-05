@@ -1,0 +1,6 @@
+EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.yaml
+EpistemicCompilerLab/research-execution/ABSTRACT_CONTRACT.md
+EpistemicCompilerLab/research-execution/PROHIBITED_CLAIMS.md
+EpistemicCompilerLab/research-execution/schemas/claim-evidence-row.schema.json
+EpistemicCompilerLab/research-execution/context-packets/WP-002
+EpistemicCompilerLab/research-execution/handoffs/WP-002.json

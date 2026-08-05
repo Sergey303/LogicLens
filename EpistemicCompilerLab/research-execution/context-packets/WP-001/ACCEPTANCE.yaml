@@ -1,0 +1,36 @@
+schema_version: 1.0.0
+work_package_id: WP-001
+linear_issue: ENG-153
+acceptance_gate: GATE-001
+command_contracts:
+- name: context_packet_preflight
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py
+  - --package
+  - WP-001
+  stage: pre_start
+  must_exit_zero_when: packet and input manifests are intact
+- name: package_acceptance_1
+  working_directory: EpistemicCompilerLab
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py
+  - --as-of
+  - '2026-08-05'
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+checks:
+  artifact:
+  - 'All declared deliverables exist and validate: seven ENG-153 files.'
+  scientific:
+  - Graph is acyclic, complete, preserves the claim, reaches WP-406 and WP-504.
+  independence:
+  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions
+    and declare prior roles/conflicts.
+  adversarial:
+  - Validator detects dependency/role/deliverable/doc drift, missing splits, unsafe
+    W3 and missing submission/W5.
+  reproducibility:
+  - A clean reviewer can repeat the commands from hashes and manifests.

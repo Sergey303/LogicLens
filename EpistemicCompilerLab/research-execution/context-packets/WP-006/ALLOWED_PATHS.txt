@@ -1,0 +1,8 @@
+EpistemicCompilerLab/research-execution/statistics/POWER_SIMULATION_PLAN.md
+EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml
+EpistemicCompilerLab/research-execution/statistics/FAILURE_AND_EXCLUSION_RULES.md
+EpistemicCompilerLab/research-execution/statistics/power_simulation.py
+EpistemicCompilerLab/research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml
+EpistemicCompilerLab/research-execution/statistics/table-shells
+EpistemicCompilerLab/research-execution/context-packets/WP-006
+EpistemicCompilerLab/research-execution/handoffs/WP-006.json

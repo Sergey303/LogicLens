@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "GATE-001",
+  "schema_path": "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json",
+  "schema_sha256": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee",
+  "required_status": "decision_recorded",
+  "handoff_path": "EpistemicCompilerLab/research-execution/handoffs/GATE-001.json"
+}

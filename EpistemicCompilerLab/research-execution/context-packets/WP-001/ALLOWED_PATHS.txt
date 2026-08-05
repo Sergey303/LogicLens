@@ -1,0 +1,5 @@
+EpistemicCompilerLab/research-execution
+EpistemicCompilerLab/scientific-roadmap/
+Non-sealed Linear issue metadata.
+EpistemicCompilerLab/research-execution/context-packets/WP-001
+EpistemicCompilerLab/research-execution/handoffs/WP-001.json
