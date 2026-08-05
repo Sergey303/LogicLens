@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/capsule-query-dsl-c-result-v0.schema.json",
+  "title": "LogicLens DSL-C observation query result v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "dslLevel",
+    "queryHash",
+    "package",
+    "query",
+    "observation",
+    "normalized",
+    "status",
+    "action",
+    "reason",
+    "comparison",
+    "provenance",
+    "dependencyGroups",
+    "warnings",
+    "runtime"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "dslLevel": {"const": "DSL-C"},
+    "queryHash": {"$ref": "#/$defs/hash"},
+    "package": {"$ref": "#/$defs/package"},
+    "query": {"type": "object"},
+    "observation": {"$ref": "#/$defs/observation"},
+    "normalized": {"$ref": "#/$defs/normalized"},
+    "status": {
+      "enum": ["observed", "supported", "refuted", "unknown"]
+    },
+    "action": {
+      "enum": [
+        "report_observation",
+        "answer_with_measurement_scope",
+        "explain_threshold_miss",
+        "abstain_on_numeric_decision"
+      ]
+    },
+    "reason": {"type": "string", "minLength": 1, "maxLength": 256},
+    "comparison": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/comparisonResult"}
+      ]
+    },
+    "provenance": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "dependencyGroups": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 256}
+    },
+    "runtime": {"$ref": "#/$defs/runtime"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "subject", "window"],
+      "properties": {
+        "metric": {"$ref": "#/$defs/id"},
+        "subject": {"$ref": "#/$defs/id"},
+        "window": {"$ref": "#/$defs/id"}
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["kind", "unit"],
+      "properties": {
+        "kind": {"enum": ["point", "bounded", "normal"]},
+        "unit": {"type": "string"},
+        "value": {"type": "number"},
+        "lower": {"type": "number"},
+        "upper": {"type": "number"},
+        "lowerInclusive": {"type": "boolean"},
+        "upperInclusive": {"type": "boolean"},
+        "mean": {"type": "number"},
+        "standardDeviation": {"type": "number"}
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationId",
+        "target",
+        "model",
+        "dependencyGroup",
+        "generalisability",
+        "scope"
+      ],
+      "properties": {
+        "observationId": {"$ref": "#/$defs/id"},
+        "target": {"$ref": "#/$defs/target"},
+        "model": {"$ref": "#/$defs/model"},
+        "dependencyGroup": {"$ref": "#/$defs/id"},
+        "generalisability": {
+          "enum": ["universal", "context-dependent", "local"]
+        },
+        "scope": {"type": "object"}
+      }
+    },
+    "normalized": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "dimension", "baseUnit"],
+      "properties": {
+        "kind": {"enum": ["point", "bounded", "normal"]},
+        "dimension": {"enum": ["duration", "ratio", "count"]},
+        "baseUnit": {"enum": ["second", "fraction", "count"]},
+        "value": {"$ref": "#/$defs/decimal"},
+        "lower": {"$ref": "#/$defs/decimal"},
+        "upper": {"$ref": "#/$defs/decimal"},
+        "lowerInclusive": {"type": "boolean"},
+        "upperInclusive": {"type": "boolean"},
+        "mean": {"$ref": "#/$defs/decimal"},
+        "standardDeviation": {"$ref": "#/$defs/decimal"}
+      }
+    },
+    "comparisonResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator",
+        "dimension",
+        "baseUnit",
+        "status",
+        "normalizedThreshold"
+      ],
+      "properties": {
+        "operator": {"enum": ["lt", "lte", "gt", "gte", "between"]},
+        "dimension": {"enum": ["duration", "ratio", "count"]},
+        "baseUnit": {"enum": ["second", "fraction", "count"]},
+        "status": {"enum": ["supported", "refuted", "unknown"]},
+        "normalizedThreshold": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {"$ref": "#/$defs/decimal"},
+            "lower": {"$ref": "#/$defs/decimal"},
+            "upper": {"$ref": "#/$defs/decimal"},
+            "lowerInclusive": {"type": "boolean"},
+            "upperInclusive": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "sourceId", "fragment", "title", "locator"],
+      "properties": {
+        "reference": {"type": "string"},
+        "sourceId": {"$ref": "#/$defs/id"},
+        "fragment": {"type": "string"},
+        "title": {"type": "string"},
+        "locator": {"type": "string"}
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["worldId", "capsuleId", "capsuleVersion", "packageHash"],
+      "properties": {
+        "worldId": {"$ref": "#/$defs/id"},
+        "capsuleId": {"$ref": "#/$defs/id"},
+        "capsuleVersion": {"type": "string"},
+        "packageHash": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine",
+        "semantics",
+        "verifiedAgainstPackagedObservations",
+        "verifiedAgainstPrologKernel"
+      ],
+      "properties": {
+        "engine": {"const": "python+swi-prolog"},
+        "semantics": {"const": "typed-interval-comparison-v0"},
+        "verifiedAgainstPackagedObservations": {"const": true},
+        "verifiedAgainstPrologKernel": {"const": true}
+      }
+    }
+  }
+}
