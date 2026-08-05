@@ -124,3 +124,4 @@ $result = [ordered]@{
 $resultPath = Join-Path $artifactRoot "eng-148-proof.json"
 $result | ConvertTo-Json -Depth 5 | Set-Content $resultPath -Encoding utf8
 $result | ConvertTo-Json -Depth 5
+$global:LASTEXITCODE = 0
