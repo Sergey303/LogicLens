@@ -7,6 +7,10 @@ Set-Location $repo
 $acceptedBase = "c9d8a3e0329cac4244bc1383bdfa200038096450"
 $project = "services/document-evidence/tests/DocumentEvidence.EndToEndDemo/DocumentEvidence.EndToEndDemo.csproj"
 $artifactRoot = Join-Path $repo ".artifacts/document-evidence/eng-148"
+$pythonFiles = @(
+    "tests/document_evidence_e2e_gate.py",
+    "tests/document_evidence_e2e_gate_runtime.py"
+)
 
 foreach ($command in @("python", "dotnet", "pdfinfo", "pdftotext", "swipl")) {
     if (-not (Get-Command $command -ErrorAction SilentlyContinue)) {
@@ -16,9 +20,9 @@ foreach ($command in @("python", "dotnet", "pdfinfo", "pdftotext", "swipl")) {
 
 python tools/quality/repository_guard.py --base $acceptedBase
 if ($LASTEXITCODE -ne 0) { throw "Repository guard failed." }
-ruff check tests/document_evidence_e2e_gate.py
+python -m ruff check @pythonFiles
 if ($LASTEXITCODE -ne 0) { throw "ENG-148 Python lint failed." }
-ruff format --diff --check tests/document_evidence_e2e_gate.py
+python -m ruff format --diff --check @pythonFiles
 if ($LASTEXITCODE -ne 0) { throw "ENG-148 Python format check failed." }
 
 dotnet build $project --nologo --warnaserror
