@@ -13,19 +13,36 @@ command_contracts:
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
 - name: package_acceptance_1
-  working_directory: EpistemicCompilerLab
+  working_directory: .
   argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_analysis_registry.py
+  - --preflight
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+  source_working_directory: EpistemicCompilerLab
+  source_argv:
   - python
   - research-execution/statistics/power_simulation.py
   - --assumptions
   - research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml
   - --output
   - research-execution/statistics/POWER_RESULTS.json
+  source_command: python research-execution/statistics/power_simulation.py --assumptions
+    research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml --output research-execution/statistics/POWER_RESULTS.json
+  availability_contract: The versioned wrapper is available before task start. The
+    exact source command is retained and becomes mandatory after its declared deliverables
+    exist.
+- name: package_acceptance_2
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_analysis_registry.py
+  - --preflight
   stage: post_completion
   must_exit_zero_when: all declared deliverables for this package exist
-- name: package_acceptance_2
-  working_directory: EpistemicCompilerLab
-  argv:
+  source_working_directory: EpistemicCompilerLab
+  source_argv:
   - python
   - research-execution/scripts/validate_analysis_registry.py
   - --registry
@@ -34,8 +51,12 @@ command_contracts:
   - '0.90'
   - --alpha
   - '0.05'
-  stage: post_completion
-  must_exit_zero_when: all declared deliverables for this package exist
+  source_command: python research-execution/scripts/validate_analysis_registry.py
+    --registry research-execution/statistics/ANALYSIS_REGISTRY.yaml --min-power 0.90
+    --alpha 0.05
+  availability_contract: The versioned wrapper is available before task start. The
+    exact source command is retained and becomes mandatory after its declared deliverables
+    exist.
 checks:
   artifact:
   - 'All declared deliverables exist and validate: plan, registry, failure rules,

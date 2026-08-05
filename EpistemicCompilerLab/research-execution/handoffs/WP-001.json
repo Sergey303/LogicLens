@@ -83,6 +83,8 @@
     "EpistemicCompilerLab/research-execution/context-packets/WP-007/INPUT_MANIFEST.json",
     "EpistemicCompilerLab/research-execution/context-packets/WP-007/REQUIRED_READING.md",
     "EpistemicCompilerLab/research-execution/context-packets/WP-007/TASK.md",
+    "EpistemicCompilerLab/research-execution/handoffs/WP-001.json",
+    "EpistemicCompilerLab/research-execution/scripts/normalize_context_command_contracts.py",
     "EpistemicCompilerLab/research-execution/scripts/validate_analysis_registry.py",
     "EpistemicCompilerLab/research-execution/scripts/validate_causal_design.py",
     "EpistemicCompilerLab/research-execution/scripts/validate_claim_evidence.py",
@@ -91,8 +93,7 @@
     "EpistemicCompilerLab/research-execution/scripts/validate_gate.py",
     "EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py",
     "EpistemicCompilerLab/research-execution/scripts/validate_related_work.py",
-    "EpistemicCompilerLab/research-execution/scripts/w0_acceptance_common.py",
-    "EpistemicCompilerLab/research-execution/handoffs/WP-001.json"
+    "EpistemicCompilerLab/research-execution/scripts/w0_acceptance_common.py"
   ],
   "files_modified": [
     "EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py",
@@ -100,6 +101,7 @@
   ],
   "commands_run": [
     "python EpistemicCompilerLab/research-execution/scripts/generate_context_packets.py --check",
+    "python EpistemicCompilerLab/research-execution/scripts/normalize_context_command_contracts.py --check",
     "python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py --as-of 2026-08-06 --attest-commit <candidate-commit> --require-clean --report /tmp/validation-report.json",
     "python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py --verify-committed-report EpistemicCompilerLab/research-execution/validation/validation-report.json --require-clean"
   ],
@@ -118,6 +120,11 @@
       "name": "report parent-commit attestation",
       "status": "PASS",
       "evidence": "report-only child commit verified by CI"
+    },
+    {
+      "name": "W0 command working-directory and entrypoint availability",
+      "status": "PASS",
+      "evidence": "normalized ACCEPTANCE.yaml contracts retain source commands and use versioned pre-start wrappers"
     }
   ],
   "acceptance_checks": [

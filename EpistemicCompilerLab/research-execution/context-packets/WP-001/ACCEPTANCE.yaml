@@ -13,14 +13,24 @@ command_contracts:
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
 - name: package_acceptance_1
-  working_directory: EpistemicCompilerLab
+  working_directory: .
   argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py
+  - --preflight
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+  source_working_directory: EpistemicCompilerLab
+  source_argv:
   - python
   - EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py
   - --as-of
   - '2026-08-05'
-  stage: post_completion
-  must_exit_zero_when: all declared deliverables for this package exist
+  source_command: python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py
+    --as-of 2026-08-05
+  availability_contract: The versioned wrapper is available before task start. The
+    exact source command is retained and becomes mandatory after its declared deliverables
+    exist.
 checks:
   artifact:
   - 'All declared deliverables exist and validate: seven ENG-153 files.'

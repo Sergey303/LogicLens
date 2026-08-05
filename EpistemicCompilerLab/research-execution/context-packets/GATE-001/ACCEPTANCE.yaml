@@ -13,8 +13,15 @@ command_contracts:
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
 - name: package_acceptance_1
-  working_directory: EpistemicCompilerLab
+  working_directory: .
   argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_gate.py
+  - --preflight
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+  source_working_directory: EpistemicCompilerLab
+  source_argv:
   - python
   - research-execution/scripts/validate_gate.py
   - --gate
@@ -27,8 +34,11 @@ command_contracts:
   - WP-005
   - WP-006
   - WP-007
-  stage: post_completion
-  must_exit_zero_when: all declared deliverables for this package exist
+  source_command: python research-execution/scripts/validate_gate.py --gate research-execution/gates/GATE-001.json
+    --required WP-001 WP-002 WP-003 WP-004 WP-005 WP-006 WP-007
+  availability_contract: The versioned wrapper is available before task start. The
+    exact source command is retained and becomes mandatory after its declared deliverables
+    exist.
 checks:
   artifact:
   - GATE-001 decision artifact validates and every input hash/review resolves.

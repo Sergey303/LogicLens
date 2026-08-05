@@ -13,8 +13,15 @@ command_contracts:
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
 - name: package_acceptance_1
-  working_directory: EpistemicCompilerLab
+  working_directory: .
   argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_feasibility.py
+  - --preflight
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+  source_working_directory: EpistemicCompilerLab
+  source_argv:
   - python
   - research-execution/scripts/validate_feasibility.py
   - --resource
@@ -23,8 +30,12 @@ command_contracts:
   - research-execution/statistics/POWER_RESULTS.json
   - --min-power
   - '0.90'
-  stage: post_completion
-  must_exit_zero_when: all declared deliverables for this package exist
+  source_command: python research-execution/scripts/validate_feasibility.py --resource
+    research-execution/feasibility/RESOURCE_ENVELOPE.yaml --power research-execution/statistics/POWER_RESULTS.json
+    --min-power 0.90
+  availability_contract: The versioned wrapper is available before task start. The
+    exact source command is retained and becomes mandatory after its declared deliverables
+    exist.
 checks:
   artifact:
   - 'All declared deliverables exist and validate: resource envelope, staffing plan,

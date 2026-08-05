@@ -13,8 +13,15 @@ command_contracts:
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
 - name: package_acceptance_1
-  working_directory: EpistemicCompilerLab
+  working_directory: .
   argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_related_work.py
+  - --preflight
+  stage: post_completion
+  must_exit_zero_when: all declared deliverables for this package exist
+  source_working_directory: EpistemicCompilerLab
+  source_argv:
   - python
   - research-execution/scripts/validate_related_work.py
   - --matrix
@@ -25,8 +32,12 @@ command_contracts:
   - '30'
   - --min-nearest
   - '3'
-  stage: post_completion
-  must_exit_zero_when: all declared deliverables for this package exist
+  source_command: python research-execution/scripts/validate_related_work.py --matrix
+    research-execution/RELATED_WORK_MATRIX.csv --log research-execution/RELATED_WORK_SEARCH_LOG.yaml
+    --min-primary 30 --min-nearest 3
+  availability_contract: The versioned wrapper is available before task start. The
+    exact source command is retained and becomes mandatory after its declared deliverables
+    exist.
 checks:
   artifact:
   - 'All declared deliverables exist and validate: matrix, novelty boundary, nearest
