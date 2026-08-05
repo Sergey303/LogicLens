@@ -1,12 +1,15 @@
+# Copyright (c) 2026 Sergey Leshtaev
 """Workspace alignment helpers for the ENG-148 service fragment."""
 
 from __future__ import annotations
 
 import importlib
 import json
-from collections.abc import Callable
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+    from pathlib import Path
 
 
 def align_snapshot(
