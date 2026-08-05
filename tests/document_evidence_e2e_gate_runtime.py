@@ -1,3 +1,4 @@
+# Copyright (c) 2026 Sergey Leshtaev
 """Runtime for the ENG-148 client-selected PDF evidence gate."""
 
 from __future__ import annotations
@@ -7,51 +8,54 @@ import importlib
 import json
 import shutil
 import sys
-from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from document_evidence_e2e_workspace import align_snapshot
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def digest(content: bytes) -> str:
-    """Return a domain-prefixed SHA-256 digest."""
+@dataclass(frozen=True)
+class _ReceiptInputs:
+    service_receipt: bytes
+    fragment_bytes: bytes
+    fragment: dict[str, Any]
+    package: dict[str, Any]
+    canonical_json: Callable[[dict[str, Any]], bytes]
+
+
+def _digest(content: bytes) -> str:
     return "sha256:" + hashlib.sha256(content).hexdigest()
 
 
-def write_receipt(
-    output: Path,
-    service_receipt: bytes,
-    fragment_bytes: bytes,
-    fragment: dict[str, Any],
-    package: dict[str, Any],
-    canonical_json: Callable[[dict[str, Any]], bytes],
-) -> bytes:
-    """Write the stable verified-decision receipt."""
+def _write_receipt(output: Path, inputs: _ReceiptInputs) -> bytes:
     receipt = {
         "schemaVersion": "0.1",
         "scenario": "eng-148-pdf-fragment-proposal-swi",
-        "serviceReceiptSha256": digest(service_receipt),
-        "selectedFragmentSha256": digest(fragment_bytes),
-        "selectedFragmentId": fragment["fragmentId"],
-        "packageSha256": digest(canonical_json(package)),
-        "gateStatus": package["gate"]["status"],
-        "reviewClass": package["reviewClass"],
-        "activation": package["activation"],
+        "serviceReceiptSha256": _digest(inputs.service_receipt),
+        "selectedFragmentSha256": _digest(inputs.fragment_bytes),
+        "selectedFragmentId": inputs.fragment["fragmentId"],
+        "packageSha256": _digest(inputs.canonical_json(inputs.package)),
+        "gateStatus": inputs.package["gate"]["status"],
+        "reviewClass": inputs.package["reviewClass"],
+        "activation": inputs.package["activation"],
         "decisionFrame": {
             "status": "verified",
             "predicate": "owns_outcome",
             "arguments": ["role.product_owner", "outcome.product_value"],
             "stance": "support",
-            "sourceFragmentId": fragment["fragmentId"],
+            "sourceFragmentId": inputs.fragment["fragmentId"],
         },
         "modelOutputAcceptedAutomatically": False,
         "consumerReadsDatabase": False,
         "consumerReadsBlobPath": False,
     }
-    content = canonical_json(receipt)
+    content = inputs.canonical_json(receipt)
     (output / "decision-receipt.json").write_bytes(content)
     return content
 
@@ -85,7 +89,8 @@ def run(fragment_path: Path, service_receipt_path: Path, output: Path) -> None:
     finally:
         fixture.load_fragment = original_loader
     if expected != fragment:
-        raise AssertionError("The proposal workspace did not retain the selected fragment.")
+        message = "The proposal workspace did not retain the selected fragment."
+        raise AssertionError(message)
     align_snapshot(proposal, fragment, schemas, capsule.canonical_json)
 
     resolved = workspace_root / "resolved"
@@ -131,13 +136,10 @@ def run(fragment_path: Path, service_receipt_path: Path, output: Path) -> None:
     )
     selected = (package_root / "files/evidence/selected-fragments.jsonl").read_bytes()
     if selected != fragment_bytes or package["gate"]["status"] != "passed":
-        raise AssertionError("ENG-148 provenance changed before the SWI-Prolog gate.")
-    receipt = write_receipt(
-        output,
-        service_receipt,
-        fragment_bytes,
-        fragment,
-        package,
-        capsule.canonical_json,
+        message = "ENG-148 provenance changed before the SWI-Prolog gate."
+        raise AssertionError(message)
+    inputs = _ReceiptInputs(
+        service_receipt, fragment_bytes, fragment, package, capsule.canonical_json
     )
+    receipt = _write_receipt(output, inputs)
     sys.stdout.write(receipt.decode("utf-8") + "\n")
