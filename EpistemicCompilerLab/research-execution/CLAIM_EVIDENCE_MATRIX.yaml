@@ -99,7 +99,7 @@ rows:
   status: preregistered
   abstract_inclusion: true
   claim_text: M6 improves scenario-level exact epistemic contract accuracy over the strongest matched non-compiled baseline.
-  allowed_wording: On the preregistered endpoint, M6 [PRIMARY_RESULT] versus the strongest matched baseline, with [REPLICATION_RESULT].
+  allowed_wording: On the preregistered endpoint, M6 [PRIMARY_RESULT_CLAUSE] versus the strongest matched baseline, with [REPLICATION_CLAUSE].
   prohibited_expansions:
   - always superior
   - perfect
@@ -207,7 +207,7 @@ rows:
   status: conditional
   abstract_inclusion: true
   claim_text: Under frozen visibility and budgets, teacher editing need not improve a fixed-weight student and may regress.
-  allowed_wording: Under preregistered budgets, teacher editing [TEACHER_RESULT]; this does not claim teaching never works.
+  allowed_wording: Under preregistered budgets, teacher editing [TEACHER_RESULT_CLAUSE]; this does not claim teaching never works.
   prohibited_expansions:
   - teacher editing never works
   - Codex cannot improve Qwen
@@ -242,7 +242,7 @@ rows:
   status: conditional
   abstract_inclusion: true
   claim_text: Within scope, compilation may relocate formal execution into an auditable runtime while the model interprets and renders.
-  allowed_wording: Within the evaluated scope, verified compilation [INTERPRETATION] while the fixed-weight model interpreted and rendered.
+  allowed_wording: Within the evaluated scope, verified compilation [INTERPRETATION_CLAUSE] while the fixed-weight model interpreted and rendered.
   prohibited_expansions:
   - guarantees correctness
   - eliminates hallucination
