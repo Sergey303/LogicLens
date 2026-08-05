@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DSL-D1 boundary case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "opinionId",
+    "contrastGroup",
+    "question",
+    "precision",
+    "privateExactOpinionAvailableToScalar",
+    "expected",
+    "requiredSemantics",
+    "sourceHashes"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "caseId": {"type": "string"},
+    "opinionId": {"type": "string"},
+    "contrastGroup": {
+      "enum": [
+        "p-boundary",
+        "uncertainty-boundary",
+        "conflict-boundary",
+        "belief-boundary",
+        "repeating-rational",
+        "lexical-equivalence",
+        "missing-exactness"
+      ]
+    },
+    "question": {"type": "string"},
+    "precision": {"type": "integer", "minimum": 0, "maximum": 12},
+    "privateExactOpinionAvailableToScalar": {"const": false},
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exactConclusion",
+        "exactAction",
+        "exactWithholdsAssertiveDecision",
+        "roundedConclusion",
+        "roundedAction",
+        "roundedWithholdsAssertiveDecision",
+        "exactProjectedProbability",
+        "roundedProjectedProbability",
+        "roundingChangesConclusion"
+      ],
+      "properties": {
+        "exactConclusion": {"type": "string"},
+        "exactAction": {"type": "string"},
+        "exactWithholdsAssertiveDecision": {"type": "boolean"},
+        "roundedConclusion": {"type": "string"},
+        "roundedAction": {"type": "string"},
+        "roundedWithholdsAssertiveDecision": {"type": "boolean"},
+        "exactProjectedProbability": {"type": "string"},
+        "roundedProjectedProbability": {"type": "string"},
+        "roundingChangesConclusion": {"type": "boolean"}
+      }
+    },
+    "requiredSemantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseRateIsPrior",
+        "uncertaintyIsNotErrorProbability",
+        "conflictSeparateFromUncertainty",
+        "noImplicitFusion",
+        "answerLevelProfile"
+      ],
+      "properties": {
+        "baseRateIsPrior": {"type": "boolean"},
+        "uncertaintyIsNotErrorProbability": {"type": "boolean"},
+        "conflictSeparateFromUncertainty": {"type": "boolean"},
+        "noImplicitFusion": {"type": "boolean"},
+        "answerLevelProfile": {"type": "boolean"}
+      }
+    },
+    "sourceHashes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    }
+  }
+}
