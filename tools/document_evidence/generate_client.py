@@ -106,7 +106,11 @@ def receipt(spec_content: bytes, rendered: dict[Path, bytes]) -> dict[str, objec
 
 def apply(rendered: dict[Path, bytes], *, check: bool) -> None:
     """Write outputs or verify that committed bytes already match."""
-    mismatches = [path for path, content in rendered.items() if not path.is_file() or path.read_bytes() != content]
+    mismatches = [
+        path
+        for path, content in rendered.items()
+        if not path.is_file() or path.read_bytes() != content
+    ]
     if check and mismatches:
         names = ", ".join(path.relative_to(ROOT).as_posix() for path in mismatches)
         message = f"Generated Document Evidence client is stale: {names}"
