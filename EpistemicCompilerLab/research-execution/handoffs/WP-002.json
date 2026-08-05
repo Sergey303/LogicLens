@@ -1,0 +1,128 @@
+{
+  "work_package_id": "WP-002",
+  "linear_issue": "ENG-154",
+  "status": "ready_for_review",
+  "identity_and_session": {
+    "producer_identity": "OpenAI GPT-5.6 Thinking — Claim–Evidence Architect",
+    "producer_session": "ChatGPT Science project / WP-002 producer session / 2026-08-06",
+    "reviewer_identity": "UNASSIGNED independent Manuscript Evidence Reviewer",
+    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
+    "gatekeeper_identity": "UNASSIGNED Senior Adversarial Methodology Reviewer",
+    "gatekeeper_session": "MUST DIFFER FROM PRODUCER AND REVIEWER SESSIONS",
+    "prior_roles": [
+      "Contributor to historical LogicLens strict-epistemic pilots",
+      "Producer-side analysis of DSL-B/C/D pilot results",
+      "Participant in publication critical-path planning"
+    ],
+    "conflict_declaration": "The producer authored this claim contract and is conflicted from independent manuscript-evidence acceptance and GATE-001 decisions.",
+    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was accessed. Pilot 18/18, 24/24, B0/B1/C0/D0/D1/D2 results were used only as planning evidence and were excluded from confirmatory evidence fields."
+  },
+  "input_hashes_verified": true,
+  "input_hashes": {
+    "EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml": "0ce4406a94530a43a23bd62e2500e704d3ec0778cc34108f43920087128d556e",
+    "EpistemicCompilerLab/research-execution/schemas/work-package.schema.json": "a68ef6c36da28a374927ca465461ae372afe535eb2ca1c6f7458e366c3733160",
+    "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee",
+    "EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json": "4f3943cd5aea669a49650d75c82314830aed7c870bf59ce34cd262d4ef17209c",
+    "EpistemicCompilerLab/research-execution/CRITICAL_PATH.md": "f551b3f854a9e3d06ec63be2b2e9f1481a0d50333b9b10ad5bea07f21f79ae54",
+    "EpistemicCompilerLab/research-execution/ENG-153_INDEPENDENT_REVIEW_ROUND2_2026-08-06.md": "4358d003f7f2480374bf72c3b59eaeae9873e30542385d5fae7a7ed6d364196b"
+  },
+  "files_created": [
+    "EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.yaml",
+    "EpistemicCompilerLab/research-execution/ABSTRACT_CONTRACT.md",
+    "EpistemicCompilerLab/research-execution/PROHIBITED_CLAIMS.md",
+    "EpistemicCompilerLab/research-execution/schemas/claim-evidence-row.schema.json",
+    "EpistemicCompilerLab/research-execution/handoffs/WP-002.json"
+  ],
+  "files_modified": [
+    "EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.yaml",
+    "EpistemicCompilerLab/research-execution/ABSTRACT_CONTRACT.md"
+  ],
+  "commands_run": [
+    "Python Draft 2020-12 validation of CLAIM_EVIDENCE_MATRIX.yaml against claim-evidence-row.schema.json",
+    "Python cross-file audit of claim IDs, abstract sentence IDs, placeholders, evidence sources, controls, tables, failure wording, privacy exclusion, and pilot-evidence separation",
+    "SHA-256 calculation over the four final deliverables",
+    "JSON Schema validation of handoffs/WP-002.json against work-package-handoff.schema.json"
+  ],
+  "tests": [
+    {
+      "name": "Claim matrix JSON Schema",
+      "status": "PASS",
+      "evidence": "10 rows, zero Draft 2020-12 errors; output SHA-256 753a764d4b564f298bcad6ba49c4bf60613ceb7698db3aeaeabcc4687a819290"
+    },
+    {
+      "name": "Single primary design",
+      "status": "PASS",
+      "evidence": "Exactly one primary row: CLM-003; treatment M6; strongest matched non-compiled DEV-selected comparator; endpoint scenario_level_exact_epistemic_contract_accuracy; unit base_scenario_id"
+    },
+    {
+      "name": "Abstract sentence linkage",
+      "status": "PASS",
+      "evidence": "ABS-01 through ABS-07 each resolve to exactly one matrix row; placeholder contracts are identical across matrix and abstract; ABSTRACT_CONTRACT.md SHA-256 ae69b21609335f9fd5ce99a35db18d806b5e3feeb9b146cda86c55b9bd7293fa"
+    },
+    {
+      "name": "Unsupported-claim boundary",
+      "status": "PASS",
+      "evidence": "Every abstract-included row has confirmatory sources, required controls, a target table, alternative explanation, failure wording, and retain/narrow/delete rules"
+    },
+    {
+      "name": "Pilot and privacy boundary",
+      "status": "PASS",
+      "evidence": "Pilot outcomes appear only as planning evidence; CLM-010 is future_work and excluded from the abstract; PROHIBITED_CLAIMS.md SHA-256 6692044adb9bd70f2fd66d7f25c39e67940fab6646a03a54ea01b0b10a94e4dd"
+    },
+    {
+      "name": "Claim-row schema integrity",
+      "status": "PASS",
+      "evidence": "Schema forces one primary claim, seven abstract mappings, primary evidence sources, and future-work privacy exclusion; SHA-256 ad5485514599b3e70946a9879e713d8b08e4912e30e9a04d720ee7bd5dee428e"
+    },
+    {
+      "name": "WP-002 handoff schema",
+      "status": "PASS",
+      "evidence": "Local Draft 2020-12 validation against the committed work-package handoff schema"
+    }
+  ],
+  "acceptance_checks": [
+    {
+      "class": "artifact",
+      "criterion": "Matrix, abstract contract, prohibited-claims contract, row schema, and immutable producer handoff exist and parse.",
+      "status": "PASS",
+      "evidence": "Five declared repository paths with recorded hashes for the four scientific deliverables"
+    },
+    {
+      "class": "scientific",
+      "criterion": "Exactly one primary contrast and endpoint; every abstract claim has a control, evidence source, table, alternative explanation, and failure wording.",
+      "status": "PASS",
+      "evidence": "CLM-003 is the only primary row; seven sentence rows passed cross-file audit"
+    },
+    {
+      "class": "independence",
+      "criterion": "Producer, independent reviewer, and gatekeeper remain distinct and the producer does not self-accept.",
+      "status": "PASS",
+      "evidence": "Reviewer and gatekeeper are unassigned, required to use different sessions, and ENG-154 is handed off to In Review rather than Done"
+    },
+    {
+      "class": "adversarial",
+      "criterion": "Universal superiority, solver/no-solver substitution, ready-answer copying, learning, privacy, novelty, and pilot-confirmatory overclaims are prohibited or fail retain rules.",
+      "status": "PASS",
+      "evidence": "PROHIBITED_CLAIMS.md plus matrix prohibited_expansions and delete rules"
+    },
+    {
+      "class": "reproducibility",
+      "criterion": "A clean reviewer can parse and schema-validate the deliverables and reproduce the declared semantic checks from the matrix and abstract contract.",
+      "status": "PASS",
+      "evidence": "Versioned schema, deterministic identifiers, table IDs, placeholders, and recorded SHA-256 values"
+    }
+  ],
+  "known_limitations": [
+    "The shared repository entrypoint validate_claim_evidence.py is currently a generic artifact-level wrapper, not a dedicated semantic cross-file validator. Producer-side semantic checks were executed with the committed JSON Schema and a local deterministic cross-file audit. The independent reviewer should decide whether a separately authorized versioned validator is required before acceptance.",
+    "WP-003 has not yet established the novelty boundary, so no first/novel claim is authorized.",
+    "Effect-size thresholds, powered sample size, final mode registry, and target table schemas remain outputs of later W0/W1 packages; the matrix binds identifiers and decision rules without inventing their future values.",
+    "All empirical result clauses remain placeholders. No pilot value is a confirmatory result."
+  ],
+  "protocol_deviations": [],
+  "unexpected_findings": [
+    "A useful abstract contract requires separating technical scope/design sentences from the single primary empirical result; treating H1–H6 as co-primary abstract claims would create multiplicity and post-hoc flexibility.",
+    "Privacy-bounded portability cannot be retained as an abstract claim under the current evidence plan and was frozen as future work.",
+    "Cross-file audit detected and corrected placeholder-name drift before handoff."
+  ],
+  "recommended_next_state": "review"
+}
