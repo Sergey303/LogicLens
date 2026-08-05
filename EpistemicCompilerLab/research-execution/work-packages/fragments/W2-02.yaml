@@ -1,0 +1,303 @@
+nodes:
+  WP-203:
+    linear_issue: ENG-168
+    phase: W2
+    kind: work_package
+    title: Source-bound independently annotated TRAIN/DEV corpus
+    mandatory: true
+    dependencies:
+    - GATE-101
+    roles:
+      producer: Benchmark Builder and Annotation Coordinator
+      independent_reviewer: Independent Annotation Reviewer
+      gatekeeper: Independent Freeze Readiness Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Construction, blind annotation and adjudication must be independently reviewable.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-203
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-203/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-203/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-203/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-203/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-203/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-203/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-203/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS GATE-101
+    - Frozen schemas/source registry/annotation protocol/coverage.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/data/train-dev
+    - EpistemicCompilerLab/research-execution/sources
+    - EpistemicCompilerLab/research-execution/annotation
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No future splits, model-informed gold, production-generated gold or unreviewed LLM annotation.
+    actions:
+    - Execute WP-203A source build, WP-203B blind A/B annotation and WP-203C adjudication.
+    - Preserve disagreements; validate source links, agreement, coverage and ambiguity.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/data/train-dev/candidate-corpus.jsonl
+    - EpistemicCompilerLab/research-execution/data/train-dev/SOURCE_LINK_AUDIT.json
+    - EpistemicCompilerLab/research-execution/data/train-dev/annotations-a.jsonl
+    - EpistemicCompilerLab/research-execution/data/train-dev/annotations-b.jsonl
+    - EpistemicCompilerLab/research-execution/data/train-dev/AGREEMENT_REPORT.json
+    - EpistemicCompilerLab/research-execution/data/train-dev/adjudicated.jsonl
+    - EpistemicCompilerLab/research-execution/data/train-dev/ADJUDICATION_LOG.json
+    - EpistemicCompilerLab/research-execution/data/train-dev/COVERAGE_REPORT.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_train_dev_corpus.py --corpus research-execution/data/train-dev/adjudicated.jsonl --coverage research-execution/data/train-dev/COVERAGE_REPORT.json --agreement research-execution/data/train-dev/AGREEMENT_REPORT.json
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: candidate, links, A/B, agreement, adjudicated, log, coverage.'
+        scientific:
+        - Gold precedes outputs; all assertions source-bound; coverage/agreement thresholds pass.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Future access, production gold or hidden disagreement fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Exclude unresolved ambiguity; future access/model-informed gold invalidates version.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-203.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - T_ORACLE
+    - T_LEAK
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-201
+    execution_units:
+    - id: WP-203A
+      title: Source-bound TRAIN/DEV corpus construction
+      producer: Source-Bound Corpus Builder
+      reviewer: Independent Annotation Reviewer
+      deliverables:
+      - EpistemicCompilerLab/research-execution/data/train-dev/candidate-corpus.jsonl
+      - EpistemicCompilerLab/research-execution/data/train-dev/SOURCE_LINK_AUDIT.json
+    - id: WP-203B
+      title: Blind independent A/B annotation
+      producer: Blind Annotator A
+      second_producer: Blind Annotator B
+      reviewer: Independent Annotation Reviewer
+      dependencies:
+      - WP-203A
+      deliverables:
+      - EpistemicCompilerLab/research-execution/data/train-dev/annotations-a.jsonl
+      - EpistemicCompilerLab/research-execution/data/train-dev/annotations-b.jsonl
+      - EpistemicCompilerLab/research-execution/data/train-dev/AGREEMENT_REPORT.json
+    - id: WP-203C
+      title: Independent adjudication and release
+      producer: Independent Adjudicator
+      reviewer: Independent Annotation Reviewer
+      dependencies:
+      - WP-203B
+      deliverables:
+      - EpistemicCompilerLab/research-execution/data/train-dev/adjudicated.jsonl
+      - EpistemicCompilerLab/research-execution/data/train-dev/ADJUDICATION_LOG.json
+      - EpistemicCompilerLab/research-execution/data/train-dev/COVERAGE_REPORT.json
+  WP-204:
+    linear_issue: ENG-169
+    phase: W2
+    kind: work_package
+    title: Leakage detection, canaries and freeze manifests
+    mandatory: true
+    dependencies:
+    - GATE-101
+    roles:
+      producer: Leakage Tooling Engineer
+      independent_reviewer: Independent Leakage Auditor
+      gatekeeper: Independent Freeze Readiness Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Leakage controls must be implemented/red-teamed before sealed construction.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-204
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-204/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-204/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-204/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-204/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-204/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-204/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-204/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS GATE-101
+    - Split/leakage design
+    - Freeze manifest schema.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/leakage/tools
+    - EpistemicCompilerLab/research-execution/leakage/drills
+    - EpistemicCompilerLab/research-execution/manifests
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No silent leak suppression or future sealed access.
+    actions:
+    - Implement grouping/duplicate detection, canaries, permissions, index exclusions and hash invalidation.
+    - Publish drill matrix/expected detections and run all drills.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/leakage/tools
+    - EpistemicCompilerLab/research-execution/leakage/RED_TEAM_DRILL_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/leakage/DRILL_RESULTS.json
+    - EpistemicCompilerLab/research-execution/leakage/ACCESS_TEST_REPORT.json
+    - EpistemicCompilerLab/research-execution/leakage/INDEX_EXCLUSION_REPORT.json
+    - EpistemicCompilerLab/research-execution/manifests/FREEZE_MANIFEST_TEMPLATE.json
+    acceptance:
+      commands:
+      - python research-execution/leakage/tools/run_all.py --drill-matrix research-execution/leakage/RED_TEAM_DRILL_MATRIX.yaml --expect-all-detected
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: tools, drill matrix/results, access, index, manifest.'
+        scientific:
+        - Manifest covers all frozen assets and changed hash invalidates batch.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Any undetected drill or sealed access fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Any undetected leak or sealed-path access blocks GATE-201.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-204.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H2
+    - H6
+    - T_LEAK
+    - T_FREEZE
+    acceptance_gate: GATE-201
+  WP-205:
+    linear_issue: ENG-170
+    phase: W2
+    kind: work_package
+    title: Model registry, run harness and no-artifact checks
+    mandatory: true
+    dependencies:
+    - GATE-101
+    roles:
+      producer: Experiment Systems Engineer
+      independent_reviewer: Reproducibility Engineer
+      gatekeeper: Independent Freeze Readiness Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Immutable profiles and raw-first execution are prerequisites for fair runs.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-205
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-205/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-205/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-205/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-205/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-205/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-205/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-205/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS GATE-101
+    - MODEL_AND_RUN_PROTOCOL.md
+    - Feasibility envelope.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/models
+    - EpistemicCompilerLab/research-execution/runner
+    - EpistemicCompilerLab/research-execution/experiments/raw
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No adapters/training/persistent conversation, hidden fields or semantic-error retries.
+    actions:
+    - Register >=4 profiles/2 public families with exact hashes/licenses/availability/hardware.
+    - Implement blocked randomization, raw-before-score, fixed retries/timeouts, before/after model hashes and unexpected-file scan.
+    - Define provider drift fallback and deterministic subset rerun.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/models/MODEL_REGISTRY.yaml
+    - EpistemicCompilerLab/research-execution/models/LICENSE_AND_AVAILABILITY.yaml
+    - EpistemicCompilerLab/research-execution/runner
+    - EpistemicCompilerLab/research-execution/runner/RETRY_POLICY.yaml
+    - EpistemicCompilerLab/research-execution/runner/HARDWARE_BUDGET.yaml
+    - EpistemicCompilerLab/research-execution/runner/PROVIDER_DRIFT_FALLBACK.md
+    - EpistemicCompilerLab/research-execution/runner/NO_ARTIFACT_AUDIT.json
+    - EpistemicCompilerLab/research-execution/runner/DETERMINISTIC_RERUN_REPORT.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_model_registry.py --registry research-execution/models/MODEL_REGISTRY.yaml --min-profiles 4 --min-families 2
+      - python research-execution/runner/run_deterministic_subset.py --verify-no-artifact
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: registry, licenses, runner, retry, hardware, fallback, audit, rerun.'
+        scientific:
+        - Blocked order/raw-first/fixed failures and immutable models are enforced.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Config drift, unexpected files, storage failure or unavailable models fail.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Hash/config/output failure or hidden access invalidates batch.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-205.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H4
+    - T_POWER
+    - T_FREEZE
+    - T_ARTIFACT
+    acceptance_gate: GATE-201
