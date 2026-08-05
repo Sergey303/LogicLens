@@ -1,0 +1,283 @@
+nodes:
+  WP-404:
+    linear_issue: ENG-182
+    phase: W4
+    kind: work_package
+    title: Independent clean-room reproduction
+    mandatory: true
+    dependencies:
+    - WP-403
+    roles:
+      producer: Clean-Room Reproduction Operator
+      independent_reviewer: Submission Gatekeeper
+      gatekeeper: Final Submission Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Artifact must reproduce without author repo or oral help.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-404
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-404/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-404/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-404/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-404/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-404/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-404/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-404/HANDOFF_SCHEMA.json
+    required_context:
+    - Final anonymous artifact
+    - Published instructions/lockfiles only.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/artifact/clean-room
+    - Isolated environment without author repository.
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No author repo, oral hints or hidden private resources.
+    actions:
+    - Record identity/environment/no-repo attestation; install artifact only.
+    - Run deterministic tests/mutations/public subset; regenerate tables/hashes; record all steps/deviations/failures.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/artifact/CLEAN_ROOM_REPORT.md
+    - EpistemicCompilerLab/research-execution/artifact/clean-room/COMMAND_LOG.txt
+    - EpistemicCompilerLab/research-execution/artifact/clean-room/ENVIRONMENT.json
+    - EpistemicCompilerLab/research-execution/artifact/clean-room/NO_AUTHOR_REPO_ATTESTATION.json
+    - EpistemicCompilerLab/research-execution/artifact/clean-room/HASH_METRIC_COMPARISON.json
+    - EpistemicCompilerLab/research-execution/artifact/clean-room/UNDOCUMENTED_STEPS.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_clean_room.py --report research-execution/artifact/CLEAN_ROOM_REPORT.md --undocumented research-execution/artifact/clean-room/UNDOCUMENTED_STEPS.json --require-zero-undocumented
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: report, commands, environment, attestation, comparison, undocumented.'
+        scientific:
+        - Tests/tables reproduce; no author/private resources; undocumented count zero.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Hidden dependency or oral-hint reliance fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Submission blocked until zero undocumented steps and discrepancies.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-404.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H5
+    - T_ARTIFACT
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-401
+  WP-405:
+    linear_issue: ENG-183
+    phase: W4
+    kind: work_package
+    title: Current TMLR rules and complete double-blind package
+    mandatory: true
+    dependencies:
+    - WP-402
+    - WP-403
+    - WP-404
+    roles:
+      producer: Submission Coordinator
+      independent_reviewer: Policy and Anonymity Reviewer
+      gatekeeper: Final Submission Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Venue rules are time-sensitive and must be reverified immediately before submission.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-405
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-405/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-405/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-405/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-405/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-405/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-405/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-405/HANDOFF_SCHEMA.json
+    required_context:
+    - Final manuscript/artifact/clean-room PASS
+    - Official TMLR/OpenReview sources.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/submission
+    - EpistemicCompilerLab/research-execution/manuscript
+    - EpistemicCompilerLab/research-execution/artifact/anonymous-snapshot
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No remembered rules, named repo links or submission before GATE-401.
+    actions:
+    - Capture official source snapshot/date/policy hashes and compliant short excerpts.
+    - Check scope, anonymity, supplement/artifact, LLM disclosure, profiles/conflicts, concurrent submission, formatting/licenses.
+    - Audit identity/session, evidence links and OpenReview metadata.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/submission/POLICY_VERIFICATION.md
+    - EpistemicCompilerLab/research-execution/submission/OFFICIAL_SOURCE_SNAPSHOT.json
+    - EpistemicCompilerLab/research-execution/submission/POLICY_HASHES.json
+    - EpistemicCompilerLab/research-execution/submission/ANONYMITY_AND_IDENTITY_AUDIT.json
+    - EpistemicCompilerLab/research-execution/submission/EVIDENCE_LINK_AUDIT.json
+    - EpistemicCompilerLab/research-execution/submission/OPENREVIEW_METADATA.private.json
+    - EpistemicCompilerLab/research-execution/submission/package
+    - EpistemicCompilerLab/research-execution/submission/REVIEW_RESPONSE_WORKFLOW.md
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_submission_package.py --package research-execution/submission/package --policy research-execution/submission/OFFICIAL_SOURCE_SNAPSHOT.json --identity research-execution/submission/ANONYMITY_AND_IDENTITY_AUDIT.json --require-clean
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: policy, source snapshot, hashes, identity, evidence, metadata, package, workflow.'
+        scientific:
+        - Current policy satisfied; abstract/numbers resolve to approved evidence.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Identity, policy, account, license or concurrent conflict fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Any anonymity, policy, account or evidence gap blocks submission.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-405.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_SCOPE
+    - T_ARTIFACT
+    - T_SUBMISSION
+    acceptance_gate: GATE-401
+  GATE-401:
+    linear_issue: ENG-184
+    phase: W4
+    kind: gate
+    title: Final authorization for TMLR submission
+    mandatory: true
+    dependencies:
+    - WP-401
+    - WP-402
+    - WP-403
+    - WP-404
+    - WP-405
+    roles:
+      producer: Gate Decision Recorder
+      independent_reviewer: Independent Submission Decision Auditor
+      gatekeeper: Final Submission Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Authorization is required but is not the submission event.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/GATE-401
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-401/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-401/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-401/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-401/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-401/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-401/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-401/HANDOFF_SCHEMA.json
+    required_context:
+    - GATE-301 route
+    - Reviewed WP-401…405
+    - Current policy verification.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/gates
+    - EpistemicCompilerLab/research-execution/submission
+    - EpistemicCompilerLab/research-execution/manuscript
+    - EpistemicCompilerLab/research-execution/artifact
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No content change after authorization without REVISE.
+    actions:
+    - Verify claims, manuscript, negatives, artifact, clean-room, policy and evidence rows.
+    - Record exact authorized hashes and PASS/REVISE/DO_NOT_SUBMIT.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/gates/GATE-401.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_gate.py --gate research-execution/gates/GATE-401.json --required WP-401 WP-402 WP-403 WP-404 WP-405 --require-authorized-hashes
+      checks:
+        artifact:
+        - GATE-401 decision artifact validates and every input hash/review resolves.
+        scientific:
+        - Every mandatory criterion has evidence and strongest unresolved objection.
+        independence:
+        - Gatekeeper is not producer/reviewer of critical inputs; identity/session/conflict record passes.
+        adversarial:
+        - REVISE/REJECT/PIVOT alternatives were attacked; no Blocker suppressed.
+        reproducibility:
+        - A second operator can rerun all checks without oral instructions.
+    stop_or_pivot:
+    - Only PASS unlocks WP-406; content changes require new gate.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/GATE-401.json
+      required_status: decision_recorded
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_SCOPE
+    - T_FREEZE
+    - T_SUBMISSION
+    acceptance_gate: GATE-401
+    decision_space:
+    - PASS
+    - REVISE
+    - DO_NOT_SUBMIT
