@@ -6,6 +6,7 @@ on:
       - "contracts/capsule-v0.schema.json"
       - "contracts/progressive-epistemic-case-v0.schema.json"
       - "contracts/progressive-management-codex-response-v0.schema.json"
+      - "contracts/progressive-management-numeric-codex-response-v0.schema.json"
       - "contracts/capsule-query-*.schema.json"
       - "contracts/epistemic-logical-rule-v0.schema.json"
       - "contracts/epistemic-observation-v0.schema.json"
@@ -17,11 +18,14 @@ on:
       - "tools/capsule_query_dsl_c.py"
       - "tests/capsule_contract_test.py"
       - "tests/capsule_query_dsl_c_contract_test.py"
+      - "tests/codex_structured_output_schema_contract_test.py"
+      - "tests/numeric_codex_structured_output_schema_contract_test.py"
       - "tests/progressive_epistemic_case_contract_test.py"
       - "tests/progressive_management_codex_ablation_contract_test.py"
       - "tests/progressive_management_dsl_b1_contract_test.py"
       - "tests/progressive_management_dsl_b1_scoring_contract_test.py"
       - "tests/progressive_management_dsl_c_contract_test.py"
+      - "tests/progressive_management_dsl_c_ablation_contract_test.py"
       - ".github/workflows/verify-progressive-epistemic-benchmark.yml"
   push:
     branches:
@@ -30,6 +34,7 @@ on:
       - "contracts/capsule-v0.schema.json"
       - "contracts/progressive-epistemic-case-v0.schema.json"
       - "contracts/progressive-management-codex-response-v0.schema.json"
+      - "contracts/progressive-management-numeric-codex-response-v0.schema.json"
       - "contracts/capsule-query-*.schema.json"
       - "contracts/epistemic-logical-rule-v0.schema.json"
       - "contracts/epistemic-observation-v0.schema.json"
@@ -41,11 +46,14 @@ on:
       - "tools/capsule_query_dsl_c.py"
       - "tests/capsule_contract_test.py"
       - "tests/capsule_query_dsl_c_contract_test.py"
+      - "tests/codex_structured_output_schema_contract_test.py"
+      - "tests/numeric_codex_structured_output_schema_contract_test.py"
       - "tests/progressive_epistemic_case_contract_test.py"
       - "tests/progressive_management_codex_ablation_contract_test.py"
       - "tests/progressive_management_dsl_b1_contract_test.py"
       - "tests/progressive_management_dsl_b1_scoring_contract_test.py"
       - "tests/progressive_management_dsl_c_contract_test.py"
+      - "tests/progressive_management_dsl_c_ablation_contract_test.py"
       - ".github/workflows/verify-progressive-epistemic-benchmark.yml"
 
 permissions:
@@ -58,7 +66,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -101,7 +109,17 @@ jobs:
           python tests/progressive_management_dsl_c_contract_test.py \
             | tee /tmp/progressive-management-dsl-c.log
 
-      - name: Verify offline Codex ablation runner
+      - name: Verify numeric Codex output schema
+        run: |
+          python tests/numeric_codex_structured_output_schema_contract_test.py \
+            | tee /tmp/numeric-codex-schema.log
+
+      - name: Verify offline numeric Codex ablation runner
+        run: |
+          python tests/progressive_management_dsl_c_ablation_contract_test.py \
+            | tee /tmp/progressive-management-dsl-c-ablation.log
+
+      - name: Verify offline role-frame Codex ablation runner
         run: |
           python tests/progressive_management_codex_ablation_contract_test.py \
             | tee /tmp/progressive-management-codex-ablation.log
@@ -118,6 +136,8 @@ jobs:
             /tmp/progressive-management-dsl-b1-scoring.log
             /tmp/capsule-query-dsl-c.log
             /tmp/progressive-management-dsl-c.log
+            /tmp/numeric-codex-schema.log
+            /tmp/progressive-management-dsl-c-ablation.log
             /tmp/progressive-management-codex-ablation.log
           if-no-files-found: warn
           retention-days: 14
