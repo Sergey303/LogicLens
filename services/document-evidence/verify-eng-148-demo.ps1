@@ -12,7 +12,8 @@ $artifactRoot = Join-Path $repo ".artifacts/document-evidence/eng-148"
 $pythonFiles = @(
     "tests/document_evidence_e2e_gate.py",
     "tests/document_evidence_e2e_gate_runtime.py",
-    "tests/document_evidence_e2e_workspace.py"
+    "tests/document_evidence_e2e_workspace.py",
+    "tests/document_evidence_e2e_negative.py"
 )
 
 function Test-PopplerDirectory([string] $candidate) {
@@ -85,6 +86,9 @@ foreach ($run in 1..2) {
     if ($LASTEXITCODE -ne 0) { throw "ENG-148 SWI gate run $run failed." }
 }
 
+python tests/document_evidence_e2e_negative.py
+if ($LASTEXITCODE -ne 0) { throw "ENG-148 fail-closed grounding contracts failed." }
+
 function Get-TreeDigest([string] $root) {
     $lines = Get-ChildItem $root -File -Recurse |
         Sort-Object FullName |
@@ -118,6 +122,8 @@ $result = [ordered]@{
     gateStatus = $decision.gateStatus
     decisionStatus = $decision.decisionFrame.status
     selectedFragmentId = $decision.selectedFragmentId
+    unknownEvidence = "rejected"
+    conflictingEvidence = "rejected"
     consumerReadsDatabase = $decision.consumerReadsDatabase
     consumerReadsBlobPath = $decision.consumerReadsBlobPath
 }
