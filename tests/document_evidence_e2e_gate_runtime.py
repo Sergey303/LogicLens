@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from document_evidence_e2e_workspace import align_snapshot
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -83,6 +85,7 @@ def run(fragment_path: Path, service_receipt_path: Path, output: Path) -> None:
         fixture.load_fragment = original_loader
     if expected != fragment:
         raise AssertionError("The proposal workspace did not retain the selected fragment.")
+    align_snapshot(proposal, fragment, schemas, capsule.canonical_json)
 
     resolved = workspace_root / "resolved"
     pdf_link.resolve_pdf_seed(
