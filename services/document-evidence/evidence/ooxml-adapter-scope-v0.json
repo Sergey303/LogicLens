@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "0.1",
+  "linearIssue": "ENG-145",
+  "sourceRepository": "Sergey303/EngDocSentinel",
+  "sourceCommit": "916b19bf9a3047c1cb0e2bed9a1dab7bb084608a",
+  "sourceIssue": "https://github.com/Sergey303/EngDocSentinel/issues/4",
+  "reusedPatterns": [
+    "DOCX and XLSX OOXML package fixtures",
+    "sorted ZIP-entry canonicalization",
+    "fixed and canonical document metadata",
+    "byte-for-byte deterministic regeneration expectation"
+  ],
+  "notCopied": [
+    "python-docx document generation",
+    "openpyxl workbook generation",
+    "PDF rendering",
+    "OCR or model-based extraction"
+  ],
+  "trustedAdapters": [
+    "DocumentEvidence.Ooxml",
+    "DocumentEvidence.Docx",
+    "DocumentEvidence.Xlsx"
+  ],
+  "status": "validated-initial-slice",
+  "acceptedHead": "f46c298aaa02587ebe3054751a635f32b73e4fbf",
+  "workflowRunId": 30945630476
+}

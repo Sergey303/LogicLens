@@ -1,0 +1,90 @@
+{
+  "kind": "logiclens-document-evidence-pdf-source-proposal-proof",
+  "version": 1,
+  "acceptedHead": "7d4f843d582d8d15ce8d6356c308caaa5d9024fb",
+  "pullRequest": 61,
+  "linearIssue": "ENG-144",
+  "trustedExtraction": {
+    "adapter": "poppler-bbox-layout",
+    "popplerVersion": "24.02.0",
+    "boundedBytes": true,
+    "signatureCheckedBeforeProcess": true,
+    "optionalPinnedSha256CheckedBeforeProcess": true,
+    "llmInTrustedPath": false,
+    "ocrInTrustedPath": false,
+    "stableRealFixtureIrSha256": "e364f9fe7230ba6828730c91ea97cef7de6ff15c613aaa10df7854745f0f0069",
+    "realFixtureBlocks": 2
+  },
+  "durableCompletion": {
+    "postgresVersion": 17,
+    "npgsqlMajor": 10,
+    "persistsParserManifest": true,
+    "persistsCanonicalFragments": true,
+    "jobSuccessUsesCompareAndSwap": true,
+    "outboxSharesTransaction": true,
+    "staleLeaseRollsBackAllOutput": true
+  },
+  "protectedRead": {
+    "order": [
+      "authorization",
+      "workspace-and-revision-metadata",
+      "revocation-check",
+      "immutable-object-lookup"
+    ],
+    "denialStopsBeforeMetadata": true,
+    "revocationStopsBeforeObjectLookup": true,
+    "storagePathExposed": false
+  },
+  "sourceProposalBridge": {
+    "schema": "contracts/source-fragment-v0.schema.json",
+    "sharedFixture": "services/document-evidence/tests/fixtures/pdf-source-proposal-fragment-v1.jsonl",
+    "sourceAnchorPreserved": true,
+    "processorProvenancePreserved": true,
+    "artifactSha256Preserved": true,
+    "canonicalTextHash": "sha256:f880bd99996485a1f1cc9753d02770140f387f1d319e4579d8f6e3adeae82b3e",
+    "selectedEvidenceOnly": true,
+    "fullPdfRetained": false,
+    "fullIrRetained": false,
+    "fullFragmentSetRetained": false,
+    "swiPrologVersion": "9.0.4",
+    "realSwiPrologGatePassed": true
+  },
+  "ciHardening": {
+    "pipedCommandsUsePipefail": true,
+    "ruffFormatDiffEnabled": true,
+    "schemaValidWorldCapsuleModuleFixtures": true
+  },
+  "workflows": [
+    {
+      "id": 30935356822,
+      "name": "Repository quality",
+      "conclusion": "success"
+    },
+    {
+      "id": 30935356690,
+      "name": "Verify document evidence PDF adapter",
+      "conclusion": "success"
+    },
+    {
+      "id": 30935356528,
+      "name": "Verify source proposal pipeline",
+      "conclusion": "success"
+    },
+    {
+      "id": 30935356744,
+      "name": "Verify zero-epoch local run",
+      "conclusion": "success"
+    }
+  ],
+  "result": {
+    "repositoryGuard": "passed",
+    "ruffCheck": "passed",
+    "ruffFormat": "passed",
+    "dotnetWarningsAsErrors": "passed",
+    "postgresIntegrations": "passed",
+    "realPoppler": "passed",
+    "realSourceProposalAndProlog": "passed",
+    "zeroEpochRegression": "passed",
+    "eng144Accepted": true
+  }
+}

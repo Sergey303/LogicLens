@@ -1,0 +1,85 @@
+{
+  "kind": "logiclens-appforge-lifecycle-package-proof",
+  "version": 1,
+  "observedAtUtc": "2026-08-04T14:42:29.069Z",
+  "sourceArchive": "cgr-output-2026-08-04T14-42-29-068Z.zip",
+  "cgr": {
+    "status": "error",
+    "exitCode": 1,
+    "packageGenerationCompleted": true,
+    "postProofHarnessError": "Select-Object does not support parameter -Single"
+  },
+  "generator": {
+    "repository": "Sergey303/AppForge",
+    "branch": "agent/eng-150-nullable-admin-dtos",
+    "commit": "b30aea6cd8aa60ab9865e2d0cf383955a20ae50b",
+    "name": "AppForge.MdToDomain",
+    "version": "0.1.0"
+  },
+  "spec": {
+    "path": "services/document-evidence/spec/document-evidence.md",
+    "sha256": "918cea46776063abe5876a0c78f16cd6f9ddca00ddc69767682f1282e8f09418"
+  },
+  "identity": {
+    "modelId": "Document Evidence Operational Model",
+    "solutionFileName": "DocumentEvidenceOperationalModel.slnx",
+    "projectFileName": "DocumentEvidenceOperationalModel.Persistence.csproj",
+    "assemblyFileName": "DocumentEvidenceOperationalModel.Persistence.dll",
+    "dbContextName": "DocumentEvidenceOperationalModelDbContext",
+    "databaseName": "document_evidence_operational_model"
+  },
+  "backend": {
+    "entities": 5,
+    "relationships": 4,
+    "indexes": 8,
+    "controllers": 5,
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "migrationAction": "initial-created",
+    "migrationSourceFiles": 1,
+    "createTableOperations": 22,
+    "idempotentSqlCreateTableStatements": 23
+  },
+  "lifecycle": {
+    "fields": [
+      "ManifestJson",
+      "MaxAttempts",
+      "AvailableAt",
+      "LeaseToken",
+      "LastError"
+    ],
+    "verifiedInCanonicalBackendContract": true,
+    "verifiedInGeneratedCSharp": true,
+    "verifiedInEfMigrationChainCorpus": true,
+    "directIdempotentSqlFieldListingCaptured": false,
+    "followUpVerifier": "services/document-evidence/verify-generated-package.ps1"
+  },
+  "frontend": {
+    "productionGateFiles": 1220,
+    "viteModules": 528,
+    "largestJavaScriptChunkKb": 1140.96,
+    "largestJavaScriptChunkGzipKb": 276.31,
+    "chunkSizeWarningObserved": true
+  },
+  "evidence": {
+    "packageManifestSha256": "498008cb82703b1d9c73e207165729dab34668ceae6307a85f022122b30da795",
+    "generatedTreeSha256BeforeReceipt": "842dca6c2e93d4f54a5973244e5b13ec4fd291fb00516b1de139162a7a44cf91",
+    "migrationSqlSha256": "d7bcfa5b70209ebdefeb14c4dec9d7ed27461fca8e39977806d042df4e4288f7"
+  },
+  "result": {
+    "allEightStagesCompleted": true,
+    "backendContractJsonCreated": true,
+    "typeScriptCreated": true,
+    "reactPrimeReactCreated": true,
+    "viteDistCreated": true,
+    "deployPresetCreated": true,
+    "freshSchemaProofAccepted": true,
+    "upgradeMigrationContinuityProven": false
+  },
+  "notes": [
+    "The CGR process returned exit code 1 only after package generation completed, because the post-proof command used the nonexistent PowerShell parameter Select-Object -Single.",
+    "The command removed the previous Generated directory before running AppForge, so this archive proves a fresh initial migration, not preservation of an existing migration chain.",
+    "The wrapper verified lifecycle fields in the combined EF migration corpus and recorded the idempotent SQL hash. The later diagnostic Select-String command printed no direct SQL field matches before the unrelated Select-Object failure, so direct SQL field listing is not claimed by this evidence file.",
+    "The repository now contains a reusable verifier that checks the idempotent SQL separately and performs the final warnings-as-errors build without regenerating the package."
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "0.1",
+  "linearIssue": "ENG-145",
+  "branch": "agent/document-evidence-ooxml-adapters",
+  "base": "agent/document-evidence-pdf-adapter",
+  "status": "remote-slices-accepted-local-docx-pending",
+  "acceptedRemoteHead": "9747c71f85f6df821da8ffeb343747fe11f33104",
+  "workflows": {
+    "repositoryQuality": {
+      "runId": 30949327285,
+      "conclusion": "success"
+    },
+    "sourceProposal": {
+      "runId": 30949327290,
+      "conclusion": "success",
+      "swipl": "9.0.4"
+    },
+    "zeroEpoch": {
+      "runId": 30949327608,
+      "conclusion": "success"
+    }
+  },
+  "proof": {
+    "repositoryGuard": "success",
+    "warnings": 0,
+    "errors": 0,
+    "ooxmlRuntimeContracts": 15,
+    "postgresImage": "postgres:17-alpine",
+    "realXlsx": {
+      "sourceRepository": "Sergey303/EngDocSentinel",
+      "sourceCommit": "916b19bf9a3047c1cb0e2bed9a1dab7bb084608a",
+      "fixture": "services/document-evidence/tests/fixtures/engdoc-confirmed-package-checklist.xlsx",
+      "artifactSha256": "61550775c9466c711781ee2555e9b3c9a3871471c2b3d28588d4d183474bde9c",
+      "gitBlobSha": "051b5ffb9edb28ed1802b648406d8b574169c7dd",
+      "selectedCell": "Package Check!D9",
+      "selectedText": "Confirmed"
+    },
+    "completionInvariants": [
+      "fragment sequences are contiguous",
+      "ZIP order and timestamp changes do not change fragment IDs",
+      "raw artifact SHA-256 remains in the parser manifest",
+      "XLSX formula, raw and cached values remain distinct"
+    ],
+    "selectedEvidenceInvariants": [
+      "C# export is byte-for-byte equal to the shared JSONL fixture",
+      "source-fragment-v0 validates PDF, DOCX and XLSX anchors through strict oneOf branches",
+      "only the selected worksheet cell enters the accepted package",
+      "full workbook bytes, complete cell set and extraction request are not retained",
+      "typed proposal, direct grounding and package verification pass through real SWI-Prolog"
+    ],
+    "regressions": [
+      "application boundary",
+      "generated adapter",
+      "immutable storage",
+      "PDF adapter and selected-fragment bridge",
+      "PostgreSQL lifecycle",
+      "zero-epoch local run"
+    ]
+  },
+  "localDocxGate": {
+    "status": "prepared-not-executed",
+    "runner": "services/document-evidence/verify-engdoc-docx.ps1",
+    "instructions": "services/document-evidence/docs/ENGDOC_DOCX_LOCAL_GATE.md",
+    "sourceRepository": "Sergey303/EngDocSentinel",
+    "sourceCommit": "916b19bf9a3047c1cb0e2bed9a1dab7bb084608a",
+    "sourceRelativePath": "datasets/synthetic/demo-v0/generated/confirmed-power-conflict/01-technical-specification.docx",
+    "expectedArtifactSha256": "bbd051dce7fd1e351175677c2c4c5bb8f14e2ba96c5a0f63298dd3a2f318023c",
+    "expectedGitBlobSha": "a0f3803eeb6b75a88a7a06c1ba308d1584793ec7",
+    "proofPath": ".artifacts/document-evidence/engdoc-docx-local-proof-v0.json"
+  },
+  "remaining": [
+    "execute the SHA-verified local committed DOCX gate",
+    "review and retain the emitted local proof before marking ENG-145 Done"
+  ]
+}

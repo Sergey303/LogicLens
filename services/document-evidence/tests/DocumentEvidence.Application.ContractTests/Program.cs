@@ -10,6 +10,22 @@ internal static class Program
     {
         await AllowsStoreLookupOnlyAfterAuthorizationAsync();
         await DenialPreventsStoreLookupAsync();
+        await ProtectedRevisionBytesContractTests.DenialStopsBeforeMetadataLookupAsync();
+        await ProtectedRevisionBytesContractTests.RevocationStopsBeforeObjectLookupAsync();
+        await ProtectedRevisionBytesContractTests.AuthorizedReadUsesObjectStoreLastAsync();
+        await UploadServiceContractTests.ReplayAvoidsObjectWriteAsync();
+        await UploadServiceContractTests.NewUploadBuildsDeterministicManifestAsync();
+        await UploadServiceContractTests.ConflictingCommitResultIsRejectedAsync();
+        ProcessingJobLeaseContractTests.FirstLeaseOwnsAttemptAndBlocksSecondWorker();
+        ProcessingJobLeaseContractTests.ExpiredLeaseCanBeReclaimed();
+        await ProcessingJobLeaseContractTests.StaleOrExpiredLeaseCannotCompleteAsync();
+        ProcessingJobLeaseContractTests.ActiveLeaseCompletesAndTerminalCannotRelock();
+        ProcessingJobFailureContractTests.FailureSchedulesDeterministicBackoff();
+        ProcessingJobFailureContractTests.RetryCannotLeaseBeforeAvailableAt();
+        ProcessingJobFailureContractTests.FinalAttemptBecomesTerminal();
+        await ProcessingCompletionContractTests.LiveLeasePersistsCanonicalPayloadAsync();
+        await ProcessingCompletionContractTests.ExpiredLeaseStopsBeforeRepositoryAsync();
+        await ProcessingCompletionContractTests.LostCasFailsClosedAsync();
         Console.WriteLine("Document Evidence boundary contract tests passed.");
         return 0;
     }

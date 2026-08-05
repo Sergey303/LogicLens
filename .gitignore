@@ -17,6 +17,10 @@
 # Prepared local runtime
 .logiclens/
 
+# Local verification artifacts
+.artifacts/
+*.log
+
 # Local environment overrides
 .env
 .env.*
@@ -28,6 +32,3 @@
 .vscode/
 .DS_Store
 Thumbs.db
-
-# Local verification artifacts
-*.log

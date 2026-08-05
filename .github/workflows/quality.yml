@@ -1,5 +1,4 @@
 name: Repository quality
-
 on:
   pull_request:
   push:
@@ -13,6 +12,20 @@ jobs:
   changed-files:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: document_evidence
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d document_evidence"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -59,7 +72,7 @@ jobs:
           git diff --name-only -z --diff-filter=ACMR "$base...HEAD" -- '*.py' \
             | xargs -0 -r ruff check
           git diff --name-only -z --diff-filter=ACMR "$base...HEAD" -- '*.py' \
-            | xargs -0 -r ruff format --check
+            | xargs -0 -r ruff format --diff --check
 
       - name: Build application boundary contracts
         run: |
@@ -83,4 +96,55 @@ jobs:
         run: |
           dotnet run \
             --project services/document-evidence/tests/DocumentEvidence.GeneratedAdapter.ContractTests/DocumentEvidence.GeneratedAdapter.ContractTests.csproj \
+            --no-build
+
+      - name: Build immutable storage contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.LocalStorage.ContractTests/DocumentEvidence.LocalStorage.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run immutable storage contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.LocalStorage.ContractTests/DocumentEvidence.LocalStorage.ContractTests.csproj \
+            --no-build
+
+      - name: Build PDF adapter contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Pdf.ContractTests/DocumentEvidence.Pdf.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run PDF adapter contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Pdf.ContractTests/DocumentEvidence.Pdf.ContractTests.csproj \
+            --no-build
+
+      - name: Build OOXML adapter contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Ooxml.ContractTests/DocumentEvidence.Ooxml.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run OOXML adapter contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Ooxml.ContractTests/DocumentEvidence.Ooxml.ContractTests.csproj \
+            --no-build
+
+      - name: Build PostgreSQL lifecycle integrations
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Postgres.IntegrationTests/DocumentEvidence.Postgres.IntegrationTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run PostgreSQL lifecycle integrations
+        env:
+          DOCUMENT_EVIDENCE_TEST_POSTGRES: >-
+            Host=127.0.0.1;Port=5432;Database=document_evidence;Username=postgres;Password=postgres
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Postgres.IntegrationTests/DocumentEvidence.Postgres.IntegrationTests.csproj \
             --no-build

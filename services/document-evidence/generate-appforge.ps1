@@ -44,9 +44,11 @@ $AppForgeRoot = (Resolve-Path $AppForgeRoot).Path
 $spec = (Resolve-Path (Join-Path $PSScriptRoot "spec\document-evidence.md")).Path
 $output = Join-Path $PSScriptRoot "Generated"
 $runner = Join-Path $AppForgeRoot "scripts\quality\run-md-ef-core-production-package.ps1"
+$contractVerifier = Join-Path $PSScriptRoot "verify-appforge-lifecycle-contract.ps1"
 $existingManifest = Join-Path $output "manifest\package-manifest.json"
 
 Assert-File $runner "AppForge production package runner"
+Assert-File $contractVerifier "LogicLens lifecycle contract verifier"
 
 $dirty = & git -C $AppForgeRoot status --porcelain
 Assert-LastExitCode "Reading AppForge status"
@@ -99,6 +101,9 @@ foreach ($path in $requiredFiles) {
     Assert-File $path "Generated production artifact"
 }
 
+$lifecycleProofJson = (& $contractVerifier -OutputRoot $output | Out-String).Trim()
+$lifecycleProof = $lifecycleProofJson | ConvertFrom-Json
+
 $receipt = [ordered]@{
     kind = "logiclens-appforge-generation-receipt"
     version = 2
@@ -108,6 +113,8 @@ $receipt = [ordered]@{
     sourceSpecSha256 = (Get-FileHash -Algorithm SHA256 -Path $spec).Hash.ToLowerInvariant()
     packageManifestSha256 = (Get-FileHash -Algorithm SHA256 -Path $manifestPath).Hash.ToLowerInvariant()
     generatedTreeSha256BeforeReceipt = Get-StableTreeHash $output
+    lifecycleFields = @($lifecycleProof.fields)
+    migrationSqlSha256 = $lifecycleProof.migrationSqlSha256
 }
 $receiptPath = Join-Path $output "manifest\logiclens-generation-receipt.json"
 $receiptJson = ($receipt | ConvertTo-Json -Depth 5) + "`n"
@@ -117,5 +124,6 @@ Write-Host "Document Evidence AppForge production package passed."
 Write-Host "AppForge commit: $appForgeCommit"
 Write-Host "Model: $($identity.modelId)"
 Write-Host "Backend project: $($identity.projectFileName)"
+Write-Host "Lifecycle fields: $($receipt.lifecycleFields -join ', ')"
 Write-Host "Output: $output"
 Write-Host "Generated tree hash: $($receipt.generatedTreeSha256BeforeReceipt)"

@@ -16,6 +16,13 @@ on:
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
+      - "tests/document_evidence_pdf_bridge*.py"
+      - "tests/document_evidence_xlsx_bridge*.py"
+      - "services/document-evidence/src/DocumentEvidence.Pdf/PdfSourceProposalBridge.cs"
+      - "services/document-evidence/src/DocumentEvidence.Ooxml/OoxmlSource*.cs"
+      - "services/document-evidence/src/DocumentEvidence.Docx/DocxEvidenceSelector.cs"
+      - "services/document-evidence/src/DocumentEvidence.Xlsx/XlsxEvidenceSelector.cs"
+      - "services/document-evidence/tests/fixtures/*-source-proposal-fragment-v1.jsonl"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
   push:
     branches:
@@ -34,6 +41,13 @@ on:
       - "tools/source_proposal/**"
       - "tests/source_pipeline_contract_test.py"
       - "tests/pdf_link_contract_test.py"
+      - "tests/document_evidence_pdf_bridge*.py"
+      - "tests/document_evidence_xlsx_bridge*.py"
+      - "services/document-evidence/src/DocumentEvidence.Pdf/PdfSourceProposalBridge.cs"
+      - "services/document-evidence/src/DocumentEvidence.Ooxml/OoxmlSource*.cs"
+      - "services/document-evidence/src/DocumentEvidence.Docx/DocxEvidenceSelector.cs"
+      - "services/document-evidence/src/DocumentEvidence.Xlsx/XlsxEvidenceSelector.cs"
+      - "services/document-evidence/tests/fixtures/*-source-proposal-fragment-v1.jsonl"
       - ".github/workflows/verify-source-proposal-pipeline.yml"
 
 permissions:
@@ -57,7 +71,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install pinned SWI-Prolog, Poppler and JSON Schema validator
+        shell: bash
         run: |
+          set -o pipefail
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox poppler-utils
           swipl --version | tee /tmp/swipl-version.txt
@@ -66,12 +82,30 @@ jobs:
           python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
 
       - name: Run text source proposal contract
+        shell: bash
         run: |
+          set -o pipefail
           python tests/source_pipeline_contract_test.py | tee /tmp/source-pipeline.log
 
       - name: Run ephemeral PDF link contract and real Prolog gate
+        shell: bash
         run: |
+          set -o pipefail
           python tests/pdf_link_contract_test.py | tee /tmp/pdf-link-pipeline.log
+
+      - name: Run PDF selected-fragment bridge and Prolog gate
+        shell: bash
+        run: |
+          set -o pipefail
+          python tests/document_evidence_pdf_bridge_test.py \
+            | tee /tmp/document-evidence-pdf-bridge.log
+
+      - name: Run XLSX selected-fragment bridge and Prolog gate
+        shell: bash
+        run: |
+          set -o pipefail
+          python tests/document_evidence_xlsx_bridge_test.py \
+            | tee /tmp/document-evidence-xlsx-bridge.log
 
       - name: Upload verification logs
         if: always()
@@ -83,5 +117,7 @@ jobs:
             /tmp/poppler-version.txt
             /tmp/source-pipeline.log
             /tmp/pdf-link-pipeline.log
+            /tmp/document-evidence-pdf-bridge.log
+            /tmp/document-evidence-xlsx-bridge.log
           if-no-files-found: warn
           retention-days: 14
