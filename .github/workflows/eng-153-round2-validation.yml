@@ -1,4 +1,4 @@
-name: ENG-153 round-3 canonical generator bootstrap
+name: ENG-153 round-3 reproducibility validation
 
 on:
   pull_request:
@@ -11,11 +11,11 @@ permissions:
   contents: write
 
 concurrency:
-  group: eng-153-round3-bootstrap-${{ github.event.pull_request.head.ref || github.ref }}
+  group: eng-153-round3-${{ github.event.pull_request.head.ref || github.ref }}
   cancel-in-progress: false
 
 jobs:
-  migrate-generate-and-commit:
+  verify-attest-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,31 +30,46 @@ jobs:
       - name: Install validator dependencies
         run: python -m pip install --disable-pip-version-check PyYAML==6.0.2 jsonschema==4.25.0
 
-      - name: Apply bounded round-3 generator migration
-        run: python EpistemicCompilerLab/research-execution/scripts/apply_round3_generator_only.py
+      - name: Resolve checked-out commit
+        id: commit
+        shell: bash
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "message=$(git log -1 --pretty=%s)" >> "$GITHUB_OUTPUT"
 
-      - name: Generate final canonical bytes
-        run: python EpistemicCompilerLab/research-execution/scripts/generate_context_packets.py
-
-      - name: Run exact published reviewer commands
+      - name: Exact published reviewer commands
         shell: bash
         run: |
           set -euo pipefail
           python EpistemicCompilerLab/research-execution/scripts/generate_context_packets.py --check
           python EpistemicCompilerLab/research-execution/scripts/normalize_context_command_contracts.py --check
           python EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py --package WP-001
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
 
-      - name: Commit canonical generator and generated artifacts
+      - name: Verify an already committed report-only child
+        if: contains(steps.commit.outputs.message, '[validation report]')
+        run: |
+          python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py \
+            --verify-committed-report EpistemicCompilerLab/research-execution/validation/validation-report.json \
+            --require-clean
+
+      - name: Generate, commit and verify report from exact clean candidate
+        if: ${{ !contains(steps.commit.outputs.message, '[validation report]') }}
         shell: bash
         run: |
           set -euo pipefail
-          rm -f EpistemicCompilerLab/research-execution/validation/validation-report.json
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py \
+            --as-of 2026-08-06 \
+            --attest-commit "${{ steps.commit.outputs.sha }}" \
+            --require-clean \
+            --report /tmp/validation-report.json
+          cp /tmp/validation-report.json EpistemicCompilerLab/research-execution/validation/validation-report.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A -- \
-            EpistemicCompilerLab/research-execution/scripts \
-            EpistemicCompilerLab/research-execution/context-packets \
-            EpistemicCompilerLab/research-execution/handoffs/WP-001.json \
-            EpistemicCompilerLab/research-execution/validation
-          git commit -m 'ENG-153: make context generation canonically reproducible [canonical generator]'
+          git add EpistemicCompilerLab/research-execution/validation/validation-report.json
+          git commit -m 'ENG-153: commit exact round-3 validation report [validation report]'
+          python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py \
+            --verify-committed-report EpistemicCompilerLab/research-execution/validation/validation-report.json \
+            --require-clean
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
