@@ -67,32 +67,24 @@ def merge_dict(dst, src, source, findings):
 
 def load_work_packages(path, findings):
     manifest=yaml.safe_load(path.read_text(encoding="utf-8"))
-    if manifest.get("format")!="split-dag-manifest":
-        return manifest,[]
+    if manifest.get("format")!="split-dag-manifest": return manifest,[]
     includes=manifest.get("includes",[])
-    if not includes or includes[0]!="work-packages/program.yaml":
-        err(findings,"INCLUDE_MANIFEST","program registry must be first",actual=includes)
-    phase_order={f"W{i}":i for i in range(6)}
-    seen=[]
+    if not includes or includes[0]!="work-packages/program.yaml": err(findings,"INCLUDE_MANIFEST","program registry must be first",actual=includes)
+    phase_order={f"W{i}":i for i in range(6)}; seen=[]
     for rel in includes[1:]:
         m=re.fullmatch(r"work-packages/fragments/(W[0-5])-\d{2}\.yaml",rel)
         if not m: err(findings,"INCLUDE_MANIFEST","invalid fragment path",path=rel); continue
         seen.append(phase_order[m.group(1)])
     if seen!=sorted(seen): err(findings,"INCLUDE_MANIFEST","phase fragments are out of order",actual=includes)
-    data={"schema_version":manifest.get("schema_version")}
-    included=[]
-    for rel in manifest.get("includes",[]):
+    data={"schema_version":manifest.get("schema_version")}; included=[]
+    for rel in includes:
         f=path.parent/rel
-        if not f.exists():
-            err(findings,"INCLUDE_MISSING",rel); continue
-        included.append(f)
-        part=yaml.safe_load(f.read_text(encoding="utf-8")) or {}
-        merge_dict(data,part,f,findings)
+        if not f.exists(): err(findings,"INCLUDE_MISSING",rel); continue
+        included.append(f); part=yaml.safe_load(f.read_text(encoding="utf-8")) or {}; merge_dict(data,part,f,findings)
     return data,included
 
 def main():
-    ap=argparse.ArgumentParser()
-    here=Path(__file__).resolve().parent.parent
+    ap=argparse.ArgumentParser(); here=Path(__file__).resolve().parent.parent
     ap.add_argument("--work-packages",type=Path,default=here/"WORK_PACKAGES.yaml")
     ap.add_argument("--schema",type=Path,default=here/"schemas/work-package.schema.json")
     ap.add_argument("--handoff-schema",type=Path,default=here/"schemas/work-package-handoff.schema.json")
@@ -104,15 +96,10 @@ def main():
     for f in [a.work_packages,a.schema,a.handoff_schema,a.linear_snapshot,a.critical_path]:
         if not f.exists():err(fs,"FILE_MISSING",str(f))
     if fs:
-        report={"status":"FAIL","as_of":a.as_of,"findings":fs}; a.report.parent.mkdir(parents=True,exist_ok=True)
-        a.report.write_text(json.dumps(report,indent=2)); print(json.dumps(report,indent=2)); return 1
+        report={"status":"FAIL","as_of":a.as_of,"findings":fs}; a.report.parent.mkdir(parents=True,exist_ok=True); a.report.write_text(json.dumps(report,indent=2)); print(json.dumps(report,indent=2)); return 1
     data,included_files=load_work_packages(a.work_packages,fs)
-    sch=json.loads(a.schema.read_text(encoding="utf-8"))
-    hs=json.loads(a.handoff_schema.read_text(encoding="utf-8"))
-    snap=json.loads(a.linear_snapshot.read_text(encoding="utf-8"))
-    doc=a.critical_path.read_text(encoding="utf-8")
-    for e in Draft202012Validator(sch,format_checker=FormatChecker()).iter_errors(data):
-        err(fs,"SCHEMA",e.message,path="/".join(map(str,e.path)))
+    sch=json.loads(a.schema.read_text(encoding="utf-8")); hs=json.loads(a.handoff_schema.read_text(encoding="utf-8")); snap=json.loads(a.linear_snapshot.read_text(encoding="utf-8")); doc=a.critical_path.read_text(encoding="utf-8")
+    for e in Draft202012Validator(sch,format_checker=FormatChecker()).iter_errors(data): err(fs,"SCHEMA",e.message,path="/".join(map(str,e.path)))
     try: Draft202012Validator.check_schema(hs)
     except Exception as e:err(fs,"HANDOFF_SCHEMA",str(e))
     nodes=data.get("nodes",{}); roles=set(data.get("role_registry",[])); graph=data.get("graph",{})
@@ -131,8 +118,7 @@ def main():
     if len(order)!=len(nodes):err(fs,"CYCLE","topological sort incomplete",count=len(order))
     edge_count=sum(len(s["dependencies"]) for s in nodes.values())
     if edge_count!=68:err(fs,"EDGE_COUNT","expected 68",actual=edge_count)
-    if graph.get("submission_terminal")!="WP-406" or nodes.get("WP-406",{}).get("dependencies")!=["GATE-401"]:
-        err(fs,"SUBMISSION_TERMINAL","GATE-401 must lead to WP-406")
+    if graph.get("submission_terminal")!="WP-406" or nodes.get("WP-406",{}).get("dependencies")!=["GATE-401"]: err(fs,"SUBMISSION_TERMINAL","GATE-401 must lead to WP-406")
     if graph.get("lifecycle_terminal")!="WP-504":err(fs,"LIFECYCLE_TERMINAL","must be WP-504")
     reach=reaching(nodes,"WP-504")
     if len(reach)!=len(nodes):err(fs,"UNREACHABLE","nodes do not reach WP-504",missing=sorted(set(nodes)-reach))
@@ -140,12 +126,12 @@ def main():
     if set(snap["issues"])!=set(issue_to_node):err(fs,"LINEAR_SET","snapshot issue set differs")
     for issue,e in snap["issues"].items():
         if issue not in issue_to_node:continue
-        n=issue_to_node[issue]; s=nodes[n]
-        deps=[issue_to_node[x] for x in e["direct_blocked_by"] if x in issue_to_node]
+        n=issue_to_node[issue]; s=nodes[n]; deps=[issue_to_node[x] for x in e["direct_blocked_by"] if x in issue_to_node]
         if s["dependencies"]!=deps:err(fs,"LINEAR_DEP_DRIFT",n,yaml=s["dependencies"],snapshot=deps)
         for k,ek in [("producer","producer_role"),("independent_reviewer","reviewer_role"),("gatekeeper","gatekeeper_role")]:
             if s["roles"][k]!=e[ek]:err(fs,"LINEAR_ROLE_DRIFT",n,field=k)
-        if s["deliverables"]!=e["deliverables"]:err(fs,"LINEAR_DELIVERABLE_DRIFT",n)
+        dh=hashlib.sha256(json.dumps(s["deliverables"],ensure_ascii=False,separators=(",",":")).encode("utf-8")).hexdigest()
+        if dh!=e["deliverables_sha256"]:err(fs,"LINEAR_DELIVERABLE_DRIFT",n,actual=dh,expected=e["deliverables_sha256"])
     for n,s in nodes.items():
         rr=s["roles"]
         if any(rr[k] not in roles for k in ["producer","independent_reviewer","gatekeeper"]):err(fs,"UNKNOWN_ROLE",n)
@@ -177,9 +163,7 @@ def main():
     if not ROB.issubset(docrob):err(fs,"DOC_OPTIONAL","missing",actual=sorted(docrob))
     for token in ["WP-406","WP-504","WP-305","WP-306","40 mandatory nodes","68 direct dependency edges","24 nodes / 23 edges","Only W0"]:
         if token not in doc:err(fs,"DOC_DRIFT",token)
-    required_bases={"WP-002":{"CLAIM_EVIDENCE_MATRIX.yaml","ABSTRACT_CONTRACT.md","PROHIBITED_CLAIMS.md"},
-    "WP-003":{"RELATED_WORK_MATRIX.csv","NOVELTY_BOUNDARY.md","NEAREST_PRIOR_WORK.md"},
-    "WP-406":{"SUBMISSION_RECEIPT.json","OPENREVIEW_RECORD.md","UPLOADED_HASH_AUDIT.json"}}
+    required_bases={"WP-002":{"CLAIM_EVIDENCE_MATRIX.yaml","ABSTRACT_CONTRACT.md","PROHIBITED_CLAIMS.md"},"WP-003":{"RELATED_WORK_MATRIX.csv","NOVELTY_BOUNDARY.md","NEAREST_PRIOR_WORK.md"},"WP-406":{"SUBMISSION_RECEIPT.json","OPENREVIEW_RECORD.md","UPLOADED_HASH_AUDIT.json"}}
     for n,req in required_bases.items():
         got={Path(x).name for x in nodes[n]["deliverables"]}
         if not req.issubset(got):err(fs,"DELIVERABLES",n,missing=sorted(req-got))
@@ -188,35 +172,6 @@ def main():
         path,ln=longest(nodes,order,"WP-504")
         if ln!=24:err(fs,"LONGEST","expected 24",actual=ln,path=path)
     errors=[x for x in fs if x["severity"]=="ERROR"]
-    report={"schema_version":"1.0.0","status":"FAIL" if errors else "PASS","as_of":a.as_of,
-    "inputs":{"work_packages":{"path":"EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml","sha256":sha(a.work_packages)},
-    "schema":{"path":"EpistemicCompilerLab/research-execution/schemas/work-package.schema.json","sha256":sha(a.schema)},
-    "handoff_schema":{"path":"EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json","sha256":sha(a.handoff_schema)},
-    "linear_snapshot":{"path":"EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json","sha256":sha(a.linear_snapshot)},
-    "critical_path":{"path":"EpistemicCompilerLab/research-execution/CRITICAL_PATH.md","sha256":sha(a.critical_path)},
-    "validator":{"path":"EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py","sha256":sha(Path(__file__).resolve())},
-    "included_files":[{"path":"EpistemicCompilerLab/research-execution/"+str(f.relative_to(a.work_packages.parent)).replace("\\","/"),"sha256":sha(f)} for f in included_files],
-    "assembled_canonical_sha256":hashlib.sha256(json.dumps(data,sort_keys=True,ensure_ascii=False,separators=(",",":")).encode("utf-8")).hexdigest()},
-    "summary":{"mandatory_nodes":len(nodes),"direct_dependency_edges":edge_count,"roots":sorted(roots),
-    "topological_nodes":len(order),"cycles":0 if len(order)==len(nodes) else 1,
-    "unknown_dependencies":len(unknown),"linear_issues":len(issue_to_node),
-    "optional_robustness_packages":len(opts),"submission_terminal":graph.get("submission_terminal"),
-    "lifecycle_terminal":graph.get("lifecycle_terminal"),"longest_chain_nodes":ln,
-    "longest_chain_edges":max(0,ln-1),"longest_chain":path,
-    "blind_sequence":graph.get("required_blind_sequence")},
-    "checks":{"json_schema":"PASS" if not any(x["code"]=="SCHEMA" for x in errors) else "FAIL",
-    "linear_snapshot_alignment":"PASS" if not any(x["code"].startswith("LINEAR_") for x in errors) else "FAIL",
-    "acyclicity":"PASS" if len(order)==len(nodes) else "FAIL",
-    "roles_and_identity":"PASS" if not any(x["code"] in {"UNKNOWN_ROLE","ROLE_COLLISION","IDENTITY"} for x in errors) else "FAIL",
-    "context_packet_executability":"PASS" if not any(x["code"] in {"PACKET","PLACEHOLDER","NOT_EXECUTABLE"} for x in errors) else "FAIL",
-    "deliverable_completeness":"PASS" if not any(x["code"] in {"DELIVERABLES","LINEAR_DELIVERABLE_DRIFT"} for x in errors) else "FAIL",
-    "composite_splits":"PASS" if not any(x["code"] in {"SPLIT","UNIT_ROLE_COLLISION"} for x in errors) else "FAIL",
-    "blind_w3":"PASS" if not any(x["code"] in {"W3_SEQUENCE","UNBLIND_DEPS","BLIND_SERIAL","W3_ROLES","EMBARGO"} for x in errors) else "FAIL",
-    "actual_submission_and_w5":"PASS" if not any(x["code"] in {"SUBMISSION_TERMINAL","LIFECYCLE_TERMINAL","UNREACHABLE"} for x in errors) else "FAIL",
-    "optional_document_consistency":"PASS" if not any(x["code"] in {"OPTIONAL_SET","DOC_OPTIONAL","DOC_DRIFT"} for x in errors) else "FAIL"},
-    "findings":fs}
-    a.report.parent.mkdir(parents=True,exist_ok=True)
-    a.report.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print(json.dumps(report,ensure_ascii=False,indent=2))
-    return 0 if report["status"]=="PASS" else 1
+    report={"schema_version":"1.0.0","status":"FAIL" if errors else "PASS","as_of":a.as_of,"inputs":{"work_packages":{"path":"EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml","sha256":sha(a.work_packages)},"schema":{"path":"EpistemicCompilerLab/research-execution/schemas/work-package.schema.json","sha256":sha(a.schema)},"handoff_schema":{"path":"EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json","sha256":sha(a.handoff_schema)},"linear_snapshot":{"path":"EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json","sha256":sha(a.linear_snapshot)},"critical_path":{"path":"EpistemicCompilerLab/research-execution/CRITICAL_PATH.md","sha256":sha(a.critical_path)},"validator":{"path":"EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py","sha256":sha(Path(__file__).resolve())},"included_files":[{"path":"EpistemicCompilerLab/research-execution/"+str(f.relative_to(a.work_packages.parent)).replace("\\","/"),"sha256":sha(f)} for f in included_files],"assembled_canonical_sha256":hashlib.sha256(json.dumps(data,sort_keys=True,ensure_ascii=False,separators=(",",":")).encode("utf-8")).hexdigest()},"summary":{"mandatory_nodes":len(nodes),"direct_dependency_edges":edge_count,"roots":sorted(roots),"topological_nodes":len(order),"cycles":0 if len(order)==len(nodes) else 1,"unknown_dependencies":len(unknown),"linear_issues":len(issue_to_node),"optional_robustness_packages":len(opts),"submission_terminal":graph.get("submission_terminal"),"lifecycle_terminal":graph.get("lifecycle_terminal"),"longest_chain_nodes":ln,"longest_chain_edges":max(0,ln-1),"longest_chain":path,"blind_sequence":graph.get("required_blind_sequence")},"checks":{"json_schema":"PASS" if not any(x["code"]=="SCHEMA" for x in errors) else "FAIL","linear_snapshot_alignment":"PASS" if not any(x["code"].startswith("LINEAR_") for x in errors) else "FAIL","acyclicity":"PASS" if len(order)==len(nodes) else "FAIL","roles_and_identity":"PASS" if not any(x["code"] in {"UNKNOWN_ROLE","ROLE_COLLISION","IDENTITY"} for x in errors) else "FAIL","context_packet_executability":"PASS" if not any(x["code"] in {"PACKET","PLACEHOLDER","NOT_EXECUTABLE"} for x in errors) else "FAIL","deliverable_completeness":"PASS" if not any(x["code"] in {"DELIVERABLES","LINEAR_DELIVERABLE_DRIFT"} for x in errors) else "FAIL","composite_splits":"PASS" if not any(x["code"] in {"SPLIT","UNIT_ROLE_COLLISION"} for x in errors) else "FAIL","blind_w3":"PASS" if not any(x["code"] in {"W3_SEQUENCE","UNBLIND_DEPS","BLIND_SERIAL","W3_ROLES","EMBARGO"} for x in errors) else "FAIL","actual_submission_and_w5":"PASS" if not any(x["code"] in {"SUBMISSION_TERMINAL","LIFECYCLE_TERMINAL","UNREACHABLE"} for x in errors) else "FAIL","optional_document_consistency":"PASS" if not any(x["code"] in {"OPTIONAL_SET","DOC_OPTIONAL","DOC_DRIFT"} for x in errors) else "FAIL"},"findings":fs}
+    a.report.parent.mkdir(parents=True,exist_ok=True); a.report.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); print(json.dumps(report,ensure_ascii=False,indent=2)); return 0 if report["status"]=="PASS" else 1
 if __name__=="__main__": raise SystemExit(main())
