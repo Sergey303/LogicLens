@@ -1,5 +1,7 @@
 [CmdletBinding()]
-param()
+param(
+    [string] $PopplerBin = $env:POPPLER_BIN
+)
 
 $ErrorActionPreference = "Stop"
 $repo = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
@@ -13,6 +15,46 @@ $pythonFiles = @(
     "tests/document_evidence_e2e_workspace.py"
 )
 
+function Test-PopplerDirectory([string] $candidate) {
+    if ([string]::IsNullOrWhiteSpace($candidate)) { return $false }
+    return (Test-Path (Join-Path $candidate "pdfinfo.exe")) -and
+        (Test-Path (Join-Path $candidate "pdftotext.exe"))
+}
+
+function Resolve-PopplerDirectory([string] $hint) {
+    if (Test-PopplerDirectory $hint) {
+        return (Resolve-Path $hint).Path
+    }
+    if ((Get-Command pdfinfo -ErrorAction SilentlyContinue) -and
+        (Get-Command pdftotext -ErrorAction SilentlyContinue)) {
+        return $null
+    }
+    $roots = @(
+        (Join-Path $env:LOCALAPPDATA "Microsoft/WinGet/Packages"),
+        (Join-Path $env:USERPROFILE "scoop/apps/poppler"),
+        (Join-Path ($env:ChocolateyInstall ?? "C:/ProgramData/chocolatey") "lib/poppler"),
+        "C:/Program Files/poppler"
+    )
+    foreach ($root in $roots) {
+        if (-not (Test-Path $root)) { continue }
+        $match = Get-ChildItem $root -Filter "pdfinfo.exe" -File -Recurse `
+            -ErrorAction SilentlyContinue |
+            Where-Object { Test-Path (Join-Path $_.DirectoryName "pdftotext.exe") } |
+            Select-Object -First 1
+        if ($null -ne $match) { return $match.DirectoryName }
+    }
+    throw @"
+Poppler commands pdfinfo/pdftotext were not found.
+Run .\services\document-evidence\install-eng-148-poppler.ps1 and repeat this verifier,
+or pass -PopplerBin <directory containing pdfinfo.exe and pdftotext.exe>.
+"@
+}
+
+$resolvedPoppler = Resolve-PopplerDirectory $PopplerBin
+if ($null -ne $resolvedPoppler) {
+    $env:PATH = "$resolvedPoppler;$env:PATH"
+    Write-Host "Using Poppler from: $resolvedPoppler"
+}
 foreach ($command in @("python", "dotnet", "pdfinfo", "pdftotext", "swipl")) {
     if (-not (Get-Command $command -ErrorAction SilentlyContinue)) {
         throw "Required ENG-148 command is not available on PATH: $command"
