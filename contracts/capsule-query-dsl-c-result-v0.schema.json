@@ -27,8 +27,18 @@
     "queryHash": {"$ref": "#/$defs/hash"},
     "package": {"$ref": "#/$defs/package"},
     "query": {"type": "object"},
-    "observation": {"$ref": "#/$defs/observation"},
-    "normalized": {"$ref": "#/$defs/normalized"},
+    "observation": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/observation"}
+      ]
+    },
+    "normalized": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/normalized"}
+      ]
+    },
     "status": {
       "enum": ["observed", "supported", "refuted", "unknown"]
     },
@@ -49,12 +59,10 @@
     },
     "provenance": {
       "type": "array",
-      "minItems": 1,
       "items": {"$ref": "#/$defs/source"}
     },
     "dependencyGroups": {
       "type": "array",
-      "minItems": 1,
       "uniqueItems": true,
       "items": {"$ref": "#/$defs/id"}
     },
