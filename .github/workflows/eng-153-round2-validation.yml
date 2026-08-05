@@ -1,5 +1,5 @@
 name: ENG-153 round-2 validation
-# The connector-authored synchronization commit starts the clean candidate cycle after generated packets are committed.
+# A connector-authored synchronization starts the clean candidate cycle after generated packets are committed.
 
 on:
   pull_request:
@@ -73,7 +73,7 @@ jobs:
 
       - name: Stop after generated commit
         if: steps.generate.outputs.changed == 'true'
-        run: echo 'Generated artifacts committed; synchronization starts the candidate-validation run.'
+        run: echo 'Generated artifacts committed; a connector-authored synchronization starts candidate attestation.'
 
       - name: Verify generator is clean
         if: steps.generate.outputs.changed == 'false'
@@ -87,14 +87,14 @@ jobs:
             EpistemicCompilerLab/research-execution/handoffs/WP-001.json \
             EpistemicCompilerLab/research-execution/scripts)"
 
-      - name: Verify committed report-only child
+      - name: Verify an already committed report-only child
         if: steps.generate.outputs.changed == 'false' && contains(steps.commit.outputs.message, '[validation report]')
         run: |
           python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py \
             --verify-committed-report EpistemicCompilerLab/research-execution/validation/validation-report.json \
             --require-clean
 
-      - name: Generate report from exact clean candidate commit
+      - name: Generate, commit and verify report from exact clean candidate
         if: steps.generate.outputs.changed == 'false' && !contains(steps.commit.outputs.message, '[validation report]')
         shell: bash
         run: |
@@ -110,4 +110,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add EpistemicCompilerLab/research-execution/validation/validation-report.json
           git commit -m 'ENG-153: commit exact candidate validation report [validation report]'
+          python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py \
+            --verify-committed-report EpistemicCompilerLab/research-execution/validation/validation-report.json \
+            --require-clean
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
