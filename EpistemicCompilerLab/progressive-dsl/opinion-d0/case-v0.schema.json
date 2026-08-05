@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/epistemic/opinion-d0/case-v0.schema.json",
+  "title": "LogicLens DSL-D0 Codex pilot case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "question",
+    "opinionId",
+    "contrastGroup",
+    "privateOpinionAvailableToDirect",
+    "expected",
+    "requiredSemantics",
+    "sourceHashes"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "caseId": {"type": "string"},
+    "question": {"type": "string", "minLength": 1},
+    "opinionId": {"type": "string"},
+    "contrastGroup": {"type": "string"},
+    "privateOpinionAvailableToDirect": {"const": false},
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opinion", "projectedProbability", "conflictIndex", "allowedConclusion", "action", "warnings"],
+      "properties": {
+        "opinion": {"type": ["object", "null"]},
+        "projectedProbability": {"type": ["string", "null"]},
+        "conflictIndex": {"type": ["string", "null"]},
+        "allowedConclusion": {"type": "string"},
+        "action": {"type": "string"},
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "requiredSemantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseRateIsPrior",
+        "uncertaintyIsNotErrorProbability",
+        "conflictSeparateFromUncertainty",
+        "noImplicitFusion",
+        "answerLevelProfile"
+      ],
+      "properties": {
+        "baseRateIsPrior": {"type": "boolean"},
+        "uncertaintyIsNotErrorProbability": {"type": "boolean"},
+        "conflictSeparateFromUncertainty": {"type": "boolean"},
+        "noImplicitFusion": {"type": "boolean"},
+        "answerLevelProfile": {"type": "boolean"}
+      }
+    },
+    "sourceHashes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+    }
+  }
+}
