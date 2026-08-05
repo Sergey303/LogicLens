@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "fusionId": {"minLength": 1, "type": "string"},
+    "opinionSubjectLevel": {"enum": ["claim", "answer"], "type": "string"},
+    "priorWeight": {"additionalProperties": false, "properties": {"denominator": {"minimum": 1, "type": "integer"}, "numerator": {"type": "integer"}}, "required": ["numerator", "denominator"], "type": "object"},
+    "proposition": {"minLength": 1, "type": "string"},
+    "reports": {"items": {"additionalProperties": false, "properties": {"baseRate": {"additionalProperties": false, "properties": {"denominator": {"minimum": 1, "type": "integer"}, "numerator": {"type": "integer"}}, "required": ["numerator", "denominator"], "type": "object"}, "dependencyGroup": {"minLength": 1, "type": "string"}, "negativeEvidence": {"additionalProperties": false, "properties": {"denominator": {"minimum": 1, "type": "integer"}, "numerator": {"type": "integer"}}, "required": ["numerator", "denominator"], "type": "object"}, "positiveEvidence": {"additionalProperties": false, "properties": {"denominator": {"minimum": 1, "type": "integer"}, "numerator": {"type": "integer"}}, "required": ["numerator", "denominator"], "type": "object"}, "provenance": {"items": {"minLength": 1, "type": "string"}, "minItems": 1, "type": "array"}, "reportId": {"minLength": 1, "type": "string"}}, "required": ["reportId", "positiveEvidence", "negativeEvidence", "baseRate", "provenance"], "type": "object"}, "minItems": 1, "type": "array"},
+    "schemaVersion": {"const": "0.1", "type": "string"}
+  },
+  "required": ["schemaVersion", "fusionId", "proposition", "opinionSubjectLevel", "priorWeight", "reports"],
+  "title": "DSL-D2 evidence bundle",
+  "type": "object"
+}
