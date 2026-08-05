@@ -16,7 +16,7 @@ RULE_SCHEMA = ROOT / "contracts" / "epistemic-logical-rule-v0.schema.json"
 CASES = BASE / "cases-dsl-b1-v0.jsonl"
 RULES = BASE / "dsl-b1-logical-rules-v0.jsonl"
 
-EXPECTED_CASE_SHA256 = "sha256:4fe35731379df34a9351d8cca99a7072158ab99a94ed035053aa29a4e67516ca"
+EXPECTED_CASE_SHA256 = "sha256:83f5f582aaf49e49690c64a730335ac8dae45f40e5ed92d1224f5562b6aae552"
 EXPECTED_RULE_SHA256 = "sha256:828c4cb274cc48a7149ea8138c9c0a67131f550e46934f9439c73de92400b7eb"
 EXPECTED_CASE_IDS = {
     "management.b1.northstar-project-governance-refuted",
@@ -53,8 +53,29 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def canonical_frozen_bytes(raw: bytes) -> bytes:
+    """Normalize checkout line endings while preserving the repository content."""
+    try:
+        raw.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise AssertionError("frozen benchmark file is not valid UTF-8") from exc
+    return raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
+
 def digest(path: Path) -> str:
+    canonical = canonical_frozen_bytes(path.read_bytes())
+    return "sha256:" + hashlib.sha256(canonical).hexdigest()
+
+
+def raw_digest(path: Path) -> str:
     return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def assert_line_ending_invariance() -> None:
+    lf = b'{"id":"a"}\n{"id":"b"}\n'
+    crlf = lf.replace(b"\n", b"\r\n")
+    if canonical_frozen_bytes(lf) != canonical_frozen_bytes(crlf):
+        raise AssertionError("frozen hash canonicalization is not LF/CRLF invariant")
 
 
 def assert_frozen(path: Path, expected: str, label: str) -> str:
@@ -67,8 +88,10 @@ def assert_frozen(path: Path, expected: str, label: str) -> str:
         raise AssertionError(
             f"{label} changed\n"
             f"path: {display_path}\n"
-            f"expected: {expected}\n"
-            f"actual:   {actual}\n"
+            f"expected canonical UTF-8/LF: {expected}\n"
+            f"actual canonical UTF-8/LF:   {actual}\n"
+            f"actual checkout bytes:       {raw_digest(path)}\n"
+            "Line-ending-only differences are normalized before comparison. "
             "If this change is intentional, review the semantic diff first, then "
             "update the frozen hash and all benchmark bindings in the same commit."
         )
@@ -92,6 +115,7 @@ def validate_rows(
 
 
 def main() -> int:
+    assert_line_ending_invariance()
     cases = load_jsonl(CASES)
     rules = load_jsonl(RULES)
     validate_rows(cases, load_json(CASE_SCHEMA), "case")
@@ -173,6 +197,8 @@ def main() -> int:
     print(f"DSL-B statuses: {json.dumps(statuses, sort_keys=True)}")
     print(f"Cases hash: {cases_hash}")
     print(f"Rules hash: {rules_hash}")
+    print(f"Checkout cases bytes hash: {raw_digest(CASES)}")
+    print(f"Checkout rules bytes hash: {raw_digest(RULES)}")
     return 0
 
 
