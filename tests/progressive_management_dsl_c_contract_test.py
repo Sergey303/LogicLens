@@ -16,7 +16,7 @@ OBSERVATION_SCHEMA = ROOT / "contracts" / "epistemic-observation-v0.schema.json"
 CASES = BASE / "cases-dsl-c-v0.jsonl"
 OBSERVATIONS = BASE / "dsl-c-observations-v0.jsonl"
 
-EXPECTED_CASE_SHA256 = "sha256:3996d549c8bd1af1846f76ac78e5f507150aff67a8844599510d0b9493277a32"
+EXPECTED_CASE_SHA256 = "sha256:8473bfc8dfbe258045d2f90c59606acd49e97dfffbae7e3af671656a0cc55dd0"
 EXPECTED_OBSERVATION_SHA256 = "sha256:8e7f6e0c6d0ecfab5074a7f4b4140b79ff1fab48cd8fd5425fd62a15c815b8ae"
 EXPECTED_CASE_IDS = {
     "management.c.northstar-lead-time-supported",
