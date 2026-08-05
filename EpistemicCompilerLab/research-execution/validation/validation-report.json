@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "status": "PASS",
+  "as_of": "2026-08-05",
+  "inputs": {
+    "work_packages": {
+      "path": "EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml",
+      "sha256": "7b4acdeda9a0bd51a0d1a747ccd162710dae3f812d6bf81673fd11d775ae1d45"
+    },
+    "schema": {
+      "path": "EpistemicCompilerLab/research-execution/schemas/work-package.schema.json",
+      "sha256": "90464232c8e712a3c9eea8e6f39ecd70c9ffa3b32eafa834d6071b689a33653e"
+    },
+    "handoff_schema": {
+      "path": "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json",
+      "sha256": "5715c39c375864409430cfd12d6820316e614f6129bd27fcd443ad3e664bf016"
+    },
+    "linear_snapshot": {
+      "path": "EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json",
+      "sha256": "7226c05d4aca88d1b7886b455629a7bf53059832815b0237e8721945d9400833"
+    },
+    "critical_path": {
+      "path": "EpistemicCompilerLab/research-execution/CRITICAL_PATH.md",
+      "sha256": "f551b3f854a9e3d06ec63be2b2e9f1481a0d50333b9b10ad5bea07f21f79ae54"
+    },
+    "validator": {
+      "path": "EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py",
+      "sha256": "c922c4a19da6cf63ab24466abdf2afa5526280cfc7ec4db62a35bcec84cc432c"
+    }
+  },
+  "summary": {
+    "mandatory_nodes": 40,
+    "direct_dependency_edges": 68,
+    "roots": [
+      "WP-001",
+      "WP-002",
+      "WP-003",
+      "WP-004",
+      "WP-005",
+      "WP-006",
+      "WP-007"
+    ],
+    "topological_nodes": 40,
+    "cycles": 0,
+    "unknown_dependencies": 0,
+    "linear_issues": 40,
+    "optional_robustness_packages": 5,
+    "submission_terminal": "WP-406",
+    "lifecycle_terminal": "WP-504",
+    "longest_chain_nodes": 24,
+    "longest_chain_edges": 23,
+    "longest_chain": [
+      "WP-001",
+      "GATE-001",
+      "WP-101",
+      "WP-103",
+      "WP-104",
+      "GATE-101",
+      "WP-201",
+      "WP-207",
+      "GATE-201",
+      "WP-301",
+      "WP-302",
+      "WP-303",
+      "WP-306",
+      "GATE-301",
+      "WP-401",
+      "WP-402",
+      "WP-405",
+      "GATE-401",
+      "WP-406",
+      "WP-501",
+      "WP-502",
+      "WP-503",
+      "GATE-501",
+      "WP-504"
+    ],
+    "blind_sequence": [
+      "WP-302",
+      "WP-303",
+      "WP-305",
+      "WP-306",
+      "GATE-301"
+    ]
+  },
+  "checks": {
+    "json_schema": "PASS",
+    "linear_snapshot_alignment": "PASS",
+    "acyclicity": "PASS",
+    "roles_and_identity": "PASS",
+    "context_packet_executability": "PASS",
+    "deliverable_completeness": "PASS",
+    "composite_splits": "PASS",
+    "blind_w3": "PASS",
+    "actual_submission_and_w5": "PASS",
+    "optional_document_consistency": "PASS"
+  },
+  "findings": []
+}

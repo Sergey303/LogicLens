@@ -1,0 +1,276 @@
+nodes:
+  WP-001:
+    linear_issue: ENG-153
+    phase: W0
+    kind: work_package
+    title: Executable research-program DAG
+    mandatory: true
+    dependencies: []
+    roles:
+      producer: Research Program Architect
+      independent_reviewer: Senior Adversarial Gatekeeper
+      gatekeeper: Senior Adversarial Methodology Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Every later package depends on an exact executable DAG; the previous artifact received REVISE.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-001
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-001/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-001/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-001/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-001/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-001/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-001/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-001/HANDOFF_SCHEMA.json
+    required_context:
+    - AGENTS.md
+    - TARGET_PAPER_COMPILE_DONT_TEACH.md
+    - TARGET_PAPER_FULL_EXECUTION_PATH_AND_STRICT_AUDIT.md
+    - critical-protocols/README.md
+    - PROGRAM_AUDIT_2026-08-05.md
+    - Linear governance documents and ENG-153…195.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution
+    - EpistemicCompilerLab/scientific-roadmap/
+    - Non-sealed Linear issue metadata.
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No W1+ execution while GATE-001 is blocked.
+    actions:
+    - Transcribe all mandatory issues, exact roles, direct dependencies and complete deliverables.
+    - Define exact context packets, actions, commands, checks, STOP/PIVOT and handoffs.
+    - Represent composite issue splits as independent execution units.
+    - Add optional robustness, blind W3, actual submission, W5, validator and immutable report.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml
+    - EpistemicCompilerLab/research-execution/CRITICAL_PATH.md
+    - EpistemicCompilerLab/research-execution/schemas/work-package.schema.json
+    - EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+    - EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py
+    - EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json
+    - EpistemicCompilerLab/research-execution/validation/validation-report.json
+    acceptance:
+      commands:
+      - python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py --as-of 2026-08-05
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: seven ENG-153 files.'
+        scientific:
+        - Graph is acyclic, complete, preserves the claim, reaches WP-406 and WP-504.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Validator detects dependency/role/deliverable/doc drift, missing splits, unsafe W3 and missing submission/W5.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - STOP if a node lacks a claim/threat link.
+    - REVISE on any Linear snapshot drift.
+    - No self-acceptance.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-001.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - T_SCOPE
+    - T_INDEPENDENCE
+    - T_FREEZE
+    - T_SUBMISSION
+    - T_REVISION
+    acceptance_gate: GATE-001
+  WP-002:
+    linear_issue: ENG-154
+    phase: W0
+    kind: work_package
+    title: Claim–evidence matrix and abstract contract
+    mandatory: true
+    dependencies: []
+    roles:
+      producer: Claim–Evidence Architect
+      independent_reviewer: Manuscript Evidence Reviewer
+      gatekeeper: Senior Adversarial Methodology Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Claims must be bound to planned evidence and null wording before confirmatory design.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-002
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-002/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-002/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-002/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-002/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-002/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-002/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-002/HANDOFF_SCHEMA.json
+    required_context:
+    - Scientific contract
+    - Strict audit
+    - Critical protocols
+    - Program Charter
+    - Pilots as planning evidence only.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/ABSTRACT_CONTRACT.md
+    - EpistemicCompilerLab/research-execution/PROHIBITED_CLAIMS.md
+    - EpistemicCompilerLab/research-execution/schemas/claim-evidence-row.schema.json
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No rhetorically desired claim without a frozen evidence source.
+    actions:
+    - Define claim-row schema, estimand, metric, table ID, control, alternative explanation and null wording.
+    - Create one row per draft-abstract sentence; freeze prohibited wording; delete/future-work unsupported claims.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/ABSTRACT_CONTRACT.md
+    - EpistemicCompilerLab/research-execution/PROHIBITED_CLAIMS.md
+    - EpistemicCompilerLab/research-execution/schemas/claim-evidence-row.schema.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_claim_evidence.py --matrix research-execution/CLAIM_EVIDENCE_MATRIX.yaml --abstract research-execution/ABSTRACT_CONTRACT.md
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: matrix, abstract contract, prohibited claims, row schema.'
+        scientific:
+        - Exactly one primary contrast/endpoint; every claim has control, evidence, table and failure wording.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Unsupported abstract sentence or prohibited wording fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Delete or narrow any claim not testable by a frozen experiment; pilots do not satisfy confirmatory rows.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-002.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_SCOPE
+    acceptance_gate: GATE-001
+  WP-003:
+    linear_issue: ENG-155
+    phase: W0
+    kind: work_package
+    title: Systematic related-work and novelty boundary
+    mandatory: true
+    dependencies: []
+    roles:
+      producer: Novelty Reviewer
+      independent_reviewer: Research Program Architect
+      gatekeeper: Senior Adversarial Methodology Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Occupied novelty must trigger PIVOT before benchmark spending.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-003
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-003/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-003/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-003/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-003/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-003/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-003/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-003/HANDOFF_SCHEMA.json
+    required_context:
+    - Central claim
+    - H1–H6
+    - Modes M0–M14
+    - Pilot evidence
+    - Search protocol template.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/RELATED_WORK_MATRIX.csv
+    - EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY.md
+    - EpistemicCompilerLab/research-execution/NEAREST_PRIOR_WORK.md
+    - EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG.yaml
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No search-snippet evidence or unsupported 'first' claims.
+    actions:
+    - Search primary sources across specified fields; log databases, queries, dates and inclusion/exclusion.
+    - Read >=30 relevant primary sources, citation-chain them, compare >=3 nearest neighbours and test search saturation.
+    - Record pre-submission refresh and occupied claims.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/RELATED_WORK_MATRIX.csv
+    - EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY.md
+    - EpistemicCompilerLab/research-execution/NEAREST_PRIOR_WORK.md
+    - EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG.yaml
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_related_work.py --matrix research-execution/RELATED_WORK_MATRIX.csv --log research-execution/RELATED_WORK_SEARCH_LOG.yaml --min-primary 30 --min-nearest 3
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: matrix, novelty boundary, nearest work, search log.'
+        scientific:
+        - Every novelty sentence is a positive comparison and search saturation is documented.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Exact prior work and convenient-baseline selection are actively attacked.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - PIVOT if the exact contribution already exists; remove unsupported novelty words.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-003.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H4
+    - T_SCOPE
+    acceptance_gate: GATE-001

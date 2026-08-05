@@ -1,0 +1,280 @@
+nodes:
+  WP-104:
+    linear_issue: ENG-163
+    phase: W1
+    kind: work_package
+    title: Grouped split, leakage audit and sealed storage
+    mandatory: true
+    dependencies:
+    - WP-103
+    roles:
+      producer: Leakage and Freeze Engineer
+      independent_reviewer: Independent Leakage Auditor
+      gatekeeper: Independent Contract and Data Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Isolation must be designed and drilled before sealed data exists.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-104
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-104/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-104/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-104/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-104/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-104/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-104/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-104/HANDOFF_SCHEMA.json
+    required_context:
+    - Approved case schema
+    - SPLIT_LEAKAGE_AND_FREEZE_PROTOCOL.md
+    - Teacher visibility contract.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/leakage
+    - EpistemicCompilerLab/research-execution/schemas/freeze-manifest.schema.json
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No post-performance rebalancing or sealed access by teacher/developer/RAG.
+    actions:
+    - Define grouping/seed, duplicate audits, canaries, permissions, index exclusions, manifest and invalidation.
+    - Create synthetic leakage drill matrix and fail-closed commands.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/leakage/GROUPED_SPLIT_SPEC.md
+    - EpistemicCompilerLab/research-execution/leakage/DUPLICATE_AUDIT_SPEC.md
+    - EpistemicCompilerLab/research-execution/leakage/CANARY_REGISTRY.schema.json
+    - EpistemicCompilerLab/research-execution/leakage/SEALED_PATH_MODEL.md
+    - EpistemicCompilerLab/research-execution/leakage/INDEX_EXCLUSION_CHECKS.md
+    - EpistemicCompilerLab/research-execution/schemas/freeze-manifest.schema.json
+    - EpistemicCompilerLab/research-execution/leakage/INVALIDATION_PROCEDURE.md
+    - EpistemicCompilerLab/research-execution/leakage/DRILL_MATRIX.yaml
+    acceptance:
+      commands:
+      - python research-execution/scripts/run_leakage_design_drills.py --matrix research-execution/leakage/DRILL_MATRIX.yaml --expect-all-detected
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: split, duplicates, canaries, paths, index, manifest, invalidation, drills.'
+        scientific:
+        - All grouping keys covered; changed sealed hash creates new version.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Every synthetic leak is detected and access fails closed.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Any overlap, undetected drill or path failure blocks freeze.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-104.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H2
+    - H6
+    - T_LEAK
+    - T_FREEZE
+    acceptance_gate: GATE-101
+  WP-105:
+    linear_issue: ENG-164
+    phase: W1
+    kind: work_package
+    title: Oracle/scorer executable specification and metric registry
+    mandatory: true
+    dependencies:
+    - WP-005
+    - WP-006
+    - WP-101
+    roles:
+      producer: Oracle/Scoring Specification Engineer
+      independent_reviewer: Mutation and Statistical Reviewer
+      gatekeeper: Independent Contract and Data Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Independent implementation and scoring must be frozen before implementation.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-105
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-105/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-105/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-105/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-105/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-105/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-105/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-105/HANDOFF_SCHEMA.json
+    required_context:
+    - WP-005 boundary
+    - WP-006 analysis registry
+    - WP-101 semantics
+    - ORACLE_AND_SCORER_PROTOCOL.md.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/oracle/spec
+    - EpistemicCompilerLab/research-execution/schemas/score-record.schema.json
+    - EpistemicCompilerLab/research-execution/metrics
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No circular expected generation or post-run alternative changes.
+    actions:
+    - Define A/B contracts, score normal forms, exact critical mutations and human/differential audit.
+    - Freeze field decomposition, gold/extracted query paths, aggregation, multiplicity, failures and bug policy.
+    - Create independent implementation handoff.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/oracle/INTERFACE_CONTRACTS.md
+    - EpistemicCompilerLab/research-execution/schemas/score-record.schema.json
+    - EpistemicCompilerLab/research-execution/oracle/CRITICAL_MUTATION_REGISTRY.yaml
+    - EpistemicCompilerLab/research-execution/oracle/DIFFERENTIAL_AND_HUMAN_AUDIT_PROTOCOL.md
+    - EpistemicCompilerLab/research-execution/metrics/METRIC_REGISTRY.yaml
+    - EpistemicCompilerLab/research-execution/metrics/SCENARIO_AGGREGATION_RULE.md
+    - EpistemicCompilerLab/research-execution/oracle/SCORER_BUG_CORRECTION_POLICY.md
+    - EpistemicCompilerLab/research-execution/oracle/INDEPENDENT_IMPLEMENTATION_HANDOFF.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_oracle_scorer_spec.py --mutations research-execution/oracle/CRITICAL_MUTATION_REGISTRY.yaml --metrics research-execution/metrics/METRIC_REGISTRY.yaml --score-schema research-execution/schemas/score-record.schema.json
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: contracts, score schema, mutations, audit, metrics, aggregation, bug policy, handoff.'
+        scientific:
+        - Field/query decomposition and aggregation match frozen semantics/statistics.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Circularity and surviving critical mutation fail.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Unresolved A/B disagreement, mutation miss or circular expected generation blocks GATE-101.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-105.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H3
+    - H5
+    - T_ORACLE
+    - T_POWER
+    acceptance_gate: GATE-101
+  GATE-101:
+    linear_issue: ENG-165
+    phase: W1
+    kind: gate
+    title: Contract, source and benchmark-design freeze decision
+    mandatory: true
+    dependencies:
+    - WP-101
+    - WP-102
+    - WP-103
+    - WP-104
+    - WP-105
+    roles:
+      producer: Gate Decision Recorder
+      independent_reviewer: Independent Contract Decision Auditor
+      gatekeeper: Independent Contract and Data Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Only PASS authorizes W2 implementation, not sealed data.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/GATE-101
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-101/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-101/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-101/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-101/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-101/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-101/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-101/HANDOFF_SCHEMA.json
+    required_context:
+    - Reviewed W1 artifacts
+    - WP-007 feasibility recheck.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/gates
+    - EpistemicCompilerLab/research-execution/handoffs
+    - EpistemicCompilerLab/research-execution/feasibility
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - Gatekeeper may not produce W1 inputs.
+    actions:
+    - Verify semantics, sources/licenses, annotation, leakage and scorer specs.
+    - Attack ambiguity, dependence, production gold, template/RAG leakage, circularity and feasibility.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/gates/GATE-101.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_gate.py --gate research-execution/gates/GATE-101.json --required WP-101 WP-102 WP-103 WP-104 WP-105
+      checks:
+        artifact:
+        - GATE-101 decision artifact validates and every input hash/review resolves.
+        scientific:
+        - Every mandatory criterion has evidence and strongest unresolved objection.
+        independence:
+        - Gatekeeper is not producer/reviewer of critical inputs; identity/session/conflict record passes.
+        adversarial:
+        - REVISE/REJECT/PIVOT alternatives were attacked; no Blocker suppressed.
+        reproducibility:
+        - A second operator can rerun all checks without oral instructions.
+    stop_or_pivot:
+    - REVISE keeps W2 blocked; ambiguity/license/staffing/power gaps are Blockers.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/GATE-101.json
+      required_status: decision_recorded
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H5
+    - T_ORACLE
+    - T_LEAK
+    - T_POWER
+    - T_ARTIFACT
+    acceptance_gate: GATE-101
+    decision_space:
+    - PASS
+    - REVISE
+    - REJECT
+    - PIVOT

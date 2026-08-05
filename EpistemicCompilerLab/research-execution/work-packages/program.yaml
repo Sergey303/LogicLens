@@ -1,0 +1,259 @@
+program:
+  repository: Sergey303/LogicLens
+  branch: main
+  working_area: EpistemicCompilerLab/
+  linear_project: Compile, Don’t Teach — TMLR Flagship
+  linear_project_id: f41541d3-ca1c-4df5-8be7-298a33fd2cdb
+  linear_snapshot_date: '2026-08-05'
+  linear_issue_scope:
+  - ENG-153..ENG-184
+  - ENG-188..ENG-195
+  submission_terminal: WP-406
+  lifecycle_terminal: WP-504
+  central_claim_boundary: H1 survives only if the compiled verified interface beats the frozen strongest matched non-compiled
+    baseline on the preregistered HOLDOUT primary endpoint and the direction independently replicates.
+  non_claims:
+  - Pilots 18/18 and 24/24 are hypothesis-forming only.
+  - No claim Codex trained Qwen weights or Qwen learned Prolog.
+  - No guaranteed privacy.
+  - No universal reliability from one model/domain/seed.
+  - Formal execution does not prove source extraction.
+  current_authorization: Only W0 may execute. W1 and later remain blocked until GATE-001 PASS.
+hypotheses:
+  H1: Compiled verified interface outperforms the strongest matched non-compiled baseline on the frozen primary endpoint.
+  H2: The direction generalizes across approved model, domain, source, rule and entity families.
+  H3: After a correct verified frame, residual errors relocate to query extraction and rendering.
+  H4: Fixed-budget contextual teacher editing is not guaranteed to improve a fixed-weight student and may regress.
+  H5: Matched ablations identify necessary verified-frame components.
+  H6: Secondary privacy-bounded portability is tested without claiming cryptographic privacy.
+threat_controls:
+  T_SCOPE: Scope or claim drift.
+  T_CAUSAL: Solver, answer, structure, length or renderer confounding.
+  T_ORACLE: Circular gold/scorer/oracle.
+  T_POWER: Underpower, multiplicity or infeasibility.
+  T_LEAK: Source, split, teacher or sealed-data leakage.
+  T_FREEZE: Hash/config/model/scorer/analysis drift.
+  T_INDEPENDENCE: Identity/session conflicts.
+  T_EXTRACTION: Extraction dominates measured effect.
+  T_ARTIFACT: Reproducibility, license, anonymity or undocumented steps.
+  T_SUBMISSION: Authorization without actual receipt/upload audit.
+  T_REVISION: Post-review favorable redesign.
+role_registry:
+- Adversarial Statistical Reviewer
+- Annotation and Leakage Reviewer
+- Anonymous Artifact Auditor
+- Anti-Memorization and Boundary Reviewer
+- Artifact and Reproducibility Engineer
+- Benchmark Architect
+- Benchmark Architect + Artifact Reviewer
+- Benchmark Builder and Annotation Coordinator
+- Blind Annotator A
+- Blind Annotator B
+- Blind HOLDOUT Run Operator
+- Blind Replication Run Operator
+- Causal Experiment Reviewer
+- Causal Mode Reviewer
+- Claim–Evidence Architect
+- Clean-Room Reproduction Operator
+- Confirmatory Analyst
+- DEV Experiment Operator
+- Experiment Systems Engineer
+- Final Submission Reviewer
+- Gate Decision Recorder
+- Independent Adjudicator
+- Independent Annotation Reviewer
+- Independent Budget and Operations Reviewer
+- Independent Confirmatory Decision Auditor
+- Independent Confirmatory Protocol Reviewer
+- Independent Contract Decision Auditor
+- Independent Contract and Data Reviewer
+- Independent Critical Reviewer
+- Independent Freeze Decision Auditor
+- Independent Freeze Readiness Reviewer
+- Independent Freeze and Leakage Reviewer
+- Independent Leakage Auditor
+- Independent Leakage and Gold Auditor
+- Independent Methodology Decision Auditor
+- Independent Oracle Architect
+- Independent Oracle Engineer
+- Independent Response Strategist
+- Independent Reviewer-Intent Auditor
+- Independent Revision Auditor
+- Independent Revision Decision Auditor
+- Independent Submission Decision Auditor
+- Independent Technical Editor
+- Leakage Tooling Engineer
+- Leakage and Freeze Engineer
+- Manuscript Evidence Editor
+- Manuscript Evidence Reviewer
+- Mode Adapter Engineer
+- Mutation and Dependency Auditor
+- Mutation and Statistical Reviewer
+- Novelty Reviewer
+- Oracle/Scoring Specification Engineer
+- Outcome Receipt Auditor
+- Policy and Anonymity Reviewer
+- Preregistration and Freeze Engineer
+- Production Compiler Engineer
+- Production Runtime Engineer
+- Project Lead
+- Reproducibility Engineer
+- Research Feasibility Architect
+- Research Program Architect
+- Response Matrix Author
+- Review Intake Analyst
+- Revision Execution Team
+- Revision Gatekeeper
+- Revision/Outcome Submission Operator
+- Runtime Boundary Reviewer
+- Runtime Verification Reviewer
+- Sealed Dataset Builder and Annotation Coordinator
+- Sealed HOLDOUT Builder
+- Sealed REPLICATION Builder
+- Semantic Contract Engineer
+- Senior Adversarial Gatekeeper
+- Senior Adversarial Methodology Reviewer
+- Senior Confirmatory Evidence Reviewer
+- Senior Evidence Gatekeeper
+- Senior Revision Evidence Reviewer
+- Source Curator
+- Source-Bound Corpus Builder
+- Statistical Design Reviewer
+- Statistical and Reproducibility Reviewer
+- Submission Coordinator
+- Submission Gatekeeper
+- Submission Operator
+- Submission Receipt Auditor
+- Teacher-Loop Engineer
+context_packet_contract:
+  required_files:
+  - TASK.md
+  - REQUIRED_READING.md
+  - INPUT_MANIFEST.json
+  - ALLOWED_PATHS.txt
+  - FORBIDDEN_PATHS.txt
+  - ACCEPTANCE.yaml
+  - HANDOFF_SCHEMA.json
+  generation_rule: Generate and hash before Backlog -> Todo; changed input hash invalidates execution.
+  identity_rule: Record producer, reviewer and gatekeeper identity, session, prior roles and conflicts.
+change_control:
+  rules:
+  - Linear controls status/direct dependencies; Git controls contracts/code/hashes/handoffs.
+  - Update snapshot/YAML/docs/report in one bounded change.
+  - No weakening MUST/STOP.
+  - Creator cannot accept own critical artifact.
+  - Post-freeze scientific changes create new protocol.
+  invalidation_events:
+  - Sealed/canary leak
+  - Frozen hash/config/model/scorer/analysis change
+  - Expected output reaches prompt
+  - Partial outcome affects execution
+  - Gold/scorer post-result change
+  - Identity/session conflict
+  - Best seed/favorable subset
+  - Post-hoc headline metric
+graph:
+  edge_semantics: dependency -> dependent
+  roots:
+  - WP-001
+  - WP-002
+  - WP-003
+  - WP-004
+  - WP-005
+  - WP-006
+  - WP-007
+  gates:
+  - GATE-001
+  - GATE-101
+  - GATE-201
+  - GATE-301
+  - GATE-401
+  - GATE-501
+  submission_terminal: WP-406
+  lifecycle_terminal: WP-504
+  mandatory_node_count: 40
+  required_blind_sequence:
+  - WP-302
+  - WP-303
+  - WP-305
+  - WP-306
+  - GATE-301
+optional_robustness_work:
+  ROB-001:
+    title: Second reproducible teacher or human-designed teacher baseline
+    dependencies:
+    - WP-206
+    must_finish_before: WP-207
+    producer: Teacher-Loop Engineer
+    independent_reviewer: Anti-Memorization and Boundary Reviewer
+    include_only_if: Feasibility funds it without reducing primary power or isolation.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/robustness/ROB-001/PROTOCOL.md
+    - EpistemicCompilerLab/research-execution/robustness/ROB-001/RESULTS.json
+    stop_rule: Stop if it delays/contaminates primary route or requires unavailable closed tooling.
+    claim_or_threat_links:
+    - H4
+    - T_CAUSAL
+  ROB-002:
+    title: Additional public student model family
+    dependencies:
+    - WP-205
+    must_finish_before: WP-207
+    producer: Experiment Systems Engineer
+    independent_reviewer: Reproducibility Engineer
+    include_only_if: Stable licensed model and hardware exist before DEV registry cutoff.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/robustness/ROB-002/MODEL_PROFILE.yaml
+    - EpistemicCompilerLab/research-execution/robustness/ROB-002/RUNS
+    stop_rule: Stop if licensing/compute underpowers primary matrix.
+    claim_or_threat_links:
+    - H2
+    - T_POWER
+  ROB-003:
+    title: Additional domain or source family
+    dependencies:
+    - WP-102
+    - WP-103
+    must_finish_before: GATE-101
+    producer: Source Curator
+    independent_reviewer: Benchmark Architect + Artifact Reviewer
+    include_only_if: Independent sources, licensing and annotation capacity exist before freeze.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/robustness/ROB-003/SOURCE_REGISTRY.yaml
+    - EpistemicCompilerLab/research-execution/robustness/ROB-003/COVERAGE_PLAN.yaml
+    stop_rule: Stop for template renaming, unverifiable sources or reduced D1–D3 power.
+    claim_or_threat_links:
+    - H2
+    - T_LEAK
+  ROB-004:
+    title: Extended latency, cost and token-efficiency analysis
+    dependencies:
+    - WP-207
+    must_finish_before: WP-302
+    producer: Statistical Design Reviewer
+    independent_reviewer: Statistical and Reproducibility Reviewer
+    include_only_if: Metrics/code freeze before confirmatory execution and remain secondary.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/robustness/ROB-004/MEASUREMENT_PROTOCOL.md
+    - EpistemicCompilerLab/research-execution/robustness/ROB-004/RESULTS.json
+    stop_rule: Stop if post-hoc headline or changes primary budgets.
+    claim_or_threat_links:
+    - T_POWER
+    - T_SCOPE
+  ROB-005:
+    title: Privacy-bounded portability simulation on public surrogate data
+    dependencies:
+    - WP-101
+    - WP-205
+    must_finish_before: GATE-301
+    producer: Research Program Architect
+    independent_reviewer: Independent Leakage Auditor
+    include_only_if: Public surrogate, separate protocol, no confirmatory contamination.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/robustness/ROB-005/PROTOCOL.md
+    - EpistemicCompilerLab/research-execution/robustness/ROB-005/RESULTS.json
+    stop_rule: Stop on privacy-guarantee wording, private exposure or H1 interference.
+    claim_or_threat_links:
+    - H6
+    - T_LEAK
+    - T_SCOPE

@@ -1,0 +1,294 @@
+nodes:
+  WP-206:
+    linear_issue: ENG-171
+    phase: W2
+    kind: work_package
+    title: Isolated teacher tracks with fixed budget
+    mandatory: true
+    dependencies:
+    - GATE-101
+    roles:
+      producer: Teacher-Loop Engineer
+      independent_reviewer: Anti-Memorization and Boundary Reviewer
+      gatekeeper: Independent Freeze Readiness Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: H4 requires bounded teacher conditions, not search until gain.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-206
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-206/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-206/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-206/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-206/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-206/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-206/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-206/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS GATE-101
+    - TEACHER_PROTOCOL.md
+    - TRAIN/aggregate DEV visibility
+    - Feasibility budget.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/teacher/tracks
+    - EpistemicCompilerLab/research-execution/teacher/budgets
+    - EpistemicCompilerLab/research-execution/teacher/audits
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No DEV questions, sealed/private data, arbitrary shell, budget expansion or case encoding.
+    actions:
+    - Implement prompt/program tracks with frozen epochs/calls/tokens/time and aggregate DEV only.
+    - Record hypotheses/failures/diffs/effects/risks; anti-memorization scan; deterministic selection/stop.
+    - Add reproducible human baseline/closed-teacher fallback; retain rejected candidates/failures.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/teacher/tracks
+    - EpistemicCompilerLab/research-execution/teacher/FIXED_BUDGET.yaml
+    - EpistemicCompilerLab/research-execution/teacher/SELECTION_AND_STOP_RULE.yaml
+    - EpistemicCompilerLab/research-execution/teacher/ANTI_MEMORIZATION_REPORT.json
+    - EpistemicCompilerLab/research-execution/teacher/HUMAN_BASELINE.md
+    - EpistemicCompilerLab/research-execution/teacher/CLOSED_TEACHER_FALLBACK.md
+    - EpistemicCompilerLab/research-execution/teacher/REJECTED_CANDIDATES_MANIFEST.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_teacher_tracks.py --tracks research-execution/teacher/tracks --budget research-execution/teacher/FIXED_BUDGET.yaml --scan research-execution/teacher/ANTI_MEMORIZATION_REPORT.json
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: tracks, budget, selection, scan, human, fallback, rejected.'
+        scientific:
+        - Teacher sees no DEV content/sealed/private data and all outcomes retained.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Case encoding, open-ended budget and memorization fail.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Boundary failure invalidates condition; zero effect remains valid.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-206.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H4
+    - T_CAUSAL
+    - T_LEAK
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-201
+  WP-207:
+    linear_issue: ENG-172
+    phase: W2
+    kind: work_package
+    title: Multi-model DEV-only calibration and final power update
+    mandatory: true
+    dependencies:
+    - WP-201
+    - WP-202
+    - WP-203
+    - WP-204
+    - WP-205
+    - WP-206
+    roles:
+      producer: DEV Experiment Operator
+      independent_reviewer: Statistical and Reproducibility Reviewer
+      gatekeeper: Independent Freeze Readiness Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: All implementation branches must converge in DEV before freeze.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-207
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-207/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-207/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-207/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-207/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-207/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-207/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-207/HANDOFF_SCHEMA.json
+    required_context:
+    - Reviewed WP-201…206
+    - Frozen DEV selection rules
+    - No sealed access.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/dev-calibration
+    - EpistemicCompilerLab/research-execution/experiments/raw/dev
+    - EpistemicCompilerLab/research-execution/statistics
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No sealed access, answer tuning, effect-driven metric or best seed.
+    actions:
+    - Run all planned profiles/modes; preserve raw outputs/failures/config decisions/discarded modes.
+    - Report query decomposition, floor/ceiling and heterogeneity; select baseline only by frozen rule.
+    - Update power >=.90 or narrow; symmetric rerun only for pre-freeze bugs with audit.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/dev-calibration/RUN_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/dev-calibration/RAW_OUTPUT_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/dev-calibration/FLOOR_CEILING_REPORT.md
+    - EpistemicCompilerLab/research-execution/dev-calibration/HETEROGENEITY_REPORT.md
+    - EpistemicCompilerLab/research-execution/dev-calibration/BASELINE_SELECTION_RECORD.json
+    - EpistemicCompilerLab/research-execution/dev-calibration/CONFIG_DECISION_LOG.yaml
+    - EpistemicCompilerLab/research-execution/dev-calibration/UPDATED_POWER_RESULTS.json
+    - EpistemicCompilerLab/research-execution/dev-calibration/SEALED_ACCESS_ATTESTATION.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_dev_calibration.py --manifest research-execution/dev-calibration/RUN_MANIFEST.json --selection research-execution/dev-calibration/BASELINE_SELECTION_RECORD.json --power research-execution/dev-calibration/UPDATED_POWER_RESULTS.json --min-power 0.90
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: run, raw, floor, heterogeneity, baseline, decisions, power, attestation.'
+        scientific:
+        - Frozen baseline rule and endpoint; final power >=.90; all configurations retained.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Floor/ceiling, discarded modes, unfavorable results and sealed-access attacks pass.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - If no meaningful M6 advantage, PIVOT before freeze.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-207.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - T_CAUSAL
+    - T_POWER
+    - T_LEAK
+    acceptance_gate: GATE-201
+  GATE-201:
+    linear_issue: ENG-173
+    phase: W2
+    kind: gate
+    title: Confirmatory-freeze readiness decision
+    mandatory: true
+    dependencies:
+    - WP-201
+    - WP-202
+    - WP-203
+    - WP-204
+    - WP-205
+    - WP-206
+    - WP-207
+    roles:
+      producer: Gate Decision Recorder
+      independent_reviewer: Independent Freeze Decision Auditor
+      gatekeeper: Independent Freeze Readiness Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: PASS is required before sealed construction/preregistration.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/GATE-201
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-201/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-201/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-201/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-201/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-201/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-201/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-201/HANDOFF_SCHEMA.json
+    required_context:
+    - Reviewed W2 outputs
+    - Final code/data/model lock
+    - Clean-room oracle PASS
+    - Blind execution plan.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/gates
+    - EpistemicCompilerLab/research-execution/handoffs
+    - EpistemicCompilerLab/research-execution/dev-calibration
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No sealed content or unresolved Blocker.
+    actions:
+    - Verify modes, oracle, gold, leakage drills, profiles, teacher boundary, DEV, baseline/power.
+    - Verify code/data/model lock and distinct blind operator/analyst plan; record decision/hashes.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/gates/GATE-201.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_gate.py --gate research-execution/gates/GATE-201.json --required WP-201 WP-202 WP-203 WP-204 WP-205 WP-206 WP-207
+      checks:
+        artifact:
+        - GATE-201 decision artifact validates and every input hash/review resolves.
+        scientific:
+        - Every mandatory criterion has evidence and strongest unresolved objection.
+        independence:
+        - Gatekeeper is not producer/reviewer of critical inputs; identity/session/conflict record passes.
+        adversarial:
+        - REVISE/REJECT/PIVOT alternatives were attacked; no Blocker suppressed.
+        reproducibility:
+        - A second operator can rerun all checks without oral instructions.
+    stop_or_pivot:
+    - REVISE/PIVOT keeps W3 blocked; any oracle/leak/config/power/identity Blocker forbids freeze.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/GATE-201.json
+      required_status: decision_recorded
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_ORACLE
+    - T_LEAK
+    - T_POWER
+    - T_FREEZE
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-201
+    decision_space:
+    - PASS
+    - REVISE
+    - REJECT
+    - PIVOT

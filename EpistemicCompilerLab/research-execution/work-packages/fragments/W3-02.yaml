@@ -1,0 +1,300 @@
+nodes:
+  WP-305:
+    linear_issue: ENG-189
+    phase: W3
+    kind: work_package
+    title: Blind REPLICATION without HOLDOUT access
+    mandatory: true
+    dependencies:
+    - WP-302
+    roles:
+      producer: Blind Replication Run Operator
+      independent_reviewer: Independent Freeze and Leakage Reviewer
+      gatekeeper: Senior Confirmatory Evidence Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: REPLICATION must execute in a separate context with no HOLDOUT information.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-305
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-305/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-305/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-305/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-305/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-305/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-305/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-305/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS WP-302
+    - Sealed REPLICATION handle
+    - Frozen hashes
+    - Retry/failure rules.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/confirmatory/replication
+    - Read-only frozen binaries/configuration
+    - Sealed REPLICATION handle.
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No HOLDOUT outputs/scores/completeness/failures/rankings/analysis or config change.
+    actions:
+    - Verify hashes/canaries and HOLDOUT inaccessibility; execute blocked batch.
+    - Store raw attempts before scoring; create embargoed scores and completeness/no-artifact/leak reports.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/confirmatory/replication/RUN_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/confirmatory/replication/COMPLETENESS_REPORT.json
+    - EpistemicCompilerLab/research-execution/confirmatory/replication/NO_ARTIFACT_REPORT.json
+    - EpistemicCompilerLab/research-execution/confirmatory/replication/LEAKAGE_REPORT.json
+    - EpistemicCompilerLab/research-execution/confirmatory/replication/EMBARGO_ATTESTATION.json
+    - EpistemicCompilerLab/research-execution/confirmatory/replication/EMBARGOED_SCORE_HANDLE.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_blind_run.py --kind replication --manifest research-execution/confirmatory/replication/RUN_MANIFEST.json --require-complete --require-embargo --forbid-path research-execution/confirmatory/holdout
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: manifest, complete, no-artifact, leak, embargo, score handle.'
+        scientific:
+        - 100% cells attempted/classified; no HOLDOUT info/outcomes; no analysis.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - HOLDOUT access, selective rerun, manual repair or drift fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - HOLDOUT exposure/hash drift/leak/repair requires new protocol.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-305.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H5
+    - T_LEAK
+    - T_POWER
+    - T_FREEZE
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-301
+    embargo:
+      scientific_outcomes_hidden_until: WP-303 and WP-305 both pass independent execution, completeness and leakage review.
+      one_time_unblinding_authority: Senior Confirmatory Evidence Reviewer
+      forbidden_before_unblinding:
+      - effect sizes
+      - scores
+      - model or mode rankings
+      - per-case outcomes
+      - performance-revealing failure summaries
+  WP-306:
+    linear_issue: ENG-177
+    phase: W3
+    kind: work_package
+    title: Controlled unblinding and frozen confirmatory analysis
+    mandatory: true
+    dependencies:
+    - WP-303
+    - WP-305
+    roles:
+      producer: Confirmatory Analyst
+      independent_reviewer: Adversarial Statistical Reviewer
+      gatekeeper: Senior Confirmatory Evidence Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Outcomes open exactly once only after both blind runs pass.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-306
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-306/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-306/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-306/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-306/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-306/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-306/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-306/HANDOFF_SCHEMA.json
+    required_context:
+    - Frozen analysis/scripts
+    - Embargoed H/R packages
+    - Independent PASS records
+    - Claim/evidence and PIVOT policy.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout
+    - EpistemicCompilerLab/research-execution/confirmatory/replication
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No rerun/config change, new headline metric, favorable subset, repair or changed alternatives.
+    actions:
+    - Verify hashes/attestations; record one-time unblinding timestamp/identities/packages.
+    - Run frozen scripts; report H/R separately before pooled secondary.
+    - Produce paired effect, CI, McNemar, meaningful gain, heterogeneity, query/error layers, controls, multiplicity and PIVOT.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/confirmatory/UNBLINDING_RECORD.json
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis/PRIMARY_RESULTS.json
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis/REPLICATION_RESULTS.json
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis/HETEROGENEITY_REPORT.md
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis/ERROR_DECOMPOSITION.json
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis/CONTROL_RESULTS.json
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis/MULTIPLICITY_REPORT.json
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis/PIVOT_RECOMMENDATION.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_unblinding.py --record research-execution/confirmatory/UNBLINDING_RECORD.json --holdout research-execution/confirmatory/holdout/EMBARGO_ATTESTATION.json --replication research-execution/confirmatory/replication/EMBARGO_ATTESTATION.json
+      - python research-execution/confirmatory/analysis/run_frozen_analysis.py --verify-script-hashes --report-splits-separately
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: unblind, primary, replication, heterogeneity, errors, controls, multiplicity, pivot.'
+        scientific:
+        - Both runs PASS before unblind; split results separate; frozen statistics/controls complete.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Post-hoc metrics/exclusions, outcome-driven edits/reruns and operator=analyst fail.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Outcome-driven change invalidates status; apply mandatory evidence-bound pivots.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-306.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_CAUSAL
+    - T_POWER
+    - T_FREEZE
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-301
+  GATE-301:
+    linear_issue: ENG-178
+    phase: W3
+    kind: gate
+    title: Publication-claim route after controlled unblinding
+    mandatory: true
+    dependencies:
+    - WP-301
+    - WP-302
+    - WP-303
+    - WP-306
+    roles:
+      producer: Gate Decision Recorder
+      independent_reviewer: Independent Confirmatory Decision Auditor
+      gatekeeper: Senior Confirmatory Evidence Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Only blind H/R plus controlled analysis may select paper route.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/GATE-301
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-301/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-301/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-301/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-301/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-301/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-301/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/GATE-301/HANDOFF_SCHEMA.json
+    required_context:
+    - WP-301/302/303/305/306 artifacts/reviews
+    - Updated claim matrix.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/gates
+    - EpistemicCompilerLab/research-execution/confirmatory
+    - EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.yaml
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No result claims before route decision.
+    actions:
+    - Verify primary effect/CI/replication/clustering/controls/renderer/heterogeneity/errors/protocol.
+    - Choose one route and update retain/narrow/delete rows.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/gates/GATE-301.json
+    - EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.after-GATE-301.yaml
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_gate.py --gate research-execution/gates/GATE-301.json --required WP-301 WP-302 WP-303 WP-305 WP-306
+      checks:
+        artifact:
+        - GATE-301 decision artifact validates and every input hash/review resolves.
+        scientific:
+        - Every mandatory criterion has evidence and strongest unresolved objection.
+        independence:
+        - Gatekeeper is not producer/reviewer of critical inputs; identity/session/conflict record passes.
+        adversarial:
+        - REVISE/REJECT/PIVOT alternatives were attacked; no Blocker suppressed.
+        reproducibility:
+        - A second operator can rerun all checks without oral instructions.
+    stop_or_pivot:
+    - Choose exactly one evidence-bounded paper/stop route.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/GATE-301.json
+      required_status: decision_recorded
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_CAUSAL
+    - T_LEAK
+    - T_POWER
+    acceptance_gate: GATE-301
+    decision_space:
+    - FULL_VERIFIED_INTERFACE_PAPER
+    - MINIMAL_DECISION_CONTRACT_PAPER
+    - CONDITIONAL_BOUNDARY_STUDY
+    - FAILURE_ANALYSIS
+    - STOP_FLAGSHIP_ROUTE

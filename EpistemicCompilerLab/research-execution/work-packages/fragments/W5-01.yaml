@@ -1,0 +1,267 @@
+nodes:
+  WP-501:
+    linear_issue: ENG-191
+    phase: W5
+    kind: work_package
+    title: Receive and atomically classify official review package
+    mandatory: true
+    dependencies:
+    - WP-406
+    roles:
+      producer: Review Intake Analyst
+      independent_reviewer: Independent Response Strategist
+      gatekeeper: Project Lead
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Response begins only after official reviews arrive and submitted version is verified.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-501
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-501/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-501/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-501/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-501/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-501/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-501/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-501/HANDOFF_SCHEMA.json
+    required_context:
+    - WP-406 receipt/hashes
+    - Official reviews/editor comments/deadlines
+    - Submitted manuscript/claim matrix.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/review
+    - EpistemicCompilerLab/research-execution/submission
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No invented intent, omitted unfavorable comment, changes during intake or premature deanonymization.
+    actions:
+    - Archive official text/metadata; decompose atomic comments; classify type/severity/dependency/deadline.
+    - Link each to manuscript/evidence/gap; preserve contradictory requests.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/review/REVIEW_PACKAGE_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/review/COMMENT_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/review/DEADLINE_AND_DEPENDENCY_PLAN.md
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_review_intake.py --manifest research-execution/review/REVIEW_PACKAGE_MANIFEST.json --matrix research-execution/review/COMMENT_MATRIX.yaml --submitted-audit research-execution/submission/UPLOADED_HASH_AUDIT.json
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: manifest, comment matrix, deadline plan.'
+        scientific:
+        - Every official comment occurs once/decomposed and links evidence/disposition.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Selective omission and invented intent fail.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Stop drafting if official package incomplete or submitted version unverifiable.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-501.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - T_REVISION
+    - T_SUBMISSION
+    acceptance_gate: GATE-501
+    activation_condition: Official TMLR/OpenReview review or editor package is received.
+  WP-502:
+    linear_issue: ENG-192
+    phase: W5
+    kind: work_package
+    title: Evidence-bound response and revision plan
+    mandatory: true
+    dependencies:
+    - WP-501
+    roles:
+      producer: Response Matrix Author
+      independent_reviewer: Independent Reviewer-Intent Auditor
+      gatekeeper: Revision Gatekeeper
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: New work is allowed only after every concern has an evidence-bound disposition.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-502
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-502/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-502/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-502/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-502/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-502/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-502/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-502/HANDOFF_SCHEMA.json
+    required_context:
+    - Approved COMMENT_MATRIX
+    - Submitted artifacts/analysis
+    - STOP/PIVOT
+    - Venue policy/deadline.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/review
+    - EpistemicCompilerLab/research-execution/submission
+    - EpistemicCompilerLab/research-execution/confirmatory
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No claim expansion, endpoint replacement, favorable subsets or infeasible promises.
+    actions:
+    - Draft response per comment and choose clarify/correct/reanalyse/symmetric experiment/narrow/decline/adapt.
+    - Specify evidence/manuscript locations; preregister new experiments with budget/stop/claim effect; resolve dependencies/deadlines/conflicts.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/review/RESPONSE_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/review/REVISION_PLAN.md
+    - EpistemicCompilerLab/research-execution/review/NEW_EXPERIMENT_PROTOCOLS
+    - EpistemicCompilerLab/research-execution/review/CLAIM_CHANGE_LOG.yaml
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_revision_plan.py --comments research-execution/review/COMMENT_MATRIX.yaml --responses research-execution/review/RESPONSE_MATRIX.yaml --protocols research-execution/review/NEW_EXPERIMENT_PROTOCOLS
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: responses, plan, protocols, claim log.'
+        scientific:
+        - Every comment has evidence/disposition; experiments symmetric/preregistered; no claim expansion.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Post-hoc redesign and infeasible requests trigger narrow/decline/adapt.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - If request violates isolation/feasibility, narrow or explain; do not improvise favorable tests.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-502.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_REVISION
+    - T_POWER
+    acceptance_gate: GATE-501
+  WP-503:
+    linear_issue: ENG-193
+    phase: W5
+    kind: work_package
+    title: Execute approved revision and symmetric experiments
+    mandatory: true
+    dependencies:
+    - WP-502
+    roles:
+      producer: Revision Execution Team
+      independent_reviewer: Independent Revision Auditor
+      gatekeeper: Revision Gatekeeper
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Revision must execute only approved work from exact submitted snapshot.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-503
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-503/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-503/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-503/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-503/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-503/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-503/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-503/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS WP-502
+    - Submitted snapshot
+    - Approved protocols/budgets/stops
+    - Venue deadline/policy.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/review/revision
+    - Approved new-data paths only.
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No unapproved exploration as confirmatory, deleted negatives, changed old raw outputs or favorable seeds/subsets.
+    actions:
+    - Branch from submitted snapshot; apply traceable diffs; run only approved symmetric analyses/experiments.
+    - Retain attempts/failures/original tables; update evidence/response; rebuild anonymous artifact/clean-room; produce redline/letter.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/review/revision/CHANGE_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/review/revision/EXPERIMENT_RESULTS
+    - EpistemicCompilerLab/research-execution/review/revision/RESPONSE_LETTER.md
+    - EpistemicCompilerLab/research-execution/review/revision/MANUSCRIPT_REDLINE
+    - EpistemicCompilerLab/research-execution/review/revision/UPDATED_CLAIM_EVIDENCE_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/review/revision/REPRODUCTION_REPORT.md
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_revision_execution.py --plan research-execution/review/REVISION_PLAN.md --changes research-execution/review/revision/CHANGE_MANIFEST.json --require-zero-undocumented --require-symmetric
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: change manifest, results, letter, redline, matrix, reproduction.'
+        scientific:
+        - Every change maps to plan; old evidence reproducible; new work symmetric and negatives retained.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Unapproved or favorable-only change and artifact drift fail.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Any unapproved/favorable-only work blocks resubmission; narrow/adapt.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-503.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_REVISION
+    - T_ARTIFACT
+    acceptance_gate: GATE-501

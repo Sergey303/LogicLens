@@ -1,0 +1,285 @@
+nodes:
+  WP-401:
+    linear_issue: ENG-179
+    phase: W4
+    kind: work_package
+    title: Strict independent audit of publication claims
+    mandatory: true
+    dependencies:
+    - GATE-301
+    roles:
+      producer: Independent Critical Reviewer
+      independent_reviewer: Senior Evidence Gatekeeper
+      gatekeeper: Final Submission Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Every surviving claim must withstand external-style falsification before drafting.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-401
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-401/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-401/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-401/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-401/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-401/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-401/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-401/HANDOFF_SCHEMA.json
+    required_context:
+    - GATE-301 route
+    - Confirmatory evidence
+    - Claim matrix
+    - Protocols.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/publication
+    - EpistemicCompilerLab/research-execution/confirmatory
+    - EpistemicCompilerLab/research-execution/CLAIM_EVIDENCE_MATRIX.after-GATE-301.yaml
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No author intent as evidence or undisclosed reviewer conflict/session reuse.
+    actions:
+    - Declare identity/session/prior-role conflicts; attack copying, trivial solver, sources, oracle, leakage, one-family, teacher, budgets, renderer, extraction and statistics.
+    - Issue retain/narrow/delete per claim and Blocker register.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/publication/CLAIM_REVIEW_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/publication/UNRESOLVED_BLOCKERS.yaml
+    - EpistemicCompilerLab/research-execution/publication/ABSTRACT_SENTENCE_ATTACKS.yaml
+    - EpistemicCompilerLab/research-execution/publication/REVIEW_IDENTITY_AND_CONFLICT.json
+    - EpistemicCompilerLab/research-execution/publication/FINAL_RECOMMENDATION.md
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_claim_audit.py --matrix research-execution/publication/CLAIM_REVIEW_MATRIX.yaml --blockers research-execution/publication/UNRESOLVED_BLOCKERS.yaml --require-identity-separation
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: review matrix, blockers, sentence attacks, identity, recommendation.'
+        scientific:
+        - Every claim has evidence, limitation and retain/narrow/delete.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - All mandatory attacks/unfavorable evidence retained; any Blocker fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Unresolved Blocker prevents claim and submission.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-401.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_SCOPE
+    - T_CAUSAL
+    - T_ORACLE
+    - T_POWER
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-401
+  WP-402:
+    linear_issue: ENG-180
+    phase: W4
+    kind: work_package
+    title: Evidence-bound manuscript and supplements
+    mandatory: true
+    dependencies:
+    - WP-401
+    roles:
+      producer: Manuscript Evidence Editor
+      independent_reviewer: Independent Technical Editor
+      gatekeeper: Final Submission Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Only audited claims may enter manuscript.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-402
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-402/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-402/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-402/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-402/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-402/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-402/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-402/HANDOFF_SCHEMA.json
+    required_context:
+    - GATE-301 route
+    - PASS WP-401 rows
+    - Frozen results/tables
+    - Related work.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/manuscript
+    - EpistemicCompilerLab/research-execution/publication
+    - EpistemicCompilerLab/research-execution/confirmatory/analysis
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No rejected/narrowed claim by rhetoric or prohibited learning/privacy/universal wording.
+    actions:
+    - Draft required sections using PASS rows; link every number to evidence.
+    - Report strongest baseline, negatives, failures, exclusions, separate splits, query/errors/controls.
+    - Run claim/prohibited wording lint and regenerate all tables/figures.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/manuscript/main
+    - EpistemicCompilerLab/research-execution/manuscript/supplements
+    - EpistemicCompilerLab/research-execution/manuscript/TABLE_FIGURE_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/manuscript/CLAIM_LINK_MAP.yaml
+    - EpistemicCompilerLab/research-execution/manuscript/LINT_REPORT.json
+    - EpistemicCompilerLab/research-execution/manuscript/LLM_USE_DISCLOSURE.md
+    acceptance:
+      commands:
+      - python research-execution/scripts/lint_manuscript.py --manuscript research-execution/manuscript/main --claims research-execution/publication/CLAIM_REVIEW_MATRIX.yaml --prohibited research-execution/PROHIBITED_CLAIMS.md --require-zero-findings
+      - python research-execution/scripts/regenerate_tables.py --manifest research-execution/manuscript/TABLE_FIGURE_MANIFEST.json
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: manuscript, supplements, table manifest, claim map, lint, disclosure.'
+        scientific:
+        - Every sentence/number evidence-bound; limits exact; tables reproduce.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Prohibited wording, missing negative evidence or rhetorical claim expansion fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Rejected/narrowed claim cannot reappear; unresolved evidence link blocks.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-402.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_SCOPE
+    - T_ARTIFACT
+    acceptance_gate: GATE-401
+  WP-403:
+    linear_issue: ENG-181
+    phase: W4
+    kind: work_package
+    title: Anonymous reproducibility artifact with early dry-run
+    mandatory: true
+    dependencies:
+    - GATE-301
+    roles:
+      producer: Artifact and Reproducibility Engineer
+      independent_reviewer: Anonymous Artifact Auditor
+      gatekeeper: Final Submission Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Early artifact dry-run must expose reproducibility failures before final submission.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-403
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-403/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-403/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-403/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-403/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-403/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-403/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-403/HANDOFF_SCHEMA.json
+    required_context:
+    - GATE-301 route
+    - Public data/licenses
+    - Runtime/modes/oracle/raw outputs/analysis.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/artifact/anonymous-snapshot
+    - EpistemicCompilerLab/research-execution/artifact/dry-run
+    - EpistemicCompilerLab/research-execution/sources/licenses
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No usernames, repo/issue URLs, author metadata, local paths, secrets, private data or identity maps.
+    actions:
+    - Build early dry-run; include public artifacts/scripts/schemas/prompts/models/oracle/raw failures/analysis/locks/commands.
+    - Run identity/secret/license/hash scans and table regeneration; build final author-repo-independent snapshot.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/artifact/dry-run/DRY_RUN_REPORT.json
+    - EpistemicCompilerLab/research-execution/artifact/anonymous-snapshot
+    - EpistemicCompilerLab/research-execution/artifact/IDENTITY_SECRET_SCAN.json
+    - EpistemicCompilerLab/research-execution/artifact/LICENSE_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/artifact/HASH_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/artifact/TABLE_REGENERATION_REPORT.json
+    - EpistemicCompilerLab/research-execution/artifact/EXACT_COMMANDS.md
+    acceptance:
+      commands:
+      - python research-execution/scripts/audit_anonymous_artifact.py --artifact research-execution/artifact/anonymous-snapshot --require-clean-identity --require-clean-secrets --require-licenses
+      - python research-execution/scripts/regenerate_artifact_tables.py --artifact research-execution/artifact/anonymous-snapshot
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: dry-run, snapshot, identity, licenses, hashes, tables, commands.'
+        scientific:
+        - Tables regenerate, failures retained and author repo not needed.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Identity, secret, license or undocumented-step attack fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Any leak, secret, undocumented step or missing license blocks submission.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-403.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_ARTIFACT
+    - T_SUBMISSION
+    acceptance_gate: GATE-401

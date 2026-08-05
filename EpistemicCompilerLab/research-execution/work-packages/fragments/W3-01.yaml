@@ -1,0 +1,314 @@
+nodes:
+  WP-301:
+    linear_issue: ENG-174
+    phase: W3
+    kind: work_package
+    title: Build, audit and separately seal HOLDOUT/REPLICATION
+    mandatory: true
+    dependencies:
+    - GATE-201
+    roles:
+      producer: Sealed Dataset Builder and Annotation Coordinator
+      independent_reviewer: Independent Leakage and Gold Auditor
+      gatekeeper: Senior Confirmatory Evidence Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Confirmatory datasets must be independently built/audited/sealed before preregistration.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-301
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-301/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-301/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-301/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-301/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-301/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-301/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-301/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS GATE-201
+    - Final power
+    - Frozen schemas/source/annotation/split/leakage contracts.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/sealed/holdout
+    - EpistemicCompilerLab/research-execution/sealed/replication
+    - EpistemicCompilerLab/research-execution/sources
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No runtime/parser access to replication family, performance rebalancing or shared builder session.
+    actions:
+    - Execute WP-301H and WP-301R separately; blind annotate/adjudicate.
+    - Run separate gold/leakage/overlap audits; install canaries, seal hashes and prove inaccessible paths.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/sealed/holdout/HOLDOUT_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/sealed/holdout/GOLD_AUDIT.json
+    - EpistemicCompilerLab/research-execution/sealed/holdout/LEAKAGE_REPORT.json
+    - EpistemicCompilerLab/research-execution/sealed/replication/REPLICATION_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/sealed/replication/GOLD_AUDIT.json
+    - EpistemicCompilerLab/research-execution/sealed/replication/LEAKAGE_REPORT.json
+    - EpistemicCompilerLab/research-execution/sealed/CROSS_SPLIT_INDEPENDENCE_REPORT.json
+    - EpistemicCompilerLab/research-execution/sealed/ACCESS_AND_CANARY_REPORT.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_sealed_datasets.py --holdout research-execution/sealed/holdout/HOLDOUT_MANIFEST.json --replication research-execution/sealed/replication/REPLICATION_MANIFEST.json --require-independent-families --require-clean-overlap
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: H/R manifests, H/R gold, H/R leakage, cross split, access.'
+        scientific:
+        - Power-sized, source-bound, independently reviewed, separate families and clean overlap.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Leak, ambiguity, shared identity or changed sealed hash fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Any leakage/ambiguity/identity conflict/hash change invalidates version.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-301.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H5
+    - T_ORACLE
+    - T_LEAK
+    - T_FREEZE
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-301
+    execution_units:
+    - id: WP-301H
+      title: Build/audit/seal HOLDOUT
+      producer: Sealed HOLDOUT Builder
+      reviewer: Independent Leakage and Gold Auditor
+      deliverables:
+      - EpistemicCompilerLab/research-execution/sealed/holdout/HOLDOUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/sealed/holdout/GOLD_AUDIT.json
+      - EpistemicCompilerLab/research-execution/sealed/holdout/LEAKAGE_REPORT.json
+    - id: WP-301R
+      title: Build/audit/seal REPLICATION
+      producer: Sealed REPLICATION Builder
+      reviewer: Independent Leakage and Gold Auditor
+      deliverables:
+      - EpistemicCompilerLab/research-execution/sealed/replication/REPLICATION_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/sealed/replication/GOLD_AUDIT.json
+      - EpistemicCompilerLab/research-execution/sealed/replication/LEAKAGE_REPORT.json
+      independence: Different producer/session from HOLDOUT and runtime/parser developers; independent source/rule/entity/paraphrase families.
+  WP-302:
+    linear_issue: ENG-175
+    phase: W3
+    kind: work_package
+    title: Preregister and freeze confirmatory protocol
+    mandatory: true
+    dependencies:
+    - GATE-201
+    - WP-301
+    roles:
+      producer: Preregistration and Freeze Engineer
+      independent_reviewer: Independent Confirmatory Protocol Reviewer
+      gatekeeper: Senior Confirmatory Evidence Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Choices, hashes, embargo and analysis must freeze before either run.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-302
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-302/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-302/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-302/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-302/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-302/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-302/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-302/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS GATE-201
+    - Separate sealed manifests
+    - Claims/estimand/baseline/power/models/modes/retries/metrics/oracle/scorer/analysis.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/preregistration
+    - EpistemicCompilerLab/research-execution/sealed
+    - EpistemicCompilerLab/research-execution/gates/GATE-201.json
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No scientific TODO, partial-score path or unlogged result permission.
+    actions:
+    - Freeze hypotheses, endpoint/contrast, baseline, effect, size, profiles, retries, multiplicity, hashes and shells.
+    - Define distinct blind contexts, embargo, completeness/leakage gates and one-time unblinding.
+    - Run non-sealed dry run and access/canary tests; create single-purpose commands.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/preregistration/PROTOCOL.md
+    - EpistemicCompilerLab/research-execution/preregistration/FULL_FREEZE_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/preregistration/ANALYSIS_REGISTRY.yaml
+    - EpistemicCompilerLab/research-execution/preregistration/TABLE_FIGURE_SHELLS
+    - EpistemicCompilerLab/research-execution/preregistration/BLIND_EXECUTION_AND_EMBARGO_PROTOCOL.md
+    - EpistemicCompilerLab/research-execution/preregistration/UNBLINDING_AUTHORIZATION.schema.json
+    - EpistemicCompilerLab/research-execution/preregistration/DRY_RUN_REPORT.json
+    - EpistemicCompilerLab/research-execution/preregistration/ACCESS_CANARY_REPORT.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_preregistration.py --manifest research-execution/preregistration/FULL_FREEZE_MANIFEST.json --embargo research-execution/preregistration/BLIND_EXECUTION_AND_EMBARGO_PROTOCOL.md --require-no-todo
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: protocol, manifest, analysis, shells, embargo, unblind schema, dry run, access.'
+        scientific:
+        - One endpoint/contrast and all choices frozen; both executions precede unblinding.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Partial-score/cross-run information path fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Any post-PASS scientific change creates new protocol and invalidates old status.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-302.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H4
+    - H5
+    - H6
+    - T_POWER
+    - T_FREEZE
+    - T_LEAK
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-301
+    embargo: &id001
+      scientific_outcomes_hidden_until: WP-303 and WP-305 both pass independent execution, completeness and leakage review.
+      one_time_unblinding_authority: Senior Confirmatory Evidence Reviewer
+      forbidden_before_unblinding:
+      - effect sizes
+      - scores
+      - model or mode rankings
+      - per-case outcomes
+      - performance-revealing failure summaries
+  WP-303:
+    linear_issue: ENG-176
+    phase: W3
+    kind: work_package
+    title: Blind HOLDOUT execution without unblinding
+    mandatory: true
+    dependencies:
+    - WP-302
+    roles:
+      producer: Blind HOLDOUT Run Operator
+      independent_reviewer: Independent Freeze and Leakage Reviewer
+      gatekeeper: Senior Confirmatory Evidence Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: HOLDOUT executes blindly and remains embargoed until REPLICATION completes.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-303
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-303/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-303/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-303/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-303/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-303/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-303/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-303/HANDOFF_SCHEMA.json
+    required_context:
+    - PASS WP-302
+    - Sealed HOLDOUT handle
+    - Frozen hashes
+    - Retry/failure rules.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout
+    - Read-only frozen binaries/configuration
+    - Sealed HOLDOUT handle.
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No REPLICATION content/results, summaries, repair or config/scientific changes.
+    actions:
+    - Verify hashes/canaries/profiles and REPLICATION inaccessibility; run tests/signed manifest.
+    - Execute blocked batch, store raw attempts, write embargoed scores, produce completeness/leak/no-artifact.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout/RUN_MANIFEST.json
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout/COMPLETENESS_REPORT.json
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout/NO_ARTIFACT_REPORT.json
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout/LEAKAGE_REPORT.json
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout/EMBARGO_ATTESTATION.json
+    - EpistemicCompilerLab/research-execution/confirmatory/holdout/EMBARGOED_SCORE_HANDLE.json
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_blind_run.py --kind holdout --manifest research-execution/confirmatory/holdout/RUN_MANIFEST.json --require-complete --require-embargo --forbid-path research-execution/confirmatory/replication
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: manifest, complete, no-artifact, leak, embargo, score handle.'
+        scientific:
+        - 100% cells attempted/classified; outcomes hidden; no analysis.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Cross-run access, selective rerun, manual repair or partial exposure fails.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - Hash drift/leak/exposure/repair/selective rerun invalidates block.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-303.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - H3
+    - H5
+    - T_LEAK
+    - T_POWER
+    - T_FREEZE
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-301
+    embargo: *id001

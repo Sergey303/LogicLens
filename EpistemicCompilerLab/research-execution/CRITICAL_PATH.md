@@ -1,209 +1,139 @@
-# Critical path — Compile, Don’t Teach
+# Critical path — Compile, Don’t Teach (revised executable DAG)
 
-Status: producer artifact for `ENG-153 / WP-001`  
+Status: revised producer artifact for `ENG-153 / WP-001` after independent `REVISE`  
 Repository scope: `EpistemicCompilerLab/`  
-Operational source of truth: Linear project **Compile, Don’t Teach — TMLR Flagship**  
-Machine-readable source: [`WORK_PACKAGES.yaml`](WORK_PACKAGES.yaml)  
-Schema: [`schemas/work-package.schema.json`](schemas/work-package.schema.json)
+Machine source: [`WORK_PACKAGES.yaml`](WORK_PACKAGES.yaml)  
+Validator: [`scripts/validate_work_packages.py`](scripts/validate_work_packages.py)  
+Linear snapshot: [`validation/linear-relations-snapshot.json`](validation/linear-relations-snapshot.json)  
+Report: [`validation/validation-report.json`](validation/validation-report.json)
 
-## 1. Interpretation of “critical path”
+## Meaning
 
-The project has no duration estimates, so this document does **not** claim a unique schedule-critical path. It defines two reproducible notions:
+There are no reliable duration estimates, so this is not a fictitious time-based CPM. It records the mandatory structural route, fan-out/fan-in dependencies and the longest chain by edge count.
 
-1. **Structural critical set** — every mandatory node that is an ancestor of `GATE-401`.
-2. **Longest dependency chain by edge count** — a diagnostic only; it is not a time estimate.
+The **actual submission terminal is `WP-406`**, not `GATE-401`. The managed publication lifecycle terminates at `WP-504`.
 
-All 32 Linear nodes `ENG-153…ENG-184` are mandatory ancestors of `GATE-401`. Therefore all of them are structurally critical. Parallel branches may have schedule slack only after durations and resource constraints are estimated.
-
-## 2. Gate backbone
+## Gate backbone
 
 ```text
-W0: {WP-001, WP-002, WP-003, WP-004, WP-005, WP-006}
+W0: {WP-001, WP-002, WP-003, WP-004, WP-005, WP-006, WP-007}
     -> GATE-001
 
 W1: GATE-001 -> {WP-101, WP-102}
     {WP-101, WP-102} -> WP-103 -> WP-104
     {WP-005, WP-006, WP-101} -> WP-105
-    {WP-101, WP-102, WP-103, WP-104, WP-105}
-    -> GATE-101
+    {WP-101, WP-102, WP-103, WP-104, WP-105} -> GATE-101
 
 W2: GATE-101 -> {WP-201, WP-202, WP-203, WP-204, WP-205, WP-206}
-    {WP-201, WP-202, WP-203, WP-204, WP-205, WP-206}
-    -> WP-207
-    {WP-201, WP-202, WP-203, WP-204, WP-205, WP-206, WP-207}
-    -> GATE-201
+    {WP-201, WP-202, WP-203, WP-204, WP-205, WP-206} -> WP-207
+    {WP-201, WP-202, WP-203, WP-204, WP-205, WP-206, WP-207} -> GATE-201
 
 W3: GATE-201 -> WP-301
-    {GATE-201, WP-301} -> WP-302 -> WP-303 -> WP-304
-    {WP-301, WP-302, WP-303, WP-304}
-    -> GATE-301
+    {GATE-201, WP-301} -> WP-302
+    WP-302 -> WP-303   # blind HOLDOUT, embargoed
+    WP-302 -> WP-305   # blind REPLICATION, no HOLDOUT access
+    {WP-303, WP-305} -> WP-306  # controlled unblinding + frozen analysis
+    {WP-301, WP-302, WP-303, WP-306} -> GATE-301
 
 W4: GATE-301 -> WP-401 -> WP-402
     GATE-301 -> WP-403 -> WP-404
     {WP-402, WP-403, WP-404} -> WP-405
-    {WP-401, WP-402, WP-403, WP-404, WP-405}
-    -> GATE-401
+    {WP-401, WP-402, WP-403, WP-404, WP-405} -> GATE-401
+    GATE-401 -> WP-406  # actual TMLR/OpenReview submission and receipt
+
+W5: WP-406 -(official reviews arrive)-> WP-501 -> WP-502 -> WP-503
+    -> GATE-501 -> WP-504
 ```
 
-Gate decisions are strict:
+`WP-305` reaches `GATE-301` through `WP-306`; direct dependencies intentionally match current Linear `blockedBy`.
 
-| Gate | Decision space | Unlocks |
-|---|---|---|
-| `GATE-001` | `PASS / REVISE / REJECT / PIVOT` | W1 contracts and benchmark design |
-| `GATE-101` | `PASS / REVISE / REJECT / PIVOT` | W2 implementation and DEV-only work |
-| `GATE-201` | `PASS / REVISE / REJECT / PIVOT` | sealed construction and preregistration |
-| `GATE-301` | full paper / minimal contract / boundary study / failure analysis / stop | evidence-bounded W4 route |
-| `GATE-401` | `PASS / REVISE / DO NOT SUBMIT` | actual TMLR submission |
-
-No downstream phase may start on `REVISE`, `REJECT`, `PIVOT`, or an unresolved Blocker unless the gate record explicitly defines the new narrower route.
-
-## 3. Representative longest structural chains
-
-The graph contains several equal longest chains because W0, W1, W2, and W4 contain parallel mandatory branches. Each longest chain has 18 nodes and 17 edges.
-
-A representative artifact chain is:
+## Safe W3
 
 ```text
-WP-001
--> GATE-001
--> WP-101
--> WP-103
--> WP-104
--> GATE-101
--> WP-201
--> WP-207
--> GATE-201
--> WP-301
--> WP-302
--> WP-303
--> WP-304
+freeze
+-> blind HOLDOUT execution, outcome embargoed
+-> blind REPLICATION execution in separate context without HOLDOUT access
+-> independent completeness/leakage PASS for both
+-> one controlled unblinding
+-> frozen confirmatory analysis
 -> GATE-301
--> WP-403
--> WP-404
--> WP-405
--> GATE-401
 ```
 
-A representative evidence/manuscript chain has the same length and replaces the W4 artifact branch with:
+The HOLDOUT operator, REPLICATION operator and analyst are three distinct roles and sessions.
+
+## Composite issue splits
+
+- `WP-201A`: production compiler/runtime path A;
+- `WP-201B`: matched adapters M0–M14;
+- `WP-203A`: source-bound TRAIN/DEV construction;
+- `WP-203B`: blind A/B annotation;
+- `WP-203C`: independent adjudication;
+- `WP-301H`: HOLDOUT build/audit/seal;
+- `WP-301R`: independent REPLICATION build/audit/seal.
+
+A parent cannot pass until every internal unit passes independent review.
+
+## Executable context packet
+
+Before `Backlog -> Todo`, generate and hash:
 
 ```text
-GATE-301 -> WP-401 -> WP-402 -> WP-405 -> GATE-401
+TASK.md
+REQUIRED_READING.md
+INPUT_MANIFEST.json
+ALLOWED_PATHS.txt
+FORBIDDEN_PATHS.txt
+ACCEPTANCE.yaml
+HANDOFF_SCHEMA.json
 ```
 
-The terminal wave explicitly contains:
+Every mandatory node contains exact context, allowed/forbidden paths, actions, complete deliverables, commands, five acceptance classes, STOP/PIVOT and structured handoff. Generic placeholders are rejected.
 
-1. `WP-403` — anonymous reproducibility artifact;
-2. `WP-404` — clean-room reproduction;
-3. `WP-405` — current TMLR/OpenReview policy verification and submission package;
-4. `GATE-401` — final submission authorization.
+## Roles
 
-Thus the flagship route cannot terminate at a manuscript alone.
+Exact specialist roles replace phase aliases, including Claim–Evidence Architect, Novelty Reviewer, Independent Oracle Architect, Statistical Design Reviewer, Mutation and Dependency Auditor, Independent Leakage Auditor, Blind HOLDOUT Run Operator, Blind Replication Run Operator, Confirmatory Analyst and Submission Receipt Auditor.
 
-## 4. Phase entry and exit conditions
+Every critical package records identity, session, prior roles and conflicts. Producer, reviewer and gatekeeper are distinct.
 
-### W0 — Research governance and causal design
+## Actual submission and W5
 
-**Entry:** non-sealed scientific contracts and historical pilots are available.  
-**Parallel work:** WP-001…WP-006.  
-**Exit:** independent `GATE-001 PASS`.
+`WP-406` creates the TMLR/OpenReview identifier, receipt, timestamp, uploaded-hash audit and anonymity audit of the actually uploaded version.
 
-Immediate STOP/PIVOT triggers include occupied novelty, unsupported central claims, answer-copying or solver/no-solver confounding, infeasible power, and inability to design an independent oracle.
+W5 manages official review intake, evidence-bound response, only preregistered symmetric revision experiments, `GATE-501`, and archival of the executed outcome.
 
-### W1 — Contracts, sources, and leakage-safe benchmark design
+## Optional robustness work
 
-**Entry:** `GATE-001 PASS`.  
-**Core convergence:** semantics and sources feed case design; case design feeds leakage design; semantic/oracle/statistical inputs feed scorer design.  
-**Exit:** independent `GATE-101 PASS`.
+The following exist in both YAML and this document:
 
-No production implementation or confirmatory case generation is authorized before this gate.
+| ID | Work | Cutoff |
+|---|---|---|
+| `ROB-001` | second reproducible teacher or human baseline | before `WP-207` |
+| `ROB-002` | additional public student model family | before `WP-207` |
+| `ROB-003` | additional domain/source family | before `GATE-101` |
+| `ROB-004` | extended latency/cost/token analysis | before `WP-302` |
+| `ROB-005` | privacy-bounded public-surrogate simulation | before `GATE-301` |
 
-### W2 — Implementation and DEV-only calibration
+They remain optional unless a gate explicitly promotes one through PIVOT.
 
-**Entry:** `GATE-101 PASS`.  
-**Parallel work:** production runtime, independent oracle, TRAIN/DEV corpus, leakage tooling, model/run harness, and isolated teacher tracks.  
-**Convergence:** all six branches feed WP-207 DEV-only calibration.  
-**Exit:** independent `GATE-201 PASS`.
-
-Any sealed access, undetected leakage drill, oracle circularity, model/config drift, or power failure blocks the phase.
-
-### W3 — Freeze, one-shot HOLDOUT, and independent REPLICATION
-
-**Entry:** `GATE-201 PASS`.  
-**Sequence:** sealed dataset -> preregistration -> one-shot HOLDOUT -> independent REPLICATION and frozen analysis.  
-**Exit:** `GATE-301` selects exactly one evidence-bounded paper route.
-
-Partial HOLDOUT inspection, post-result changes, favorable-subset selection, or replication contamination invalidates the affected route.
-
-### W4 — Claim audit, anonymous artifact, and submission
-
-**Entry:** an explicit `GATE-301` route.  
-**Parallel branches:** independent claim audit/manuscript and anonymous artifact/clean-room reproduction.  
-**Convergence:** current venue-policy verification and complete submission package.  
-**Exit:** `GATE-401 PASS`.
-
-A manuscript claim cannot survive by author intent, and submission is forbidden while anonymity, licensing, reproduction, evidence, or policy Blockers remain.
-
-## 5. Claim and threat coverage
-
-Every mandatory node links to one or more of:
-
-- hypotheses `H1…H6`; or
-- explicit threat controls such as oracle circularity, leakage, answer copying, underpower, extraction dominance, one-model/domain concentration, anonymity, licensing, or reproducibility.
-
-`H6` is secondary. Failure of privacy-bounded portability may remove H6 without invalidating H1, provided no private-data leakage affects the primary experiment.
-
-No package may introduce fuzzy membership, answer-level probability, model training, persistent service, cryptographic privacy claims, or a broader universal claim.
-
-## 6. Optional robustness work
-
-Optional robustness items are listed separately in `WORK_PACKAGES.yaml` as `ROB-001…ROB-005`:
-
-- second reproducible teacher or human-designed teacher baseline;
-- an additional public student model family;
-- an additional domain/source family;
-- extended latency/cost/token-efficiency analysis;
-- privacy-bounded portability simulation on public surrogate data.
-
-They are not prerequisites for `GATE-401` unless a gate explicitly promotes one after a documented PIVOT. They must be frozen before their declared cutoff and must not delay, contaminate, or underpower the primary contrast.
-
-## 7. Change control
-
-A graph or scope change is valid only when:
-
-1. the corresponding Linear relation/status/decision is updated;
-2. this DAG is updated in the same bounded change;
-3. affected input hashes and downstream invalidations are recorded;
-4. the change does not weaken a critical protocol;
-5. an independent reviewer and gatekeeper remain distinct from the artifact creator.
-
-After confirmatory freeze, scientific choices cannot be edited in place. A changed scientific choice creates a new protocol version and invalidates the previous confirmatory status.
-
-## 8. Machine checks performed for WP-001
-
-Validation snapshot: 2026-08-05.
-
-| Check | Result |
-|---|---:|
-| JSON Schema Draft 2020-12 validation | PASS |
-| Mandatory nodes | 32 |
-| Dependency edges | 59 |
-| Unique node IDs | PASS |
-| Unknown dependencies | 0 |
-| DAG cycles | 0 |
-| Topologically sorted nodes | 32 / 32 |
-| Mandatory orphan nodes | 0 |
-| Mandatory nodes reaching `GATE-401` | 32 / 32 |
-| Work packages missing producer/reviewer/gatekeeper/gate/STOP | 0 |
-| Nodes without H1–H6 or threat-control link | 0 |
-| Anonymous artifact reaches final submission gate | PASS |
-| Longest dependency chain | 18 nodes / 17 edges |
-
-Validation environment used for the producer check:
+## Longest chain
 
 ```text
-Python 3.13.5
-PyYAML 6.0.3
-jsonschema 4.26.0
+WP-001 -> GATE-001 -> WP-101 -> WP-103 -> WP-104 -> GATE-101
+-> WP-201 -> WP-207 -> GATE-201 -> WP-301 -> WP-302 -> WP-303
+-> WP-306 -> GATE-301 -> WP-401 -> WP-402 -> WP-405 -> GATE-401
+-> WP-406 -> WP-501 -> WP-502 -> WP-503 -> GATE-501 -> WP-504
 ```
 
-The independent reviewer must rerun validation and adversarially compare this graph with current Linear relations before accepting WP-001.
+Validated topology: **40 mandatory nodes**, **68 direct dependency edges**, longest chain **24 nodes / 23 edges**.
+
+## Current authorization
+
+Only W0 is actionable: `WP-001…WP-007`, then `GATE-001`.
+
+W1 and later remain blocked. This revision does not authorize benchmark scaling, runtime expansion, sealed data or model evaluation.
+
+## Reproduce validation
+
+```text
+python EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py --as-of 2026-08-05
+```

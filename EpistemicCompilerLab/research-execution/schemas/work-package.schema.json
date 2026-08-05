@@ -1,342 +1,211 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.invalid/epistemic-compiler-lab/work-package.schema.json",
-  "title": "Compile, Don't Teach executable work-package DAG",
+  "title": "Compile, Don't Teach executable research-program DAG v3",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schema_version",
     "program",
     "hypotheses",
-    "threats",
-    "roles",
+    "threat_controls",
+    "role_registry",
+    "context_packet_contract",
     "change_control",
     "graph",
     "nodes",
-    "optional"
+    "optional_robustness_work"
   ],
   "properties": {
-    "schema_version": {
-      "const": "2.0.0"
-    },
+    "schema_version": {"const": "3.0.0"},
     "program": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "repository",
-        "branch",
-        "area",
-        "linear_project",
-        "snapshot",
-        "claim_boundary",
-        "non_claims"
-      ],
+      "required": ["repository", "branch", "working_area", "linear_project", "linear_project_id", "linear_snapshot_date", "linear_issue_scope", "submission_terminal", "lifecycle_terminal", "central_claim_boundary", "non_claims", "current_authorization"],
       "properties": {
-        "repository": {
-          "const": "Sergey303/LogicLens"
-        },
-        "branch": {
-          "const": "main"
-        },
-        "area": {
-          "const": "EpistemicCompilerLab/"
-        },
-        "linear_project": {
-          "type": "string",
-          "minLength": 1
-        },
-        "snapshot": {
-          "type": "string",
-          "format": "date"
-        },
-        "claim_boundary": {
-          "type": "string",
-          "minLength": 40
-        },
-        "non_claims": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
+        "repository": {"const": "Sergey303/LogicLens"},
+        "branch": {"const": "main"},
+        "working_area": {"const": "EpistemicCompilerLab/"},
+        "linear_project": {"type": "string"},
+        "linear_project_id": {"type": "string", "format": "uuid"},
+        "linear_snapshot_date": {"type": "string", "format": "date"},
+        "linear_issue_scope": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+        "submission_terminal": {"const": "WP-406"},
+        "lifecycle_terminal": {"const": "WP-504"},
+        "central_claim_boundary": {"type": "string", "minLength": 80},
+        "non_claims": {"type": "array", "minItems": 5, "items": {"type": "string"}},
+        "current_authorization": {"type": "string", "minLength": 20}
       }
     },
     "hypotheses": {
       "type": "object",
-      "required": [
-        "H1",
-        "H2",
-        "H3",
-        "H4",
-        "H5",
-        "H6"
-      ],
+      "required": ["H1", "H2", "H3", "H4", "H5", "H6"],
       "additionalProperties": false,
-      "patternProperties": {
-        "^H[1-6]$": {
-          "type": "string",
-          "minLength": 1
-        }
-      }
+      "patternProperties": {"^H[1-6]$": {"type": "string"}}
     },
-    "threats": {
+    "threat_controls": {"type": "object", "minProperties": 8, "additionalProperties": {"type": "string"}},
+    "role_registry": {"type": "array", "minItems": 20, "uniqueItems": true, "items": {"type": "string", "minLength": 2}},
+    "context_packet_contract": {
       "type": "object",
-      "minProperties": 1,
-      "additionalProperties": {
-        "type": "string",
-        "minLength": 1
+      "additionalProperties": false,
+      "required": ["required_files", "generation_rule", "identity_rule"],
+      "properties": {
+        "required_files": {"type": "array", "const": ["TASK.md", "REQUIRED_READING.md", "INPUT_MANIFEST.json", "ALLOWED_PATHS.txt", "FORBIDDEN_PATHS.txt", "ACCEPTANCE.yaml", "HANDOFF_SCHEMA.json"]},
+        "generation_rule": {"type": "string"},
+        "identity_rule": {"type": "string"}
       }
-    },
-    "roles": {
-      "type": "object",
-      "minProperties": 3,
-      "patternProperties": {
-        "^R\\d{2}$": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
-      "additionalProperties": false
     },
     "change_control": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string",
-        "minLength": 1
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rules", "invalidation_events"],
+      "properties": {
+        "rules": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "invalidation_events": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
       }
     },
     "graph": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "roots",
-        "terminal",
-        "gates",
-        "edge"
-      ],
+      "required": ["edge_semantics", "roots", "gates", "submission_terminal", "lifecycle_terminal", "mandatory_node_count", "required_blind_sequence"],
       "properties": {
-        "roots": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/nodeId"
-          }
-        },
-        "terminal": {
-          "$ref": "#/$defs/nodeId"
-        },
-        "gates": {
-          "type": "array",
-          "const": [
-            "GATE-001",
-            "GATE-101",
-            "GATE-201",
-            "GATE-301",
-            "GATE-401"
-          ]
-        },
-        "edge": {
-          "const": "dependency -> dependent"
-        }
+        "edge_semantics": {"const": "dependency -> dependent"},
+        "roots": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nodeId"}},
+        "gates": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string", "pattern": "^GATE-\\d{3}$"}},
+        "submission_terminal": {"const": "WP-406"},
+        "lifecycle_terminal": {"const": "WP-504"},
+        "mandatory_node_count": {"const": 40},
+        "required_blind_sequence": {"const": ["WP-302", "WP-303", "WP-305", "WP-306", "GATE-301"]}
       }
     },
-    "nodes": {
-      "type": "object",
-      "minProperties": 1,
-      "patternProperties": {
-        "^(WP|GATE)-\\d{3}$": {
-          "$ref": "#/$defs/node"
-        }
-      },
-      "additionalProperties": false
-    },
-    "optional": {
-      "type": "object",
-      "patternProperties": {
-        "^ROB-\\d{3}$": {
-          "$ref": "#/$defs/optional"
-        }
-      },
-      "additionalProperties": false
-    }
+    "nodes": {"type": "object", "minProperties": 40, "maxProperties": 40, "patternProperties": {"^(WP|GATE)-\\d{3}$": {"$ref": "#/$defs/node"}}, "additionalProperties": false},
+    "optional_robustness_work": {"type": "object", "minProperties": 5, "maxProperties": 5, "patternProperties": {"^ROB-\\d{3}$": {"$ref": "#/$defs/optional"}}, "additionalProperties": false}
   },
   "$defs": {
-    "nodeId": {
-      "type": "string",
-      "pattern": "^(WP|GATE)-\\d{3}$"
-    },
-    "strings": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string",
-        "minLength": 1
+    "nodeId": {"type": "string", "pattern": "^(WP|GATE)-\\d{3}$"},
+    "nonEmptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer", "independent_reviewer", "gatekeeper", "identity_record_required", "session_separation_required", "conflict_declaration_required"],
+      "properties": {
+        "producer": {"type": "string"},
+        "independent_reviewer": {"type": "string"},
+        "gatekeeper": {"type": "string"},
+        "identity_record_required": {"const": true},
+        "session_separation_required": {"const": true},
+        "conflict_declaration_required": {"const": true}
       }
     },
-    "roleId": {
-      "type": "string",
-      "pattern": "^R\\d{2}$"
+    "packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["directory", "files"],
+      "properties": {
+        "directory": {"type": "string"},
+        "files": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"type": "string"}}
+      }
     },
-    "link": {
-      "type": "string",
-      "pattern": "^(H[1-6]|T_[A-Z]+)$"
+    "checkClasses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact", "scientific", "independence", "adversarial", "reproducibility"],
+      "properties": {
+        "artifact": {"$ref": "#/$defs/nonEmptyStrings"},
+        "scientific": {"$ref": "#/$defs/nonEmptyStrings"},
+        "independence": {"$ref": "#/$defs/nonEmptyStrings"},
+        "adversarial": {"$ref": "#/$defs/nonEmptyStrings"},
+        "reproducibility": {"$ref": "#/$defs/nonEmptyStrings"}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commands", "checks"],
+      "properties": {"commands": {"$ref": "#/$defs/nonEmptyStrings"}, "checks": {"$ref": "#/$defs/checkClasses"}}
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "path", "required_status", "must_include"],
+      "properties": {
+        "schema": {"type": "string"},
+        "path": {"type": "string"},
+        "required_status": {"enum": ["ready_for_review", "decision_recorded"]},
+        "must_include": {"type": "array", "minItems": 10, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "producer", "reviewer", "deliverables"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^WP-\\d{3}[A-Z]$"},
+        "title": {"type": "string"},
+        "producer": {"type": "string"},
+        "second_producer": {"type": "string"},
+        "reviewer": {"type": "string"},
+        "dependencies": {"type": "array", "items": {"type": "string"}},
+        "allowed_paths": {"type": "array", "items": {"type": "string"}},
+        "forbidden_paths": {"type": "array", "items": {"type": "string"}},
+        "deliverables": {"$ref": "#/$defs/nonEmptyStrings"},
+        "independence": {"type": "string"}
+      }
     },
     "node": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "issue",
-        "phase",
-        "kind",
-        "title",
-        "deps",
-        "producer",
-        "reviewer",
-        "gatekeeper",
-        "gate",
-        "inputs",
-        "outputs",
-        "acceptance",
-        "stop",
-        "links"
-      ],
+      "required": ["linear_issue", "phase", "kind", "title", "mandatory", "dependencies", "roles", "why_now", "context_packet", "required_context", "allowed_paths", "forbidden_context", "actions", "deliverables", "acceptance", "stop_or_pivot", "handoff", "claim_or_threat_links", "acceptance_gate"],
       "properties": {
-        "issue": {
-          "type": "string",
-          "pattern": "^ENG-\\d+$"
-        },
-        "phase": {
-          "enum": [
-            "W0",
-            "W1",
-            "W2",
-            "W3",
-            "W4"
-          ]
-        },
-        "kind": {
-          "enum": [
-            "work",
-            "gate"
-          ]
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "deps": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/nodeId"
-          }
-        },
-        "producer": {
-          "$ref": "#/$defs/roleId"
-        },
-        "reviewer": {
-          "$ref": "#/$defs/roleId"
-        },
-        "gatekeeper": {
-          "$ref": "#/$defs/roleId"
-        },
-        "gate": {
-          "type": "string",
-          "pattern": "^GATE-\\d{3}$"
-        },
-        "inputs": {
-          "$ref": "#/$defs/strings"
-        },
-        "outputs": {
-          "$ref": "#/$defs/strings"
-        },
-        "acceptance": {
-          "$ref": "#/$defs/strings"
-        },
-        "stop": {
-          "$ref": "#/$defs/strings"
-        },
-        "links": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/link"
-          }
-        },
-        "decisions": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 1
+        "linear_issue": {"type": "string", "pattern": "^ENG-\\d+$"},
+        "phase": {"enum": ["W0", "W1", "W2", "W3", "W4", "W5"]},
+        "kind": {"enum": ["work_package", "gate"]},
+        "title": {"type": "string"},
+        "mandatory": {"const": true},
+        "dependencies": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nodeId"}},
+        "roles": {"$ref": "#/$defs/roles"},
+        "why_now": {"type": "string", "minLength": 30},
+        "context_packet": {"$ref": "#/$defs/packet"},
+        "required_context": {"$ref": "#/$defs/nonEmptyStrings"},
+        "allowed_paths": {"$ref": "#/$defs/nonEmptyStrings"},
+        "forbidden_context": {"$ref": "#/$defs/nonEmptyStrings"},
+        "actions": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+        "deliverables": {"$ref": "#/$defs/nonEmptyStrings"},
+        "acceptance": {"$ref": "#/$defs/acceptance"},
+        "stop_or_pivot": {"$ref": "#/$defs/nonEmptyStrings"},
+        "handoff": {"$ref": "#/$defs/handoff"},
+        "claim_or_threat_links": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^(H[1-6]|T_[A-Z]+)$"}},
+        "acceptance_gate": {"type": "string", "pattern": "^(GATE|WP)-\\d{3}$"},
+        "decision_space": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string"}},
+        "execution_units": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/unit"}},
+        "activation_condition": {"type": "string", "minLength": 20},
+        "embargo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scientific_outcomes_hidden_until", "one_time_unblinding_authority", "forbidden_before_unblinding"],
+          "properties": {
+            "scientific_outcomes_hidden_until": {"type": "string"},
+            "one_time_unblinding_authority": {"type": "string"},
+            "forbidden_before_unblinding": {"$ref": "#/$defs/nonEmptyStrings"}
           }
         }
       },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "kind": {
-                "const": "gate"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "decisions"
-            ]
-          }
-        }
-      ]
+      "allOf": [{"if": {"properties": {"kind": {"const": "gate"}}}, "then": {"required": ["decision_space"]}}]
     },
     "optional": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "title",
-        "deps",
-        "before",
-        "owner",
-        "reviewer",
-        "include_if",
-        "stop"
-      ],
+      "required": ["title", "dependencies", "must_finish_before", "producer", "independent_reviewer", "include_only_if", "deliverables", "stop_rule", "claim_or_threat_links"],
       "properties": {
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "deps": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/nodeId"
-          }
-        },
-        "before": {
-          "$ref": "#/$defs/nodeId"
-        },
-        "owner": {
-          "$ref": "#/$defs/roleId"
-        },
-        "reviewer": {
-          "$ref": "#/$defs/roleId"
-        },
-        "include_if": {
-          "type": "string",
-          "minLength": 10
-        },
-        "stop": {
-          "type": "string",
-          "minLength": 10
-        }
+        "title": {"type": "string"},
+        "dependencies": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nodeId"}},
+        "must_finish_before": {"$ref": "#/$defs/nodeId"},
+        "producer": {"type": "string"},
+        "independent_reviewer": {"type": "string"},
+        "include_only_if": {"type": "string", "minLength": 20},
+        "deliverables": {"$ref": "#/$defs/nonEmptyStrings"},
+        "stop_rule": {"type": "string", "minLength": 20},
+        "claim_or_threat_links": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^(H[1-6]|T_[A-Z]+)$"}}
       }
     }
   }
