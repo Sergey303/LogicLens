@@ -1,56 +1,19 @@
-schema_version: 2.0.0
-program:
-  repository: Sergey303/LogicLens
-  branch: main
-  area: EpistemicCompilerLab/
-  linear_project: Compile, Don’t Teach — TMLR Flagship
-  snapshot: '2026-08-05'
-  claim_boundary: H1 requires frozen HOLDOUT superiority over the strongest matched non-compiled baseline and same-direction independent REPLICATION.
-  non_claims: [pilots are not confirmatory, no weight training, no guaranteed privacy, no universal reliability claim]
-hypotheses: {H1: compilation advantage, H2: cross-family generalization, H3: error relocation, H4: contextual teaching may fail, H5: frame-component necessity, H6: secondary privacy-bounded portability}
-threats: {T_SCOPE: scope or claim drift, T_CAUSAL: solver/answer/length confounding, T_ORACLE: oracle or gold circularity, T_POWER: underpower or multiplicity, T_LEAK: source or sealed leakage, T_FREEZE: hash/config/result drift, T_SUBMIT: anonymity/licensing/reproduction/policy}
-roles: {R01: W0 producer, R02: W1 producer, R03: W2 producer, R04: W3 producer, R05: W4 producer, R06: independent adversarial reviewer, R07: independent oracle/data reviewer, R08: independent statistical/reproducibility reviewer, R09: GATE-001 gatekeeper, R10: GATE-101 gatekeeper, R11: GATE-201 gatekeeper, R12: GATE-301 gatekeeper, R13: GATE-401 gatekeeper}
-change_control: [synchronize Linear and Git, require independent review, create a new protocol after freeze changes, invalidate evidence after leak/hash/partial-result/post-result scoring changes]
-graph:
-  roots: [WP-001, WP-002, WP-003, WP-004, WP-005, WP-006]
-  terminal: GATE-401
-  gates: [GATE-001, GATE-101, GATE-201, GATE-301, GATE-401]
-  edge: dependency -> dependent
-nodes:
-  WP-001: &w0 {issue: ENG-153, phase: W0, kind: work, title: Executable research-program DAG, deps: [], producer: R01, reviewer: R06, gatekeeper: R09, gate: GATE-001, inputs: &ns [required non-sealed contracts and Linear package], outputs: [WORK_PACKAGES.yaml, CRITICAL_PATH.md, schemas/work-package.schema.json], acceptance: &ok [issue acceptance PASS with independent review], stop: &stop [issue STOP/PIVOT blocks dependent work], links: [T_SCOPE, T_FREEZE]}
-  WP-002: {<<: *w0, issue: ENG-154, title: Claim-evidence matrix and abstract contract, outputs: [CLAIM_EVIDENCE_MATRIX.yaml], links: [H1, H2, H3, H4, H5, H6, T_SCOPE]}
-  WP-003: {<<: *w0, issue: ENG-155, title: Systematic related work and novelty boundary, outputs: [RELATED_WORK_MATRIX.csv], links: [H1, T_SCOPE]}
-  WP-004: {<<: *w0, issue: ENG-156, title: Causal design and strongest matched controls, outputs: [CAUSAL_CONTRASTS.yaml], links: [H1, H5, T_CAUSAL, T_POWER]}
-  WP-005: {<<: *w0, issue: ENG-157, title: Independent oracle/scorer boundary, outputs: [oracle/SEMANTIC_SPEC.md], links: [H1, H3, T_ORACLE]}
-  WP-006: {<<: *w0, issue: ENG-158, title: Power and confirmatory analysis plan, outputs: [statistics/POWER_SIMULATION_PLAN.md], links: [H1, H2, T_POWER]}
-  GATE-001: {<<: *w0, issue: ENG-159, kind: gate, title: Methodology readiness decision, deps: [WP-001, WP-002, WP-003, WP-004, WP-005, WP-006], outputs: [gates/GATE-001.json], links: [H1, H2, H3, H4, H5, H6, T_SCOPE, T_CAUSAL, T_ORACLE, T_POWER], decisions: [PASS, REVISE, REJECT, PIVOT]}
-
-  WP-101: &w1 {issue: ENG-160, phase: W1, kind: work, title: Written semantic/query/frame contracts, deps: [GATE-001], producer: R02, reviewer: R07, gatekeeper: R10, gate: GATE-101, inputs: &ap [approved predecessor artifacts], outputs: [contracts/SEMANTIC_SPEC.md], acceptance: *ok, stop: *stop, links: [H1, H3, H5, T_ORACLE]}
-  WP-102: {<<: *w1, issue: ENG-161, title: Public source families provenance and licensing, outputs: [sources/SOURCE_FAMILY_REGISTRY.yaml], links: [H2, H6, T_LEAK, T_SUBMIT]}
-  WP-103: {<<: *w1, issue: ENG-162, title: Case schema strata and independent annotation, deps: [WP-101, WP-102], outputs: [benchmark/publication-case.schema.json], links: [H1, H2, H3, T_ORACLE, T_POWER]}
-  WP-104: {<<: *w1, issue: ENG-163, title: Grouped split leakage audit and sealed storage, deps: [WP-103], outputs: [leakage/GROUPED_SPLIT_SPEC.md], links: [H2, H6, T_LEAK, T_FREEZE]}
-  WP-105: {<<: *w1, issue: ENG-164, title: Oracle/scorer test plan and metric registry, deps: [WP-005, WP-006, WP-101], outputs: [oracle/INTERFACE_CONTRACTS.md], links: [H1, H3, H5, T_ORACLE, T_POWER]}
-  GATE-101: {<<: *w1, issue: ENG-165, kind: gate, title: Contract and benchmark-design freeze decision, deps: [WP-101, WP-102, WP-103, WP-104, WP-105], outputs: [gates/GATE-101.json], links: [H1, H2, H3, H5, T_ORACLE, T_LEAK, T_POWER], decisions: [PASS, REVISE, REJECT, PIVOT]}
-
-  WP-201: &w2 {issue: ENG-166, phase: W2, kind: work, title: Production runtime and matched modes M0-M14, deps: [GATE-101], producer: R03, reviewer: R08, gatekeeper: R11, gate: GATE-201, inputs: *ap, outputs: [runtime/production-path-a/], acceptance: *ok, stop: *stop, links: [H1, H3, H5, T_CAUSAL, T_ORACLE]}
-  WP-202: {<<: *w2, issue: ENG-167, title: Independent oracle scorer and mutation suite, outputs: [oracle/path-b/], links: [H1, H3, T_ORACLE]}
-  WP-203: {<<: *w2, issue: ENG-168, title: Independently annotated TRAIN/DEV corpus, outputs: [data/train-dev/], links: [H1, H2, H3, T_ORACLE, T_LEAK]}
-  WP-204: {<<: *w2, issue: ENG-169, title: Leakage detection canaries and freeze manifests, outputs: [leakage/tools/], links: [H2, H6, T_LEAK, T_FREEZE]}
-  WP-205: {<<: *w2, issue: ENG-170, title: Model registry run harness and no-artifact checks, outputs: [models/MODEL_REGISTRY.yaml], links: [H1, H2, H4, T_POWER, T_FREEZE]}
-  WP-206: {<<: *w2, issue: ENG-171, title: Isolated teacher tracks with fixed budget, outputs: [teacher/tracks/], links: [H4, T_CAUSAL, T_LEAK]}
-  WP-207: {<<: *w2, issue: ENG-172, title: Multi-model DEV-only calibration and power update, deps: [WP-201, WP-202, WP-203, WP-204, WP-205, WP-206], outputs: [dev-calibration/RUN_MANIFEST.json], links: [H1, H2, H3, H4, H5, T_CAUSAL, T_POWER, T_LEAK]}
-  GATE-201: {<<: *w2, issue: ENG-173, kind: gate, title: Confirmatory-freeze readiness decision, deps: [WP-201, WP-202, WP-203, WP-204, WP-205, WP-206, WP-207], outputs: [gates/GATE-201.json], links: [H1, H2, H3, H4, H5, H6, T_ORACLE, T_LEAK, T_POWER, T_FREEZE], decisions: [PASS, REVISE, REJECT, PIVOT]}
-
-  WP-301: &w3 {issue: ENG-174, phase: W3, kind: work, title: Build audit and seal HOLDOUT/REPLICATION, deps: [GATE-201], producer: R04, reviewer: R07, gatekeeper: R12, gate: GATE-301, inputs: *ap, outputs: [sealed/HOLDOUT_MANIFEST.json], acceptance: *ok, stop: *stop, links: [H1, H2, H3, H5, T_ORACLE, T_LEAK, T_FREEZE]}
-  WP-302: {<<: *w3, issue: ENG-175, title: Preregister and freeze confirmatory protocol, deps: [GATE-201, WP-301], outputs: [preregistration/PROTOCOL.md], links: [H1, H2, H3, H4, H5, H6, T_POWER, T_FREEZE]}
-  WP-303: {<<: *w3, issue: ENG-176, title: One-shot HOLDOUT ceremony without partial inspection, deps: [WP-302], outputs: [confirmatory/holdout/RUN_MANIFEST.json], links: [H1, H2, H3, H5, T_LEAK, T_POWER, T_FREEZE]}
-  WP-304: {<<: *w3, issue: ENG-177, title: Independent REPLICATION and confirmatory analysis, deps: [WP-303], outputs: [confirmatory/replication/RUN_MANIFEST.json], links: [H1, H2, H3, H4, H5, H6, T_CAUSAL, T_POWER, T_FREEZE]}
-  GATE-301: {<<: *w3, issue: ENG-178, kind: gate, title: Publication-claim route after replication, deps: [WP-301, WP-302, WP-303, WP-304], outputs: [gates/GATE-301.json], links: [H1, H2, H3, H4, H5, H6, T_CAUSAL, T_LEAK, T_POWER], decisions: [FULL_VERIFIED_INTERFACE_PAPER, MINIMAL_DECISION_CONTRACT_PAPER, CONDITIONAL_BOUNDARY_STUDY, FAILURE_ANALYSIS, STOP_FLAGSHIP_ROUTE]}
-
-  WP-401: &w4 {issue: ENG-179, phase: W4, kind: work, title: Strict independent audit of publication claims, deps: [GATE-301], producer: R05, reviewer: R06, gatekeeper: R13, gate: GATE-401, inputs: *ap, outputs: [publication/CLAIM_REVIEW_MATRIX.yaml], acceptance: *ok, stop: *stop, links: [H1, H2, H3, H4, H5, H6, T_SCOPE, T_CAUSAL, T_ORACLE, T_POWER]}
-  WP-402: {<<: *w4, issue: ENG-180, title: Evidence-bound manuscript and supplements, deps: [WP-401], outputs: [manuscript/main/], links: [H1, H2, H3, H4, H5, H6, T_SCOPE, T_SUBMIT]}
-  WP-403: {<<: *w4, issue: ENG-181, title: Anonymous reproducibility artifact, deps: [GATE-301], outputs: [artifact/anonymous-snapshot/], links: [H1, H2, H3, H4, H5, H6, T_SUBMIT]}
-  WP-404: {<<: *w4, issue: ENG-182, title: Clean-room reproduction, deps: [WP-403], outputs: [artifact/CLEAN_ROOM_REPORT.md], links: [H1, H2, H3, H5, T_SUBMIT]}
-  WP-405: {<<: *w4, issue: ENG-183, title: Current TMLR rules and complete submission package, deps: [WP-402, WP-403, WP-404], outputs: [submission/POLICY_VERIFICATION.md], links: [H1, H2, H3, H4, H5, H6, T_SCOPE, T_SUBMIT]}
-  GATE-401: {<<: *w4, issue: ENG-184, kind: gate, title: Final authorization for TMLR submission, deps: [WP-401, WP-402, WP-403, WP-404, WP-405], outputs: [gates/GATE-401.json], links: [H1, H2, H3, H4, H5, H6, T_SCOPE, T_FREEZE, T_SUBMIT], decisions: [PASS, REVISE, DO_NOT_SUBMIT]}
-optional: {}
+schema_version: 3.0.0
+format: split-dag-manifest
+includes:
+- work-packages/program.yaml
+- work-packages/fragments/W0-01.yaml
+- work-packages/fragments/W0-02.yaml
+- work-packages/fragments/W0-03.yaml
+- work-packages/fragments/W1-01.yaml
+- work-packages/fragments/W1-02.yaml
+- work-packages/fragments/W2-01.yaml
+- work-packages/fragments/W2-02.yaml
+- work-packages/fragments/W2-03.yaml
+- work-packages/fragments/W3-01.yaml
+- work-packages/fragments/W3-02.yaml
+- work-packages/fragments/W4-01.yaml
+- work-packages/fragments/W4-02.yaml
+- work-packages/fragments/W4-03.yaml
+- work-packages/fragments/W5-01.yaml
+- work-packages/fragments/W5-02.yaml
