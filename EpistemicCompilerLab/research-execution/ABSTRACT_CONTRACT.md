@@ -97,7 +97,7 @@ Required evidence: independent layer audit (`T4`)
 
 Allowed template:
 
-> Layer-wise auditing localized residual errors primarily to [SUPPORTED_ERROR_LAYERS], conditional on independently verified frame correctness.
+> Layer-wise auditing localized residual errors primarily to [SUPPORTED_LAYERS], conditional on independently verified frame correctness.
 
 Activation rule:
 
