@@ -134,8 +134,9 @@ def run(fragment_path: Path, service_receipt_path: Path, output: Path) -> None:
         timeout_seconds=20,
         schemas=schemas,
     )
-    selected = (package_root / "files/evidence/selected-fragments.jsonl").read_bytes()
-    if selected != fragment_bytes or package["gate"]["status"] != "passed":
+    selected_path = package_root / "files/evidence/selected-fragments.jsonl"
+    selected_rows = capsule.json_lines(selected_path, "ENG-148 selected evidence")
+    if selected_rows != [fragment] or package["gate"]["status"] != "passed":
         message = "ENG-148 provenance changed before the SWI-Prolog gate."
         raise AssertionError(message)
     inputs = _ReceiptInputs(
