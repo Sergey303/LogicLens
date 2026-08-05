@@ -1,0 +1,156 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "answer",
+    "epistemicStatus",
+    "action",
+    "abstain",
+    "usedVerifiedFrame",
+    "usedRawObservation",
+    "observationId",
+    "modelKind",
+    "comparisonOperator",
+    "baseUnit",
+    "normalizedPoint",
+    "normalizedLower",
+    "normalizedUpper",
+    "normalizedMean",
+    "normalizedStandardDeviation",
+    "normalizedThresholdValue",
+    "normalizedThresholdLower",
+    "normalizedThresholdUpper",
+    "preservedInterval",
+    "preservedDistribution",
+    "introducedProbabilityPolicy",
+    "interpretationFlags",
+    "warnings",
+    "scopeStatement"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "answer": {
+      "type": "string"
+    },
+    "epistemicStatus": {
+      "type": "string",
+      "enum": [
+        "supported",
+        "refuted",
+        "unknown"
+      ]
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "answer_with_measurement_scope",
+        "explain_threshold_miss",
+        "abstain_on_numeric_decision"
+      ]
+    },
+    "abstain": {
+      "type": "boolean"
+    },
+    "usedVerifiedFrame": {
+      "type": "boolean"
+    },
+    "usedRawObservation": {
+      "type": "boolean"
+    },
+    "observationId": {
+      "type": "string"
+    },
+    "modelKind": {
+      "type": "string",
+      "enum": [
+        "point",
+        "bounded",
+        "normal",
+        "missing"
+      ]
+    },
+    "comparisonOperator": {
+      "type": "string",
+      "enum": [
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "between"
+      ]
+    },
+    "baseUnit": {
+      "type": "string",
+      "enum": [
+        "second",
+        "fraction",
+        "count",
+        "none"
+      ]
+    },
+    "normalizedPoint": {
+      "type": "string"
+    },
+    "normalizedLower": {
+      "type": "string"
+    },
+    "normalizedUpper": {
+      "type": "string"
+    },
+    "normalizedMean": {
+      "type": "string"
+    },
+    "normalizedStandardDeviation": {
+      "type": "string"
+    },
+    "normalizedThresholdValue": {
+      "type": "string"
+    },
+    "normalizedThresholdLower": {
+      "type": "string"
+    },
+    "normalizedThresholdUpper": {
+      "type": "string"
+    },
+    "preservedInterval": {
+      "type": "boolean"
+    },
+    "preservedDistribution": {
+      "type": "boolean"
+    },
+    "introducedProbabilityPolicy": {
+      "type": "boolean"
+    },
+    "interpretationFlags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "local-snapshot-only",
+          "point-comparison",
+          "whole-interval-satisfies",
+          "whole-interval-violates",
+          "interval-crosses-threshold",
+          "distribution-not-strict-bound",
+          "probability-policy-missing",
+          "missing-observation",
+          "unit-conversion-required",
+          "inclusive-range"
+        ]
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scopeStatement": {
+      "type": "string"
+    }
+  }
+}
