@@ -1,0 +1,281 @@
+{
+  "schema_version": "2.0.0",
+  "status": "PASS",
+  "as_of": "2026-08-06",
+  "attestation": {
+    "model": "clean candidate parent plus report-only child",
+    "reviewed_git_commit": "4282241a1d140526bb7aa513b19076992b767fcd",
+    "head_at_validation": "4282241a1d140526bb7aa513b19076992b767fcd",
+    "dirty_tree_before_validation": false,
+    "validator_sha256": "ede5fe373e04698964f19af64d22f89c151bffc7f6f35d90d0a3157d442a038e",
+    "report_path": "EpistemicCompilerLab/research-execution/validation/validation-report.json",
+    "report_self_excluded_from_attested_inputs": true,
+    "verification_rule": "the committed report must be the only path changed by the child commit; CI regenerates this object against the parent and compares bytes"
+  },
+  "inputs": {
+    "work_packages": {
+      "path": "EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml",
+      "sha256": "0ce4406a94530a43a23bd62e2500e704d3ec0778cc34108f43920087128d556e"
+    },
+    "schema": {
+      "path": "EpistemicCompilerLab/research-execution/schemas/work-package.schema.json",
+      "sha256": "a68ef6c36da28a374927ca465461ae372afe535eb2ca1c6f7458e366c3733160"
+    },
+    "handoff_schema": {
+      "path": "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json",
+      "sha256": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee"
+    },
+    "linear_snapshot": {
+      "path": "EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json",
+      "sha256": "4f3943cd5aea669a49650d75c82314830aed7c870bf59ce34cd262d4ef17209c"
+    },
+    "critical_path": {
+      "path": "EpistemicCompilerLab/research-execution/CRITICAL_PATH.md",
+      "sha256": "f551b3f854a9e3d06ec63be2b2e9f1481a0d50333b9b10ad5bea07f21f79ae54"
+    },
+    "validator": {
+      "path": "EpistemicCompilerLab/research-execution/scripts/validate_work_packages.py",
+      "sha256": "ede5fe373e04698964f19af64d22f89c151bffc7f6f35d90d0a3157d442a038e"
+    },
+    "included_files": [
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/program.yaml",
+        "sha256": "043781f3dd0a92526bd45c8e43a2f6ec71e5ca3b9009c54a390d33301fda6fd0"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W0-01.yaml",
+        "sha256": "24baadc4a059923966189395725d753a2bee7cb0ca792273a95243dad508f529"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W0-02.yaml",
+        "sha256": "f6bcd189cc58d0705297ff5eacd595d999c8ceb7d1eacb1106869c7cc99e4328"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W0-03.yaml",
+        "sha256": "efc287bd05b5f636bf0154120e8a21771c907198b391a932816c0ec43ff4a15c"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W1-01.yaml",
+        "sha256": "1bc5f1f38f8dc019bcffbdf045cfc0d46e836e1e3f06abfe622d73120e9a1dd8"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W1-02.yaml",
+        "sha256": "c23a86c78ecc13a45ae2efbeba7dd735a3c561985be108ce0a36c0a2b1ec3219"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W2-01.yaml",
+        "sha256": "2daccffeadc59126da833f873d447ab687f44959c1512384c5fd1c89882e2421"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W2-02.yaml",
+        "sha256": "ccd0f0bc6d2b1b9df2283bfafce3a26da473e9a5d133b859546d29a3026c679e"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W2-03.yaml",
+        "sha256": "a747c3adf84d76f4a8dd138cf1621571e1eea8104a964e66f0367f6cf4df11bd"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W3-01.yaml",
+        "sha256": "f2d2b4f6551a4b9a7c3679e210ea9535d26925c3e101adece5861248842d21ce"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W3-02.yaml",
+        "sha256": "97358cb85c7e88f59e103ad842e4d21436e3728af24d4134c2bc6dd406d88edb"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W4-01.yaml",
+        "sha256": "b37037e604c092c694ff17ce64cc8267bdba565c54b3596834f157e26dbf7c85"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W4-02.yaml",
+        "sha256": "aee96ff3fdeaf9b2e48c8903b8bda52ce8a45c60ab8507b85863af15dfc3a96a"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W4-03.yaml",
+        "sha256": "349f96687317e59f756dd4d06105eac6a19ebb0ef83cf681eef4a2462c8a3a79"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W5-01.yaml",
+        "sha256": "299801c1f52f59f01473e228b2bd69aa5a87cc5ff386bd82fe9e1af27cf1ff58"
+      },
+      {
+        "path": "EpistemicCompilerLab/research-execution/work-packages/fragments/W5-02.yaml",
+        "sha256": "2c2df9d30e4bcd40b2be80e7fbad998bee5c34ae512d3670a90c50ce5d91bef5"
+      }
+    ],
+    "assembled_canonical_sha256": "3483f9daf70886d675491fd1bb10affe39b94f735cddb7e80668ef526415d2fa",
+    "context_packets": [
+      {
+        "work_package_id": "WP-001",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/WP-001/TASK.md": "589962de7fb103db8a7de35a10c39bfed42590cf14ad263c22ef394fc9801fb6",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-001/REQUIRED_READING.md": "ad0cf85bbf076ade72fc1aebe35e62fd28ac78267cd395d14151a78166523666",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-001/INPUT_MANIFEST.json": "85b1e0a5dfcd5111e1ed9a7a419ed09ff4b67e0dc94fa66b416199d752b9e62d",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-001/ALLOWED_PATHS.txt": "cd7e42d3d6512cb0e3179db5a0bf2f0b721cd43dfb1eab185e8bda863dd98354",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-001/FORBIDDEN_PATHS.txt": "f4213f266812210b6ed5166d1491fb1c3e43f3f7e0ca2fe99707f2f698d37763",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-001/ACCEPTANCE.yaml": "79672ac707f13deffed03646572c66d1c510006c07c7936da1993bb05b4fb045",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-001/HANDOFF_SCHEMA.json": "d07e76ab282b688e041d9cca5e4d8aa38cf971db26f4a93a1ee1bf92bce6f4d3"
+        }
+      },
+      {
+        "work_package_id": "WP-002",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/WP-002/TASK.md": "54cc674c6f9628c1ce5cba879e4a365ab29369dd585d322af9b38bf358a5966c",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-002/REQUIRED_READING.md": "5ca38bd40c0d53598d854db1e79b3f843f6cd7fb851b051742498a163ad5d5ad",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-002/INPUT_MANIFEST.json": "96b648989a48129c36377aa7c6891fa7d6821075db205923cbdcda70b29cd78d",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-002/ALLOWED_PATHS.txt": "9331e6fde7b121aede873d2f2f816eb0c9fef430180c17a1a94f8b2d35165f52",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-002/FORBIDDEN_PATHS.txt": "bdeabe05b6d7cc97a3bbb432e47f7d5831ae35f423421795a602abca917957e8",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-002/ACCEPTANCE.yaml": "323401b6579c1261140d41057896f9922d38f68815adca369cdb7460bc92618c",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-002/HANDOFF_SCHEMA.json": "ebaca2e27c6443c63afc6ab62703eb6685b2f376e41095934d27d7d6c6de749b"
+        }
+      },
+      {
+        "work_package_id": "WP-003",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/WP-003/TASK.md": "f5dc8ded1493e604aaeaae79522c8aa9bb32900fed7847c6748bd2b55cb10f9e",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-003/REQUIRED_READING.md": "d50daa9112ce00d3d31b185f25460763acf734cc07bd99ea8a0585c9088de21c",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-003/INPUT_MANIFEST.json": "194c0c09b25ff49c32504dda57590f5a5b23bfb33f63b6c6fcb3100d9e20aa23",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-003/ALLOWED_PATHS.txt": "ee898b343f5e66a39fd8f889a785f073fd234a71fb13deaa84ec74f95226364c",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-003/FORBIDDEN_PATHS.txt": "4477412cda8e52e8fbc5fe8bdfbbba1afef369ca08a9f82b260ff1ac77ebc638",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-003/ACCEPTANCE.yaml": "a201ebf9a455fa078c46caa568eeeb58f39d8a0f9ac6707076c7fa4c4b5dda62",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-003/HANDOFF_SCHEMA.json": "0170253cf3d90172c96cb955e15058204d5d0cd3652071153957cf47d54af32e"
+        }
+      },
+      {
+        "work_package_id": "WP-004",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/WP-004/TASK.md": "d4bc58773bdc9ff043f9c32272ebe3e7e561703dbc252ef4c7ccb6b810dc7659",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-004/REQUIRED_READING.md": "ac5641bac98aa16f3467bc144ba6116a612a8ebdab6940a102481f866d078c68",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-004/INPUT_MANIFEST.json": "53f7fe0f029445f706970a787e0f55d01f7d789b461248d26fdf054a68853fde",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-004/ALLOWED_PATHS.txt": "a7067152ba83d3f0009967cf06461c73acc9b6a86bc65a00ee9e788984efad4e",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-004/FORBIDDEN_PATHS.txt": "d1591e9214ec69bba97d6c563f3afcca1543c4b172f177e1c1a51732b4c23809",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-004/ACCEPTANCE.yaml": "aa144b869a31875f6368b9d10d9d5f17932da894fa55d55a9ffeea0e0f1d1dfe",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-004/HANDOFF_SCHEMA.json": "e3ebea7bf8eca62df3d4b5be953888f82ed4a0986c2545b93911b86b7ac0c574"
+        }
+      },
+      {
+        "work_package_id": "WP-005",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/WP-005/TASK.md": "5eeb18fe6336a90012a27d4cdd65073c36956aed40ce40e7cc09af68d0d3c2bc",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-005/REQUIRED_READING.md": "16b93c5fcf242f36c629911d0088146bf1d38a00952ef3956bba365495d109bb",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-005/INPUT_MANIFEST.json": "b04f617a6d743a0d60502c03271a0c6760ced9819e2ca1c51d9de76d6dc0356b",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-005/ALLOWED_PATHS.txt": "be58162314b66adb288bab3e9fe3ab02034128a2e4749ba94e98c2978dc16d40",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-005/FORBIDDEN_PATHS.txt": "e2ed9ab7bb68ede083fa15f9fa4370f482a4ac82102f7a043291068f82713a6a",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-005/ACCEPTANCE.yaml": "5092c54e8e38ead80799e75b92ae7d9bc350827df2f660c02ba17bdc6fad3c8e",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-005/HANDOFF_SCHEMA.json": "b3b48ccabd15b632d2316e76959f3d7407807a239b0b7837e25fc27b951ba650"
+        }
+      },
+      {
+        "work_package_id": "WP-006",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/WP-006/TASK.md": "83edf577ac7570864a9e0c797e0e1f813d3ea9c30910fd70d9ba6a49e0344599",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-006/REQUIRED_READING.md": "02d4aeaba0cd31761f803b19bbf0806f967481df6e8dfc31a46abdde8c726ea2",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-006/INPUT_MANIFEST.json": "1bf964b6034cc121304eb132d3951b7009cb79f0387ca902db22c92cb151b632",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-006/ALLOWED_PATHS.txt": "22669dcbe4db6d93fc7225758f070b59605838cea984901058ace5e03ec8cc64",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-006/FORBIDDEN_PATHS.txt": "573ce05501ee98a8bbdc9e9814a49c8c137b4b647f9851a7174d5b6e7b3058d2",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-006/ACCEPTANCE.yaml": "f7fb7883b6dcd141038257c03906fcaace6c51f3056df969f9a8e4403ba8d181",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-006/HANDOFF_SCHEMA.json": "a4e696c217dae0955127d63ee2c615550edc9f06be2dde91d8a3fe0fb71f667b"
+        }
+      },
+      {
+        "work_package_id": "WP-007",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/WP-007/TASK.md": "60bc089f5d33ac027833bbdb52e2bfe6d94a6e918652862644f148b00657f836",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-007/REQUIRED_READING.md": "a3fe59cb126b90b32bbb849064ee8a2ea5129d14b7e557b30b765b0c866c3f17",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-007/INPUT_MANIFEST.json": "f16f33e7aad2b2a25cee3c5f30464d15c0ea3581a0dd25212dfc1f689ae28a42",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-007/ALLOWED_PATHS.txt": "1391c02c0a8d1a8fa039f996ea04a94c513558726a535c2976b57eb0aa792914",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-007/FORBIDDEN_PATHS.txt": "1690635bf331c574bf41cba31c5b3939b47d96bb67e452552233d7e556252516",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-007/ACCEPTANCE.yaml": "b255a22edd58bc6ad8bf7deca34618ca67c653c12d889b12f654574e9f10a720",
+          "EpistemicCompilerLab/research-execution/context-packets/WP-007/HANDOFF_SCHEMA.json": "e191c4b13d05924b16be5a78ddfc99e485db2ac70aaebc9faf956d6e0cfbb03a"
+        }
+      },
+      {
+        "work_package_id": "GATE-001",
+        "files": {
+          "EpistemicCompilerLab/research-execution/context-packets/GATE-001/TASK.md": "1c4342abd1b4460b6fedba70cb8b89367f84218c981b7aa01bc5e9b370cfec91",
+          "EpistemicCompilerLab/research-execution/context-packets/GATE-001/REQUIRED_READING.md": "edd6861d6cb668a3e7ed9a142a2a06ac749a5e43866e43f538cc3fcfb67ab0c0",
+          "EpistemicCompilerLab/research-execution/context-packets/GATE-001/INPUT_MANIFEST.json": "12a1e922a44896fd5931b6ea5d29b8c086e5c67ab22688e508a853ef77fdcaa2",
+          "EpistemicCompilerLab/research-execution/context-packets/GATE-001/ALLOWED_PATHS.txt": "392c938f3af4cf9d42226dbc801341043a16e246d52bd359b10173da5200ecb2",
+          "EpistemicCompilerLab/research-execution/context-packets/GATE-001/FORBIDDEN_PATHS.txt": "7c9b4550ec98eec3ef9ddd33da748dc4e9173507678dcd137d21d52f045a6598",
+          "EpistemicCompilerLab/research-execution/context-packets/GATE-001/ACCEPTANCE.yaml": "52edeaf0b1e74534084dd530a167bf9c3b0378272928d1711c2ea288862b1351",
+          "EpistemicCompilerLab/research-execution/context-packets/GATE-001/HANDOFF_SCHEMA.json": "e5885143ca3bf064ebe1af9e7667d2ccf472f15b39e218a2962c871661ae00cd"
+        }
+      }
+    ],
+    "wp001_handoff": {
+      "path": "EpistemicCompilerLab/research-execution/handoffs/WP-001.json",
+      "sha256": "e2dfe23424ac31e79c7ea6ac305bb1d30154af24d9ff9182c95a87e88d8f5d2c"
+    }
+  },
+  "summary": {
+    "mandatory_nodes": 40,
+    "direct_dependency_edges": 68,
+    "roots": [
+      "WP-001",
+      "WP-002",
+      "WP-003",
+      "WP-004",
+      "WP-005",
+      "WP-006",
+      "WP-007"
+    ],
+    "topological_nodes": 40,
+    "cycles": 0,
+    "unknown_dependencies": 0,
+    "linear_issues": 40,
+    "w0_context_packets": 8,
+    "optional_robustness_packages": 5,
+    "submission_terminal": "WP-406",
+    "lifecycle_terminal": "WP-504",
+    "longest_chain_nodes": 24,
+    "longest_chain_edges": 23,
+    "longest_chain": [
+      "WP-001",
+      "GATE-001",
+      "WP-101",
+      "WP-103",
+      "WP-104",
+      "GATE-101",
+      "WP-201",
+      "WP-207",
+      "GATE-201",
+      "WP-301",
+      "WP-302",
+      "WP-303",
+      "WP-306",
+      "GATE-301",
+      "WP-401",
+      "WP-402",
+      "WP-405",
+      "GATE-401",
+      "WP-406",
+      "WP-501",
+      "WP-502",
+      "WP-503",
+      "GATE-501",
+      "WP-504"
+    ],
+    "blind_sequence": [
+      "WP-302",
+      "WP-303",
+      "WP-305",
+      "WP-306",
+      "GATE-301"
+    ]
+  },
+  "checks": {
+    "json_schema": "PASS",
+    "linear_snapshot_alignment": "PASS",
+    "acyclicity": "PASS",
+    "roles_and_identity": "PASS",
+    "context_packet_existence_and_integrity": "PASS",
+    "wp001_handoff_integrity": "PASS",
+    "deliverable_completeness": "PASS",
+    "composite_splits": "PASS",
+    "blind_w3": "PASS",
+    "actual_submission_and_w5": "PASS",
+    "optional_document_consistency": "PASS",
+    "clean_git_attestation": "PASS"
+  },
+  "findings": []
+}
