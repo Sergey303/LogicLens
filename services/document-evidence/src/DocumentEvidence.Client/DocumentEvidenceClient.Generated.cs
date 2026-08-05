@@ -49,7 +49,7 @@ public sealed class DocumentEvidenceClient
             DocumentEvidenceApiV1.SourceKindHeader,
             sourceKind
         );
-        request.Content = new StreamContent(content);
+        request.Content = new StreamContent(new NonDisposingReadStream(content));
         request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(mediaType);
         request.Content.Headers.ContentLength = contentLength;
         return await _transport.SendAsync<UploadRevisionDto>(
@@ -59,30 +59,33 @@ public sealed class DocumentEvidenceClient
         );
     }
 
-    public Task<DocumentMetadataDto?> GetDocumentAsync(
+    public async Task<DocumentMetadataDto?> GetDocumentAsync(
         Guid workspaceId,
         Guid documentId,
         CancellationToken cancellationToken = default
     )
     {
-        var request = CreateRequest(
+        using var request = CreateRequest(
             HttpMethod.Get,
             DocumentEvidenceApiV1.Document(workspaceId, documentId)
         );
-        return _transport.SendOptionalAsync<DocumentMetadataDto>(request, cancellationToken);
+        return await _transport.SendOptionalAsync<DocumentMetadataDto>(
+            request,
+            cancellationToken
+        );
     }
 
-    public Task<IReadOnlyList<DocumentFragmentDto>> ListFragmentsAsync(
+    public async Task<IReadOnlyList<DocumentFragmentDto>> ListFragmentsAsync(
         Guid workspaceId,
         Guid revisionId,
         CancellationToken cancellationToken = default
     )
     {
-        var request = CreateRequest(
+        using var request = CreateRequest(
             HttpMethod.Get,
             DocumentEvidenceApiV1.Fragments(workspaceId, revisionId)
         );
-        return _transport.SendAsync<IReadOnlyList<DocumentFragmentDto>>(
+        return await _transport.SendAsync<IReadOnlyList<DocumentFragmentDto>>(
             request,
             HttpStatusCode.OK,
             cancellationToken
