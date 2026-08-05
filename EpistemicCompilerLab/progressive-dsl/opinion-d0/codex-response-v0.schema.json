@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DSL-D0 Codex opinion response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "condition",
+    "conclusion",
+    "action",
+    "abstain",
+    "belief",
+    "disbelief",
+    "uncertainty",
+    "baseRate",
+    "projectedProbability",
+    "conflictIndex",
+    "usedScalar",
+    "usedRawOpinion",
+    "usedVerifiedFrame",
+    "baseRateIsPrior",
+    "uncertaintyIsErrorProbability",
+    "conflictSeparateFromUncertainty",
+    "introducedFusion",
+    "sameProjectionCanDiffer",
+    "answerLevelProfile",
+    "scopeStatement",
+    "answer",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1"},
+    "condition": {"type": "string", "enum": ["direct", "scalar", "raw", "verified"]},
+    "conclusion": {
+      "type": "string",
+      "enum": [
+        "request_opinion",
+        "scalar_insufficient",
+        "assert_with_evidence",
+        "qualified_refutation",
+        "qualify_prior_sensitive",
+        "abstain_high_uncertainty",
+        "report_conflict",
+        "qualified_uncertain"
+      ]
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "abstain_and_request_opinion",
+        "abstain_on_scalar",
+        "answer_with_epistemic_profile",
+        "explain_refutation_with_profile",
+        "answer_with_prior_warning",
+        "abstain",
+        "report_conflict",
+        "answer_with_uncertainty"
+      ]
+    },
+    "abstain": {"type": "boolean"},
+    "belief": {"type": "string"},
+    "disbelief": {"type": "string"},
+    "uncertainty": {"type": "string"},
+    "baseRate": {"type": "string"},
+    "projectedProbability": {"type": "string"},
+    "conflictIndex": {"type": "string"},
+    "usedScalar": {"type": "boolean"},
+    "usedRawOpinion": {"type": "boolean"},
+    "usedVerifiedFrame": {"type": "boolean"},
+    "baseRateIsPrior": {"type": "boolean"},
+    "uncertaintyIsErrorProbability": {"type": "boolean"},
+    "conflictSeparateFromUncertainty": {"type": "boolean"},
+    "introducedFusion": {"type": "boolean"},
+    "sameProjectionCanDiffer": {"type": "boolean"},
+    "answerLevelProfile": {"type": "boolean"},
+    "scopeStatement": {"type": "string"},
+    "answer": {"type": "string"},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}
