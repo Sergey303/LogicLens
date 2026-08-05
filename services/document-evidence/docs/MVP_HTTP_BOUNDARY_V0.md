@@ -1,6 +1,6 @@
 # MVP HTTP boundary v0
 
-Status: implemented, verification pending on the consolidated branch head.
+Status: service boundary verified; ENG-148 end-to-end proof implemented and awaiting execution.
 
 ## Consumer contract
 
@@ -51,9 +51,34 @@ Run from the repository worktree:
 .\services\document-evidence\verify-service-boundary.ps1
 ```
 
+The accepted local proof on `c9d8a3e0329cac4244bc1383bdfa200038096450` built four projects with
+zero warnings and ran upload-security, generated-client, and real-HTTP contracts successfully.
+
+## ENG-148 deterministic demo
+
+`DocumentEvidence.EndToEndDemo` now performs this route:
+
+```text
+reproducible PDF bytes
+  -> secure HTTP upload through generated client
+  -> LocalImmutableObjectStore revision
+  -> real Poppler page-grounded extraction
+  -> typed fragment retrieval through generated client
+  -> selected-only source-fragment-v0 export
+  -> deterministic proposal and grounding review
+  -> real SWI-Prolog gate
+  -> verified decision receipt
+```
+
+The consumer never sees the service database, object key, or local blob path. The verifier runs the
+complete route twice and rejects any difference in the full artifact-tree SHA-256:
+
+```powershell
+.\services\document-evidence\verify-eng-148-demo.ps1
+```
+
 ## Remaining MVP work
 
-The current loopback host is a contract proof, not the deployable composition root. The next slice
-connects these endpoints to the production PostgreSQL/generated boundary, immutable store, PDF worker,
-and outbox dispatcher, then records the complete PDF -> client fragment -> proposal -> SWI decision
-receipt for ENG-148.
+The ENG-148 host proves the full user route but remains a contract/demo composition root. Production
+still needs PostgreSQL-backed quota and audit state, signed read-plan revalidation, revocation
+invalidation, outbox dispatch, and the deployable service composition root.
