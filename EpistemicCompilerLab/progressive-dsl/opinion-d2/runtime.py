@@ -290,16 +290,18 @@ sum_groups([G|Gs],R,S) :-
     sum_groups(Gs,R1,S1),
     R is R0+R1,
     S is S0+S1.
+all_singleton_groups([]).
+all_singleton_groups([G|Gs]) :-
+    findall(1,report(G,_,_,_),Rows),
+    length(Rows,1),
+    all_singleton_groups(Gs).
 plan(Gs,N,P) :-
     length(Gs,C),
     ( N =:= 1 ->
         P = single_source
     ; C =:= 1 ->
         P = average_within_group
-    ; findall(G,report(G,_,_,_),All),
-      sort(All,U),
-      length(All,N),
-      length(U,C) ->
+    ; all_singleton_groups(Gs) ->
         P = cumulative_across_groups
     ; P = average_then_cumulative
     ).
