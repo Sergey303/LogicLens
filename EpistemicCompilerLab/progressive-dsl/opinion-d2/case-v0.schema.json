@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "caseId": {"minLength": 1, "type": "string"},
+    "dependencyContrast": {"type": "boolean"},
+    "expectedByCondition": {
+      "additionalProperties": false,
+      "properties": {
+        "metadata_absent": {"additionalProperties": false, "properties": {"action": {"type": "string"}, "conclusion": {"type": "string"}}, "required": ["conclusion", "action"], "type": "object"},
+        "naive_independent": {"additionalProperties": false, "properties": {"action": {"type": "string"}, "conclusion": {"type": "string"}}, "required": ["conclusion", "action"], "type": "object"},
+        "raw_declared": {"additionalProperties": false, "properties": {"action": {"type": "string"}, "conclusion": {"type": "string"}}, "required": ["conclusion", "action"], "type": "object"},
+        "verified": {"additionalProperties": false, "properties": {"action": {"type": "string"}, "conclusion": {"type": "string"}}, "required": ["conclusion", "action"], "type": "object"}
+      },
+      "required": ["metadata_absent", "naive_independent", "raw_declared", "verified"],
+      "type": "object"
+    },
+    "expectedExactConclusion": {"type": "string"},
+    "expectedOperatorPlan": {"type": "string"},
+    "fusionId": {"minLength": 1, "type": "string"},
+    "opinionSubjectLevel": {"enum": ["claim", "answer"], "type": "string"},
+    "privateDependencyMetadataAvailableToMetadataAbsent": {"type": "boolean"},
+    "question": {"minLength": 1, "type": "string"},
+    "schemaVersion": {"const": "0.1", "type": "string"},
+    "sourceHashes": {"items": {"pattern": "^sha256:[0-9a-f]{64}$", "type": "string"}, "minItems": 1, "type": "array"}
+  },
+  "required": ["schemaVersion", "caseId", "fusionId", "question", "privateDependencyMetadataAvailableToMetadataAbsent", "sourceHashes", "expectedByCondition", "expectedExactConclusion", "expectedOperatorPlan", "opinionSubjectLevel", "dependencyContrast"],
+  "title": "DSL-D2 pilot case",
+  "type": "object"
+}
