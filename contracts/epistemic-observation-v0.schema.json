@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/epistemic-observation-v0.schema.json",
+  "title": "LogicLens typed observation v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "observationId",
+    "target",
+    "model",
+    "provenance",
+    "dependencyGroup",
+    "generalisability"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "observationId": {"$ref": "#/$defs/id"},
+    "target": {"$ref": "#/$defs/target"},
+    "model": {"$ref": "#/$defs/model"},
+    "provenance": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}(?:#[A-Za-z0-9][A-Za-z0-9._:/-]{0,255})?$"
+      }
+    },
+    "dependencyGroup": {"$ref": "#/$defs/id"},
+    "generalisability": {
+      "enum": ["universal", "context-dependent", "local"]
+    },
+    "scope": {"type": "object"},
+    "note": {"type": "string", "maxLength": 2000}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "subject", "window"],
+      "properties": {
+        "metric": {"$ref": "#/$defs/id"},
+        "subject": {"$ref": "#/$defs/id"},
+        "window": {"$ref": "#/$defs/id"}
+      }
+    },
+    "unit": {
+      "enum": [
+        "millisecond",
+        "second",
+        "minute",
+        "hour",
+        "day",
+        "fraction",
+        "percent",
+        "count"
+      ]
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value", "unit"],
+      "properties": {
+        "kind": {"const": "point"},
+        "value": {"type": "number"},
+        "unit": {"$ref": "#/$defs/unit"}
+      }
+    },
+    "bounded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "lower",
+        "upper",
+        "unit",
+        "lowerInclusive",
+        "upperInclusive"
+      ],
+      "properties": {
+        "kind": {"const": "bounded"},
+        "lower": {"type": "number"},
+        "upper": {"type": "number"},
+        "unit": {"$ref": "#/$defs/unit"},
+        "lowerInclusive": {"type": "boolean"},
+        "upperInclusive": {"type": "boolean"}
+      }
+    },
+    "normal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "mean", "standardDeviation", "unit"],
+      "properties": {
+        "kind": {"const": "normal"},
+        "mean": {"type": "number"},
+        "standardDeviation": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "unit": {"$ref": "#/$defs/unit"}
+      }
+    },
+    "model": {
+      "oneOf": [
+        {"$ref": "#/$defs/point"},
+        {"$ref": "#/$defs/bounded"},
+        {"$ref": "#/$defs/normal"}
+      ]
+    }
+  }
+}
