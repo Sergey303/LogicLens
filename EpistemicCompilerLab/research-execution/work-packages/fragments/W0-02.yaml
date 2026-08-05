@@ -1,0 +1,269 @@
+nodes:
+  WP-004:
+    linear_issue: ENG-156
+    phase: W0
+    kind: work_package
+    title: Causal design and strongest matched controls
+    mandatory: true
+    dependencies: []
+    roles:
+      producer: Causal Experiment Reviewer
+      independent_reviewer: Senior Adversarial Gatekeeper
+      gatekeeper: Senior Adversarial Methodology Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Solver, typed structure, conclusion, length and renderer effects must be isolated before final power.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-004
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-004/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-004/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-004/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-004/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-004/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-004/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-004/HANDOFF_SCHEMA.json
+    required_context:
+    - Modes M0–M14
+    - Primary claim
+    - Critical protocols
+    - Pilots as planning only.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml
+    - EpistemicCompilerLab/research-execution/MODE_CONTRACTS
+    - EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md
+    - EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml
+    - EpistemicCompilerLab/research-execution/ESTIMANDS.yaml
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - Do not name the strongest baseline before DEV; freeze only its selection rule.
+    actions:
+    - Define estimands and one primary contrast; specify mode inputs, hidden fields, factor vectors and budgets.
+    - Include M9–M14 controls and freeze DEV-only strongest-baseline selection.
+    - Map answer-copying, length, solver and renderer objections to falsification controls.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml
+    - EpistemicCompilerLab/research-execution/MODE_CONTRACTS
+    - EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md
+    - EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml
+    - EpistemicCompilerLab/research-execution/ESTIMANDS.yaml
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_causal_design.py --contrasts research-execution/CAUSAL_CONTRASTS.yaml --modes research-execution/MODE_CONTRACTS --estimands research-execution/ESTIMANDS.yaml
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: contrasts, mode contracts, alternatives, baseline rule, estimands.'
+        scientific:
+        - One interpretable primary contrast; strongest baseline only by frozen DEV rule.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - M11–M14 can falsify LLM necessity, copying, field reliance and length.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - PIVOT to minimal decision-contract if effect cannot be separated from ready-answer copying; narrow before data.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-004.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H5
+    - T_CAUSAL
+    - T_POWER
+    acceptance_gate: GATE-001
+  WP-005:
+    linear_issue: ENG-157
+    phase: W0
+    kind: work_package
+    title: Independent oracle/scorer boundary
+    mandatory: true
+    dependencies: []
+    roles:
+      producer: Independent Oracle Architect
+      independent_reviewer: Mutation and Dependency Auditor
+      gatekeeper: Senior Adversarial Methodology Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Confirmatory evidence requires validation path B independent of production path A.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-005
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-005/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-005/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-005/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-005/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-005/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-005/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-005/HANDOFF_SCHEMA.json
+    required_context:
+    - ORACLE_AND_SCORER_PROTOCOL.md
+    - Typed epistemic boundary
+    - Historical schemas as non-normative input.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/oracle/SEMANTIC_SPEC.md
+    - EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md
+    - EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/oracle/DEPENDENCY_AUDIT_PLAN.md
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - Production source/predicates, generated expected frames, model outputs and sealed data.
+    actions:
+    - Write implementation-independent semantics and the only shared A/B surfaces.
+    - Enumerate critical mutations; define property, mutation, human and differential tests.
+    - Specify clean-room implementation context and dependency scanner.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/oracle/SEMANTIC_SPEC.md
+    - EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md
+    - EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+    - EpistemicCompilerLab/research-execution/oracle/DEPENDENCY_AUDIT_PLAN.md
+    acceptance:
+      commands:
+      - python research-execution/scripts/validate_oracle_boundary.py --boundary research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations research-execution/oracle/MUTATION_MATRIX.yaml
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: semantic spec, independence boundary, mutation matrix, dependency plan.'
+        scientific:
+        - Oracle B is implementable without A imports/calls/generated expected frames.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Circular gold, production dependency and missed mutation fail closed.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - STOP confirmatory route until redesign if independence or semantic agreement cannot be demonstrated.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-005.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H3
+    - T_ORACLE
+    - T_INDEPENDENCE
+    acceptance_gate: GATE-001
+  WP-006:
+    linear_issue: ENG-158
+    phase: W0
+    kind: work_package
+    title: Power and confirmatory analysis plan
+    mandatory: true
+    dependencies: []
+    roles:
+      producer: Statistical Design Reviewer
+      independent_reviewer: Adversarial Statistical Reviewer
+      gatekeeper: Senior Adversarial Methodology Reviewer
+      identity_record_required: true
+      session_separation_required: true
+      conflict_declaration_required: true
+    why_now: Sample size, estimands, exclusions and multiplicity must be fixed before scaling.
+    context_packet:
+      directory: EpistemicCompilerLab/research-execution/context-packets/WP-006
+      files:
+      - EpistemicCompilerLab/research-execution/context-packets/WP-006/TASK.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-006/REQUIRED_READING.md
+      - EpistemicCompilerLab/research-execution/context-packets/WP-006/INPUT_MANIFEST.json
+      - EpistemicCompilerLab/research-execution/context-packets/WP-006/ALLOWED_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-006/FORBIDDEN_PATHS.txt
+      - EpistemicCompilerLab/research-execution/context-packets/WP-006/ACCEPTANCE.yaml
+      - EpistemicCompilerLab/research-execution/context-packets/WP-006/HANDOFF_SCHEMA.json
+    required_context:
+    - STATISTICS_AND_ANALYSIS_PROTOCOL.md
+    - Proposed contrasts
+    - Pilot variance as planning only.
+    allowed_paths:
+    - EpistemicCompilerLab/research-execution/statistics/POWER_SIMULATION_PLAN.md
+    - EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml
+    - EpistemicCompilerLab/research-execution/statistics/FAILURE_AND_EXCLUSION_RULES.md
+    - EpistemicCompilerLab/research-execution/statistics/power_simulation.py
+    - EpistemicCompilerLab/research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml
+    - EpistemicCompilerLab/research-execution/statistics/table-shells
+    forbidden_context:
+    - Future HOLDOUT or REPLICATION content before the authorized phase.
+    - Pilot 18/18 or 24/24 treated as confirmatory evidence.
+    - Any expansion to fuzzy membership, answer-level probability, weight training or guaranteed privacy.
+    - Self-acceptance by the producer or reuse of the same unlogged session as independent reviewer.
+    - No round-number sample size, best seed or post-HOLDOUT changes.
+    actions:
+    - Justify smallest meaningful effect independently; implement clustered paired simulation with failures/heterogeneity.
+    - Fix base_scenario_id as unit, nesting, one endpoint/contrast, secondary families, correction and exclusions.
+    - Produce table shells and feasibility interface.
+    deliverables:
+    - EpistemicCompilerLab/research-execution/statistics/POWER_SIMULATION_PLAN.md
+    - EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml
+    - EpistemicCompilerLab/research-execution/statistics/FAILURE_AND_EXCLUSION_RULES.md
+    - EpistemicCompilerLab/research-execution/statistics/power_simulation.py
+    - EpistemicCompilerLab/research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml
+    - EpistemicCompilerLab/research-execution/statistics/table-shells
+    acceptance:
+      commands:
+      - python research-execution/statistics/power_simulation.py --assumptions research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml --output research-execution/statistics/POWER_RESULTS.json
+      - python research-execution/scripts/validate_analysis_registry.py --registry research-execution/statistics/ANALYSIS_REGISTRY.yaml --min-power 0.90 --alpha 0.05
+      checks:
+        artifact:
+        - 'All declared deliverables exist and validate: plan, registry, failure rules, simulation, assumptions, table shells.'
+        scientific:
+        - Power >=0.90 at two-sided alpha .05; scenario is primary unit and multiplicity frozen.
+        independence:
+        - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+        adversarial:
+        - Worst-case failures and heterogeneity do not silently lower the standard.
+        reproducibility:
+        - A clean reviewer can repeat the commands from hashes and manifests.
+    stop_or_pivot:
+    - If infeasible, narrow models/modes/domains or claim before data; never lower power after results.
+    handoff:
+      schema: EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json
+      path: EpistemicCompilerLab/research-execution/handoffs/WP-006.json
+      required_status: ready_for_review
+      must_include:
+      - identity_and_session
+      - input_hashes
+      - files_created
+      - files_modified
+      - commands_run
+      - tests
+      - acceptance_checks
+      - known_limitations
+      - protocol_deviations
+      - unexpected_findings
+      - recommended_next_state
+    claim_or_threat_links:
+    - H1
+    - H2
+    - T_POWER
+    acceptance_gate: GATE-001
