@@ -3,6 +3,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 $repo = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
+$acceptedBase = "669b54c2ca0758a97f9cc10b32ca637db2e891fb"
 Set-Location $repo
 
 $projects = @(
@@ -18,15 +19,21 @@ $runProjects = @(
     "services/document-evidence/tests/DocumentEvidence.Api.ContractTests/DocumentEvidence.Api.ContractTests.csproj"
 )
 
-$base = (git rev-parse HEAD^).Trim()
+git cat-file -e "$acceptedBase^{commit}"
 if ($LASTEXITCODE -ne 0) {
-    throw "Unable to resolve the comparison base."
+    throw "Accepted service-boundary base is unavailable: $acceptedBase"
 }
 
-python tools/quality/repository_guard.py --base $base
+python tools/quality/repository_guard.py --base $acceptedBase
 if ($LASTEXITCODE -ne 0) {
     throw "Repository guard failed."
 }
+
+$generatorJson = python tools/document_evidence/generate_client.py --check
+if ($LASTEXITCODE -ne 0) {
+    throw "Generated client verification failed."
+}
+$generatorReceipt = $generatorJson | ConvertFrom-Json
 
 foreach ($project in $projects) {
     dotnet build $project --nologo --warnaserror
@@ -46,9 +53,12 @@ $result = [ordered]@{
     status = "success"
     branch = (git branch --show-current).Trim()
     commit = (git rev-parse HEAD).Trim()
-    openApi = "services/document-evidence/openapi/document-evidence-v1.json"
+    acceptedBase = $acceptedBase
+    openApi = $generatorReceipt.openApi
+    openApiSha256 = $generatorReceipt.openApiSha256
+    generatedOutputs = $generatorReceipt.outputs
     projectsBuilt = $projects.Count
     contractExecutablesRun = $runProjects.Count
 }
 
-$result | ConvertTo-Json -Depth 3
+$result | ConvertTo-Json -Depth 5
