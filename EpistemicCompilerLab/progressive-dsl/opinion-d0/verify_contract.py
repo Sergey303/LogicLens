@@ -16,7 +16,7 @@ OPINION_SCHEMA = ROOT / "opinion-v0.schema.json"
 CASE_SCHEMA = ROOT / "case-v0.schema.json"
 RESPONSE_SCHEMA = ROOT / "codex-response-v0.schema.json"
 EXPECTED_OPINIONS_HASH = "sha256:7da7d9209c506bce40040004a36041f58a81cf2031f22eaf44c4fa54cdfb48d2"
-EXPECTED_CASES_HASH = "sha256:1595ebd64ea0d5057d6e1a256881796eed04ac1ee18c35420850148faf49d68c"
+EXPECTED_CASES_HASH = "sha256:018904bb2b5f8487a21ad0308ce3ea6131903ddd0b6c1ba07087ced98d11cb4d"
 EXPECTED_IDS = {
     "management.d0.evidence-dominant-same-p",
     "management.d0.prior-dominant-same-p",
