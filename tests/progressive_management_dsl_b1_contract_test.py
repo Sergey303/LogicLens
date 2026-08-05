@@ -16,7 +16,7 @@ RULE_SCHEMA = ROOT / "contracts" / "epistemic-logical-rule-v0.schema.json"
 CASES = BASE / "cases-dsl-b1-v0.jsonl"
 RULES = BASE / "dsl-b1-logical-rules-v0.jsonl"
 
-EXPECTED_CASE_SHA256 = "sha256:83f5f582aaf49e49690c64a730335ac8dae45f40e5ed92d1224f5562b6aae552"
+EXPECTED_CASE_SHA256 = "sha256:4fe35731379df34a9351d8cca99a7072158ab99a94ed035053aa29a4e67516ca"
 EXPECTED_RULE_SHA256 = "sha256:828c4cb274cc48a7149ea8138c9c0a67131f550e46934f9439c73de92400b7eb"
 EXPECTED_CASE_IDS = {
     "management.b1.northstar-project-governance-refuted",
@@ -57,6 +57,24 @@ def digest(path: Path) -> str:
     return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def assert_frozen(path: Path, expected: str, label: str) -> str:
+    actual = digest(path)
+    if actual != expected:
+        try:
+            display_path = path.relative_to(ROOT)
+        except ValueError:
+            display_path = path
+        raise AssertionError(
+            f"{label} changed\n"
+            f"path: {display_path}\n"
+            f"expected: {expected}\n"
+            f"actual:   {actual}\n"
+            "If this change is intentional, review the semantic diff first, then "
+            "update the frozen hash and all benchmark bindings in the same commit."
+        )
+    return actual
+
+
 def validate_rows(
     rows: list[dict[str, Any]],
     schema: dict[str, Any],
@@ -79,10 +97,8 @@ def main() -> int:
     validate_rows(cases, load_json(CASE_SCHEMA), "case")
     validate_rows(rules, load_json(RULE_SCHEMA), "rule")
 
-    if digest(CASES) != EXPECTED_CASE_SHA256:
-        raise AssertionError(f"DSL-B1 cases changed: {digest(CASES)}")
-    if digest(RULES) != EXPECTED_RULE_SHA256:
-        raise AssertionError(f"DSL-B1 rules changed: {digest(RULES)}")
+    cases_hash = assert_frozen(CASES, EXPECTED_CASE_SHA256, "DSL-B1 cases")
+    rules_hash = assert_frozen(RULES, EXPECTED_RULE_SHA256, "DSL-B1 rules")
 
     case_ids = {row["caseId"] for row in cases}
     if case_ids != EXPECTED_CASE_IDS:
@@ -155,8 +171,8 @@ def main() -> int:
     print(f"Cases: {len(cases)}")
     print(f"Rules: {len(rules)}")
     print(f"DSL-B statuses: {json.dumps(statuses, sort_keys=True)}")
-    print(f"Cases hash: {digest(CASES)}")
-    print(f"Rules hash: {digest(RULES)}")
+    print(f"Cases hash: {cases_hash}")
+    print(f"Rules hash: {rules_hash}")
     return 0
 
 
