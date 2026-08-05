@@ -14,6 +14,17 @@ Do not add probability, fuzzy membership, a web proxy, persistent service, authe
 
 The frozen compiled-frame replication v0, its cases hash and parser hash are immutable controls. New strict-epistemic work must use separate files and commands.
 
+## Flagship publication protocol
+
+Before changing benchmark, oracle, scorer, model runs, teacher loop, HOLDOUT, replication or manuscript artifacts, read:
+
+1. [`scientific-roadmap/TARGET_PAPER_COMPILE_DONT_TEACH.md`](scientific-roadmap/TARGET_PAPER_COMPILE_DONT_TEACH.md);
+2. [`scientific-roadmap/TARGET_PAPER_FULL_EXECUTION_PATH_AND_STRICT_AUDIT.md`](scientific-roadmap/TARGET_PAPER_FULL_EXECUTION_PATH_AND_STRICT_AUDIT.md);
+3. [`scientific-roadmap/critical-protocols/README.md`](scientific-roadmap/critical-protocols/README.md);
+4. the specific MUST/STOP protocol linked from that index.
+
+The critical protocols are normative. A task, prompt or local implementation decision may not weaken them. Any benchmark-isolation violation invalidates the affected confirmatory run.
+
 ## Sources of truth
 
 Use this order:
