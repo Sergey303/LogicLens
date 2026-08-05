@@ -49,7 +49,9 @@ internal static class SecureUploadOrderingContractTests
     {
         var fixture = new SecureUploadTestFixture();
         using var stream = new ReadTrackingStream(SecureUploadTestFixture.PdfBytes());
-        var service = fixture.CreateService(new SecureUploadOptions(MaxUploadBytes: 8));
+        var service = fixture.CreateService(
+            options: new SecureUploadOptions(MaxUploadBytes: 8)
+        );
 
         await TestAssert.ThrowsAsync<InvalidDataException>(
             () => service.CompleteAsync(
