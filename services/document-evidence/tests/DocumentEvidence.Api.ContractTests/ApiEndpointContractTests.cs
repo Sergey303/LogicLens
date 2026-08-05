@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using KnowledgePilot.LogicLens.DocumentEvidence.Api.Contracts;
+using KnowledgePilot.LogicLens.DocumentEvidence.Client;
 
 namespace KnowledgePilot.LogicLens.DocumentEvidence.Api.ContractTests;
 
