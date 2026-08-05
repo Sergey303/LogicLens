@@ -3,29 +3,23 @@ using KnowledgePilot.LogicLens.DocumentEvidence.Api;
 using KnowledgePilot.LogicLens.DocumentEvidence.Api.Contracts;
 using KnowledgePilot.LogicLens.DocumentEvidence.Application;
 using KnowledgePilot.LogicLens.DocumentEvidence.LocalStorage;
-using KnowledgePilot.LogicLens.DocumentEvidence.Pdf;
 using KnowledgePilot.LogicLens.DocumentEvidence.Security;
 
 namespace KnowledgePilot.LogicLens.DocumentEvidence.EndToEndDemo;
 
 internal sealed class DemoDocumentEvidenceOperations : IDocumentEvidenceApiOperations
 {
-    private const string SourceId = "document-evidence-pdf";
     private readonly ConcurrentDictionary<(Guid, Guid), DocumentMetadataDto> _documents = new();
-    private readonly ConcurrentDictionary<Guid, IReadOnlyList<DocumentFragmentDto>> _fragments = new();
-    private readonly ConcurrentDictionary<Guid, Guid> _revisionWorkspaces = new();
-    private readonly LocalImmutableObjectStore _objects;
-    private readonly PdfPopplerAdapter _pdf;
-    private readonly DemoLifecycleRepository _repository;
+    private readonly DemoPdfRevisionProcessor _processor;
     private readonly SecureDocumentUploadService _uploads;
 
     public DemoDocumentEvidenceOperations(string objectRoot)
     {
-        _objects = new LocalImmutableObjectStore(new LocalObjectStoreOptions(objectRoot));
-        _repository = new DemoLifecycleRepository();
-        _pdf = new PdfPopplerAdapter(new SystemPdfProcessRunner());
+        var objects = new LocalImmutableObjectStore(new LocalObjectStoreOptions(objectRoot));
+        var repository = new DemoLifecycleRepository();
+        _processor = new DemoPdfRevisionProcessor(objects, repository);
         _uploads = new SecureDocumentUploadService(
-            new DocumentUploadService(_objects, _repository),
+            new DocumentUploadService(objects, repository),
             new DemoUploadAuthorizationPolicy(),
             new InMemoryUploadQuotaGate(),
             new DemoUploadAuditSink()
@@ -39,7 +33,11 @@ internal sealed class DemoDocumentEvidenceOperations : IDocumentEvidenceApiOpera
     {
         if (!string.Equals(request.MediaType, UploadMediaSignature.Pdf, StringComparison.Ordinal))
         {
-            throw new DocumentEvidenceApiException(415, "unsupported-media", "ENG-148 accepts PDF only.");
+            throw new DocumentEvidenceApiException(
+                415,
+                "unsupported-media",
+                "ENG-148 accepts PDF only."
+            );
         }
         var secured = await _uploads.CompleteAsync(
             new SecureUploadCommand(
@@ -58,20 +56,8 @@ internal sealed class DemoDocumentEvidenceOperations : IDocumentEvidenceApiOpera
             cancellationToken
         );
         var completion = secured.Completion;
-        if (!_fragments.ContainsKey(completion.RevisionId))
-        {
-            await ParseRevisionAsync(completion.RevisionId, cancellationToken);
-        }
-        _documents[(request.WorkspaceId, request.DocumentId)] = new DocumentMetadataDto(
-            request.WorkspaceId,
-            request.DocumentId,
-            secured.DisplayName,
-            request.MediaType,
-            request.SourceKind,
-            "Ready",
-            completion.RevisionNumber,
-            false
-        );
+        await _processor.ProcessAsync(completion.RevisionId, cancellationToken);
+        _documents[(request.WorkspaceId, request.DocumentId)] = Metadata(request, secured);
         return new UploadRevisionDto(
             completion.WorkspaceId,
             completion.DocumentId,
@@ -105,36 +91,24 @@ internal sealed class DemoDocumentEvidenceOperations : IDocumentEvidenceApiOpera
     )
     {
         DemandActor(actorId, cancellationToken);
-        if (!_revisionWorkspaces.TryGetValue(revisionId, out var owner) || owner != workspaceId)
-        {
-            throw new UnauthorizedAccessException();
-        }
-        return Task.FromResult(
-            _fragments.TryGetValue(revisionId, out var result)
-                ? result
-                : (IReadOnlyList<DocumentFragmentDto>)[]
-        );
+        return Task.FromResult(_processor.List(workspaceId, revisionId));
     }
 
-    private async Task ParseRevisionAsync(Guid revisionId, CancellationToken cancellationToken)
+    private static DocumentMetadataDto Metadata(
+        UploadRevisionRequest request,
+        SecureUploadResult result
+    )
     {
-        var commit = _repository.GetCommit(revisionId);
-        await using var source = await _objects.OpenReadAsync(
-            commit.StoredObject.Sha256,
-            cancellationToken
+        return new DocumentMetadataDto(
+            request.WorkspaceId,
+            request.DocumentId,
+            result.DisplayName,
+            request.MediaType,
+            request.SourceKind,
+            "Ready",
+            result.Completion.RevisionNumber,
+            false
         );
-        var extraction = await _pdf.ExtractAsync(
-            source,
-            new PdfExtractionRequest(
-                SourceId,
-                "urn:logiclens:eng-148:demo.pdf",
-                commit.StoredObject.SizeBytes,
-                commit.StoredObject.Sha256
-            ),
-            cancellationToken
-        );
-        _fragments[revisionId] = DemoFragmentMapper.Map(extraction, revisionId);
-        _revisionWorkspaces[revisionId] = commit.WorkspaceId;
     }
 
     private static void DemandActor(Guid actorId, CancellationToken cancellationToken)
