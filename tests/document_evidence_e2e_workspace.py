@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import json
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -12,7 +13,7 @@ def align_snapshot(
     proposal: Path,
     fragment: dict[str, Any],
     schemas: dict[str, dict[str, Any]],
-    canonical_json: Any,
+    canonical_json: Callable[[dict[str, Any]], bytes],
 ) -> None:
     """Replace the legacy fixture hash with the service revision snapshot hash."""
     snapshot_hash = fragment["snapshotHash"]
