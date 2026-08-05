@@ -1,4 +1,4 @@
-name: Verify document evidence security
+name: Verify document evidence service boundary
 on:
   pull_request:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  upload-security:
+  service-boundary:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -42,4 +42,22 @@ jobs:
         run: |
           dotnet run \
             --project services/document-evidence/tests/DocumentEvidence.Security.ContractTests/DocumentEvidence.Security.ContractTests.csproj \
+            --no-build
+
+      - name: Build API application adapter
+        run: |
+          dotnet build \
+            services/document-evidence/src/DocumentEvidence.Api.Application/DocumentEvidence.Api.Application.csproj \
+            --nologo --warnaserror
+
+      - name: Build generated client contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Client.ContractTests/DocumentEvidence.Client.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run generated client contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Client.ContractTests/DocumentEvidence.Client.ContractTests.csproj \
             --no-build
