@@ -1,6 +1,6 @@
 # MVP HTTP boundary v0
 
-Status: service boundary verified; ENG-148 end-to-end proof implemented and awaiting execution.
+Status: service boundary and ENG-148 deterministic end-to-end route verified.
 
 ## Consumer contract
 
@@ -51,12 +51,12 @@ Run from the repository worktree:
 .\services\document-evidence\verify-service-boundary.ps1
 ```
 
-The accepted local proof on `c9d8a3e0329cac4244bc1383bdfa200038096450` built four projects with
-zero warnings and ran upload-security, generated-client, and real-HTTP contracts successfully.
+The accepted local service-boundary proof built four projects with zero warnings and ran
+upload-security, generated-client, and real-HTTP contracts successfully.
 
 ## ENG-148 deterministic demo
 
-`DocumentEvidence.EndToEndDemo` now performs this route:
+`DocumentEvidence.EndToEndDemo` performs this route:
 
 ```text
 reproducible PDF bytes
@@ -77,8 +77,24 @@ complete route twice and rejects any difference in the full artifact-tree SHA-25
 .\services\document-evidence\verify-eng-148-demo.ps1
 ```
 
+Accepted proof for tested commit `4377fee82bf9b259239710c348c4e48b5c505ad0`:
+
+- repository guard: 18 files;
+- Ruff: passed;
+- .NET build: zero warnings and zero errors;
+- two complete HTTP/Poppler/SWI-Prolog runs;
+- deterministic tree SHA-256:
+  `sha256:c348ee34e62044e3f3849176837d9f0ff05d5943c7706b6b43d8e0530afa11f0`;
+- gate status: `passed`;
+- decision status: `verified`;
+- `consumerReadsDatabase=false` and `consumerReadsBlobPath=false`.
+
+Machine-readable evidence is recorded in
+[`eng-148-e2e-proof-v1.json`](../evidence/eng-148-e2e-proof-v1.json).
+
 ## Remaining MVP work
 
-The ENG-148 host proves the full user route but remains a contract/demo composition root. Production
-still needs PostgreSQL-backed quota and audit state, signed read-plan revalidation, revocation
-invalidation, outbox dispatch, and the deployable service composition root.
+The ENG-148 host proves the full positive user route but remains a contract/demo composition root.
+Production still needs PostgreSQL-backed quota and audit state, signed read-plan revalidation,
+revocation invalidation, outbox dispatch, and the deployable service composition root. ENG-148 also
+retains its fail-closed unknown/conflict acceptance work before the Linear issue can be completed.
