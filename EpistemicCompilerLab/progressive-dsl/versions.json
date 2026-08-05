@@ -6,15 +6,7 @@
       "id": "DSL-A",
       "runtimeVersion": "0.1.0",
       "status": "implemented",
-      "capabilities": [
-        "typed-strict-predicates",
-        "support-oppose",
-        "open-world-status",
-        "provenance",
-        "scope",
-        "dependency-groups",
-        "python-prolog-cross-verification"
-      ],
+      "capabilities": ["typed-strict-predicates", "support-oppose", "open-world-status", "provenance", "scope", "dependency-groups", "python-prolog-cross-verification"],
       "queryOperations": ["strict-claim"]
     },
     {
@@ -22,21 +14,8 @@
       "runtimeVersion": "0.2.1",
       "status": "experimental",
       "extends": "DSL-A",
-      "capabilities": [
-        "ground-logical-rule",
-        "all",
-        "any",
-        "not-explicit",
-        "proof-dag",
-        "cycle-rejection",
-        "semantic-target-validation",
-        "python-prolog-cross-verification"
-      ],
-      "deferredCapabilities": [
-        "finite-exists",
-        "safe-variables",
-        "variable-substitution"
-      ],
+      "capabilities": ["ground-logical-rule", "all", "any", "not-explicit", "proof-dag", "cycle-rejection", "semantic-target-validation", "python-prolog-cross-verification"],
+      "deferredCapabilities": ["finite-exists", "safe-variables", "variable-substitution"],
       "queryOperations": ["strict-claim", "derived-strict-claim"]
     },
     {
@@ -45,43 +24,17 @@
       "status": "experimental",
       "implementationStage": "C0",
       "extends": "DSL-B",
-      "capabilities": [
-        "point-observation",
-        "bounded-observation",
-        "normal-observation-description",
-        "typed-units",
-        "allowlisted-conversions",
-        "decimal-normalisation",
-        "deterministic-interval-comparison",
-        "between",
-        "missing-observation-open-world",
-        "python-prolog-cross-verification"
-      ],
-      "semanticGuarantees": [
-        "bounded-comparison-supported-only-when-entire-interval-satisfies",
-        "bounded-comparison-refuted-only-when-entire-interval-violates",
-        "boundary-overlap-remains-unknown",
-        "normal-model-does-not-imply-strict-decision-without-policy"
-      ],
-      "deferredCapabilities": [
-        "probabilistic-normal-threshold-policy",
-        "correlated-measurement-fusion",
-        "derived-numeric-expressions",
-        "calendar-aware-unit-conversions"
-      ],
-      "queryOperations": [
-        "strict-claim",
-        "derived-strict-claim",
-        "observation",
-        "numeric-comparison"
-      ]
+      "capabilities": ["point-observation", "bounded-observation", "normal-observation-description", "typed-units", "allowlisted-conversions", "decimal-normalisation", "deterministic-interval-comparison", "between", "missing-observation-open-world", "python-prolog-cross-verification"],
+      "semanticGuarantees": ["bounded-comparison-supported-only-when-entire-interval-satisfies", "bounded-comparison-refuted-only-when-entire-interval-violates", "boundary-overlap-remains-unknown", "normal-model-does-not-imply-strict-decision-without-policy"],
+      "deferredCapabilities": ["probabilistic-normal-threshold-policy", "correlated-measurement-fusion", "derived-numeric-expressions", "calendar-aware-unit-conversions"],
+      "queryOperations": ["strict-claim", "derived-strict-claim", "observation", "numeric-comparison"]
     },
     {
       "id": "DSL-D",
-      "runtimeVersion": "0.4.1",
+      "runtimeVersion": "0.4.2",
       "status": "experimental",
-      "implementationStage": "D1",
-      "pilotLinearIssues": ["ENG-185", "ENG-186"],
+      "implementationStage": "D2",
+      "pilotLinearIssues": ["ENG-185", "ENG-186", "ENG-187"],
       "extends": "DSL-C",
       "capabilities": [
         "binomial-opinion",
@@ -90,45 +43,34 @@
         "projected-probability",
         "separate-conflict-index",
         "allowed-conclusion",
-        "direct-opinion-source-mode",
-        "evidence-count-source-mode",
         "answer-level-opinion-profile",
         "scalar-versus-opinion-ablation",
         "rounded-versus-exact-rational-ablation",
         "policy-boundary-preservation",
-        "declared-half-even-rounding",
-        "numeric-versus-lexical-scoring",
-        "typed-assertive-decision-withholding",
+        "dependency-aware-evidence-fusion",
+        "average-within-dependency-group",
+        "cumulative-across-independent-groups",
+        "missing-dependency-fail-closed",
+        "compatible-base-rate-validation",
+        "explicit-operator-plan",
         "python-prolog-cross-verification",
         "explicit-no-implicit-fusion"
       ],
       "semanticGuarantees": [
         "belief-plus-disbelief-plus-uncertainty-equals-one-in-exact-arithmetic",
         "base-rate-is-prior-not-evidence",
-        "projected-probability-equals-belief-plus-base-rate-times-uncertainty",
         "uncertainty-is-not-error-probability",
         "conflict-is-not-collapsed-into-uncertainty",
-        "same-projection-may-have-different-allowed-conclusions",
-        "rounding-may-change-policy-outcome-and-is-reported",
         "exact-comparison-precedes-decimal-rendering",
-        "missing-exact-opinion-remains-open-world",
+        "dependent-copies-do-not-increase-evidence-strength",
+        "independent-groups-may-cumulatively-increase-evidence-strength",
+        "independence-is-never-inferred-from-text-or-name",
+        "missing-dependency-metadata-prevents-fusion",
+        "dependency-labels-are-declared-metadata-not-proof-of-independence",
         "answer-profile-applies-to-declared-answer-correct-proposition"
       ],
-      "deferredCapabilities": [
-        "dependency-aware-fusion",
-        "cumulative-fusion",
-        "averaging-fusion",
-        "calibrated-real-world-opinions",
-        "fuzzy-membership",
-        "publication-holdout-evaluation"
-      ],
-      "queryOperations": [
-        "strict-claim",
-        "derived-strict-claim",
-        "observation",
-        "numeric-comparison",
-        "opinion"
-      ]
+      "deferredCapabilities": ["weighted-belief-fusion", "consensus-compromise-fusion", "calibrated-real-world-opinions", "fuzzy-membership", "publication-holdout-evaluation"],
+      "queryOperations": ["strict-claim", "derived-strict-claim", "observation", "numeric-comparison", "opinion", "fuse-opinions"]
     }
   ]
 }
