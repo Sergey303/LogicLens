@@ -69,12 +69,11 @@ def main() -> int:
     args = arguments()
     sys.path[:0] = [str(ROOT), str(ROOT / "tools")]
     source_proposal = importlib.import_module("source_proposal")
-    bridge_fixture = importlib.import_module("tests.document_evidence_pdf_bridge_fixture")
+    fixture = importlib.import_module("tests.document_evidence_pdf_bridge_fixture")
     pdf_link = importlib.import_module("source_proposal.pdf_link")
     capsule = importlib.import_module("capsule")
     schemas = source_proposal.load_schemas(ROOT / "contracts")
     pdf_schemas = pdf_link.load_pdf_schemas(ROOT / "contracts")
-
     fragment_bytes = args.fragment.read_bytes()
     fragment = json.loads(fragment_bytes)
     capsule.schema_check(fragment, schemas["fragment"], "ENG-148 service fragment")
@@ -83,44 +82,61 @@ def main() -> int:
     workspace_root = args.output / "workspace"
     shutil.rmtree(workspace_root, ignore_errors=True)
 
-    original_loader = bridge_fixture.load_fragment
-    bridge_fixture.load_fragment = lambda _root, _schemas: (fragment_bytes, fragment)
+    original_loader = fixture.load_fragment
+    fixture.load_fragment = lambda _root, _schemas: (fragment_bytes, fragment)
     try:
-        world, proposal, seed_path, expected = bridge_fixture.build_workspace(
+        world, proposal, seed_path, expected = fixture.build_workspace(
             root=ROOT,
             temporary=workspace_root,
             schemas=schemas,
             pdf_schemas=pdf_schemas,
         )
     finally:
-        bridge_fixture.load_fragment = original_loader
+        fixture.load_fragment = original_loader
     if expected != fragment:
-        raise AssertionError("The proposal workspace did not retain the client-selected fragment.")
+        raise AssertionError("The proposal workspace did not retain the selected fragment.")
 
     resolved = workspace_root / "resolved"
-    pdf_link.resolve_pdf_seed(proposal, seed_path, resolved, schemas, pdf_schemas)
+    pdf_link.resolve_pdf_seed(
+        proposal_root=proposal,
+        seed_path=seed_path,
+        output=resolved,
+        schemas=schemas,
+        pdf_schemas=pdf_schemas,
+    )
     source_proposal.prepare_extraction(
-        world,
-        proposal,
-        ROOT / "prompts/generic/source-assertion-proposer.md",
-        schemas,
-        ROOT / "contracts",
+        world_root=world,
+        proposal_root=proposal,
+        prompt_path=ROOT / "prompts/generic/source-assertion-proposer.md",
+        schemas=schemas,
+        contracts_root=ROOT / "contracts",
     )
     source_proposal.import_assertion_proposal(
-        world,
-        proposal,
-        resolved / "assertion-candidate.json",
-        schemas,
-        ROOT / "contracts",
+        world_root=world,
+        proposal_root=proposal,
+        candidate_path=resolved / "assertion-candidate.json",
+        schemas=schemas,
+        contracts_root=ROOT / "contracts",
     )
     source_proposal.import_grounding_review(
-        proposal,
-        resolved / "grounding-review.json",
-        schemas,
+        proposal_root=proposal,
+        review_path=resolved / "grounding-review.json",
+        schemas=schemas,
     )
     package_root = args.output / "package"
-    package = source_proposal.execute_gate(proposal, package_root, "swipl", 20, schemas)
-    source_proposal.verify_package(package_root, "swipl", 20, schemas)
+    package = source_proposal.execute_gate(
+        proposal_root=proposal,
+        output=package_root,
+        swipl="swipl",
+        timeout_seconds=20,
+        schemas=schemas,
+    )
+    source_proposal.verify_package(
+        package_root=package_root,
+        swipl="swipl",
+        timeout_seconds=20,
+        schemas=schemas,
+    )
     selected = (package_root / "files/evidence/selected-fragments.jsonl").read_bytes()
     if selected != fragment_bytes or package["gate"]["status"] != "passed":
         raise AssertionError("ENG-148 provenance changed before the SWI-Prolog gate.")
