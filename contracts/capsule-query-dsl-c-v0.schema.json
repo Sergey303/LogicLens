@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/capsule-query-dsl-c-v0.schema.json",
+  "title": "LogicLens DSL-C observation query v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "dslLevel", "operation", "target"],
+  "properties": {
+    "schemaVersion": {"const": "0.1"},
+    "dslLevel": {"const": "DSL-C"},
+    "operation": {
+      "enum": ["observation", "numeric-comparison"]
+    },
+    "target": {"$ref": "#/$defs/target"},
+    "comparison": {"$ref": "#/$defs/comparison"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"operation": {"const": "numeric-comparison"}},
+        "required": ["operation"]
+      },
+      "then": {"required": ["comparison"]},
+      "else": {
+        "not": {"required": ["comparison"]}
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "subject", "window"],
+      "properties": {
+        "metric": {"$ref": "#/$defs/id"},
+        "subject": {"$ref": "#/$defs/id"},
+        "window": {"$ref": "#/$defs/id"}
+      }
+    },
+    "unit": {
+      "enum": [
+        "millisecond",
+        "second",
+        "minute",
+        "hour",
+        "day",
+        "fraction",
+        "percent",
+        "count"
+      ]
+    },
+    "singleThreshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operator", "value", "unit"],
+      "properties": {
+        "operator": {"enum": ["lt", "lte", "gt", "gte"]},
+        "value": {"type": "number"},
+        "unit": {"$ref": "#/$defs/unit"}
+      }
+    },
+    "betweenThreshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator",
+        "lower",
+        "upper",
+        "unit",
+        "lowerInclusive",
+        "upperInclusive"
+      ],
+      "properties": {
+        "operator": {"const": "between"},
+        "lower": {"type": "number"},
+        "upper": {"type": "number"},
+        "unit": {"$ref": "#/$defs/unit"},
+        "lowerInclusive": {"type": "boolean"},
+        "upperInclusive": {"type": "boolean"}
+      }
+    },
+    "comparison": {
+      "oneOf": [
+        {"$ref": "#/$defs/singleThreshold"},
+        {"$ref": "#/$defs/betweenThreshold"}
+      ]
+    }
+  }
+}
