@@ -1,0 +1,374 @@
+schema_version: 1.0.0
+work_package_id: WP-002
+central_claim: For fixed-weight small language models, a trusted runtime that compiles formal knowledge into a typed verified decision frame can
+  improve reliable epistemic contract preservation relative to the strongest matched non-compiled interface, within the frozen benchmark scope.
+primary_design:
+  contrast_id: PRIMARY-COMPILED-VS-STRONGEST-MATCHED
+  treatment: M6_COMPILED_VERIFIED_FRAME
+  baseline_selection_rule: Select on DEV, before HOLDOUT, the highest-performing non-compiled mode that is matched for available source information,
+    output schema, token budget, and decision fields without receiving an authoritative computed conclusion.
+  endpoint: scenario_level_exact_epistemic_contract_accuracy
+  unit_of_analysis: base_scenario_id
+  confirmatory_sources:
+  - frozen_holdout
+  - independent_replication
+abstract_sentence_order:
+- ABS-01
+- ABS-02
+- ABS-03
+- ABS-04
+- ABS-05
+- ABS-06
+- ABS-07
+rows:
+- claim_id: CLM-001
+  abstract_sentence_id: ABS-01
+  claim_class: technical
+  hypothesis_links:
+  - T_SCOPE
+  status: preregistered
+  abstract_inclusion: true
+  claim_text: The study tests interfaces between trusted formal execution and fixed-weight small-LLM interpretation/rendering.
+  allowed_wording: We study fixed-weight small language models using raw, teacher-edited, and runtime-compiled formal interfaces.
+  prohibited_expansions:
+  - all LLMs
+  - weights were trained
+  estimand: Declared population and scope of models, interfaces, and strict epistemic tasks.
+  treatment: Frozen modes M0–M14
+  comparator: Scope statement
+  unit_of_analysis: study_contract
+  primary_metric: protocol_scope_compliance
+  secondary_metrics:
+  - prohibited_claim_count
+  required_controls:
+  - Pre/post model hashes
+  - No weight or persistent-state changes
+  strongest_alternative_explanation: Hidden model changes, not interface design, create the difference.
+  confirmatory_evidence:
+  - artifact_hash_audit
+  planning_evidence:
+  - Historical teacher-loop records
+  target_table: S1
+  failure_wording: If immutability is unverified, remove fixed-weight wording and invalidate affected contrasts.
+  retain_rule: Retain after complete model/config hash audit.
+  narrow_rule: Name only model profiles with complete integrity evidence.
+  delete_rule: Delete if any compared condition changes weights or persistent state.
+- claim_id: CLM-002
+  abstract_sentence_id: ABS-02
+  claim_class: technical
+  hypothesis_links:
+  - T_SOLVER_CONTROL
+  - T_COPYING
+  status: preregistered
+  abstract_inclusion: true
+  claim_text: The design separates source access, teacher editing, trusted execution, typed structure, answer fields, and rendering.
+  allowed_wording: We compare matched interfaces isolating teaching, execution, structure, and authoritative decision fields.
+  prohibited_expansions:
+  - Raw Prolog is the sole control
+  - unmatched ready answer
+  estimand: Factor-specific effect under matched information, schema, token budget, and decoding.
+  treatment: M6 and frozen ablations
+  comparator: Matched non-compiled and answer-field controls
+  unit_of_analysis: base_scenario_id
+  primary_metric: factor_specific_accuracy_difference
+  secondary_metrics:
+  - token_matched_difference
+  - copy_control
+  - renderer_fidelity
+  required_controls:
+  - Strongest matched baseline
+  - Typed/no-conclusion and conclusion-only controls
+  strongest_alternative_explanation: The gain is solver access, extra tokens, or ready-answer copying.
+  confirmatory_evidence:
+  - frozen_ablation
+  - frozen_holdout
+  planning_evidence:
+  - 18/18 and 24/24 pilots only
+  target_table: T2
+  failure_wording: If matched controls remove the gain, report only the surviving factor effect.
+  retain_rule: Retain when the effect survives matched and copying controls.
+  narrow_rule: Name only the factor or state retaining an effect.
+  delete_rule: Delete mechanism wording if only unmatched comparisons are favorable.
+- claim_id: CLM-003
+  abstract_sentence_id: ABS-03
+  claim_class: primary
+  hypothesis_links:
+  - H1
+  - T_SOLVER_CONTROL
+  - T_COPYING
+  status: preregistered
+  abstract_inclusion: true
+  claim_text: M6 improves scenario-level exact epistemic contract accuracy over the strongest matched non-compiled baseline.
+  allowed_wording: On the preregistered endpoint, M6 [PRIMARY_RESULT] versus the strongest matched baseline, with [REPLICATION_RESULT].
+  prohibited_expansions:
+  - always superior
+  - perfect
+  - all models or domains
+  estimand: Paired absolute M6-minus-baseline accuracy difference.
+  treatment: M6_COMPILED_VERIFIED_FRAME
+  comparator: DEV-selected strongest matched non-compiled baseline
+  unit_of_analysis: base_scenario_id
+  primary_metric: scenario_level_exact_epistemic_contract_accuracy
+  secondary_metrics:
+  - absolute_difference
+  - hierarchical_bootstrap_95ci
+  - mcnemar_pvalue
+  - failure_rate
+  required_controls:
+  - Frozen DEV selection rule
+  - Paired clustered analysis
+  - Independent replication
+  strongest_alternative_explanation: Unmatched information, copying, tokens, or one favorable stratum explains the gain.
+  confirmatory_evidence:
+  - frozen_holdout
+  - independent_replication
+  planning_evidence:
+  - 18/18 and 24/24 are not confirmatory
+  target_table: T1
+  failure_wording: M6 did not show a practically meaningful advantage; narrow or reject the central claim.
+  retain_rule: Retain only when the CI supports the frozen meaningful gain and replication direction agrees.
+  narrow_rule: Restrict to supported models, domains, statuses, or components.
+  delete_rule: Delete if the matched baseline is non-inferior, replication reverses, or clustering removes the effect.
+- claim_id: CLM-004
+  abstract_sentence_id: ABS-04
+  claim_class: secondary
+  hypothesis_links:
+  - H2
+  status: conditional
+  abstract_inclusion: true
+  claim_text: The effect direction persists across declared model, domain, source-family, and replication strata.
+  allowed_wording: The effect direction was [GENERALIZATION_RESULT] across preregistered strata.
+  prohibited_expansions:
+  - universal generalization
+  - domain independent
+  estimand: Hierarchical paired effects across models, domains, and source families.
+  treatment: M6_COMPILED_VERIFIED_FRAME
+  comparator: Strongest matched baseline
+  unit_of_analysis: base_scenario_id nested by stratum
+  primary_metric: hierarchical_effect_by_stratum
+  secondary_metrics:
+  - domain_effects
+  - model_effects
+  - replication_effect
+  required_controls:
+  - Two model families
+  - Three domains and independent replication
+  strongest_alternative_explanation: One model, domain, or source family drives the pooled effect.
+  confirmatory_evidence:
+  - frozen_holdout
+  - independent_replication
+  planning_evidence:
+  - Single-condition pilots are insufficient
+  target_table: T3
+  failure_wording: Limit the claim to supported strata and report heterogeneity.
+  retain_rule: Retain broad wording only without practically important reversal.
+  narrow_rule: List only supported strata and all null or adverse strata.
+  delete_rule: Delete if replication reverses or one stratum explains the pooled result.
+- claim_id: CLM-005
+  abstract_sentence_id: ABS-05
+  claim_class: secondary
+  hypothesis_links:
+  - H3
+  status: conditional
+  abstract_inclusion: true
+  claim_text: Conditional on a correct frame, residual errors concentrate in query extraction or rendering rather than runtime execution.
+  allowed_wording: Independent layer audit localized residual errors to [SUPPORTED_LAYERS], conditional on frame correctness.
+  prohibited_expansions:
+  - runtime proves world truth
+  - source extraction is correct
+  estimand: Error rate attributed to each independently scored pipeline layer.
+  treatment: Verified pipeline
+  comparator: Independent layer oracles
+  unit_of_analysis: base_scenario_id
+  primary_metric: layer_attributed_error_rate
+  secondary_metrics:
+  - query_accuracy
+  - frame_accuracy
+  - renderer_fidelity
+  required_controls:
+  - Independent oracle and mutation suite
+  - Source-bound gold
+  strongest_alternative_explanation: Shared evaluator bugs or bad extraction hide runtime errors.
+  confirmatory_evidence:
+  - frozen_layer_audit
+  - independent_replication
+  planning_evidence:
+  - Pilot frame agreement only
+  target_table: T4
+  failure_wording: Report the observed layer distribution without relocation wording.
+  retain_rule: Retain only after independent oracle and mutation audit.
+  narrow_rule: Name only supported layers and statuses.
+  delete_rule: Delete if oracle independence fails or runtime errors remain unexplained.
+- claim_id: CLM-006
+  abstract_sentence_id: ABS-06
+  claim_class: secondary
+  hypothesis_links:
+  - H4
+  status: conditional
+  abstract_inclusion: true
+  claim_text: Under frozen visibility and budgets, teacher editing need not improve a fixed-weight student and may regress.
+  allowed_wording: Under preregistered budgets, teacher editing [TEACHER_RESULT]; this does not claim teaching never works.
+  prohibited_expansions:
+  - teacher editing never works
+  - Codex cannot improve Qwen
+  estimand: Paired teacher-track delta and regression rate from epoch zero.
+  treatment: Prompt/program teacher tracks
+  comparator: Epoch-zero student
+  unit_of_analysis: base_scenario_id by epoch
+  primary_metric: teacher_delta_and_regression_rate
+  secondary_metrics:
+  - candidate_acceptance_rate
+  - epoch_variance
+  required_controls:
+  - Fixed budget and visibility
+  - No HOLDOUT access
+  strongest_alternative_explanation: A weak implementation or budget causes the null result.
+  confirmatory_evidence:
+  - frozen_holdout
+  planning_evidence:
+  - Historical prompt and Prolog regressions
+  target_table: T5
+  failure_wording: If editing helps consistently, report that result and remove limitation wording.
+  retain_rule: Retain bounded wording for absent/unstable gains or regressions under the frozen protocol.
+  narrow_rule: Restrict to tested teacher, student, budget, and tasks.
+  delete_rule: Delete from abstract if consistently beneficial or not reproducible.
+- claim_id: CLM-007
+  abstract_sentence_id: ABS-07
+  claim_class: interpretive
+  hypothesis_links:
+  - H1
+  - H3
+  - T_SCOPE
+  status: conditional
+  abstract_inclusion: true
+  claim_text: Within scope, compilation may relocate formal execution into an auditable runtime while the model interprets and renders.
+  allowed_wording: Within the evaluated scope, verified compilation [INTERPRETATION] while the fixed-weight model interpreted and rendered.
+  prohibited_expansions:
+  - guarantees correctness
+  - eliminates hallucination
+  - proves source truth
+  estimand: Synthesis of the primary effect, layer audit, and matched ablations.
+  treatment: Verified-interface architecture
+  comparator: Matched contextual interfaces
+  unit_of_analysis: study_level_synthesis
+  primary_metric: claim_retention_decision
+  secondary_metrics:
+  - primary_effect
+  - runtime_auditability
+  - renderer_error
+  required_controls:
+  - Retained primary claim
+  - Independent evaluator and copying control
+  strongest_alternative_explanation: The runtime inserts the answer or shares evaluator errors.
+  confirmatory_evidence:
+  - frozen_holdout
+  - independent_replication
+  - frozen_layer_audit
+  planning_evidence:
+  - Compiled-frame pilots only motivate
+  target_table: F1
+  failure_wording: Report a narrower interface or failure-boundary result.
+  retain_rule: Retain only if CLM-003 and CLM-005 survive review.
+  narrow_rule: Use a specific contract-preservation statement if mechanism evidence is incomplete.
+  delete_rule: Delete if the primary effect or evaluator independence fails.
+- claim_id: CLM-008
+  abstract_sentence_id: null
+  claim_class: secondary
+  hypothesis_links:
+  - H5
+  status: conditional
+  abstract_inclusion: false
+  claim_text: Matched ablations estimate the marginal value of individual decision-frame components.
+  allowed_wording: Preregistered ablations estimate component value for tested models and tasks.
+  prohibited_expansions:
+  - every field is necessary
+  - the full frame is minimal
+  estimand: Paired full-frame minus one-factor-ablation effect.
+  treatment: Full M6 frame
+  comparator: Frozen component ablations
+  unit_of_analysis: base_scenario_id
+  primary_metric: component_ablation_accuracy_difference
+  secondary_metrics:
+  - status_effect
+  - renderer_fidelity
+  - token_cost
+  required_controls:
+  - One factor changed
+  - Matched tokens and schema
+  strongest_alternative_explanation: Ablations alter multiple factors or prompt length.
+  confirmatory_evidence:
+  - frozen_ablation
+  planning_evidence:
+  - DSL-B/C/D are outside the flagship subset
+  target_table: T6
+  failure_wording: No stable marginal component effect was shown.
+  retain_rule: Retain only corrected preregistered comparisons.
+  narrow_rule: Report only supported component-specific effects.
+  delete_rule: Delete minimality claims if ablations are confounded or null.
+- claim_id: CLM-009
+  abstract_sentence_id: null
+  claim_class: technical
+  hypothesis_links:
+  - T_FREEZE
+  status: preregistered
+  abstract_inclusion: false
+  claim_text: Compared conditions use hash-frozen model artifacts/configurations and preregistered failure handling.
+  allowed_wording: Student artifacts and run configurations were hash-frozen across compared modes.
+  prohibited_expansions:
+  - deterministic outputs
+  - no infrastructure variance
+  estimand: Integrity pass for each run block and complete failure accounting.
+  treatment: Frozen run harness
+  comparator: Manifest registry
+  unit_of_analysis: run_block
+  primary_metric: manifest_integrity_pass
+  secondary_metrics:
+  - failure_completeness
+  - forbidden_tool_calls
+  required_controls:
+  - Immutable registry
+  - Raw-output-first storage
+  strongest_alternative_explanation: Unlogged changes or selective failures create the difference.
+  confirmatory_evidence:
+  - artifact_hash_audit
+  planning_evidence:
+  - Pilot manifests inform design
+  target_table: S2
+  failure_wording: Affected comparisons are invalid without complete integrity evidence.
+  retain_rule: Retain when every run resolves to frozen hashes and raw artifacts.
+  narrow_rule: Restrict to complete run blocks.
+  delete_rule: Delete integrity wording if manifests or failures are incomplete.
+- claim_id: CLM-010
+  abstract_sentence_id: null
+  claim_class: future_work
+  hypothesis_links:
+  - H6
+  - T_PRIVACY
+  status: future_work
+  abstract_inclusion: false
+  claim_text: Sanitized-development portability to local records is future work and is not a privacy guarantee.
+  allowed_wording: Future work may test privacy-bounded portability on public surrogate data.
+  prohibited_expansions:
+  - privacy-preserving
+  - confidentiality guaranteed
+  - differential privacy
+  estimand: Disclosure and utility in a separate public-surrogate study.
+  treatment: Sanitized-development capsule
+  comparator: Public-surrogate full-data oracle
+  unit_of_analysis: public_surrogate_packet
+  primary_metric: disclosure_audit_and_utility
+  secondary_metrics:
+  - canary_detection
+  - local_utility
+  required_controls:
+  - Separate privacy protocol
+  - Public surrogate and canaries
+  strongest_alternative_explanation: Architectural separation leaves other disclosure channels.
+  confirmatory_evidence: []
+  planning_evidence:
+  - R outside TeacherView is not a privacy proof
+  target_table: S3
+  failure_wording: No privacy or portability claim is made in the flagship paper.
+  retain_rule: Retain only as future work pending a separate study.
+  narrow_rule: Use data-flow wording without privacy adjectives.
+  delete_rule: Delete from abstract and contribution list.
