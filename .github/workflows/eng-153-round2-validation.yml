@@ -1,4 +1,5 @@
 name: ENG-153 round-2 validation
+# The connector-authored synchronization commit starts the clean candidate cycle after generated packets are committed.
 
 on:
   pull_request:
