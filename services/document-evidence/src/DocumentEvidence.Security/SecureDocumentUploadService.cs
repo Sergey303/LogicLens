@@ -92,7 +92,6 @@ public sealed class SecureDocumentUploadService
             throw;
         }
     }
-
     private static CompleteUploadCommand ToCompletionCommand(
         SecureUploadCommand command,
         Stream content
