@@ -1,0 +1,34 @@
+name: Verify document evidence security
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  upload-security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build security contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Security.ContractTests/DocumentEvidence.Security.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run security contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Security.ContractTests/DocumentEvidence.Security.ContractTests.csproj \
+            --no-build
