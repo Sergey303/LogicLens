@@ -8,6 +8,7 @@ Read first:
 - [service-specific agent rules](AGENTS.md);
 - [architecture contract](../../docs/architecture/DOCUMENT_EVIDENCE_SERVICE_V0.md);
 - [AppForge generation boundary](../../docs/architecture/APPFORGE_GENERATION_BOUNDARY_V0.md);
+- [MVP HTTP boundary](docs/MVP_HTTP_BOUNDARY_V0.md);
 - [PDF Link Pipeline v0](../../docs/architecture/PDF_LINK_PIPELINE_V0.md);
 - [Source Proposal Pipeline v0](../../docs/architecture/SOURCE_PROPOSAL_PIPELINE_V0.md).
 
@@ -121,8 +122,8 @@ The ignored proof is written to
 1. Execute the SHA-verified committed DOCX gate and retain its proof for ENG-145.
 2. Add outbox dispatch and an S3-compatible immutable object store.
 3. Prove AppForge upgrade migration continuity without dropping seeded data (ENG-152).
-4. Add quota, audit, protected download, and revocation invalidation guards.
-5. Publish versioned service clients and events for LogicLens and EngDoc Essential.
+4. Complete production quotas, audit, read plans, and revocation invalidation.
+5. Verify deterministic OpenAPI client regeneration and complete the ENG-148 demo receipt.
 
 The vertical slice is document bytes -> immutable revision -> deterministic fragments -> permitted
 retrieval -> selected evidence -> typed proposal -> verified SWI-Prolog decision frame. Models cannot
