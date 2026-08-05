@@ -1,0 +1,3 @@
+# Frozen experiment fixtures must have stable repository bytes on every checkout.
+EpistemicCompilerLab/progressive-dsl/management-course/cases-dsl-b1-v0.jsonl text eol=lf
+EpistemicCompilerLab/progressive-dsl/management-course/dsl-b1-logical-rules-v0.jsonl text eol=lf
