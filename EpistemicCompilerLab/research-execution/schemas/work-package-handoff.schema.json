@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/epistemic-compiler-lab/work-package-handoff.schema.json",
+  "title": "Structured research work-package handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["work_package_id", "linear_issue", "status", "identity_and_session", "input_hashes_verified", "input_hashes", "files_created", "files_modified", "commands_run", "tests", "acceptance_checks", "known_limitations", "protocol_deviations", "unexpected_findings", "recommended_next_state"],
+  "properties": {
+    "work_package_id": {"type": "string", "pattern": "^(WP|GATE)-\\d{3}$"},
+    "linear_issue": {"type": "string", "pattern": "^ENG-\\d+$"},
+    "status": {"enum": ["ready_for_review", "decision_recorded", "revise", "blocked", "stopped"]},
+    "identity_and_session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer_identity", "producer_session", "reviewer_identity", "reviewer_session", "gatekeeper_identity", "gatekeeper_session", "prior_roles", "conflict_declaration", "forbidden_context_attestation"],
+      "properties": {
+        "producer_identity": {"type": "string"},
+        "producer_session": {"type": "string"},
+        "reviewer_identity": {"type": "string"},
+        "reviewer_session": {"type": "string"},
+        "gatekeeper_identity": {"type": "string"},
+        "gatekeeper_session": {"type": "string"},
+        "prior_roles": {"type": "array", "items": {"type": "string"}},
+        "conflict_declaration": {"type": "string"},
+        "forbidden_context_attestation": {"type": "string"}
+      }
+    },
+    "input_hashes_verified": {"type": "boolean"},
+    "input_hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
+    "files_created": {"type": "array", "items": {"type": "string"}},
+    "files_modified": {"type": "array", "items": {"type": "string"}},
+    "commands_run": {"type": "array", "items": {"type": "string"}},
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": {"type": "string"},
+          "status": {"enum": ["PASS", "FAIL", "SKIP"]},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "acceptance_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["class", "criterion", "status"],
+        "properties": {
+          "class": {"enum": ["artifact", "scientific", "independence", "adversarial", "reproducibility"]},
+          "criterion": {"type": "string"},
+          "status": {"enum": ["PASS", "FAIL", "BLOCKED"]},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "known_limitations": {"type": "array", "items": {"type": "string"}},
+    "protocol_deviations": {"type": "array", "items": {"type": "string"}},
+    "unexpected_findings": {"type": "array", "items": {"type": "string"}},
+    "recommended_next_state": {"enum": ["review", "revise", "blocked", "stop", "gate"]}
+  }
+}
