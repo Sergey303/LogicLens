@@ -78,10 +78,10 @@
     },
     {
       "id": "DSL-D",
-      "runtimeVersion": "0.4.0",
+      "runtimeVersion": "0.4.1",
       "status": "experimental",
-      "implementationStage": "D0",
-      "pilotLinearIssue": "ENG-185",
+      "implementationStage": "D1",
+      "pilotLinearIssues": ["ENG-185", "ENG-186"],
       "extends": "DSL-C",
       "capabilities": [
         "binomial-opinion",
@@ -94,17 +94,24 @@
         "evidence-count-source-mode",
         "answer-level-opinion-profile",
         "scalar-versus-opinion-ablation",
+        "rounded-versus-exact-rational-ablation",
+        "policy-boundary-preservation",
+        "declared-half-even-rounding",
+        "numeric-versus-lexical-scoring",
+        "typed-assertive-decision-withholding",
         "python-prolog-cross-verification",
         "explicit-no-implicit-fusion"
       ],
       "semanticGuarantees": [
-        "belief-plus-disbelief-plus-uncertainty-equals-one",
+        "belief-plus-disbelief-plus-uncertainty-equals-one-in-exact-arithmetic",
         "base-rate-is-prior-not-evidence",
         "projected-probability-equals-belief-plus-base-rate-times-uncertainty",
         "uncertainty-is-not-error-probability",
         "conflict-is-not-collapsed-into-uncertainty",
         "same-projection-may-have-different-allowed-conclusions",
-        "missing-opinion-remains-unknown",
+        "rounding-may-change-policy-outcome-and-is-reported",
+        "exact-comparison-precedes-decimal-rendering",
+        "missing-exact-opinion-remains-open-world",
         "answer-profile-applies-to-declared-answer-correct-proposition"
       ],
       "deferredCapabilities": [
