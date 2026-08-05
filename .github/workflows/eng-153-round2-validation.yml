@@ -43,9 +43,14 @@ jobs:
         run: |
           set -euo pipefail
           python EpistemicCompilerLab/research-execution/scripts/generate_context_packets.py
-          if git diff --quiet -- EpistemicCompilerLab/research-execution/context-packets EpistemicCompilerLab/research-execution/handoffs/WP-001.json EpistemicCompilerLab/research-execution/scripts; then
+          changes="$(git status --porcelain=v1 --untracked-files=all -- \
+            EpistemicCompilerLab/research-execution/context-packets \
+            EpistemicCompilerLab/research-execution/handoffs/WP-001.json \
+            EpistemicCompilerLab/research-execution/scripts)"
+          if [[ -z "$changes" ]]; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
           else
+            printf '%s\n' "$changes"
             echo 'changed=true' >> "$GITHUB_OUTPUT"
           fi
 
