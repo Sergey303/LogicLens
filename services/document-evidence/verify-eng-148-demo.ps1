@@ -9,7 +9,8 @@ $project = "services/document-evidence/tests/DocumentEvidence.EndToEndDemo/Docum
 $artifactRoot = Join-Path $repo ".artifacts/document-evidence/eng-148"
 $pythonFiles = @(
     "tests/document_evidence_e2e_gate.py",
-    "tests/document_evidence_e2e_gate_runtime.py"
+    "tests/document_evidence_e2e_gate_runtime.py",
+    "tests/document_evidence_e2e_workspace.py"
 )
 
 foreach ($command in @("python", "dotnet", "pdfinfo", "pdftotext", "swipl")) {
