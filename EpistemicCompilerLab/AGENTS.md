@@ -21,9 +21,16 @@ Before changing benchmark, oracle, scorer, model runs, teacher loop, HOLDOUT, re
 1. [`scientific-roadmap/TARGET_PAPER_COMPILE_DONT_TEACH.md`](scientific-roadmap/TARGET_PAPER_COMPILE_DONT_TEACH.md);
 2. [`scientific-roadmap/TARGET_PAPER_FULL_EXECUTION_PATH_AND_STRICT_AUDIT.md`](scientific-roadmap/TARGET_PAPER_FULL_EXECUTION_PATH_AND_STRICT_AUDIT.md);
 3. [`scientific-roadmap/critical-protocols/README.md`](scientific-roadmap/critical-protocols/README.md);
-4. the specific MUST/STOP protocol linked from that index.
+4. [`scientific-roadmap/LINEAR_PUBLICATION_PROJECT.md`](scientific-roadmap/LINEAR_PUBLICATION_PROJECT.md);
+5. the exact Linear work package and the specific MUST/STOP protocol linked from these documents.
 
 The critical protocols are normative. A task, prompt or local implementation decision may not weaken them. Any benchmark-isolation violation invalidates the affected confirmatory run.
+
+## Linear coordination
+
+The publication project is tracked in Linear as **Compile, Don’t Teach — TMLR Flagship**. Linear is the operational source of truth for work status, roles, dependencies, independent reviews and gate decisions. Git is the source of truth for scientific contracts, code, manifests, hashes, raw artifacts and structured handoffs.
+
+Do not begin a blocked work package. Do not mark a critical Linear issue `Done` until its repository deliverables, acceptance checks and independent review evidence exist. The creator of a critical artifact must not approve it.
 
 ## Sources of truth
 
