@@ -61,3 +61,15 @@ jobs:
           dotnet run \
             --project services/document-evidence/tests/DocumentEvidence.Client.ContractTests/DocumentEvidence.Client.ContractTests.csproj \
             --no-build
+
+      - name: Build real HTTP contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Api.ContractTests/DocumentEvidence.Api.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run real HTTP contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Api.ContractTests/DocumentEvidence.Api.ContractTests.csproj \
+            --no-build
