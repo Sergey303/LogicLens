@@ -6,6 +6,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../DocumentEvidence.Api/DocumentEvidence.Api.csproj" />
     <ProjectReference Include="../DocumentEvidence.Application/DocumentEvidence.Application.csproj" />
     <ProjectReference Include="../DocumentEvidence.Security/DocumentEvidence.Security.csproj" />
