@@ -19,7 +19,7 @@
     },
     {
       "id": "DSL-B",
-      "runtimeVersion": "0.2.0",
+      "runtimeVersion": "0.2.1",
       "status": "experimental",
       "extends": "DSL-A",
       "capabilities": [
@@ -42,15 +42,32 @@
     {
       "id": "DSL-C",
       "runtimeVersion": "0.3.0",
-      "status": "planned",
+      "status": "experimental",
+      "implementationStage": "C0",
       "extends": "DSL-B",
       "capabilities": [
         "point-observation",
         "bounded-observation",
-        "normal-observation",
+        "normal-observation-description",
         "typed-units",
         "allowlisted-conversions",
-        "deterministic-numerical-kernels"
+        "decimal-normalisation",
+        "deterministic-interval-comparison",
+        "between",
+        "missing-observation-open-world",
+        "python-prolog-cross-verification"
+      ],
+      "semanticGuarantees": [
+        "bounded-comparison-supported-only-when-entire-interval-satisfies",
+        "bounded-comparison-refuted-only-when-entire-interval-violates",
+        "boundary-overlap-remains-unknown",
+        "normal-model-does-not-imply-strict-decision-without-policy"
+      ],
+      "deferredCapabilities": [
+        "probabilistic-normal-threshold-policy",
+        "correlated-measurement-fusion",
+        "derived-numeric-expressions",
+        "calendar-aware-unit-conversions"
       ],
       "queryOperations": [
         "strict-claim",
