@@ -4,10 +4,12 @@ public sealed record ProtectedRevisionObject(
     Guid WorkspaceId,
     Guid DocumentId,
     Guid RevisionId,
+    int RevisionNumber,
     string Sha256,
     long SizeBytes,
     string MediaType,
-    bool IsRevoked
+    bool IsRevoked,
+    bool IsSuperseded
 );
 
 public sealed record OpenRevisionBytesQuery(
