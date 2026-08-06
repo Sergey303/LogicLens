@@ -1,0 +1,127 @@
+{
+  "work_package_id": "WP-005",
+  "linear_issue": "ENG-157",
+  "status": "ready_for_review",
+  "identity_and_session": {
+    "producer_identity": "OpenAI GPT-5.6 Thinking — Independent Oracle Architect",
+    "producer_session": "ChatGPT Polar based project / WP-005 producer / 2026-08-06",
+    "reviewer_identity": "UNASSIGNED independent Mutation and Dependency Auditor",
+    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
+    "gatekeeper_identity": "UNASSIGNED Senior Adversarial Methodology Reviewer",
+    "gatekeeper_session": "MUST DIFFER FROM PRODUCER AND REVIEWER SESSIONS",
+    "prior_roles": [
+      "Producer of DSL-B1/C0/D0/D1/D2 pilot artifacts",
+      "Producer of WP-002, WP-003 and WP-004 W0 artifacts"
+    ],
+    "conflict_declaration": "Producer is conflicted from independent acceptance, future Path B dependency audit and GATE-001 decisions and does not self-accept WP-005.",
+    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content, production implementation details beyond the public interface, model outputs or generated expected frames were used to define Path B semantics or gold governance."
+  },
+  "input_hashes_verified": true,
+  "input_hashes": {
+    "EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml": "0ce4406a94530a43a23bd62e2500e704d3ec0778cc34108f43920087128d556e",
+    "EpistemicCompilerLab/research-execution/schemas/work-package.schema.json": "a68ef6c36da28a374927ca465461ae372afe535eb2ca1c6f7458e366c3733160",
+    "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee",
+    "EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json": "4f3943cd5aea669a49650d75c82314830aed7c870bf59ce34cd262d4ef17209c",
+    "EpistemicCompilerLab/research-execution/CRITICAL_PATH.md": "f551b3f854a9e3d06ec63be2b2e9f1481a0d50333b9b10ad5bea07f21f79ae54",
+    "EpistemicCompilerLab/research-execution/ENG-153_INDEPENDENT_REVIEW_ROUND2_2026-08-06.md": "4358d003f7f2480374bf72c3b59eaeae9873e30542385d5fae7a7ed6d364196b"
+  },
+  "files_created": [
+    "EpistemicCompilerLab/research-execution/oracle/SEMANTIC_SPEC.md",
+    "EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md",
+    "EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml",
+    "EpistemicCompilerLab/research-execution/oracle/DEPENDENCY_AUDIT_PLAN.md",
+    "EpistemicCompilerLab/research-execution/handoffs/WP-005.json"
+  ],
+  "files_modified": [],
+  "commands_run": [
+    "Read the frozen Oracle and Scorer Protocol and WP-005 context packet",
+    "Python YAML parse and unique mutation-ID audit",
+    "Python verification that every critical mutation blocks freeze and all required semantic layers have critical coverage",
+    "Cross-file audit of status truth table, field scorer, gold governance, canaries, negative controls, A/B differential requirements and STOP conditions",
+    "SHA-256 calculation for all four producer artifacts",
+    "JSON Schema validation of this handoff against work-package-handoff.schema.json"
+  ],
+  "tests": [
+    {
+      "name": "implementation-independent semantic completeness",
+      "status": "PASS",
+      "evidence": "source assertion, interpretation, query, four-state status, policy, frame, raw response, acceptable alternatives, field scoring and error layers specified"
+    },
+    {
+      "name": "Path B forbidden-surface boundary",
+      "status": "PASS",
+      "evidence": "only written spec/schemas/source-bound annotation/declarative policy data may be shared; production code, predicates, generated frames, prompts, model outputs, metrics and sealed data forbidden"
+    },
+    {
+      "name": "mutation coverage",
+      "status": "PASS",
+      "evidence": "39 immutable mutations, 36 critical; all required interpretation/query/execution/policy/frame/renderer/gold/infrastructure layers have critical mutations"
+    },
+    {
+      "name": "critical kill-rate contract",
+      "status": "PASS",
+      "evidence": "100% critical mutation kill required; any unexplained survivor blocks freeze"
+    },
+    {
+      "name": "dependency audit negative controls",
+      "status": "PASS",
+      "evidence": "10 required injected forbidden behaviors plus positive clean-room controls and second-environment reproducibility rerun"
+    },
+    {
+      "name": "gold/model-output separation",
+      "status": "PASS",
+      "evidence": "gold and acceptable alternatives freeze before raw model outputs become visible to B scorer"
+    },
+    {
+      "name": "output hashes",
+      "status": "PASS",
+      "evidence": "SEMANTIC_SPEC=ab16135482f2231bc13f2a14b5152e95d4b892c1b3c03801f073e56b4ea26744; INDEPENDENCE_BOUNDARY=0c64afb0b2a275d7a6ec26f334904197584408cd55a4b29dd411c2d4b2d8d3f8; MUTATION_MATRIX=e4f678513a4f4904eda393b0c5dd9959c2e75fb11ec83fd2a9340192ca57bd25; DEPENDENCY_AUDIT_PLAN=5dfa29f3c136aaa4df415e0ae8933491c8a827460f2805bc6d08ec8f82aa93f3"
+    }
+  ],
+  "acceptance_checks": [
+    {
+      "class": "artifact",
+      "criterion": "All four oracle-boundary deliverables and the structured handoff exist.",
+      "status": "PASS",
+      "evidence": "commits 35b39bf, a2a56fe, 73642e5, efee17d plus handoff"
+    },
+    {
+      "class": "scientific",
+      "criterion": "Path B can be implemented from a written semantic contract without A imports, calls or generated expected frames.",
+      "status": "PASS",
+      "evidence": "SEMANTIC_SPEC.md and INDEPENDENCE_BOUNDARY.md"
+    },
+    {
+      "class": "independence",
+      "criterion": "Producer, future Path B implementer, dependency auditor and gatekeeper remain distinct; producer does not self-accept.",
+      "status": "PASS",
+      "evidence": "clean-room role/context requirements and next state review"
+    },
+    {
+      "class": "adversarial",
+      "criterion": "Circular gold, production dependencies, model-output influence, hidden access and missed critical mutations fail closed.",
+      "status": "PASS",
+      "evidence": "39-mutation matrix, circularity canaries and 10 dependency negative controls"
+    },
+    {
+      "class": "reproducibility",
+      "criterion": "Static graph, clean packet, lock, sandbox, dynamic trace, canary registry, mutation report, A/B differential and human audit hashes are required.",
+      "status": "PASS",
+      "evidence": "DEPENDENCY_AUDIT_PLAN.md machine-readable report contract"
+    }
+  ],
+  "known_limitations": [
+    "WP-005 specifies the architecture and tests for independent Path B; it does not prove independence of an implementation that has not yet been built and audited.",
+    "Using another language is preferred but not sufficient; physical packet isolation and dynamic access tracing remain mandatory.",
+    "Declarative policy tables may be shared only after review confirms they are specification data rather than copied production executable semantics.",
+    "Semantic similarity scanning thresholds for copied-code detection must be frozen by the future dependency auditor and may produce false positives requiring outcome-blind review.",
+    "The repository validate_oracle_boundary.py is currently an artifact-level wrapper; producer used deterministic YAML and cross-file audits, and the independent reviewer must decide whether to require a dedicated semantic validator."
+  ],
+  "protocol_deviations": [],
+  "unexpected_findings": [
+    "A separate package name or programming language does not establish independence if the production tree, caches or generated frames remain mounted.",
+    "Negative dependency controls are necessary to prove the auditor detects forbidden behavior rather than merely passing a clean candidate.",
+    "Gold governance and acceptable-alternative freeze are part of oracle independence, not only annotation procedure."
+  ],
+  "recommended_next_state": "review"
+}
