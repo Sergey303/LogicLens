@@ -1,0 +1,1 @@
+split,mode,model_profile,domain,planned,attempted,schema_valid,retries,timeouts,provider_errors,runtime_errors,malformed,forbidden_tool_calls,artifact_violations,scenario_failures,manifest_hash,artifact_hash
