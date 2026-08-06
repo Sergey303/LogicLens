@@ -1,4 +1,4 @@
-name: Verify experimental Epistemic DSL core v0
+name: Verify synthetic Epistemic semantic kernel v0
 
 on:
   pull_request:
@@ -22,13 +22,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: verify-epistemic-core-v0-${{ github.workflow }}-${{ github.ref }}
+  group: verify-synthetic-epistemic-kernel-v0-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,20 +38,28 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install schema dependency
+      - name: Install deterministic dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install --yes swi-prolog-nox
+          swipl --version | tee /tmp/swipl-version.txt
           python -m pip install --disable-pip-version-check "jsonschema==4.23.0"
 
-      - name: Verify frozen CTO-course core contract
+      - name: Verify hash-frozen synthetic kernel and independent D2 oracle
         run: |
           python EpistemicCompilerLab/progressive-dsl/core-v0/verify_contract.py \
-            | tee /tmp/epistemic-core-v0.log
+            --swipl swipl \
+            | tee /tmp/synthetic-epistemic-kernel-v0.log
 
-      - name: Upload verification log
+      - name: Upload verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: epistemic-core-v0
-          path: /tmp/epistemic-core-v0.log
-          if-no-files-found: warn
-          retention-days: 14
+          name: synthetic-epistemic-kernel-v0
+          path: |
+            /tmp/swipl-version.txt
+            /tmp/synthetic-epistemic-kernel-v0.log
+            EpistemicCompilerLab/progressive-dsl/core-v0/manifest-v0.json
+            EpistemicCompilerLab/progressive-dsl/core-v0/expected-frames-v0.jsonl
+          if-no-files-found: error
+          retention-days: 30
