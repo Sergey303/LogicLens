@@ -6,6 +6,7 @@ param(
         'doctor',
         'tests',
         'strict-epistemic-tests',
+        'synthetic-kernel-tests',
         'progressive-core-tests',
         'generate-strict-epistemic-benchmark',
         'cases',
@@ -53,6 +54,7 @@ try {
         'doctor' { & (Join-Path $scriptsRoot 'doctor.ps1') }
         'tests' { & (Join-Path $scriptsRoot 'run-tests.ps1') }
         'strict-epistemic-tests' { & (Join-Path $scriptsRoot 'run-strict-epistemic-tests.ps1') }
+        'synthetic-kernel-tests' { & (Join-Path $scriptsRoot 'run-progressive-core-tests.ps1') }
         'progressive-core-tests' { & (Join-Path $scriptsRoot 'run-progressive-core-tests.ps1') }
         'generate-strict-epistemic-benchmark' {
             & (Join-Path $scriptsRoot 'run-generate-strict-epistemic-benchmark.ps1')
