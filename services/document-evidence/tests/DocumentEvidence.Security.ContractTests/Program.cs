@@ -13,7 +13,11 @@ internal static class Program
         SecureUploadAcceptanceContractTests.DisplayNameRejectsEmptyTraversalAndControlNames();
         await InMemoryQuotaContractTests.HourlyRequestQuotaResetsAtNextUtcHourAsync();
         await InMemoryQuotaContractTests.DailyByteQuotaIsIndependentFromRequestQuotaAsync();
-        Console.WriteLine("Document Evidence upload security contract tests passed.");
+        HmacReadPlanProtectorContractTests.RoundTripPreservesPayloadWithoutStoragePath();
+        HmacReadPlanProtectorContractTests.TamperedTokenIsRejected();
+        HmacReadPlanProtectorContractTests.TokenSignedByAnotherKeyIsRejected();
+        HmacReadPlanProtectorContractTests.ShortSigningKeyIsRejected();
+        Console.WriteLine("Document Evidence security contract tests passed.");
         return 0;
     }
 }
