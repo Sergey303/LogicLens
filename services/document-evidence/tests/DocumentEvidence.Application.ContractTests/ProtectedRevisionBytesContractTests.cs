@@ -19,6 +19,16 @@ internal static class ProtectedRevisionBytesContractTests
         );
     }
 
+    public static async Task SupersedeStopsBeforeObjectLookupAsync()
+    {
+        var fixture = new ProtectedReadFixture(deny: false, revoked: false, superseded: true);
+        await AssertThrowsAsync<UnauthorizedAccessException>(() => fixture.OpenAsync());
+        Assert(
+            fixture.Events.SequenceEqual(["access", "locator"]),
+            "Superseded read must stop before immutable object lookup."
+        );
+    }
+
     public static async Task AuthorizedReadUsesObjectStoreLastAsync()
     {
         var fixture = new ProtectedReadFixture(deny: false, revoked: false);
