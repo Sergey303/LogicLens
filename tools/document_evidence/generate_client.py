@@ -18,6 +18,7 @@ OUTPUTS = (
     "DocumentEvidenceClientTransport.Generated.cs",
     "DocumentEvidenceClient.Generated.cs",
     "NonDisposingReadStream.Generated.cs",
+    "ResponseOwnedReadStream.Generated.cs",
 )
 EXPECTED_OPERATIONS = {
     "/api/v1/workspaces/{workspaceId}/documents/{documentId}/revisions": (
@@ -32,12 +33,18 @@ EXPECTED_OPERATIONS = {
         "get",
         "listFragments",
     ),
+    "/api/v1/workspaces/{workspaceId}/revisions/{revisionId}/read-plans": (
+        "post",
+        "issueReadPlan",
+    ),
+    "/api/v1/read-plans/content": ("get", "openReadPlan"),
 }
 EXPECTED_SCHEMAS = {
     "DocumentFragment",
     "DocumentMetadata",
     "Error",
     "FragmentAnchor",
+    "ReadPlan",
     "UploadRevision",
 }
 
