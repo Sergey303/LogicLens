@@ -1,5 +1,6 @@
 using KnowledgePilot.LogicLens.DocumentEvidence.Api.Contracts;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgePilot.LogicLens.DocumentEvidence.Api;
 
@@ -9,7 +10,7 @@ internal static class DocumentEvidenceReadPlanEndpoints
         Guid workspaceId,
         Guid revisionId,
         HttpRequest request,
-        IDocumentEvidenceReadPlanApiOperations operations,
+        [FromServices] IDocumentEvidenceReadPlanApiOperations operations,
         CancellationToken cancellationToken
     )
     {
@@ -32,7 +33,7 @@ internal static class DocumentEvidenceReadPlanEndpoints
     public static async Task<IResult> OpenAsync(
         HttpRequest request,
         HttpResponse response,
-        IDocumentEvidenceReadPlanApiOperations operations,
+        [FromServices] IDocumentEvidenceReadPlanApiOperations operations,
         CancellationToken cancellationToken
     )
     {
