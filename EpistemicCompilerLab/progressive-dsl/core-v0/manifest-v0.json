@@ -1,0 +1,26 @@
+{
+  "artifactClass": "synthetic-semantic-kernel",
+  "claimBoundary": {
+    "mayBeCalledCourseTest": false,
+    "mayBeCalledUnifiedExecutableDslRuntime": false,
+    "trustedPackageVerified": false
+  },
+  "courseDataIncluded": false,
+  "expectedCaseCount": 13,
+  "files": {
+    "case-v0.schema.json": "sha256:654fef8e6aac12502724db4abf3b5cad9a7c681a8d9aa37731704b95e765a53d",
+    "expected-frames-v0.jsonl": "sha256:b065d1b9e61d0ae0983bcb04563dbad3395e5f7fe78e67df1f8b7ec2dd00f65a",
+    "runtime.py": "sha256:9a76e33d4c3825c8550bfba142fdeba2484a791f3475ca0fc572feb4205afc90",
+    "synthetic-cases-v0.jsonl": "sha256:89ed15fc676af33d0630e23511e2bb841d92c15f8fcd6f0300ab89762bf78522"
+  },
+  "manifestId": "synthetic-semantic-kernel-v0",
+  "oracle": {
+    "engine": "SWI-Prolog rational kernel through opinion-d2/runtime.py",
+    "referenceRepository": "Sergey303/LogicLens",
+    "referenceRuntimeGitBlobSha": "d1074a53a86dd0dc80a1fee0e3fa679fec1013c6",
+    "referenceRuntimePath": "../opinion-d2/runtime.py",
+    "required": true
+  },
+  "schemaVersion": "0.1",
+  "sourceRepository": null
+}
