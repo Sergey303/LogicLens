@@ -1,6 +1,6 @@
 # MVP HTTP boundary v0
 
-Status: service boundary and ENG-148 deterministic end-to-end route verified.
+Status: service boundary and ENG-148 deterministic end-to-end route verified, including fail-closed unknown and conflicting evidence.
 
 ## Consumer contract
 
@@ -71,30 +71,37 @@ reproducible PDF bytes
 ```
 
 The consumer never sees the service database, object key, or local blob path. The verifier runs the
-complete route twice and rejects any difference in the full artifact-tree SHA-256:
+complete positive route twice and rejects any difference in the full artifact-tree SHA-256. It then
+proves that an absent quote and ambiguous matching fragments fail closed before any trusted proposal
+output is created:
 
 ```powershell
 .\services\document-evidence\verify-eng-148-demo.ps1
 ```
 
-Accepted proof for tested commit `4377fee82bf9b259239710c348c4e48b5c505ad0`:
+Complete accepted proof for tested commit `ea21acc5e7ba273d6e531d026978375299c36f00`:
 
-- repository guard: 18 files;
-- Ruff: passed;
+- repository guard: 20 files;
+- Ruff: passed for all four ENG-148 Python files;
 - .NET build: zero warnings and zero errors;
 - two complete HTTP/Poppler/SWI-Prolog runs;
 - deterministic tree SHA-256:
   `sha256:c348ee34e62044e3f3849176837d9f0ff05d5943c7706b6b43d8e0530afa11f0`;
 - gate status: `passed`;
 - decision status: `verified`;
-- `consumerReadsDatabase=false` and `consumerReadsBlobPath=false`.
+- unknown evidence: rejected with no trusted output;
+- conflicting grounding: rejected with no trusted output;
+- `modelOutputAcceptedAutomatically=false`;
+- `consumerReadsDatabase=false` and `consumerReadsBlobPath=false`;
+- CGR process exit code: `0`.
 
-Machine-readable evidence is recorded in
-[`eng-148-e2e-proof-v1.json`](../evidence/eng-148-e2e-proof-v1.json).
+Machine-readable evidence:
+
+- [`eng-148-e2e-proof-v1.json`](../evidence/eng-148-e2e-proof-v1.json) — accepted positive route;
+- [`eng-148-e2e-proof-v2.json`](../evidence/eng-148-e2e-proof-v2.json) — complete positive and fail-closed acceptance.
 
 ## Remaining MVP work
 
-The ENG-148 host proves the full positive user route but remains a contract/demo composition root.
-Production still needs PostgreSQL-backed quota and audit state, signed read-plan revalidation,
-revocation invalidation, outbox dispatch, and the deployable service composition root. ENG-148 also
-retains its fail-closed unknown/conflict acceptance work before the Linear issue can be completed.
+ENG-148 is complete. The host remains a contract/demo composition root. Production still needs
+PostgreSQL-backed quota and audit state, signed read-plan revalidation, revocation invalidation,
+outbox dispatch, and the deployable service composition root.
