@@ -59,6 +59,32 @@ internal sealed class DocumentEvidenceClientTransport
         return await response.Content.ReadFromJsonAsync<T>(Json, cancellationToken);
     }
 
+    public async Task<Stream> SendStreamAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _httpClient.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken
+        );
+        try
+        {
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                await ThrowFailureAsync(response, cancellationToken);
+            }
+            var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            return new ResponseOwnedReadStream(stream, response);
+        }
+        catch
+        {
+            response.Dispose();
+            throw;
+        }
+    }
+
     private static async Task ThrowFailureAsync(
         HttpResponseMessage response,
         CancellationToken cancellationToken
