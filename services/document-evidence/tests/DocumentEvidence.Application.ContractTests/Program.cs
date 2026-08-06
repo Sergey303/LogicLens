@@ -12,7 +12,15 @@ internal static class Program
         await DenialPreventsStoreLookupAsync();
         await ProtectedRevisionBytesContractTests.DenialStopsBeforeMetadataLookupAsync();
         await ProtectedRevisionBytesContractTests.RevocationStopsBeforeObjectLookupAsync();
+        await ProtectedRevisionBytesContractTests.SupersedeStopsBeforeObjectLookupAsync();
         await ProtectedRevisionBytesContractTests.AuthorizedReadUsesObjectStoreLastAsync();
+        await RevisionReadPlanContractTests.IssueAuthorizesBeforeMetadataAndNeverReadsBytesAsync();
+        await RevisionReadPlanContractTests.ExecutionReauthorizesBeforeMetadataAsync();
+        await RevisionReadPlanContractTests.RevocationAfterIssuanceStopsBeforeBytesAsync();
+        await RevisionReadPlanContractTests.SupersedeAfterIssuanceStopsBeforeBytesAsync();
+        await RevisionReadPlanContractTests.ChangedObjectIdentityInvalidatesPlanAsync();
+        await RevisionReadPlanContractTests.ExpiredPlanStopsBeforeAuthorizationAsync();
+        await RevisionReadPlanContractTests.ValidPlanOpensImmutableBytesLastAsync();
         await UploadServiceContractTests.ReplayAvoidsObjectWriteAsync();
         await UploadServiceContractTests.NewUploadBuildsDeterministicManifestAsync();
         await UploadServiceContractTests.ConflictingCommitResultIsRejectedAsync();
