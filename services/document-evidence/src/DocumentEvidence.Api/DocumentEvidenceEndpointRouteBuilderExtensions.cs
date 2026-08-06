@@ -22,6 +22,14 @@ public static class DocumentEvidenceEndpointRouteBuilderExtensions
             "/revisions/{revisionId:guid}/fragments",
             DocumentEvidenceReadEndpoints.ListFragmentsAsync
         );
+        group.MapPost(
+            "/revisions/{revisionId:guid}/read-plans",
+            DocumentEvidenceReadPlanEndpoints.IssueAsync
+        );
+        endpoints.MapGet(
+            "/api/v1/read-plans/content",
+            DocumentEvidenceReadPlanEndpoints.OpenAsync
+        );
         return endpoints;
     }
 }
