@@ -6,7 +6,7 @@ $labRoot = Split-Path -Parent $PSScriptRoot
 $test = Join-Path $labRoot 'progressive-dsl\core-v0\verify_contract.py'
 
 if (-not (Test-Path $test -PathType Leaf)) {
-    throw "Epistemic core contract test was not found: $test"
+    throw "Synthetic Epistemic semantic-kernel contract test was not found: $test"
 }
 
 $python = Get-Command python -ErrorAction SilentlyContinue
@@ -22,5 +22,5 @@ else {
 }
 
 if ($LASTEXITCODE -ne 0) {
-    throw "Epistemic core contract test failed with code $LASTEXITCODE."
+    throw "Synthetic Epistemic semantic-kernel contract failed with code $LASTEXITCODE."
 }
