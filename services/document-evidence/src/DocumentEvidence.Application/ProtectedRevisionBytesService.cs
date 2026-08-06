@@ -40,9 +40,9 @@ public sealed class ProtectedRevisionBytesService
         {
             throw new InvalidDataException("Revision locator returned a mismatched identity.");
         }
-        if (revision.IsRevoked)
+        if (revision.IsRevoked || revision.IsSuperseded)
         {
-            throw new UnauthorizedAccessException("Document revision has been revoked.");
+            throw new UnauthorizedAccessException("Document revision is no longer readable.");
         }
         return await _objectStore.OpenReadAsync(revision.Sha256, cancellationToken);
     }
