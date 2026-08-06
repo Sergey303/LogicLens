@@ -23,6 +23,11 @@ internal static class DocumentEvidenceRequestHeaders
         return DemandSingle(request, DocumentEvidenceApiV1.IdempotencyHeader, 160);
     }
 
+    public static string ReadPlanToken(HttpRequest request)
+    {
+        return DemandSingle(request, DocumentEvidenceApiV1.ReadPlanTokenHeader, 4096);
+    }
+
     public static string SourceKind(HttpRequest request)
     {
         var value = request.Headers[DocumentEvidenceApiV1.SourceKindHeader].ToString().Trim();
