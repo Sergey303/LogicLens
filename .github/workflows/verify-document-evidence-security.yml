@@ -15,7 +15,21 @@ env:
 jobs:
   service-boundary:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: document_evidence
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d document_evidence"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +59,18 @@ jobs:
 
       - name: Check deterministic client regeneration
         run: python tools/document_evidence/generate_client.py --check
+
+      - name: Build application contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run application contracts
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj \
+            --no-build
 
       - name: Build security contracts
         run: |
@@ -86,4 +112,19 @@ jobs:
         run: |
           dotnet run \
             --project services/document-evidence/tests/DocumentEvidence.Api.ContractTests/DocumentEvidence.Api.ContractTests.csproj \
+            --no-build
+
+      - name: Build PostgreSQL contracts
+        run: |
+          dotnet build \
+            services/document-evidence/tests/DocumentEvidence.Postgres.IntegrationTests/DocumentEvidence.Postgres.IntegrationTests.csproj \
+            --nologo --warnaserror
+
+      - name: Run PostgreSQL contracts
+        env:
+          DOCUMENT_EVIDENCE_TEST_POSTGRES: >-
+            Host=127.0.0.1;Port=5432;Database=document_evidence;Username=postgres;Password=postgres
+        run: |
+          dotnet run \
+            --project services/document-evidence/tests/DocumentEvidence.Postgres.IntegrationTests/DocumentEvidence.Postgres.IntegrationTests.csproj \
             --no-build
