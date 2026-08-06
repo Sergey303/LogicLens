@@ -6,14 +6,21 @@ $repo = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 $acceptedBase = "669b54c2ca0758a97f9cc10b32ca637db2e891fb"
 Set-Location $repo
 
+$applicationProject =
+    "services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj"
+$postgresProject =
+    "services/document-evidence/tests/DocumentEvidence.Postgres.IntegrationTests/DocumentEvidence.Postgres.IntegrationTests.csproj"
 $projects = @(
+    $applicationProject,
     "services/document-evidence/tests/DocumentEvidence.Security.ContractTests/DocumentEvidence.Security.ContractTests.csproj",
     "services/document-evidence/src/DocumentEvidence.Api.Application/DocumentEvidence.Api.Application.csproj",
     "services/document-evidence/tests/DocumentEvidence.Client.ContractTests/DocumentEvidence.Client.ContractTests.csproj",
-    "services/document-evidence/tests/DocumentEvidence.Api.ContractTests/DocumentEvidence.Api.ContractTests.csproj"
+    "services/document-evidence/tests/DocumentEvidence.Api.ContractTests/DocumentEvidence.Api.ContractTests.csproj",
+    $postgresProject
 )
 
 $runProjects = @(
+    $applicationProject,
     "services/document-evidence/tests/DocumentEvidence.Security.ContractTests/DocumentEvidence.Security.ContractTests.csproj",
     "services/document-evidence/tests/DocumentEvidence.Client.ContractTests/DocumentEvidence.Client.ContractTests.csproj",
     "services/document-evidence/tests/DocumentEvidence.Api.ContractTests/DocumentEvidence.Api.ContractTests.csproj"
@@ -49,6 +56,17 @@ foreach ($project in $runProjects) {
     }
 }
 
+$postgresRuntime = "not-run-no-connection"
+$executablesRun = $runProjects.Count
+if (-not [string]::IsNullOrWhiteSpace($env:DOCUMENT_EVIDENCE_TEST_POSTGRES)) {
+    dotnet run --project $postgresProject --no-build
+    if ($LASTEXITCODE -ne 0) {
+        throw "PostgreSQL integration contracts failed."
+    }
+    $postgresRuntime = "passed"
+    $executablesRun++
+}
+
 $result = [ordered]@{
     status = "success"
     branch = (git branch --show-current).Trim()
@@ -58,7 +76,9 @@ $result = [ordered]@{
     openApiSha256 = $generatorReceipt.openApiSha256
     generatedOutputs = $generatorReceipt.outputs
     projectsBuilt = $projects.Count
-    contractExecutablesRun = $runProjects.Count
+    contractExecutablesRun = $executablesRun
+    postgresRuntime = $postgresRuntime
 }
 
 $result | ConvertTo-Json -Depth 5
+$global:LASTEXITCODE = 0
