@@ -7,14 +7,17 @@ public sealed class DocumentEvidenceFacade
 {
     private readonly IDocumentAccessPolicy _accessPolicy;
     private readonly IGeneratedOperationalStore _store;
+    private readonly IProtectedRevisionObjectLocator _revisionLocator;
 
     public DocumentEvidenceFacade(
         IDocumentAccessPolicy accessPolicy,
-        IGeneratedOperationalStore store
+        IGeneratedOperationalStore store,
+        IProtectedRevisionObjectLocator revisionLocator
     )
     {
-        _accessPolicy = accessPolicy;
-        _store = store;
+        _accessPolicy = accessPolicy ?? throw new ArgumentNullException(nameof(accessPolicy));
+        _store = store ?? throw new ArgumentNullException(nameof(store));
+        _revisionLocator = revisionLocator ?? throw new ArgumentNullException(nameof(revisionLocator));
     }
 
     public async Task<DocumentSummary?> GetDocumentAsync(
@@ -41,6 +44,23 @@ public sealed class DocumentEvidenceFacade
             query.RevisionId,
             cancellationToken
         );
+        var revision = await _revisionLocator.FindAsync(
+            query.WorkspaceId,
+            query.RevisionId,
+            cancellationToken
+        );
+        if (revision is null)
+        {
+            return [];
+        }
+        if (revision.WorkspaceId != query.WorkspaceId || revision.RevisionId != query.RevisionId)
+        {
+            throw new InvalidDataException("Revision locator returned a mismatched identity.");
+        }
+        if (revision.IsRevoked || revision.IsSuperseded)
+        {
+            throw new UnauthorizedAccessException("Document revision is no longer readable.");
+        }
         return await _store.ListFragmentsAsync(
             query.WorkspaceId,
             query.RevisionId,
