@@ -40,6 +40,7 @@ jobs:
 
       - name: Install deterministic dependencies
         run: |
+          set -euo pipefail
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox
           swipl --version | tee /tmp/swipl-version.txt
@@ -47,6 +48,7 @@ jobs:
 
       - name: Verify hash-frozen synthetic kernel and independent D2 oracle
         run: |
+          set -euo pipefail
           python EpistemicCompilerLab/progressive-dsl/core-v0/verify_contract.py \
             --swipl swipl \
             | tee /tmp/synthetic-epistemic-kernel-v0.log
