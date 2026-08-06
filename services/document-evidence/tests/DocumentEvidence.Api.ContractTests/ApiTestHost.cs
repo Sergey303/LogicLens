@@ -13,23 +13,28 @@ internal sealed class ApiTestHost : IAsyncDisposable
     private ApiTestHost(
         WebApplication application,
         HttpClient client,
-        FakeDocumentEvidenceApiOperations operations
+        FakeDocumentEvidenceApiOperations operations,
+        FakeReadPlanApiOperations readPlans
     )
     {
         _application = application;
         Client = client;
         Operations = operations;
+        ReadPlans = readPlans;
     }
 
     public HttpClient Client { get; }
     public FakeDocumentEvidenceApiOperations Operations { get; }
+    public FakeReadPlanApiOperations ReadPlans { get; }
 
     public static async Task<ApiTestHost> StartAsync()
     {
         var operations = new FakeDocumentEvidenceApiOperations();
+        var readPlans = new FakeReadPlanApiOperations();
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
         builder.Services.AddSingleton<IDocumentEvidenceApiOperations>(operations);
+        builder.Services.AddSingleton<IDocumentEvidenceReadPlanApiOperations>(readPlans);
         var application = builder.Build();
         application.MapDocumentEvidenceV1();
         await application.StartAsync();
@@ -39,7 +44,7 @@ internal sealed class ApiTestHost : IAsyncDisposable
         var address = addresses?.SingleOrDefault()
             ?? throw new InvalidOperationException("Loopback API address was not assigned.");
         var client = new HttpClient { BaseAddress = new Uri(address) };
-        return new ApiTestHost(application, client, operations);
+        return new ApiTestHost(application, client, operations, readPlans);
     }
 
     public async ValueTask DisposeAsync()
