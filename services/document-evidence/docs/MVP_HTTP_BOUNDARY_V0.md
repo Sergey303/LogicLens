@@ -71,10 +71,18 @@ the response is not disposed before the caller can read it.
 - PostgreSQL contracts derive supersede state from the current document revision and preserve
   workspace isolation.
 
-Run from the repository worktree:
+Run against an already configured PostgreSQL connection:
 
 ```powershell
 .\services\document-evidence\verify-service-boundary.ps1
+```
+
+For a complete local proof without reusing a developer database, Docker can provide an isolated
+`postgres:17-alpine` on a dynamically allocated host port. The runner restores the previous connection
+environment and removes the container in `finally`:
+
+```powershell
+.\services\document-evidence\verify-service-boundary-local-postgres.ps1
 ```
 
 ## ENG-148 deterministic demo
