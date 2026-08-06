@@ -1,0 +1,3 @@
+split,contrast,treatment,comparator,base_scenarios,treatment_pass,comparator_pass,treatment_only,comparator_only,absolute_difference,bootstrap_ci_low,bootstrap_ci_high,mcnemar_pvalue,meaningful_gain,meets_statistical_rule,meets_practical_rule,artifact_hash
+HOLDOUT,M6-M14,M6,M14,,,,,,,,,,0.08,,,
+REPLICATION,M6-M14,M6,M14,,,,,,,,,,0.08,,,
