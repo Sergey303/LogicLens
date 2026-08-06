@@ -1,0 +1,127 @@
+{
+  "work_package_id": "WP-004",
+  "linear_issue": "ENG-156",
+  "status": "ready_for_review",
+  "identity_and_session": {
+    "producer_identity": "OpenAI GPT-5.6 Thinking — Causal Experiment Reviewer",
+    "producer_session": "ChatGPT Polar based project / WP-004 producer / 2026-08-06",
+    "reviewer_identity": "UNASSIGNED independent Senior Adversarial Gatekeeper",
+    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
+    "gatekeeper_identity": "UNASSIGNED Senior Adversarial Methodology Reviewer",
+    "gatekeeper_session": "MUST DIFFER FROM PRODUCER AND REVIEWER SESSIONS",
+    "prior_roles": [
+      "Producer of DSL-B1/C0/D0/D1/D2 pilot artifacts",
+      "Producer of WP-002 and WP-003 W0 artifacts"
+    ],
+    "conflict_declaration": "Producer is conflicted from independent acceptance and GATE-001 decisions and does not self-accept WP-004.",
+    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was accessed; no mode was selected from confirmatory outcomes; pilot results were used only to identify threats and controls."
+  },
+  "input_hashes_verified": true,
+  "input_hashes": {
+    "EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml": "0ce4406a94530a43a23bd62e2500e704d3ec0778cc34108f43920087128d556e",
+    "EpistemicCompilerLab/research-execution/schemas/work-package.schema.json": "a68ef6c36da28a374927ca465461ae372afe535eb2ca1c6f7458e366c3733160",
+    "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee",
+    "EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json": "4f3943cd5aea669a49650d75c82314830aed7c870bf59ce34cd262d4ef17209c",
+    "EpistemicCompilerLab/research-execution/CRITICAL_PATH.md": "f551b3f854a9e3d06ec63be2b2e9f1481a0d50333b9b10ad5bea07f21f79ae54",
+    "EpistemicCompilerLab/research-execution/ENG-153_INDEPENDENT_REVIEW_ROUND2_2026-08-06.md": "4358d003f7f2480374bf72c3b59eaeae9873e30542385d5fae7a7ed6d364196b"
+  },
+  "files_created": [
+    "EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/modes.yaml",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/README.md",
+    "EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md",
+    "EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml",
+    "EpistemicCompilerLab/research-execution/ESTIMANDS.yaml",
+    "EpistemicCompilerLab/research-execution/handoffs/WP-004.json"
+  ],
+  "files_modified": [],
+  "commands_run": [
+    "Read frozen M0-M14 model/run protocol and target-paper mode definitions",
+    "Python YAML parse and cross-file mode-reference audit",
+    "Python verification of exactly M0-M14, one primary contrast, DEV-only baseline selection, and required M9-M14 falsification controls",
+    "JSON Schema validation of this handoff against work-package-handoff.schema.json"
+  ],
+  "tests": [
+    {
+      "name": "mode contract coverage",
+      "status": "PASS",
+      "evidence": "15 unique modes M0-M14 with visible inputs, hidden inputs, renderer, authoritative fields and budget"
+    },
+    {
+      "name": "primary contrast uniqueness",
+      "status": "PASS",
+      "evidence": "one headline contrast C-PRIMARY: M6 versus M14(B*) at base_scenario_id unit"
+    },
+    {
+      "name": "strongest baseline freeze",
+      "status": "PASS",
+      "evidence": "one global B* selected only on DEV with deterministic ranking and tie break; no per-stratum switching"
+    },
+    {
+      "name": "mode references",
+      "status": "PASS",
+      "evidence": "all contrast and estimand mode IDs resolve to M0-M14"
+    },
+    {
+      "name": "mandatory falsification controls",
+      "status": "PASS",
+      "evidence": "M9 structure, M10 label, M11 deterministic renderer, M12 no conclusion, M13 one-field corruption, M14 token-matched context"
+    },
+    {
+      "name": "alternative explanations",
+      "status": "PASS",
+      "evidence": "solver/no-solver, copying, structure, length, information, teaching, renderer, compiler, shared oracle, heterogeneity and ceiling threats mapped to controls and falsification"
+    },
+    {
+      "name": "stop and pivot rules",
+      "status": "PASS",
+      "evidence": "predeclared decisions for null M6-M14, conclusion-only effect, deterministic renderer parity, corruption following and compiler-boundary loss"
+    }
+  ],
+  "acceptance_checks": [
+    {
+      "class": "artifact",
+      "criterion": "All declared causal-design deliverables and mode-contract directory exist.",
+      "status": "PASS",
+      "evidence": "commits a6a16ef, 36e0831, 3a8bdc9, 9028ae2, 58cfc84, 457af8f plus handoff"
+    },
+    {
+      "class": "scientific",
+      "criterion": "One interpretable primary contrast and strongest baseline selected only by frozen DEV rule.",
+      "status": "PASS",
+      "evidence": "C-PRIMARY and DEV-GLOBAL-STRONGEST-MATCHED-V1"
+    },
+    {
+      "class": "independence",
+      "criterion": "Producer, reviewer and gatekeeper are distinct; producer does not self-accept.",
+      "status": "PASS",
+      "evidence": "reviewer/gatekeeper unassigned; next state review"
+    },
+    {
+      "class": "adversarial",
+      "criterion": "M11-M14 can falsify LLM necessity, ready-answer copying, field reliance and length explanations.",
+      "status": "PASS",
+      "evidence": "CAUSAL_CONTRASTS.yaml and ALTERNATIVE_EXPLANATIONS.md"
+    },
+    {
+      "class": "reproducibility",
+      "criterion": "Mode visibility, hidden fields, budgets, ranking, token tolerance, estimands and pivot rules are machine-readable and frozen before HOLDOUT.",
+      "status": "PASS",
+      "evidence": "MODE_CONTRACTS, BASELINE_SELECTION_RULE.yaml, ESTIMANDS.yaml"
+    }
+  ],
+  "known_limitations": [
+    "The primary M6-M14 estimand is a total compiled-interface bundle effect; execution, structure and conclusion mechanisms are identified only through secondary contrasts.",
+    "M14 token matching may require deterministic truncation; implementation must prove mandatory source assertions are preserved without outcome-dependent choices.",
+    "Teacher modes are eligible for B* only if their final artifacts satisfy the same matching envelope; feasibility must be verified before GATE-001.",
+    "The repository validate_causal_design.py is currently an artifact-level wrapper; producer used deterministic YAML/cross-file checks, and independent reviewer must decide whether a dedicated semantic validator is required.",
+    "Smallest meaningful gain and powered sample size remain WP-006 responsibilities and are not invented here."
+  ],
+  "protocol_deviations": [],
+  "unexpected_findings": [
+    "M14 is best treated as a constructed token-matched instantiation of one globally selected B*, not as an independently selectable source mode.",
+    "The original M6-M3 comparison is retained only as diagnostic; it is prohibited as the headline causal result.",
+    "An unfavorable M11 result can remove the need for an LLM renderer without invalidating the value of trusted execution."
+  ],
+  "recommended_next_state": "review"
+}
