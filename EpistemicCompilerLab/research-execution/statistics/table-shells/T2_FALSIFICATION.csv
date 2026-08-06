@@ -1,0 +1,13 @@
+split,contrast,factor,base_scenarios,effect,ci_low,ci_high,pvalue,holm_adjusted_p,predeclared_decision,decision_reached,artifact_hash
+HOLDOUT,M6-M9,typed_structure,,,,,,,,,
+HOLDOUT,M6-M10,full_frame_vs_status_only,,,,,,,,,
+HOLDOUT,M6-M11,LLM_renderer_necessity,,,,,,,,,
+HOLDOUT,M6-M12,allowedConclusion,,,,,,,,,
+HOLDOUT,M6-M13,one_field_corruption,,,,,,,,,
+HOLDOUT,M7-M6,production_query_compiler_boundary,,,,,,,,,
+REPLICATION,M6-M9,typed_structure,,,,,,,,,
+REPLICATION,M6-M10,full_frame_vs_status_only,,,,,,,,,
+REPLICATION,M6-M11,LLM_renderer_necessity,,,,,,,,,
+REPLICATION,M6-M12,allowedConclusion,,,,,,,,,
+REPLICATION,M6-M13,one_field_corruption,,,,,,,,,
+REPLICATION,M7-M6,production_query_compiler_boundary,,,,,,,,,
