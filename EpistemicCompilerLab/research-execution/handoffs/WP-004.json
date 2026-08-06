@@ -4,17 +4,18 @@
   "status": "ready_for_review",
   "identity_and_session": {
     "producer_identity": "OpenAI GPT-5.6 Thinking — Causal Experiment Reviewer",
-    "producer_session": "ChatGPT Polar based project / WP-004 producer / 2026-08-06",
+    "producer_session": "ChatGPT Polar based project / WP-004 producer and adversarial lossless-matching audit / 2026-08-06",
     "reviewer_identity": "UNASSIGNED independent Senior Adversarial Gatekeeper",
     "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
     "gatekeeper_identity": "UNASSIGNED Senior Adversarial Methodology Reviewer",
     "gatekeeper_session": "MUST DIFFER FROM PRODUCER AND REVIEWER SESSIONS",
     "prior_roles": [
       "Producer of DSL-B1/C0/D0/D1/D2 pilot artifacts",
-      "Producer of WP-002 and WP-003 W0 artifacts"
+      "Producer of WP-002 and WP-003 W0 artifacts",
+      "Producer and adversarial auditor of WP-004 causal contracts"
     ],
     "conflict_declaration": "Producer is conflicted from independent acceptance and GATE-001 decisions and does not self-accept WP-004.",
-    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was accessed; no mode was selected from confirmatory outcomes; pilot results were used only to identify threats and controls."
+    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was accessed; no mode or comparator was selected from confirmatory outcomes; pilot results were used only to identify threats and controls."
   },
   "input_hashes_verified": true,
   "input_hashes": {
@@ -34,48 +35,63 @@
     "EpistemicCompilerLab/research-execution/ESTIMANDS.yaml",
     "EpistemicCompilerLab/research-execution/handoffs/WP-004.json"
   ],
-  "files_modified": [],
+  "files_modified": [
+    "EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/modes.yaml",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/README.md",
+    "EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md",
+    "EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml",
+    "EpistemicCompilerLab/research-execution/ESTIMANDS.yaml",
+    "EpistemicCompilerLab/research-execution/handoffs/WP-004.json"
+  ],
   "commands_run": [
     "Read frozen M0-M14 model/run protocol and target-paper mode definitions",
-    "Python YAML parse and cross-file mode-reference audit",
-    "Python verification of exactly M0-M14, one primary contrast, DEV-only baseline selection, and required M9-M14 falsification controls",
-    "JSON Schema validation of this handoff against work-package-handoff.schema.json"
+    "Cross-file mode-reference and causal-factor audit",
+    "Adversarial audit of information retention during token matching",
+    "Adversarial audit of global versus profile-wise strongest baselines",
+    "Drift search for old truncation, single-factor, and V1 baseline wording",
+    "Structured handoff validation against work-package-handoff.schema.json"
   ],
   "tests": [
     {
       "name": "mode contract coverage",
       "status": "PASS",
-      "evidence": "15 unique modes M0-M14 with visible inputs, hidden inputs, renderer, authoritative fields and budget"
+      "evidence": "15 unique modes M0-M14 with visible inputs, hidden inputs, renderer, authoritative fields and lossless budget rules"
     },
     {
-      "name": "primary contrast uniqueness",
+      "name": "primary contrast interpretation",
       "status": "PASS",
-      "evidence": "one headline contrast C-PRIMARY: M6 versus M14(B*) at base_scenario_id unit"
+      "evidence": "C-PRIMARY is explicitly a multi-component deployed-interface bundle effect, not a falsely isolated single-factor effect"
+    },
+    {
+      "name": "lossless token matching",
+      "status": "PASS",
+      "evidence": "Common envelope is the maximum unpadded token count; shorter modes receive neutral padding; truncation and source deletion are prohibited"
     },
     {
       "name": "strongest baseline freeze",
       "status": "PASS",
-      "evidence": "one global B* selected only on DEV with deterministic ranking and tie break; no per-stratum switching"
-    },
-    {
-      "name": "mode references",
-      "status": "PASS",
-      "evidence": "all contrast and estimand mode IDs resolve to M0-M14"
+      "evidence": "One global B* is selected on DEV for the headline, with mandatory DEV-frozen profile-wise strongest-baseline sensitivity"
     },
     {
       "name": "mandatory falsification controls",
       "status": "PASS",
-      "evidence": "M9 structure, M10 label, M11 deterministic renderer, M12 no conclusion, M13 one-field corruption, M14 token-matched context"
+      "evidence": "M9 structure, M10 label, M11 deterministic renderer, M12 no conclusion, M13 one-field corruption, M14 full-information non-compiled control"
     },
     {
       "name": "alternative explanations",
       "status": "PASS",
-      "evidence": "solver/no-solver, copying, structure, length, information, teaching, renderer, compiler, shared oracle, heterogeneity and ceiling threats mapped to controls and falsification"
+      "evidence": "Solver/bundle, copying, structure, length, information deletion, convenient baseline, teaching, renderer, compiler, shared oracle, heterogeneity and ceiling threats map to falsification decisions"
     },
     {
-      "name": "stop and pivot rules",
+      "name": "contract drift",
       "status": "PASS",
-      "evidence": "predeclared decisions for null M6-M14, conclusion-only effect, deterministic renderer parity, corruption following and compiler-boundary loss"
+      "evidence": "Active WP-004 contracts use DEV-GLOBAL-STRONGEST-MATCHED-V2 and contain no authorized deterministic-truncation path"
+    },
+    {
+      "name": "final Git blob identities",
+      "status": "PASS",
+      "evidence": "modes=56167e827273abdd7270819a4cb429165a8a0b4d; baseline=a95acf455745e365468c2bd97b5b42b34b0a5871; contrasts=20dd29c9affe498caecb76d2d74cabfdfe8eb5b2; estimands=3d269514eedf86ebbb7321148c75092c612057d6; alternatives=fe565fdee33ce86fd3732ceae1d356da5d30439f; README=466e8ebbd497872ff307e8284f589a6b366eabd1"
     }
   ],
   "acceptance_checks": [
@@ -83,44 +99,45 @@
       "class": "artifact",
       "criterion": "All declared causal-design deliverables and mode-contract directory exist.",
       "status": "PASS",
-      "evidence": "commits a6a16ef, 36e0831, 3a8bdc9, 9028ae2, 58cfc84, 457af8f plus handoff"
+      "evidence": "Final audit commits 97e8a89, 04c3e5e, 63d923f, bfea537, bf45a8c and 4be532f plus this handoff"
     },
     {
       "class": "scientific",
-      "criterion": "One interpretable primary contrast and strongest baseline selected only by frozen DEV rule.",
+      "criterion": "One honest primary bundle contrast and strongest baseline selected only by frozen DEV rules.",
       "status": "PASS",
-      "evidence": "C-PRIMARY and DEV-GLOBAL-STRONGEST-MATCHED-V1"
+      "evidence": "C-PRIMARY and DEV-GLOBAL-STRONGEST-MATCHED-V2; component claims require secondary contrasts"
     },
     {
       "class": "independence",
       "criterion": "Producer, reviewer and gatekeeper are distinct; producer does not self-accept.",
       "status": "PASS",
-      "evidence": "reviewer/gatekeeper unassigned; next state review"
+      "evidence": "Reviewer and gatekeeper remain unassigned; recommended state is review"
     },
     {
       "class": "adversarial",
-      "criterion": "M11-M14 can falsify LLM necessity, ready-answer copying, field reliance and length explanations.",
+      "criterion": "M9-M14 and profile-wise baseline sensitivity can falsify LLM necessity, copying, field reliance, length, information-loss and convenient-baseline explanations.",
       "status": "PASS",
-      "evidence": "CAUSAL_CONTRASTS.yaml and ALTERNATIVE_EXPLANATIONS.md"
+      "evidence": "CAUSAL_CONTRASTS.yaml, ALTERNATIVE_EXPLANATIONS.md and BASELINE_SELECTION_RULE.yaml"
     },
     {
       "class": "reproducibility",
-      "criterion": "Mode visibility, hidden fields, budgets, ranking, token tolerance, estimands and pivot rules are machine-readable and frozen before HOLDOUT.",
+      "criterion": "Mode visibility, hidden fields, full artifacts, lossless envelopes, ranking, tokenizer manifests, estimands and pivot rules are machine-readable and frozen before HOLDOUT.",
       "status": "PASS",
-      "evidence": "MODE_CONTRACTS, BASELINE_SELECTION_RULE.yaml, ESTIMANDS.yaml"
+      "evidence": "MODE_CONTRACTS, BASELINE_SELECTION_RULE.yaml and ESTIMANDS.yaml schema version 1.1.0"
     }
   ],
   "known_limitations": [
-    "The primary M6-M14 estimand is a total compiled-interface bundle effect; execution, structure and conclusion mechanisms are identified only through secondary contrasts.",
-    "M14 token matching may require deterministic truncation; implementation must prove mandatory source assertions are preserved without outcome-dependent choices.",
-    "Teacher modes are eligible for B* only if their final artifacts satisfy the same matching envelope; feasibility must be verified before GATE-001.",
-    "The repository validate_causal_design.py is currently an artifact-level wrapper; producer used deterministic YAML/cross-file checks, and independent reviewer must decide whether a dedicated semantic validator is required.",
-    "Smallest meaningful gain and powered sample size remain WP-006 responsibilities and are not invented here."
+    "The primary M6-M14 estimand remains a total compiled-interface bundle effect; execution, structure and conclusion mechanisms are identified only through secondary contrasts.",
+    "Lossless common-envelope feasibility must be demonstrated against the smallest declared student context before dataset split construction.",
+    "Teacher modes are eligible for B* only if their complete artifacts fit the same lossless envelope; feasibility remains a pre-GATE-001 input.",
+    "The repository validate_causal_design.py is currently an artifact-level wrapper; deterministic YAML/cross-file checks were used, and the independent reviewer must decide whether a dedicated semantic validator is required.",
+    "Smallest meaningful gain and powered sample size remain WP-006 responsibilities."
   ],
   "protocol_deviations": [],
   "unexpected_findings": [
-    "M14 is best treated as a constructed token-matched instantiation of one globally selected B*, not as an independently selectable source mode.",
-    "The original M6-M3 comparison is retained only as diagnostic; it is prohibited as the headline causal result.",
+    "The original token-matching rule weakened M14 through deterministic truncation and therefore mixed compilation with information loss; this path is now prohibited.",
+    "One global baseline is reproducible but can be convenient for some model profiles; mandatory profile-wise strongest-baseline sensitivity was added.",
+    "The original M6-M3 comparison remains diagnostic only and is prohibited as the headline causal result.",
     "An unfavorable M11 result can remove the need for an LLM renderer without invalidating the value of trusted execution."
   ],
   "recommended_next_state": "review"
