@@ -1,0 +1,214 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+common:
+  student: same immutable model profile within block
+  question: same scenario question
+  output_schema: same answer schema except deterministic adapter M11
+  hidden:
+  - gold/scoring fields
+  - HOLDOUT or REPLICATION outcomes
+  - other-mode outputs
+  - future teacher/evaluator diagnostics
+  tools: []
+  raw_output_before_scoring: true
+modes:
+- id: M0
+  name: Direct
+  visible:
+  - question
+  - answer schema
+  extra_hidden:
+  - sources
+  - program
+  - computed result
+  renderer: student_llm
+  authoritative: []
+  budget: natural; floor only
+- id: M1
+  name: Full Context
+  visible:
+  - question
+  - frozen textual source assertions
+  - answer schema
+  extra_hidden:
+  - program
+  - computed result
+  renderer: student_llm
+  authoritative: []
+  budget: B* candidate; M14 matches
+- id: M2
+  name: Raw JSONL
+  visible:
+  - question
+  - canonical assertions JSONL
+  - answer schema
+  extra_hidden:
+  - computed result
+  renderer: student_llm
+  authoritative: []
+  budget: B* candidate; M14 matches
+- id: M3
+  name: Raw Prolog
+  visible:
+  - question
+  - frozen Prolog facts/rules
+  - answer schema
+  extra_hidden:
+  - SWI-Prolog result
+  renderer: student_llm
+  authoritative: []
+  budget: B* candidate; M14 matches
+- id: M4
+  name: Prompt Teacher
+  visible:
+  - question
+  - frozen source representation
+  - TRAIN/aggregate-DEV selected prompt
+  - answer schema
+  extra_hidden:
+  - DEV questions
+  - computed result
+  renderer: student_llm
+  authoritative: []
+  budget: fixed teacher budget; B* eligible only if matching envelope passes
+- id: M5
+  name: Program Teacher
+  visible:
+  - question
+  - TRAIN/aggregate-DEV selected formal representation
+  - answer schema
+  extra_hidden:
+  - DEV questions
+  - runtime result
+  renderer: student_llm
+  authoritative: []
+  budget: fixed teacher budget; B* eligible only if matching envelope passes
+- id: M6
+  name: Compiled Frame
+  visible:
+  - question
+  - typed production verified frame
+  - answer schema
+  extra_hidden:
+  - gold oracle frame
+  renderer: student_llm
+  authoritative:
+  - status
+  - action
+  - allowedConclusion
+  - scope/version
+  - provenance/evidence
+  - warnings
+  - proofTrace
+  budget: reference for M14/M9/M12 matching
+- id: M7
+  name: Oracle Frame
+  visible:
+  - question
+  - independent gold frame
+  - answer schema
+  extra_hidden:
+  - production frame
+  renderer: student_llm
+  authoritative:
+  - all gold frame fields
+  budget: renderer ceiling; diagnostic
+- id: M8
+  name: Direct Strong Teacher
+  visible:
+  - question
+  - answer schema
+  extra_hidden:
+  - sources
+  - runtime result
+  renderer: strong_teacher
+  authoritative: []
+  budget: quality/economic ceiling; never baseline
+- id: M9
+  name: Unstructured Verified Result
+  visible:
+  - question
+  - same verified values as M6 in frozen prose
+  - answer schema
+  extra_hidden:
+  - typed container and field names
+  renderer: student_llm
+  authoritative:
+  - same values as M6
+  budget: content-equivalent; token-match M6
+- id: M10
+  name: Minimal Verified Label
+  visible:
+  - question
+  - verified status only
+  - shared policy
+  - answer schema
+  extra_hidden:
+  - action
+  - allowedConclusion
+  - provenance
+  - warnings
+  - proofTrace
+  renderer: student_llm
+  authoritative:
+  - status
+  budget: neutral padding only
+- id: M11
+  name: Deterministic Renderer
+  visible:
+  - exact M6 frame bytes
+  - frozen templates
+  extra_hidden:
+  - LLM output
+  renderer: deterministic
+  authoritative:
+  - same frame as M6
+  budget: no LLM tokens
+- id: M12
+  name: Frame Without Conclusion
+  visible:
+  - question
+  - M6 frame with allowedConclusion tombstoned
+  - answer schema
+  extra_hidden:
+  - allowedConclusion
+  renderer: student_llm
+  authoritative:
+  - status
+  - action
+  - scope/version
+  - provenance/evidence
+  - warnings
+  - proofTrace
+  budget: token-match M6 with neutral padding
+- id: M13
+  name: Corrupted Frame
+  visible:
+  - question
+  - M6 frame with exactly one preregistered field mutation
+  - answer schema
+  extra_hidden:
+  - uncorrupted value
+  - mutation label
+  renderer: student_llm
+  authoritative:
+  - all fields except one corrupted
+  budget: same length/token envelope as source M6
+- id: M14
+  name: Length/Token-Matched Context
+  visible:
+  - question
+  - globally selected B* source representation
+  - M6 output obligations
+  - neutral padding or deterministic truncation
+  extra_hidden:
+  - computed status/action/conclusion
+  - decision frame
+  renderer: student_llm
+  authoritative: []
+  budget: match M6 input within frozen ±2-token tolerance
+freeze:
+- no semantic mode change after HOLDOUT
+- visible/hidden inputs and renderer identities are hash-frozen
+- M13 mutates one field only
+- all failures and raw outputs retained
