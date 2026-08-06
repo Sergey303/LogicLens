@@ -1,0 +1,71 @@
+schema_version: 1.0.0
+work_package_id: WP-006
+as_of: '2026-08-06'
+primary_contrast: M6_minus_M14_global_B_star
+primary_endpoint: scenario_level_exact_epistemic_contract_accuracy
+unit_of_analysis: base_scenario_id
+smallest_practically_meaningful_gain:
+  absolute_gain: 0.08
+  justification: Eight fewer exact-contract failures per 100 base scenarios is the minimum improvement judged large enough to justify a trusted formal runtime, additional artifact governance, and integration complexity. The value is fixed before scaled DEV/HOLDOUT results and is not derived from statistical significance.
+decision_rule:
+  minimum_power: 0.90
+  alpha_two_sided: 0.05
+  power_test: paired McNemar; exact two-sided binomial for fewer than 25 discordant scenarios, otherwise continuity-corrected chi-square
+  planning_effect: smallest_practically_meaningful_gain
+  interpretation: Power is the probability of detecting a positive paired difference at the meaningful-effect data-generating condition; final reporting also compares the estimate and hierarchical-bootstrap interval with the meaningful gain.
+seeds:
+  calibration: 2026080601
+  power: 2026080602
+allocation:
+  domains: [D1_governance, D2_engineering, D3_scientific_classification]
+  model_profiles: [qwen_continuity, small_profile, larger_profile, independent_family]
+  rule: balance base scenarios across all 12 domain_by_model strata; all modes for a scenario use the same assigned model profile
+aggregation:
+  paraphrases_per_scenario: 2
+  repeats_per_paraphrase: 3
+  repeat_majority_required: 2
+  scenario_pass: both mandatory paraphrases pass after repeat-majority aggregation
+  failures: count incorrect before repeat/scenario aggregation
+simulation_scenarios:
+- scenario_id: design
+  candidate_scenario_counts: [360, 420, 480, 540, 600, 660, 720, 780, 840]
+  simulations_per_candidate: 4000
+  calibration_scenarios: 200000
+  alpha_two_sided: 0.05
+  target_absolute_scenario_gain: 0.08
+  paraphrases_per_scenario: 2
+  repeats_per_paraphrase: 3
+  repeat_majority_required: 2
+  baseline_logit_intercept: 1.05
+  scenario_logit_sd: 0.80
+  paraphrase_logit_sd: 0.25
+  treatment_heterogeneity_logit_sd: 0.12
+  run_failure_rate: 0.02
+  domain_baseline_logit_offsets: [-0.25, 0.0, 0.25]
+  model_baseline_logit_offsets: [-0.25, -0.08, 0.08, 0.25]
+  domain_treatment_logit_offsets: [-0.04, 0.0, 0.04]
+  model_treatment_logit_offsets: [-0.03, -0.01, 0.01, 0.03]
+- scenario_id: adverse_heterogeneity_and_failures
+  candidate_scenario_counts: [360, 420, 480, 540, 600, 660, 720, 780, 840]
+  simulations_per_candidate: 4000
+  calibration_scenarios: 200000
+  alpha_two_sided: 0.05
+  target_absolute_scenario_gain: 0.08
+  paraphrases_per_scenario: 2
+  repeats_per_paraphrase: 3
+  repeat_majority_required: 2
+  baseline_logit_intercept: 1.05
+  scenario_logit_sd: 1.00
+  paraphrase_logit_sd: 0.35
+  treatment_heterogeneity_logit_sd: 0.18
+  run_failure_rate: 0.04
+  domain_baseline_logit_offsets: [-0.35, 0.0, 0.35]
+  model_baseline_logit_offsets: [-0.35, -0.12, 0.12, 0.35]
+  domain_treatment_logit_offsets: [-0.06, 0.0, 0.06]
+  model_treatment_logit_offsets: [-0.05, -0.015, 0.015, 0.05]
+constraints:
+- assumptions are planning values, not pilot estimates or confirmatory evidence
+- treatment logit shift is calibrated separately in each scenario to exactly the same 0.08 scenario-level planning gain
+- no candidate sample size is selected from HOLDOUT or replication
+- the smallest candidate satisfying power at least 0.90 in every declared simulation scenario is recommended
+- if WP-007 finds the recommendation infeasible, narrow scope before data rather than lowering power
