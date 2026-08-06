@@ -8,6 +8,8 @@ internal static class Program
         await ClientUploadContractTests.TypedQuotaErrorIsPreservedAsync();
         await ClientReadContractTests.NotFoundDocumentReturnsNullAsync();
         await ClientReadContractTests.FragmentAnchorRemainsTypedJsonAsync();
+        await ClientReadPlanContractTests.IssueUsesVersionedPostAndReturnsTypedTokenAsync();
+        await ClientReadPlanContractTests.OpenUsesHeaderOnlyAndOwnsResponseLifetimeAsync();
         Console.WriteLine("Document Evidence generated client contract tests passed.");
         return 0;
     }
