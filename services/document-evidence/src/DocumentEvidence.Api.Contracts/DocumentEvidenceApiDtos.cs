@@ -59,10 +59,12 @@ public sealed record ProcessingStateDto(
 public sealed record ReadPlanDto(
     Guid PlanId,
     Guid WorkspaceId,
+    Guid DocumentId,
     Guid RevisionId,
+    int RevisionNumber,
     DateTimeOffset ExpiresAtUtc,
     string MediaType,
     long SizeBytes,
     string ContentSha256,
-    string RelativeUrl
+    string Token
 );
