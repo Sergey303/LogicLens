@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+rule_id: DEV-GLOBAL-STRONGEST-MATCHED-V1
+selection_timing: after all eligible DEV blocks are complete and before HOLDOUT construction or access
+eligible_source_modes: [M1, M2, M3, M4, M5]
+ineligible_modes:
+  M0: not source-information matched
+  M6: treatment
+  M7: gold oracle
+  M8: strong-model ceiling
+  M9: receives verified result
+  M10: receives verified label
+  M11: deterministic treatment renderer
+  M12: receives compiled status/action
+  M13: corrupted treatment
+  M14: constructed after B* selection
+eligibility_requirements:
+- same frozen student profile and decoding configuration as M6
+- same question and common answer schema
+- no computed status, action, conclusion, decision frame, solver trace or hidden gold
+- source information originates from the same scenario/source package available to the M6 compiler
+- teacher modes obey fixed TRAIN-only and aggregate-DEV-only visibility and budget
+- mode has complete DEV coverage and no invalidated batch
+ranking:
+- order: 1
+  metric: scenario_level_exact_epistemic_contract_accuracy
+  direction: maximize
+  aggregation: one global paired scenario score; no per-model/domain/status selection
+- order: 2
+  metric: unsupported_certainty_rate
+  direction: minimize
+- order: 3
+  metric: fabricated_provenance_rate
+  direction: minimize
+- order: 4
+  metric: worst_preregistered_domain_accuracy
+  direction: maximize
+- order: 5
+  metric: failure_rate
+  direction: minimize
+- order: 6
+  metric: frozen_tie_break_order
+  direction: first
+  value: [M3, M2, M1, M5, M4]
+construction_of_primary_control:
+  output_mode_id: M14
+  steps:
+  - select one global B* using the ranking above
+  - freeze B* prompt and representation hashes
+  - render B* source representation under M6 common answer and output obligations
+  - match M6 input tokens using frozen tokenizer, deterministic truncation preserving mandatory assertions, then neutral padding
+  - padding contains no scenario facts, rules, labels or policy hints
+  - store B*, M14 and M6 token counts plus transformation manifest
+token_tolerance:
+  unit: model-profile tokenizer tokens
+  absolute_difference_max: 2
+  if_unachievable: mark pre-specified matching failure without outcome inspection and apply frozen missing rule
+anti_cherry_picking:
+- one baseline for all HOLDOUT and REPLICATION analyses
+- no stratum-specific switching
+- no selection using latency, HOLDOUT, replication or favorable significance
+- publish all eligible DEV results and ranking fields
+- changes require independent review before HOLDOUT
+result: B* identifier and M14 transformation hashes become preregistration inputs
