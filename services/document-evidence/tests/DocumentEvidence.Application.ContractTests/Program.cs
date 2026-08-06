@@ -21,6 +21,10 @@ internal static class Program
         await RevisionReadPlanContractTests.ChangedObjectIdentityInvalidatesPlanAsync();
         await RevisionReadPlanContractTests.ExpiredPlanStopsBeforeAuthorizationAsync();
         await RevisionReadPlanContractTests.ValidPlanOpensImmutableBytesLastAsync();
+        await FragmentRevocationContractTests.DenialStopsBeforeRevisionMetadataAsync();
+        await FragmentRevocationContractTests.RevocationStopsBeforeFragmentStoreAsync();
+        await FragmentRevocationContractTests.SupersedeStopsBeforeFragmentStoreAsync();
+        await FragmentRevocationContractTests.CurrentRevisionReturnsFragmentsLastAsync();
         await UploadServiceContractTests.ReplayAvoidsObjectWriteAsync();
         await UploadServiceContractTests.NewUploadBuildsDeterministicManifestAsync();
         await UploadServiceContractTests.ConflictingCommitResultIsRejectedAsync();
@@ -44,7 +48,7 @@ internal static class Program
         var key = new DocumentKey(Guid.NewGuid(), Guid.NewGuid());
         var access = new RecordingAccessPolicy(events);
         var store = new RecordingStore(events, key);
-        var facade = new DocumentEvidenceFacade(access, store);
+        var facade = new DocumentEvidenceFacade(access, store, new FacadeTestRevisionLocator());
 
         var result = await facade.GetDocumentAsync(new GetDocumentQuery(Guid.NewGuid(), key));
 
@@ -58,7 +62,7 @@ internal static class Program
         var key = new DocumentKey(Guid.NewGuid(), Guid.NewGuid());
         var access = new RecordingAccessPolicy(events, deny: true);
         var store = new RecordingStore(events, key);
-        var facade = new DocumentEvidenceFacade(access, store);
+        var facade = new DocumentEvidenceFacade(access, store, new FacadeTestRevisionLocator());
 
         try
         {
