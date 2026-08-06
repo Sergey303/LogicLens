@@ -10,6 +10,7 @@ internal static class ApiEndpointContractTests
     private static readonly Guid ActorId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
     private static readonly Guid WorkspaceId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
     private static readonly Guid DocumentId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+    private static readonly Guid RevisionId = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
     public static async Task GeneratedClientTraversesRealEndpointsAsync()
     {
@@ -45,6 +46,28 @@ internal static class ApiEndpointContractTests
         using var output = new MemoryStream();
         await request.Content.CopyToAsync(output);
         TestAssert.True(output.ToArray().SequenceEqual(bytes), "Raw upload bytes changed.");
+    }
+
+    public static async Task ReadPlanTraversesHeaderOnlyStreamingBoundaryAsync()
+    {
+        await using var host = await ApiTestHost.StartAsync();
+        var client = new DocumentEvidenceClient(host.Client, ActorId);
+
+        var plan = await client.IssueReadPlanAsync(WorkspaceId, RevisionId);
+        await using var stream = await client.OpenReadPlanAsync(plan.Token);
+        using var output = new MemoryStream();
+        await stream.CopyToAsync(output);
+
+        TestAssert.Equal(WorkspaceId, plan.WorkspaceId, "Read plan workspace is wrong.");
+        TestAssert.Equal(RevisionId, plan.RevisionId, "Read plan revision is wrong.");
+        TestAssert.Equal(FakeReadPlanApiOperations.Token, plan.Token, "Read plan token changed.");
+        TestAssert.Equal(ActorId, host.ReadPlans.IssuedActorId, "Issue actor was lost.");
+        TestAssert.Equal(ActorId, host.ReadPlans.OpenedActorId, "Execution actor was lost.");
+        TestAssert.Equal(plan.Token, host.ReadPlans.OpenedToken, "Token header was lost.");
+        TestAssert.True(
+            output.ToArray().SequenceEqual(FakeReadPlanApiOperations.Bytes),
+            "Read plan bytes changed across HTTP streaming."
+        );
     }
 
     public static async Task MissingActorHeaderReturnsTypedBadRequestAsync()
