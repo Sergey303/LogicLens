@@ -10,12 +10,18 @@ internal sealed class ProtectedReadFixture
     private readonly Guid _revisionId = Guid.NewGuid();
     private readonly ProtectedRevisionBytesService _service;
 
-    public ProtectedReadFixture(bool deny, bool revoked)
+    public ProtectedReadFixture(bool deny, bool revoked, bool superseded = false)
     {
         Events = [];
         _service = new ProtectedRevisionBytesService(
             new ProtectedAccessPolicy(Events, deny),
-            new ProtectedObjectLocator(Events, _workspaceId, _revisionId, revoked),
+            new ProtectedObjectLocator(
+                Events,
+                _workspaceId,
+                _revisionId,
+                revoked,
+                superseded
+            ),
             new ProtectedObjectStore(Events)
         );
     }
@@ -63,17 +69,25 @@ internal sealed class ProtectedObjectLocator : IProtectedRevisionObjectLocator
     private readonly List<string> _events;
     private readonly ProtectedRevisionObject _value;
 
-    public ProtectedObjectLocator(List<string> events, Guid workspaceId, Guid revisionId, bool revoked)
+    public ProtectedObjectLocator(
+        List<string> events,
+        Guid workspaceId,
+        Guid revisionId,
+        bool revoked,
+        bool superseded
+    )
     {
         _events = events;
         _value = new ProtectedRevisionObject(
             workspaceId,
             Guid.NewGuid(),
             revisionId,
+            1,
             new string('a', 64),
             3,
             "application/pdf",
-            revoked
+            revoked,
+            superseded
         );
     }
 
