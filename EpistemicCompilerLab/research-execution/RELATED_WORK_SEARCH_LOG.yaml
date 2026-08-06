@@ -1,17 +1,19 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 work_package_id: WP-003
 linear_issue: ENG-155
 as_of: '2026-08-06'
 status: producer_search_complete_pending_independent_review
-research_question: Which prior work most closely matches a causal comparison among raw formal context, teacher-edited
-  representations, trusted execution, and typed verified interfaces for fixed-weight small language models?
+research_question: >-
+  Which prior work most closely matches a causal comparison among raw formal
+  context, teacher-edited representations, trusted execution, and typed verified
+  interfaces for fixed-weight small language models?
 databases_and_primary_indexes:
 - name: ACL Anthology
   scope: peer-reviewed NLP papers and Findings
 - name: PMLR
   scope: ICML and related proceedings
 - name: OpenReview
-  scope: ICLR papers
+  scope: ICLR and other reviewed conference submissions
 - name: NeurIPS Proceedings
   scope: NeurIPS proceedings
 - name: arXiv
@@ -26,17 +28,7 @@ query_rounds:
   - first-order logic prover language model
   - declarative prompting theorem prover language model
   - faithful chain-of-thought symbolic solver
-  added_source_ids:
-  - RW-001
-  - RW-002
-  - RW-003
-  - RW-004
-  - RW-005
-  - RW-006
-  - RW-007
-  - RW-008
-  - RW-009
-  - RW-010
+  added_source_ids: [RW-001, RW-002, RW-003, RW-004, RW-005, RW-006, RW-007, RW-008, RW-009, RW-010]
 - round_id: Q2
   date: '2026-08-06'
   family: tool use and modular systems
@@ -44,12 +36,7 @@ query_rounds:
   - language model tool use frozen model external tools
   - language model API calling training
   - modular neuro-symbolic language model architecture
-  added_source_ids:
-  - RW-011
-  - RW-012
-  - RW-013
-  - RW-014
-  - RW-015
+  added_source_ids: [RW-011, RW-012, RW-013, RW-014, RW-015]
 - round_id: Q3
   date: '2026-08-06'
   family: constrained decoding and structured output
@@ -58,15 +45,7 @@ query_rounds:
   - JSON Schema constrained decoding language models
   - logical parser grammar constrained decoding
   - prompt programming constrained generation
-  added_source_ids:
-  - RW-016
-  - RW-017
-  - RW-018
-  - RW-019
-  - RW-020
-  - RW-021
-  - RW-022
-  - RW-023
+  added_source_ids: [RW-016, RW-017, RW-018, RW-019, RW-020, RW-021, RW-022, RW-023]
 - round_id: Q4
   date: '2026-08-06'
   family: prompt and program optimization
@@ -75,13 +54,7 @@ query_rounds:
   - LLM prompt optimizer textual gradients
   - self improving language model pipelines compiler prompts
   - prompt evolution language model
-  added_source_ids:
-  - RW-024
-  - RW-025
-  - RW-026
-  - RW-027
-  - RW-028
-  - RW-029
+  added_source_ids: [RW-024, RW-025, RW-026, RW-027, RW-028, RW-029]
 - round_id: Q5
   date: '2026-08-06'
   family: refinement supervision verification
@@ -91,12 +64,7 @@ query_rounds:
   - weak to strong generalization language models
   - process supervision verifier reasoning
   - faithful reasoning small language model training
-  added_source_ids:
-  - RW-030
-  - RW-031
-  - RW-032
-  - RW-033
-  - RW-034
+  added_source_ids: [RW-030, RW-031, RW-032, RW-033, RW-034]
 - round_id: Q6
   date: '2026-08-06'
   family: recent Prolog and formal verification refresh
@@ -104,49 +72,77 @@ query_rounds:
   - Training Language Models to Use Prolog as a Tool
   - neuro-symbolic formal verification chain of thought
   - causality-inspired evaluation chain of thought
-  added_source_ids:
-  - RW-035
-  - RW-036
-  - RW-037
+  added_source_ids: [RW-035, RW-036, RW-037]
 - round_id: Q7
   date: '2026-08-06'
-  family: citation-chain saturation
+  family: citation-chain saturation before compiler-runtime refresh
   queries:
   - backward references from PAL Logic-LM LINC Faithful CoT SatLM
   - forward citations and close work from five nearest papers
   - structured generation cited by logical parsing work
   - prompt optimization cited by ProTeGi DSPy Promptbreeder
   added_source_ids: []
+- round_id: Q8
+  date: '2026-08-06'
+  family: 2026 compiler-runtime interfaces and compiled knowledge
+  queries:
+  - compiling agent skills runtime interfaces smaller language model
+  - ontology compilation executable semantic constraints LLM tools
+  - compiled memory precise instructions language agents
+  - agent compiled knowledge refinement reinforcement learning
+  added_source_ids: [RW-038, RW-039, RW-040, RW-041]
+  effect_on_boundary: >-
+    Reset the earlier saturation finding. SkillSmith occupies broad offline
+    compiler-runtime reuse by smaller models; ontology-to-tools occupies formal
+    semantics compiled into executable typed tools; Compiled Memory occupies
+    broad compile-not-train rhetoric.
+- round_id: Q9
+  date: '2026-08-06'
+  family: exact-interface causal-design attack
+  queries:
+  - fixed weight small language model verified decision frame matched baseline
+  - trusted execution typed epistemic interface supported refuted unknown conflicting
+  - raw program teacher edited compiled result interface causal comparison
+  - answer copying control structured no conclusion formal runtime language model
+  added_source_ids: []
+- round_id: Q10
+  date: '2026-08-06'
+  family: post-refresh forward and terminology saturation
+  queries:
+  - forward and adjacent work from SkillSmith ontology-to-tools Compiled Memory
+  - compiled runtime interface formal semantics small language model
+  - verified epistemic decision contract language model renderer
+  added_source_ids: []
 inclusion_rules:
 - Read a primary paper or official proceedings/preprint page; snippets alone are insufficient.
-- Include work changing or evaluating fixed weights, execution, symbolic representation, typed constraints, teacher
-  optimization, verifier independence, or small-model behavior.
+- Include work changing or evaluating fixed weights, execution, symbolic representation, typed constraints, teacher optimization, verifier independence, or small-model behavior.
 - Include adjacent work when it supplies an alternative explanation or matched-control family.
-- Compare at least three nearest neighbours with one common dimension set.
+- Compare nearest neighbours with one common dimension set.
 exclusion_rules:
 - Exclude secondary surveys without a distinct primary method or experiment.
 - Exclude blogs, marketing, repository claims, and snippets without a primary paper.
 - Exclude generic retrieval work without formal execution, interface, teacher, verifier, or structured-output relevance.
 - Do not use future HOLDOUT/REPLICATION or pilot scores as confirmatory evidence.
 citation_chaining:
-  seed_source_ids:
-  - RW-001
-  - RW-002
-  - RW-003
-  - RW-004
-  - RW-005
+  seed_source_ids: [RW-001, RW-002, RW-003, RW-004, RW-005, RW-038, RW-039]
   backward_chain_families:
   - program synthesis
   - semantic parsing
   - theorem proving
   - chain-of-thought
   - modular neuro-symbolic systems
+  - compiler-runtime interfaces
+  - ontology compilation
   forward_chain_families:
   - logical parsing
   - grammar constraints
   - Prolog tool training
   - formal verification
-  result: Expanded controls and adjacent families but found no single paper matching the complete causal design.
+  - compiled agent skills
+  - executable semantic tools
+  result: >-
+    Expanded compiler-runtime and compiled-knowledge coverage but found no single
+    primary source matching the complete flagship causal design.
 saturation_test:
   defining_dimensions:
   - fixed-weight small/open student
@@ -156,31 +152,29 @@ saturation_test:
   - language model consumes verified result and remains renderer
   - matched non-executed and answer-copying controls
   - independent oracle/scorer and layer error localization
-  criterion: Two consecutive query/citation-chain rounds add no source matching at least five of seven dimensions
-    and no source occupying the exact positive comparison.
-  rounds_assessed:
-  - Q6
-  - Q7
-  outcome: provisional_saturation_reached
-  caveat: Does not justify first/unique wording; independent review and pre-submission refresh are mandatory.
-nearest_source_ids:
-- RW-003
-- RW-002
-- RW-004
-- RW-005
-- RW-001
-source_count: 37
-nearest_count: 5
+  criterion: >-
+    Two consecutive post-refresh query/citation-chain rounds add no source matching
+    at least five of seven dimensions and no source occupying the exact positive comparison.
+  rounds_assessed: [Q9, Q10]
+  outcome: provisional_saturation_reached_after_refresh
+  caveat: >-
+    This does not justify first, unique, or unprecedented wording. Independent
+    review, final-claim refresh, and pre-submission refresh are mandatory.
+nearest_source_ids: [RW-038, RW-039, RW-003, RW-002, RW-004, RW-005, RW-001]
+source_count: 41
+nearest_count: 7
 pre_submission_refresh:
   required: true
   timing: Before final claim freeze and immediately before submission packaging.
   actions:
-  - Repeat queries with dates after 2026-08-06.
-  - Check forward citations of nearest sources.
+  - Repeat all query families with dates after 2026-08-06.
+  - Check forward citations of all seven nearest sources.
   - Search ACL, NeurIPS, ICML/PMLR, ICLR/OpenReview, arXiv and accepted-paper lists.
+  - Re-run the exact seven-dimension profile comparison.
   - Record occupied claims and narrow or pivot before submission.
 known_limitations:
 - Systematic and citation-chained but not a registered systematic review.
 - Some arXiv entries may later have proceedings versions.
 - Absence of an exact match cannot support first, unique, or unprecedented wording.
-- Repository WP-003 validator is artifact-level; producer cross-file checks are recorded in handoff.
+- The four newly added 2026 works are preprints and require venue/status refresh.
+- Repository WP-003 validator is artifact-level; deterministic cross-file checks are recorded in handoff.
