@@ -1,6 +1,6 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 work_package_id: WP-004
-rule_id: DEV-GLOBAL-STRONGEST-MATCHED-V1
+rule_id: DEV-GLOBAL-STRONGEST-MATCHED-V2
 selection_timing: after all eligible DEV blocks are complete and before HOLDOUT construction or access
 eligible_source_modes: [M1, M2, M3, M4, M5]
 ineligible_modes:
@@ -19,13 +19,15 @@ eligibility_requirements:
 - same question and common answer schema
 - no computed status, action, conclusion, decision frame, solver trace or hidden gold
 - source information originates from the same scenario/source package available to the M6 compiler
+- the complete mode representation is retained; no assertion/rule/policy/provenance item may be truncated for matching
 - teacher modes obey fixed TRAIN-only and aggregate-DEV-only visibility and budget
+- full representation fits every declared model-profile context under the frozen common output reserve
 - mode has complete DEV coverage and no invalidated batch
 ranking:
 - order: 1
   metric: scenario_level_exact_epistemic_contract_accuracy
   direction: maximize
-  aggregation: one global paired scenario score; no per-model/domain/status selection
+  aggregation: one global paired scenario score; no primary per-model/domain/status switching
 - order: 2
   metric: unsupported_certainty_rate
   direction: minimize
@@ -46,19 +48,35 @@ construction_of_primary_control:
   output_mode_id: M14
   steps:
   - select one global B* using the ranking above
-  - freeze B* prompt and representation hashes
-  - render B* source representation under M6 common answer and output obligations
-  - match M6 input tokens using frozen tokenizer, deterministic truncation preserving mandatory assertions, then neutral padding
-  - padding contains no scenario facts, rules, labels or policy hints
-  - store B*, M14 and M6 token counts plus transformation manifest
+  - freeze B* prompt and full representation hashes
+  - instantiate B* under the common M6 answer/output obligations without adding computed fields
+  - compute unpadded token counts for M6, M9, M10, M12, M13 and full-information M14 with each frozen model-profile tokenizer
+  - set each scenario/model-profile block envelope to the maximum unpadded count among compared LLM modes
+  - add scenario-independent neutral padding only to shorter modes
+  - store unpadded and padded token counts plus byte/token transformation manifests
+  - reject the scenario from benchmark construction before split assignment if the lossless envelope plus output reserve exceeds any declared student context
+matching_prohibitions:
+- no deterministic or learned truncation
+- no assertion/rule/policy/provenance deletion
+- no outcome-dependent selection, summarization, compression or padding
+- no post-HOLDOUT matching repair
+- padding contains no scenario facts, rules, labels, policies, status words or decision hints
 token_tolerance:
   unit: model-profile tokenizer tokens
-  absolute_difference_max: 2
-  if_unachievable: mark pre-specified matching failure without outcome inspection and apply frozen missing rule
+  absolute_difference_max_after_padding: 0
+  if_unachievable: fail benchmark-construction validation before split freeze; do not create a scored missing observation
 anti_cherry_picking:
-- one baseline for all HOLDOUT and REPLICATION analyses
-- no stratum-specific switching
+- one global B* for the headline HOLDOUT and REPLICATION contrast
+- no stratum-specific switching in the headline analysis
 - no selection using latency, HOLDOUT, replication or favorable significance
 - publish all eligible DEV results and ranking fields
 - changes require independent review before HOLDOUT
-result: B* identifier and M14 transformation hashes become preregistration inputs
+adversarial_profile_sensitivity:
+  required: true
+  rule: apply the same frozen ranking independently within each model profile using DEV only
+  output: one B*_profile identifier per frozen student profile
+  analysis_role: secondary robustness analysis, never replacement of the global headline comparator after outcomes
+  interpretation:
+  - if M6 survives global B* but not profile-wise strongest baselines, narrow the pooled headline and report profile dependence
+  - if a profile-specific matched baseline is non-inferior within the frozen margin, do not claim compilation advantage for that profile
+result: global B*, profile-sensitivity map, M14 construction hashes and lossless token envelopes become preregistration inputs
