@@ -1,0 +1,65 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+primary:
+  estimand_id: E-PRIMARY-COMPILED-BUNDLE
+  question: What is the scenario-level effect of receiving a trusted compiled typed decision interface rather than the strongest matched non-compiled source interface?
+  treatment: M6
+  comparator: M14(B*)
+  unit: base_scenario_id
+  population: frozen HOLDOUT scenarios and independently sourced REPLICATION under declared model/domain profiles
+  endpoint: scenario_level_exact_epistemic_contract_accuracy
+  effect: paired absolute accuracy difference M6 minus M14
+  aggregation: scenario is primary; paraphrases, repeats and model profiles are nested under frozen hierarchical analysis
+  interpretation: total effect of trusted semantic execution plus verified result interface under token/output matching; component attribution requires secondary contrasts
+  retain_if: CI supports the preregistered smallest meaningful gain and replication direction agrees
+  null_wording: The compiled verified interface did not show a practically meaningful advantage over the strongest matched non-compiled control.
+secondary:
+- estimand_id: E-STRUCTURE
+  contrast: M6-M9
+  factor: typed field structure
+  held_equal: [verified semantic values, question, student, output schema, token envelope]
+  warning: unstructured serialization must not omit semantic content
+- estimand_id: E-CONCLUSION
+  contrast: M6-M12
+  factor: presence of allowedConclusion
+  held_equal: [compiled status, action, scope, provenance, warnings, proof trace, student]
+  pivot: If almost all effect is allowedConclusion, narrow to minimal executable decision-contract paper.
+- estimand_id: E-MINIMAL-LABEL
+  contrast: M6-M10
+  factor: full verified frame versus status label only
+  held_equal: [verified status, question, student, policy description]
+  interpretation: marginal value of action, scope, provenance, warnings and proof fields as a bundle
+- estimand_id: E-RENDERER
+  contrast: M6-M11
+  factor: LLM renderer versus deterministic template
+  held_equal: [exact frame bytes, decision policy, target language/content contract]
+  stop_rule: If M11 matches or exceeds M6 on all task outcomes, state LLM rendering is unnecessary for this task class.
+- estimand_id: E-COMPILER-BOUNDARY
+  contrast: M7-M6
+  factor: production query/compiler path versus independent gold frame
+  held_equal: [student renderer, frame schema, question]
+  interpretation: production boundary loss; not a deployment comparison
+- estimand_id: E-CORRUPTION
+  contrast: M13-M6
+  factor: one corrupted frame field
+  held_equal: [all other bytes and fields, student, question]
+  outcomes: [follow_corruption, detect_inconsistency, ignore_frame, fabricate_reconciliation]
+- estimand_id: E-TEACHER-PROMPT
+  contrast: M4 against its frozen unedited source mode
+  factor: teacher-edited prompt
+  interpretation: bounded teacher effect, not a universal teaching claim
+- estimand_id: E-TEACHER-PROGRAM
+  contrast: M5-M3
+  factor: teacher-edited formal representation without trusted execution
+  interpretation: bounded program-teacher effect
+- estimand_id: E-STRONG-CEILING
+  contrast: M8-M6
+  factor: strong remote model versus amortized local compiled pipeline
+  outcomes: [accuracy, latency, tokens, hardware, teacher amortization]
+  interpretation: economic/quality ceiling, not primary causal claim
+prohibited_estimands:
+- M6-M3 alone as headline compilation effect
+- per-paraphrase independent treatment effect
+- best model/seed/domain post-hoc effect
+- privacy, world-truth, learning, or universal LLM effect
+- renderer quality inferred from frame correctness alone
