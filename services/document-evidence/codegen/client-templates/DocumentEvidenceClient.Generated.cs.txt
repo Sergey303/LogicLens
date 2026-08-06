@@ -60,6 +60,37 @@ public sealed class DocumentEvidenceClient
         );
     }
 
+    public async Task<ReadPlanDto> IssueReadPlanAsync(
+        Guid workspaceId,
+        Guid revisionId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        using var request = CreateRequest(
+            HttpMethod.Post,
+            DocumentEvidenceApiV1.ReadPlan(workspaceId, revisionId)
+        );
+        return await _transport.SendAsync<ReadPlanDto>(
+            request,
+            HttpStatusCode.Created,
+            cancellationToken
+        );
+    }
+
+    public async Task<Stream> OpenReadPlanAsync(
+        string token,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (String.IsNullOrWhiteSpace(token) || token.Length > 4096)
+        {
+            throw new ArgumentException("Read plan token must contain 1-4096 characters.", nameof(token));
+        }
+        using var request = CreateRequest(HttpMethod.Get, DocumentEvidenceApiV1.ReadPlanContent());
+        request.Headers.TryAddWithoutValidation(DocumentEvidenceApiV1.ReadPlanTokenHeader, token);
+        return await _transport.SendStreamAsync(request, cancellationToken);
+    }
+
     public async Task<DocumentMetadataDto?> GetDocumentAsync(
         Guid workspaceId,
         Guid documentId,
