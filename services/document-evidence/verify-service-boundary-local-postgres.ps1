@@ -2,7 +2,8 @@
 param()
 
 $ErrorActionPreference = "Stop"
-$containerName = "logiclens-document-evidence-proof-$([Guid]::NewGuid().ToString('N')[..7])"
+$suffix = [Guid]::NewGuid().ToString("N").Substring(0, 8)
+$containerName = "logiclens-document-evidence-proof-$suffix"
 $previousConnection = $env:DOCUMENT_EVIDENCE_TEST_POSTGRES
 $containerStarted = $false
 
@@ -18,8 +19,8 @@ try {
     if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
         throw "Docker is required for the disposable PostgreSQL proof runner."
     }
-    _ = Invoke-Docker @("info", "--format", "{{.ServerVersion}}")
-    _ = Invoke-Docker @(
+    $null = Invoke-Docker @("info", "--format", "{{.ServerVersion}}")
+    $null = Invoke-Docker @(
         "run",
         "--detach",
         "--name", $containerName,
