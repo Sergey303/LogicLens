@@ -70,8 +70,9 @@ public sealed class HmacRevisionReadPlanProtector : IRevisionReadPlanProtector
         if (payload.Version != 1 || payload.PlanId == Guid.Empty ||
             payload.ActorId == Guid.Empty || payload.WorkspaceId == Guid.Empty ||
             payload.DocumentId == Guid.Empty || payload.RevisionId == Guid.Empty ||
-            payload.RevisionNumber <= 0 || payload.ObjectSha256.Length != 64 ||
-            payload.SizeBytes < 0 || String.IsNullOrWhiteSpace(payload.MediaType) ||
+            payload.RevisionNumber <= 0 || String.IsNullOrWhiteSpace(payload.ObjectSha256) ||
+            payload.ObjectSha256.Length != 64 || payload.SizeBytes < 0 ||
+            String.IsNullOrWhiteSpace(payload.MediaType) ||
             payload.IssuedAtUtc >= payload.ExpiresAtUtc)
         {
             throw new InvalidDataException("Read plan payload is invalid.");
