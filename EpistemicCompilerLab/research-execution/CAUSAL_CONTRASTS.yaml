@@ -1,0 +1,71 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+primary_contrast:
+  contrast_id: C-PRIMARY
+  treatment: M6
+  comparator: M14
+  baseline_placeholder: B* selected by DEV-GLOBAL-STRONGEST-MATCHED-V1
+  estimand_id: E-PRIMARY-COMPILED-BUNDLE
+  headline_eligible: true
+  single_interpretable_factor: trusted compiled verified-interface bundle versus matched non-compiled source interface
+  must_report:
+  - paired counts
+  - absolute difference
+  - hierarchical bootstrap 95% CI
+  - McNemar test
+  - smallest meaningful gain comparison
+  - domain/model strata
+  - independent replication
+falsification_contrasts:
+- contrast_id: C-SOLVER-INFO
+  modes: [M6, M14]
+  objection: solver versus no solver or extra information
+  design_response: M14 uses the same source package, output obligations and M6 token envelope but no computed result; total bundle effect is primary and component claims require additional controls.
+- contrast_id: C-STRUCTURE
+  modes: [M6, M9]
+  objection: typed JSON alone explains effect
+  design_response: same verified values, typed frame versus frozen unstructured rendering.
+- contrast_id: C-COPYING
+  modes: [M6, M12, M10]
+  objection: allowedConclusion or label copying explains effect
+  design_response: remove allowedConclusion only, then compare full frame with status-only label.
+- contrast_id: C-LLM-NECESSITY
+  modes: [M6, M11]
+  objection: LLM renderer contributes nothing
+  design_response: same exact frame rendered deterministically.
+- contrast_id: C-FRAME-RELIANCE
+  modes: [M6, M13]
+  objection: model ignores frame or blindly copies it
+  design_response: one-field mutations classify follow/detect/ignore/fabricate behavior.
+- contrast_id: C-COMPILER
+  modes: [M6, M7]
+  objection: production compiler/query errors create apparent renderer errors
+  design_response: gold oracle frame holds renderer constant.
+- contrast_id: C-LENGTH
+  modes: [M6, M14, M9, M12]
+  objection: shorter or differently formatted input explains effect
+  design_response: frozen tokenizer matching and neutral padding; report exact counts.
+- contrast_id: C-TEACHING
+  modes: [M4, M5, M14, M6]
+  objection: strong teacher could achieve the same result contextually
+  design_response: fixed budgets and visibility; no executed result in teacher modes.
+confirmatory_minimal_set: [M6, M14, M9, M10, M11, M12, M13]
+diagnostic_required_set: [M0, M1, M2, M3, M4, M5, M7, M8]
+freeze_rules:
+- all mode contracts, transformation code, tokenizer and prompts hashed before HOLDOUT
+- no mode addition after HOLDOUT access
+- one-field M13 mutations preregistered and analyzed separately
+- all modes attempted in randomized blocked order
+- raw output stored before scoring
+- failures count according to frozen analysis rule
+pivot_rules:
+- condition: M6 advantage vanishes against M14
+  decision: reject compilation-advantage headline; retain only supported component/failure results
+- condition: M6-M12 is large while M12-M14 is null
+  decision: pivot to minimal executable decision-contract study; do not attribute effect to rich frame
+- condition: M11 equals or exceeds M6 across task outcomes
+  decision: state LLM renderer unnecessary for the evaluated task class
+- condition: M13 shows unconditional corruption following
+  decision: narrow auditability/safety wording and analyze frame-trust failure
+- condition: M7-M6 is large
+  decision: prioritize extraction/compiler boundary; do not blame renderer
