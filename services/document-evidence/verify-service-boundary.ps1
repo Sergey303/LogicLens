@@ -78,6 +78,15 @@ $result = [ordered]@{
     projectsBuilt = $projects.Count
     contractExecutablesRun = $executablesRun
     postgresRuntime = $postgresRuntime
+    readPlan = [ordered]@{
+        issueOperation = "POST /api/v1/workspaces/{workspaceId}/revisions/{revisionId}/read-plans"
+        contentOperation = "GET /api/v1/read-plans/content"
+        tokenTransport = "X-Read-Plan-Token header only"
+        authorizationChecks = 2
+        revokedAndSuperseded = "rejected-before-object-read"
+        streamLifetime = "owned-by-caller-stream"
+        storagePathExposed = $false
+    }
 }
 
 $result | ConvertTo-Json -Depth 5
