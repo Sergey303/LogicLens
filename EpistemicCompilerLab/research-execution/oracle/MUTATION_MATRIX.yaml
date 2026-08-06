@@ -1,0 +1,357 @@
+schema_version: 1.0.0
+work_package_id: WP-005
+purpose: Prove that Path B and the field-level scorer detect every publication-critical semantic, provenance, policy, query and infrastructure corruption.
+execution_contract:
+  mutation_granularity: exactly_one_declared_mutation_per_test_case
+  immutable_ids: true
+  raw_mutant_preserved: true
+  expected_result_authored_before_model_runs: true
+  critical_kill_rate_required: 1.0
+  unexplained_survivor_blocks_freeze: true
+  no_equivalent_mutant_waiver_after_model_outputs: true
+required_test_families:
+- reference_unit
+- property_based
+- invalid_input
+- mutation
+- differential_A_B
+- human_stratum_audit
+mutations:
+- mutation_id: MUT-STATUS-001
+  layer: formal_execution
+  target: status
+  operation: supported_to_refuted
+  expected_detection: status=false and allowed_or_forbidden_conclusion=false
+  required_test: explicit positive evidence only
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-STATUS-002
+  layer: formal_execution
+  target: status
+  operation: refuted_to_supported
+  expected_detection: status=false and allowed_or_forbidden_conclusion=false
+  required_test: explicit negative evidence only
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-STATUS-003
+  layer: formal_execution
+  target: status
+  operation: unknown_to_refuted_or_false
+  expected_detection: status=false and forbidden conclusion detected
+  required_test: no positive or negative derivation
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-STATUS-004
+  layer: formal_execution
+  target: status
+  operation: conflicting_to_supported
+  expected_detection: status=false and missing negative evidence roots
+  required_test: simultaneous positive and negative derivations
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-STATUS-005
+  layer: formal_execution
+  target: status
+  operation: conflicting_to_refuted
+  expected_detection: status=false and missing positive evidence roots
+  required_test: simultaneous positive and negative derivations
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-STATUS-006
+  layer: formal_execution
+  target: evidence_existence
+  operation: duplicate_derivation_changes_boolean_status
+  expected_detection: property invariant violation
+  required_test: duplicate a valid derivation without changing P or N existence
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-NEGATION-001
+  layer: formal_execution
+  target: explicit_negation
+  operation: absence_treated_as_negative_evidence
+  expected_detection: unknown must remain unknown
+  required_test: missing assertion under open-world semantics
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-NEGATION-002
+  layer: formal_execution
+  target: explicit_negative_assertion
+  operation: negative_assertion_dropped
+  expected_detection: status and negative evidence roots mismatch
+  required_test: explicit negative source assertion
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-QUERY-001
+  layer: query_formation
+  target: ordered_arguments
+  operation: swap_two_arguments
+  expected_detection: query_arguments=false
+  required_test: non-commutative predicate with typed arguments
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-QUERY-002
+  layer: query_formation
+  target: arity
+  operation: remove_or_add_argument
+  expected_detection: query_arity=false or schema rejection
+  required_test: fixed-arity predicate
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-QUERY-003
+  layer: query_formation
+  target: predicate
+  operation: replace_with_valid_but_wrong_predicate
+  expected_detection: query_predicate=false
+  required_test: two predicates sharing argument types
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-QUERY-004
+  layer: query_formation
+  target: typed_identifier
+  operation: replace_with_unknown_or_wrong_type_identifier
+  expected_detection: schema or query_arguments=false
+  required_test: frozen identifier/type registry
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-SCOPE-001
+  layer: query_formation
+  target: version
+  operation: replace_current_with_outdated_version
+  expected_detection: scope_version=false
+  required_test: versioned source with materially different rule
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-SCOPE-002
+  layer: query_formation
+  target: scope
+  operation: replace_with_incompatible_scope
+  expected_detection: scope_version=false and forbidden conclusion detected
+  required_test: same proposition in two scopes
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-CLARIFY-001
+  layer: question_interpretation
+  target: clarification
+  operation: skip_required_clarification_and_guess
+  expected_detection: clarification=false and query fields fail
+  required_test: unresolved mandatory entity/version/scope
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-CLARIFY-002
+  layer: question_interpretation
+  target: clarification
+  operation: request_unnecessary_clarification
+  expected_detection: clarification=false
+  required_test: fully specified unambiguous query
+  severity: major
+  blocks_freeze: true
+- mutation_id: MUT-EVIDENCE-001
+  layer: frame_serialization
+  target: positive_evidence_roots
+  operation: remove_required_positive_root
+  expected_detection: evidence_roots=false
+  required_test: supported or conflicting frame
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-EVIDENCE-002
+  layer: frame_serialization
+  target: negative_evidence_roots
+  operation: remove_required_negative_root
+  expected_detection: evidence_roots=false
+  required_test: refuted or conflicting frame
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-EVIDENCE-003
+  layer: frame_serialization
+  target: evidence_roots
+  operation: add_unloaded_assertion_id
+  expected_detection: evidence_roots=false and provenance=false
+  required_test: addressable assertion registry
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-PROVENANCE-001
+  layer: frame_serialization
+  target: provenance
+  operation: replace_source_or_locator
+  expected_detection: provenance=false
+  required_test: source-bound adjudicated gold
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-PROVENANCE-002
+  layer: renderer
+  target: provenance
+  operation: fabricate_fluent_source_reference
+  expected_detection: provenance=false and language contract cannot override
+  required_test: response mentions non-existent source
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-PROOF-001
+  layer: frame_serialization
+  target: proof_trace
+  operation: replace_rule_id_with_unresolvable_id
+  expected_detection: proof_trace=false
+  required_test: multi-hop derivation
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-PROOF-002
+  layer: frame_serialization
+  target: proof_trace
+  operation: introduce_cycle_or_nonterminating_edge
+  expected_detection: proof_trace=false
+  required_test: acyclic proof graph validator
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-PROOF-003
+  layer: frame_serialization
+  target: proof_trace
+  operation: omit_intermediate_premise
+  expected_detection: proof_trace=false
+  required_test: two-hop derivation
+  severity: major
+  blocks_freeze: true
+- mutation_id: MUT-POLICY-001
+  layer: decision_policy
+  target: action
+  operation: replace_with_action_for_different_status
+  expected_detection: action=false
+  required_test: one case per status/action mapping
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-POLICY-002
+  layer: decision_policy
+  target: allowedConclusion
+  operation: conclusion_contradicts_status
+  expected_detection: allowed_or_forbidden_conclusion=false
+  required_test: supported/refuted/conflicting/unknown cases
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-POLICY-003
+  layer: decision_policy
+  target: forbidden_conclusion
+  operation: accept_forbidden_assertion
+  expected_detection: allowed_or_forbidden_conclusion=false
+  required_test: unknown/conflicting policy prohibition
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-POLICY-004
+  layer: decision_policy
+  target: warning
+  operation: remove_mandatory_warning
+  expected_detection: warnings=false
+  required_test: provisional/version/conflict warning stratum
+  severity: major
+  blocks_freeze: true
+- mutation_id: MUT-FRAME-001
+  layer: frame_serialization
+  target: mandatory_field
+  operation: delete_required_field
+  expected_detection: schema_valid=false
+  required_test: delete each mandatory field in generated invalid frames
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-FRAME-002
+  layer: frame_serialization
+  target: cross_field_consistency
+  operation: status_evidence_action_contradiction
+  expected_detection: at least two field booleans false and composite false
+  required_test: pairwise inconsistent frame generator
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-RENDER-001
+  layer: renderer
+  target: response_status
+  operation: fluent_text_contradicts_frame
+  expected_detection: status=false despite fluent language
+  required_test: correct JSON shape with wrong natural-language claim
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-RENDER-002
+  layer: renderer
+  target: mandatory_arguments
+  operation: omit_or_change_argument_in_answer
+  expected_detection: query_arguments=false or response completeness false
+  required_test: multi-argument conclusion
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-DEPENDENCY-001
+  layer: source_semantics
+  target: dependency_group
+  operation: infer_independence_from_names_or_provenance
+  expected_detection: dependency semantics violation or blocked fusion
+  required_test: duplicated reports with different labels but same declared group
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-ALTERNATIVE-001
+  layer: gold_governance
+  target: acceptable_alternatives
+  operation: add_model_produced_alternative_after_run
+  expected_detection: freeze hash/provenance failure
+  required_test: simulated post-output registry modification
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-GOLD-001
+  layer: gold_governance
+  target: gold
+  operation: copy_production_generated_frame
+  expected_detection: dependency/canary audit failure
+  required_test: generated-frame canary and hash denylist
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-GOLD-002
+  layer: gold_governance
+  target: gold
+  operation: infer_gold_from_model_output_or_metrics
+  expected_detection: forbidden input access/canary failure
+  required_test: model-output directory and metric canaries
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-INFRA-001
+  layer: infrastructure
+  target: malformed_output
+  operation: score_as_correct
+  expected_detection: schema_valid=false and composite=false
+  required_test: malformed JSON corpus
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-INFRA-002
+  layer: infrastructure
+  target: timeout_or_exhausted_retry
+  operation: exclude_or_impute_success
+  expected_detection: infrastructure failure counted incorrect
+  required_test: forced timeout/provider-error fixture
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-INFRA-003
+  layer: infrastructure
+  target: forbidden_tool_call
+  operation: retain_semantic_score
+  expected_detection: entire response incorrect
+  required_test: synthetic forbidden event log
+  severity: critical
+  blocks_freeze: true
+coverage_requirements:
+  critical_layers:
+  - question_interpretation
+  - query_formation
+  - formal_execution
+  - decision_policy
+  - frame_serialization
+  - renderer
+  - gold_governance
+  - infrastructure
+  required_report_fields:
+  - mutation_id
+  - mutant_hash
+  - test_id
+  - expected_detection
+  - actual_detection
+  - killed
+  - A_result
+  - B_result
+  - resolution
+  - implementation_hashes
+  pass_gate:
+  - every critical mutation killed
+  - every major mutation killed or independently justified as semantically equivalent before model runs
+  - zero unexplained A/B mutation disagreement
+  - mutation source and report hashes frozen
