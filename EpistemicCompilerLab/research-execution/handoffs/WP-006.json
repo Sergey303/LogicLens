@@ -1,0 +1,139 @@
+{
+  "work_package_id": "WP-006",
+  "linear_issue": "ENG-158",
+  "status": "ready_for_review",
+  "identity_and_session": {
+    "producer_identity": "OpenAI GPT-5.6 Thinking — Statistical Design Reviewer",
+    "producer_session": "ChatGPT Polar based project / WP-006 producer / 2026-08-06",
+    "reviewer_identity": "UNASSIGNED independent Adversarial Statistical Reviewer",
+    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
+    "gatekeeper_identity": "UNASSIGNED Senior Adversarial Methodology Reviewer",
+    "gatekeeper_session": "MUST DIFFER FROM PRODUCER AND REVIEWER SESSIONS",
+    "prior_roles": [
+      "Producer of DSL-B1/C0/D0/D1/D2 pilot artifacts",
+      "Producer of WP-002 through WP-005 W0 artifacts"
+    ],
+    "conflict_declaration": "Producer is conflicted from independent statistical acceptance and GATE-001 decisions and does not self-accept WP-006.",
+    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION outcomes were accessed; pilot scores were not used to choose the meaningful effect or sample size."
+  },
+  "input_hashes_verified": true,
+  "input_hashes": {
+    "EpistemicCompilerLab/research-execution/WORK_PACKAGES.yaml": "0ce4406a94530a43a23bd62e2500e704d3ec0778cc34108f43920087128d556e",
+    "EpistemicCompilerLab/research-execution/schemas/work-package.schema.json": "a68ef6c36da28a374927ca465461ae372afe535eb2ca1c6f7458e366c3733160",
+    "EpistemicCompilerLab/research-execution/schemas/work-package-handoff.schema.json": "cafef50ea7faecb3b12353dac7a06c2a02393982ee36480c5b626a208f7e0fee",
+    "EpistemicCompilerLab/research-execution/validation/linear-relations-snapshot.json": "4f3943cd5aea669a49650d75c82314830aed7c870bf59ce34cd262d4ef17209c",
+    "EpistemicCompilerLab/research-execution/CRITICAL_PATH.md": "f551b3f854a9e3d06ec63be2b2e9f1481a0d50333b9b10ad5bea07f21f79ae54",
+    "EpistemicCompilerLab/research-execution/ENG-153_INDEPENDENT_REVIEW_ROUND2_2026-08-06.md": "4358d003f7f2480374bf72c3b59eaeae9873e30542385d5fae7a7ed6d364196b"
+  },
+  "files_created": [
+    "EpistemicCompilerLab/research-execution/statistics/POWER_SIMULATION_PLAN.md",
+    "EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml",
+    "EpistemicCompilerLab/research-execution/statistics/FAILURE_AND_EXCLUSION_RULES.md",
+    "EpistemicCompilerLab/research-execution/statistics/power_simulation.py",
+    "EpistemicCompilerLab/research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml",
+    "EpistemicCompilerLab/research-execution/statistics/table-shells/README.md",
+    "EpistemicCompilerLab/research-execution/statistics/table-shells/T1_PRIMARY.csv",
+    "EpistemicCompilerLab/research-execution/statistics/table-shells/T2_FALSIFICATION.csv",
+    "EpistemicCompilerLab/research-execution/statistics/table-shells/T3_HETEROGENEITY.csv",
+    "EpistemicCompilerLab/research-execution/statistics/table-shells/T4_ERROR_LAYERS.csv",
+    "EpistemicCompilerLab/research-execution/statistics/table-shells/T5_TEACHER.csv",
+    "EpistemicCompilerLab/research-execution/statistics/table-shells/S1_INTEGRITY_FAILURES.csv",
+    "EpistemicCompilerLab/research-execution/handoffs/WP-006.json"
+  ],
+  "files_modified": [],
+  "commands_run": [
+    "Read the frozen Statistics and Analysis Protocol, WP-004 causal contracts and WP-006 context packet",
+    "python statistics/power_simulation.py --assumptions statistics/ASSUMPTIONS_MANIFEST.yaml --output <transient POWER_RESULTS.json>",
+    "Python YAML/JSON cross-file audit of primary contrast, endpoint, scenario aggregation, power threshold, multiplicity, failures and table shells",
+    "JSON Schema validation of this handoff against work-package-handoff.schema.json"
+  ],
+  "tests": [
+    {
+      "name": "smallest meaningful effect freeze",
+      "status": "PASS",
+      "evidence": "0.08 absolute scenario-level gain justified before scaled outcomes and stored in assumptions/registry"
+    },
+    {
+      "name": "clustered paired simulation",
+      "status": "PASS",
+      "evidence": "scenario/domain/model/paraphrase/treatment heterogeneity, two paraphrases, three repeats and run failures simulated"
+    },
+    {
+      "name": "calibrated effect equality",
+      "status": "PASS",
+      "evidence": "design and adverse scenarios separately calibrated to expected absolute scenario gain 0.08"
+    },
+    {
+      "name": "power gate",
+      "status": "PASS",
+      "evidence": "first candidate meeting power >=0.90 in both scenarios is 600; design=0.9100, adverse=0.92575; 540 fails the gate"
+    },
+    {
+      "name": "primary unit and aggregation",
+      "status": "PASS",
+      "evidence": "base_scenario_id primary; repeats and paraphrases deterministically aggregated before analysis"
+    },
+    {
+      "name": "multiplicity and failure rules",
+      "status": "PASS",
+      "evidence": "one primary contrast/endpoint; Holm within five secondary families; failures retained and counted incorrect"
+    },
+    {
+      "name": "frozen table shells",
+      "status": "PASS",
+      "evidence": "primary, falsification, heterogeneity, error-layer, teacher and integrity/failure rows exist before outcomes"
+    },
+    {
+      "name": "transient simulation output",
+      "status": "PASS",
+      "evidence": "POWER_RESULTS.json SHA-256 7c47f7632b9657676a7232748c1a873ac3ebd60a6e237943d4b90cccb4b14927"
+    }
+  ],
+  "acceptance_checks": [
+    {
+      "class": "artifact",
+      "criterion": "Plan, registry, failure rules, simulation, assumptions, table shells and handoff exist.",
+      "status": "PASS",
+      "evidence": "commits d22fe87, f50b54c, 1f747a7, e81ac9c, 0d04f79, 2883b02 through 260ef7e plus handoff"
+    },
+    {
+      "class": "scientific",
+      "criterion": "Power >=0.90 at two-sided alpha 0.05 with base scenario as unit and declared heterogeneity/failures.",
+      "status": "PASS",
+      "evidence": "600 per confirmatory set; power 0.9100 and 0.92575"
+    },
+    {
+      "class": "independence",
+      "criterion": "Producer, independent statistical reviewer and gatekeeper are distinct; producer does not self-accept.",
+      "status": "PASS",
+      "evidence": "reviewer/gatekeeper unassigned; recommended next state review"
+    },
+    {
+      "class": "adversarial",
+      "criterion": "Adverse heterogeneity/failure assumptions do not lower alpha, power, meaningful gain or failure accounting.",
+      "status": "PASS",
+      "evidence": "same 0.08 calibrated gain and 0.90 gate in both simulation scenarios"
+    },
+    {
+      "class": "reproducibility",
+      "criterion": "Seeds, candidate counts, software assumptions, script, manifests, aggregation and table shells are versioned.",
+      "status": "PASS",
+      "evidence": "power_simulation.py and ASSUMPTIONS_MANIFEST.yaml; producer output hashes recorded"
+    }
+  ],
+  "known_limitations": [
+    "The 0.08 meaningful-gain threshold is a substantive judgment that requires independent adversarial review and later cost/feasibility evidence; it is not empirically estimated.",
+    "Simulation assumptions are planning scenarios rather than estimates from confirmatory data; additional outcome-blind sensitivity scenarios may be added only before HOLDOUT.",
+    "The simulation assigns each base scenario to one balanced model profile instead of crossing every scenario with all profiles; H2 model-generalization inference is secondary and must report heterogeneity.",
+    "The powered recommendation is 600 HOLDOUT plus 600 REPLICATION scenarios, implying 2400 total under the old split; WP-007 may require scope narrowing before data.",
+    "The transient POWER_RESULTS.json was not committed because the WP-006 allowed-path packet did not list that path, although its hash and summary are recorded.",
+    "The repository validate_analysis_registry.py is currently an artifact-level wrapper; independent review should require semantic validation of registry, assumptions and results before GATE-001."
+  ],
+  "protocol_deviations": [],
+  "unexpected_findings": [
+    "The earlier target of 600 total scenarios is not powered under the frozen primary design; 600 is required independently for HOLDOUT and REPLICATION.",
+    "The adverse heterogeneity/failure scenario did not require a larger count than design after calibrating both to the same scenario-level effect, but 540 remained below the 0.90 gate in both.",
+    "Powered mode coverage may dominate compute cost even with one model profile per scenario, making WP-007 a genuine gate rather than an administrative checklist."
+  ],
+  "recommended_next_state": "review"
+}
