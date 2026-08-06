@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/contracts/epistemic-core-case-v0.schema.json",
+  "title": "Experimental Epistemic DSL core case v0",
+  "type": "object",
+  "required": ["caseId", "kind"],
+  "properties": {
+    "caseId": {"type": "string", "minLength": 1},
+    "kind": {
+      "enum": ["strict-claim", "logical-rule", "numeric-comparison", "opinion-fusion"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"kind": {"const": "strict-claim"}}},
+      "then": {"$ref": "#/$defs/strictClaim"}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "logical-rule"}}},
+      "then": {"$ref": "#/$defs/logicalRule"}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "numeric-comparison"}}},
+      "then": {"$ref": "#/$defs/numericComparison"}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "opinion-fusion"}}},
+      "then": {"$ref": "#/$defs/opinionFusion"}
+    }
+  ],
+  "$defs": {
+    "idList": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "rational": {
+      "oneOf": [
+        {"type": "integer"},
+        {"type": "string", "pattern": "^[0-9]+(?:/[1-9][0-9]*)?(?:\\.[0-9]+)?$"}
+      ]
+    },
+    "decimal": {
+      "oneOf": [
+        {"type": "integer"},
+        {"type": "string", "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"}
+      ]
+    },
+    "strictClaim": {
+      "required": ["supportEvidence", "opposeEvidence"],
+      "properties": {
+        "caseId": {"type": "string", "minLength": 1},
+        "kind": {"const": "strict-claim"},
+        "supportEvidence": {"$ref": "#/$defs/idList"},
+        "opposeEvidence": {"$ref": "#/$defs/idList"}
+      },
+      "additionalProperties": false
+    },
+    "premise": {
+      "type": "object",
+      "required": ["premiseId", "supportEvidence", "opposeEvidence"],
+      "properties": {
+        "premiseId": {"type": "string", "minLength": 1},
+        "supportEvidence": {"$ref": "#/$defs/idList"},
+        "opposeEvidence": {"$ref": "#/$defs/idList"}
+      },
+      "additionalProperties": false
+    },
+    "logicalRule": {
+      "required": ["ruleId", "operator", "headStance", "premises"],
+      "properties": {
+        "caseId": {"type": "string", "minLength": 1},
+        "kind": {"const": "logical-rule"},
+        "ruleId": {"type": "string", "minLength": 1},
+        "operator": {"enum": ["all", "any"]},
+        "headStance": {"enum": ["support", "oppose"]},
+        "premises": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/premise"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "numericModel": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "value", "unit"],
+          "properties": {
+            "kind": {"const": "point"},
+            "value": {"$ref": "#/$defs/decimal"},
+            "unit": {"enum": ["fraction", "percent", "count", "millisecond", "second", "minute", "hour", "day"]}
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["kind", "lower", "upper", "unit"],
+          "properties": {
+            "kind": {"const": "bounded"},
+            "lower": {"$ref": "#/$defs/decimal"},
+            "upper": {"$ref": "#/$defs/decimal"},
+            "unit": {"enum": ["fraction", "percent", "count", "millisecond", "second", "minute", "hour", "day"]}
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "threshold": {
+      "type": "object",
+      "required": ["value", "unit"],
+      "properties": {
+        "value": {"$ref": "#/$defs/decimal"},
+        "unit": {"enum": ["fraction", "percent", "count", "millisecond", "second", "minute", "hour", "day"]}
+      },
+      "additionalProperties": false
+    },
+    "numericComparison": {
+      "required": ["model", "operator", "threshold"],
+      "properties": {
+        "caseId": {"type": "string", "minLength": 1},
+        "kind": {"const": "numeric-comparison"},
+        "model": {"$ref": "#/$defs/numericModel"},
+        "operator": {"enum": [">=", "<=", ">", "<"]},
+        "threshold": {"$ref": "#/$defs/threshold"}
+      },
+      "additionalProperties": false
+    },
+    "report": {
+      "type": "object",
+      "required": ["reportId", "dependencyGroup", "positiveEvidence", "negativeEvidence", "baseRate"],
+      "properties": {
+        "reportId": {"type": "string", "minLength": 1},
+        "dependencyGroup": {"type": "string", "minLength": 1},
+        "positiveEvidence": {"$ref": "#/$defs/rational"},
+        "negativeEvidence": {"$ref": "#/$defs/rational"},
+        "baseRate": {"$ref": "#/$defs/rational"}
+      },
+      "additionalProperties": false
+    },
+    "opinionFusion": {
+      "required": ["priorWeight", "reports"],
+      "properties": {
+        "caseId": {"type": "string", "minLength": 1},
+        "kind": {"const": "opinion-fusion"},
+        "priorWeight": {"$ref": "#/$defs/rational"},
+        "reports": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/report"}
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
