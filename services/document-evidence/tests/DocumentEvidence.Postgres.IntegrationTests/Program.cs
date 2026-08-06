@@ -14,6 +14,7 @@ internal static class Program
         await PostgresCompletionIntegrationTests.CompletionPersistsManifestFragmentsAndOutboxAsync(database);
         await PostgresCompletionIntegrationTests.StaleLeaseRollsBackAllOutputAsync(database);
         await PostgresProtectedRevisionIntegrationTests.LocatorReturnsRevocationAndObjectIdentityAsync(database);
+        await PostgresProtectedRevisionIntegrationTests.LocatorMarksOlderRevisionSupersededAsync(database);
         Console.WriteLine("Document Evidence PostgreSQL integration tests passed.");
         return 0;
     }
