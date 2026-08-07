@@ -1,5 +1,6 @@
 :- set_prolog_flag(double_quotes, string).
 % Generated from policy.ir.json. Do not hand-edit.
+% Feature contract: eng200.routing-features.v1 sha256=49ef3a01e7977a44abe4dcc3878d102416e2650218e526d98389e044c6bab92e
 
 condition('n_write', 'asks_write', true, 'a_reject_write', 'n_claim').
 condition('n_claim', 'goal_class', 'claim_resolution', 'n_claim_scope', 'n_prov').
