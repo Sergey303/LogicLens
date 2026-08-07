@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-197",
+  "consumers": ["ENG-158", "ENG-188"],
+  "prototype_scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+  "static_costs": {
+    "m15_typed_calls_per_scenario": 1,
+    "m16_typed_calls_per_scenario": 1,
+    "database_executions_per_scenario": 1,
+    "maximum_result_rows": 1,
+    "generated_package_bytes": 7878,
+    "m16_registry_entries_per_scenario": 1,
+    "m15_manual_registry_entries_per_scenario": 0
+  },
+  "measurement_required_before_confirmatory_freeze": {
+    "catalogue_tokens_by_model_profile": "measure with each frozen student tokenizer",
+    "guide_tokens_by_model_profile": "measure with each frozen student tokenizer",
+    "result_tokens_by_scenario_and_model_profile": "measure canonical typed result bytes with each frozen student tokenizer",
+    "postgresql_build_time_ms": "measure from clean immutable database image using frozen migration/seed package",
+    "postgresql_query_latency_ms": "measure cold/warm distributions under WP-007 hardware profile",
+    "database_storage_bytes": "measure post-build database relation/index size, not only generated file bytes",
+    "m16_registry_annotation_seconds": "measure outcome-blind endpoint mapping effort and independent adjudication rate"
+  },
+  "power_note_for_wp006": "M15 and M16 add paired secondary contrasts. WP-006 must decide whether both, M16 only, or neither fit the powered confirmatory set before HOLDOUT.",
+  "feasibility_stop_rule": "Reject or keep DEV-only if token/context, database build/runtime, or registry annotation cost prevents a lossless matched run. Never truncate relational results after outcomes are known."
+}
