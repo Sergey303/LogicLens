@@ -10,6 +10,10 @@ $applicationProject =
     "services/document-evidence/tests/DocumentEvidence.Application.ContractTests/DocumentEvidence.Application.ContractTests.csproj"
 $postgresProject =
     "services/document-evidence/tests/DocumentEvidence.Postgres.IntegrationTests/DocumentEvidence.Postgres.IntegrationTests.csproj"
+$pythonFiles = @(
+    "tools/document_evidence/generate_client.py",
+    "tools/document_evidence/read_plan_openapi_contract.py"
+)
 $projects = @(
     $applicationProject,
     "services/document-evidence/tests/DocumentEvidence.Security.ContractTests/DocumentEvidence.Security.ContractTests.csproj",
@@ -34,6 +38,14 @@ if ($LASTEXITCODE -ne 0) {
 python tools/quality/repository_guard.py --base $acceptedBase
 if ($LASTEXITCODE -ne 0) {
     throw "Repository guard failed."
+}
+python -m ruff check @pythonFiles
+if ($LASTEXITCODE -ne 0) {
+    throw "Document Evidence Python lint failed."
+}
+python -m ruff format --diff --check @pythonFiles
+if ($LASTEXITCODE -ne 0) {
+    throw "Document Evidence Python format check failed."
 }
 
 $generatorJson = python tools/document_evidence/generate_client.py --check
@@ -85,6 +97,7 @@ $result = [ordered]@{
         authorizationChecks = 2
         revokedAndSuperseded = "rejected-before-object-read"
         streamLifetime = "owned-by-caller-stream"
+        cachePolicy = "private-no-store"
         storagePathExposed = $false
     }
 }
