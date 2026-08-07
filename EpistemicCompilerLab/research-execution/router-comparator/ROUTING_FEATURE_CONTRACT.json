@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "eng200.routing-features.v1",
+  "scope": "TRAIN_DEV_ONLY",
+  "owner": "independent_feature_layer",
+  "primary_input_contract": {
+    "source": "precomputed_typed_request_features",
+    "same_bytes_required_for": [
+      "M19",
+      "M20",
+      "direct_qwen_selection"
+    ],
+    "raw_question_parsing_in_primary_contrast": false,
+    "raw_question_parsing_arm": "DEV_ONLY_SEPARATE_ABLATION",
+    "canonical_serialization": "UTF-8 JSON; sort_keys=true; separators=(',', ':'); no whitespace; booleans lowercase"
+  },
+  "features": {
+    "goal_class": {
+      "type": "string",
+      "enum": [
+        "claim_resolution",
+        "provenance_lookup",
+        "numeric_threshold",
+        "explanation",
+        "other"
+      ],
+      "definition": "The operation the request asks to perform, classified from request semantics without reference to any capability identity.",
+      "source": "request_semantics"
+    },
+    "has_scope": {
+      "type": "boolean",
+      "definition": "True only when the request or independently frozen case metadata supplies a valid scope identifier required by the requested operation.",
+      "source": "request_or_case_metadata"
+    },
+    "has_version": {
+      "type": "boolean",
+      "definition": "True only when the request or independently frozen case metadata supplies a valid version identifier required by the requested operation.",
+      "source": "request_or_case_metadata"
+    },
+    "asks_write": {
+      "type": "boolean",
+      "definition": "True when the requested operation would modify persistent or protected state; false for read-only, explanatory, or clarification operations.",
+      "source": "request_semantics"
+    },
+    "requires_strict_policy": {
+      "type": "boolean",
+      "definition": "True only when a claim-resolution request explicitly requires strict four-state epistemic handling, conflict preservation, or an auditable policy trace; this feature describes an output obligation, not an implementation choice.",
+      "source": "request_semantics",
+      "applicability": "claim_resolution_only; ignored by the routing policy for other goal classes"
+    }
+  },
+  "anti_label_proxy_requirements": {
+    "definitions_must_not_reference_capability_ids_or_handles": true,
+    "definitions_must_not_name_implementation_technologies": true,
+    "requires_strict_policy_must_not_globally_determine_one_capability": true,
+    "goal_class_is_operation_semantics_not_tool_class": true,
+    "machine_test": "verify.py::validate_feature_contract_and_proxy_resistance"
+  },
+  "error_accounting": {
+    "feature_extraction_error": "scored upstream and separately",
+    "route_selection_error": "scored inside ENG-200",
+    "argument_binding_error": "scored downstream and separately"
+  }
+}
