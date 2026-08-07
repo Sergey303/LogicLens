@@ -1,0 +1,52 @@
+schema_version: 1.0.0
+linear_issue: ENG-200
+scope: TRAIN_DEV_ONLY
+normative_policy_source: prototype/policy.ir.json
+candidate_modes:
+  M19:
+    name: Executed Teacher Router
+    fixed_weight: true
+    routing_owner: deterministic_runtime
+    qwen_sees_policy: false
+    qwen_selects_capability: false
+    qwen_visible_surface: selected_capability_result_contract
+    confirmatory_status: proposed_dev_first
+  M20:
+    name: Explained Teacher Router
+    fixed_weight: true
+    routing_owner: qwen_following_frozen_policy
+    qwen_sees_policy: true
+    qwen_selects_capability: true
+    qwen_visible_surface: neutral_capability_catalogue_plus_policy_explanation
+    confirmatory_status: proposed_dev_first
+controls:
+  direct_qwen_selection:
+    policy_visible: false
+    catalogue_surface: neutral
+    purpose: isolate teacher-routing value
+  human_static_router:
+    required_if_feasible: true
+    same_feature_contract: true
+    same_capability_registry: true
+    purpose: conventional SOP/rule-router baseline
+  schema_surface_ablation:
+    scope: DEV_ONLY
+    neutral_surface: primary
+    adapted_surface: separate_factor
+    policy_bytes_held_equal: true
+    canonical_ids_held_equal: true
+representation_ablation:
+  decision_graph:
+    executor: prototype/decision_graph.py
+    normative: true
+  prolog:
+    executor: prototype/generated/policy.pl
+    generated_from_same_ir: true
+    qwen_effect_claim_allowed: false
+failure_layers:
+  - feature_extraction
+  - route_selection
+  - capability_availability
+  - tool_execution
+  - result_transport
+  - rendering
