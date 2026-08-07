@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-200",
+  "parent_work_package": "WP-004 / ENG-156",
+  "status": "ready_for_independent_review",
+  "artifact_kind": "teacher_generated_routing_policy_comparator_prototype",
+  "identity_and_session": {
+    "producer_identity": "OpenAI GPT-5.6 Sol — Teacher Routing Architect",
+    "producer_session": "ChatGPT ENG-200 producer / 2026-08-07",
+    "reviewer_identity": "UNASSIGNED Independent Tool-Routing and Causal Reviewer",
+    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
+    "conflict_declaration": "This producer session does not independently review or accept ENG-200 and cannot decide GATE-001.",
+    "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed. The prototype uses synthetic TRAIN/DEV-only routing cases and contains no confirmatory outcome data."
+  },
+  "git": {
+    "repository": "Sergey303/LogicLens",
+    "pull_request": 74,
+    "producer_head": "7075eb3c576ae3a396f6d0810592df69615f1b9b",
+    "implementation_merge_commit": "b32de2be597e67280a3f5021e0b46a9f3a323da5",
+    "merge_method": "squash"
+  },
+  "scientific_decisions": {
+    "normative_policy_source": "EpistemicCompilerLab/research-execution/router-comparator/prototype/policy.ir.json",
+    "M19": "Executed Teacher Router: a deterministic runtime executes the frozen canonical routing policy before Qwen; Qwen does not select the capability.",
+    "M20": "Explained Teacher Router: Qwen receives the frozen policy explanation plus typed neutral capability catalogue and selects an opaque capability handle.",
+    "tree_vs_prolog": "The SWI-Prolog router is deterministically lowered from the same canonical IR. Tree-versus-Prolog is an engineering representation/runtime comparison, not an independent semantic treatment and not a Qwen-effect claim when downstream inputs are identical.",
+    "capability_identity": "Policy nodes reference canonical internal capability IDs. Qwen-visible catalogues expose opaque handles; canonical IDs are hidden from Qwen.",
+    "schema_surface": "Neutral labels/descriptions are the primary M20 surface. Schema-adapted labels/descriptions are a separate DEV-only treatment factor under identical canonical IDs, handles, versions and semantics.",
+    "router_scope": "The router selects capabilities only. It does not compute epistemic status, action, conclusion, SQL rows, Prolog proofs, Python results or final answers.",
+    "prototype_teacher_status": "The committed policy is a producer-authored synthetic contract exemplar. It is not represented as an empirical Codex-generated policy and cannot by itself support a teacher-effect claim.",
+    "confirmatory_status": "M19/M20 and representation/schema ablations remain DEV-first proposals until WP-004, WP-006 and WP-007 independently adjudicate a powered feasible subset before HOLDOUT."
+  },
+  "prototype": {
+    "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+    "capabilities": 9,
+    "decision_nodes": 10,
+    "action_nodes": 9,
+    "typed_features": 5,
+    "synthetic_cases": 9,
+    "complete_feature_space_vectors": 80,
+    "qwen_source_code_visibility": "none",
+    "free_form_commands": false,
+    "domain_reasoning_in_router": false
+  },
+  "frozen_hashes_from_successful_ci": {
+    "registry_sha256": "2d29edbd71e01eed6c77f0231853b476b640378e9a65ef898e6fbf2c681b084e",
+    "routing_ir_schema_sha256": "7cc429e1776c1a196bbc5323a9d88ae9f83ab024e5670949e59a40b197d05358",
+    "policy_ir_sha256": "d0103430eb528faffff997ae1078f8c147942a53da2eebb2fc6810484c866219",
+    "generated_prolog_sha256": "115cff8964792a69797d99251c87e5e40d169bde3240638c25e1901b6ca68802",
+    "cases_sha256": "56f290ff585b0cc7cde98e30e1f432543e29e099f0ab63de61b3fe47f4fa13b4",
+    "policy_explanation_sha256": "fc9fb4141f0b85c4b37225c146e33bf6b6b31670eb4c9e41509401e2a7798fff",
+    "neutral_catalogue_sha256": "97dec3318861a3fbf31d7a106405ca3b1e6d20cfbf5486102b1d31089a31ab44",
+    "adapted_catalogue_sha256": "efb66239ddfb89f47bb27eed49421dbc9d21d52a88d8a40e39f7dad9ad2d7905"
+  },
+  "ci_evidence": {
+    "workflow_name": "ENG-200 router comparator validation",
+    "workflow_run_id": 31142949125,
+    "job_id": 92756456753,
+    "producer_head": "7075eb3c576ae3a396f6d0810592df69615f1b9b",
+    "conclusion": "success",
+    "python_version": "3.12.13",
+    "swipl_version": "SWI-Prolog version 9.0.4 for x86_64-linux",
+    "deterministic_generation": "PASS",
+    "explicit_leakage_mutation_detection": "PASS",
+    "synthetic_cases": "9/9 PASS",
+    "tree_prolog_equivalence": "80/80 PASS",
+    "mutation_tests": "9 PASS",
+    "artifact_id": 8980425785,
+    "artifact_zip_sha256": "8fc300206b652a42ff69b4cf7dcf3207b46d7c6ba5145659a8f3758be9760164"
+  },
+  "producer_findings": [
+    "The first CI attempt correctly failed because YAML inline mapping syntax truncated comma-containing Qwen-visible descriptions; the registry was corrected to explicit mappings and deterministic regeneration subsequently passed.",
+    "A single canonical IR can drive both decision-graph and Prolog routing without duplicating normative policy rules.",
+    "Schema/name adaptation can be isolated from routing policy by preserving canonical IDs, opaque handles, versions and capability semantics byte-for-byte at the identity layer."
+  ],
+  "known_limitations": [
+    "No actual Qwen routing/model run is part of this producer package; M19/M20 behavioral effects remain unmeasured.",
+    "No empirical Codex-generated routing-policy candidate has been produced or selected; the committed policy is a synthetic contract exemplar only.",
+    "The required direct-Qwen capability-selection baseline and simple human/static SOP router are defined but not empirically executed in this package.",
+    "The neutral-versus-schema-adapted catalogue ablation has contract evidence only and has not yet been evaluated with Qwen.",
+    "Teacher-generation token/time, Qwen catalogue/policy token counts, tree/Prolog latency, annotation cost and routing failure rates remain WP-006/WP-007 inputs to measure before confirmatory inclusion.",
+    "Unrelated repository workflows may fail on later HEADs because of their own attestation assumptions; only the named ENG-200 workflow/run is producer evidence for this package."
+  ],
+  "required_independent_review": [
+    "Verify the implementation merge contains exactly the declared routing scope and no hidden domain reasoning.",
+    "Re-run or independently inspect deterministic generation, leakage mutation detection and 80-vector tree/Prolog equivalence.",
+    "Challenge whether the feature contract gives the router outcome-correlated information that would make M19/M20 an unfair baseline.",
+    "Verify M19/M20 held-equal fields and the separation of policy effect from visible schema/name effect.",
+    "Decide whether the synthetic contract is sufficient to accept ENG-200 design, while keeping behavioral empirical work DEV-only and downstream.",
+    "Issue PASS, REVISE or PIVOT in a distinct reviewer session."
+  ],
+  "recommended_next_state": "In Review"
+}
