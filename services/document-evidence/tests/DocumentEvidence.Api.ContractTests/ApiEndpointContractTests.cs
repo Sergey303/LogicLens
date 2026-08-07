@@ -70,6 +70,46 @@ internal static class ApiEndpointContractTests
         );
     }
 
+    public static async Task ReadPlanResponsesAreNeverCacheableAsync()
+    {
+        await using var host = await ApiTestHost.StartAsync();
+        using var issueRequest = new HttpRequestMessage(
+            HttpMethod.Post,
+            DocumentEvidenceApiV1.ReadPlan(WorkspaceId, RevisionId)
+        );
+        issueRequest.Headers.TryAddWithoutValidation(
+            DocumentEvidenceApiV1.ActorHeader,
+            ActorId.ToString("D")
+        );
+        using var issueResponse = await host.Client.SendAsync(issueRequest);
+        TestAssert.True(
+            issueResponse.Headers.CacheControl?.NoStore == true,
+            "Read plan tokens must never be stored by HTTP caches."
+        );
+
+        using var openRequest = new HttpRequestMessage(
+            HttpMethod.Get,
+            DocumentEvidenceApiV1.ReadPlanContent()
+        );
+        openRequest.Headers.TryAddWithoutValidation(
+            DocumentEvidenceApiV1.ActorHeader,
+            ActorId.ToString("D")
+        );
+        openRequest.Headers.TryAddWithoutValidation(
+            DocumentEvidenceApiV1.ReadPlanTokenHeader,
+            FakeReadPlanApiOperations.Token
+        );
+        using var openResponse = await host.Client.SendAsync(
+            openRequest,
+            HttpCompletionOption.ResponseHeadersRead
+        );
+        TestAssert.True(
+            openResponse.Headers.CacheControl?.NoStore == true &&
+                openResponse.Headers.CacheControl.Private,
+            "Read plan bytes must be private and never cacheable."
+        );
+    }
+
     public static async Task MissingActorHeaderReturnsTypedBadRequestAsync()
     {
         await using var host = await ApiTestHost.StartAsync();
