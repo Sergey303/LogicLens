@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "eng200.synthetic.train-dev.v0",
+  "root": "n_write",
+  "capability_registry_version": "1.0.0",
+  "feature_contract": {
+    "goal_class": ["claim_resolution", "provenance_lookup", "numeric_threshold", "explanation", "other"],
+    "has_scope": "boolean",
+    "has_version": "boolean",
+    "asks_write": "boolean",
+    "requires_strict_policy": "boolean"
+  },
+  "nodes": [
+    {"id":"n_write","type":"condition","feature":"asks_write","op":"eq","value":true,"if_true":"a_reject_write","if_false":"n_claim"},
+    {"id":"n_claim","type":"condition","feature":"goal_class","op":"eq","value":"claim_resolution","if_true":"n_claim_scope","if_false":"n_prov"},
+    {"id":"n_claim_scope","type":"condition","feature":"has_scope","op":"eq","value":true,"if_true":"n_claim_version","if_false":"a_scope"},
+    {"id":"n_claim_version","type":"condition","feature":"has_version","op":"eq","value":true,"if_true":"n_policy","if_false":"a_version"},
+    {"id":"n_policy","type":"condition","feature":"requires_strict_policy","op":"eq","value":true,"if_true":"a_prolog","if_false":"a_db_claim"},
+    {"id":"n_prov","type":"condition","feature":"goal_class","op":"eq","value":"provenance_lookup","if_true":"n_prov_scope","if_false":"n_numeric"},
+    {"id":"n_prov_scope","type":"condition","feature":"has_scope","op":"eq","value":true,"if_true":"n_prov_version","if_false":"a_scope"},
+    {"id":"n_prov_version","type":"condition","feature":"has_version","op":"eq","value":true,"if_true":"a_db_prov","if_false":"a_version"},
+    {"id":"n_numeric","type":"condition","feature":"goal_class","op":"eq","value":"numeric_threshold","if_true":"a_python","if_false":"n_explain"},
+    {"id":"n_explain","type":"condition","feature":"goal_class","op":"eq","value":"explanation","if_true":"a_explain","if_false":"a_unsupported"},
+    {"id":"a_reject_write","type":"action","capability_id":"reject.unsupported_write","capability_version":"1.0.0"},
+    {"id":"a_scope","type":"action","capability_id":"clarification.missing_scope","capability_version":"1.0.0"},
+    {"id":"a_version","type":"action","capability_id":"clarification.missing_version","capability_version":"1.0.0"},
+    {"id":"a_prolog","type":"action","capability_id":"prolog.resolve_epistemic","capability_version":"1.0.0"},
+    {"id":"a_db_claim","type":"action","capability_id":"db.resolve_claim","capability_version":"1.0.0"},
+    {"id":"a_db_prov","type":"action","capability_id":"db.lookup_provenance","capability_version":"1.0.0"},
+    {"id":"a_python","type":"action","capability_id":"python.threshold_check","capability_version":"1.0.0"},
+    {"id":"a_explain","type":"action","capability_id":"prompt.explain_result","capability_version":"1.0.0"},
+    {"id":"a_unsupported","type":"action","capability_id":"clarification.unsupported_goal","capability_version":"1.0.0"}
+  ]
+}
