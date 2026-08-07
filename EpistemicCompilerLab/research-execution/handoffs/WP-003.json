@@ -3,8 +3,8 @@
   "linear_issue": "ENG-155",
   "status": "ready_for_review",
   "identity_and_session": {
-    "producer_identity": "OpenAI GPT-5.6 Thinking — Novelty Reviewer",
-    "producer_session": "ChatGPT Polar based project / WP-003 producer and 2026 compiler-runtime refresh / 2026-08-06",
+    "producer_identity": "OpenAI GPT-5.6 Thinking — WP-003 producer/remediation session",
+    "producer_session": "ChatGPT Polar based project / WP-003 remediation after independent REVISE / 2026-08-07",
     "reviewer_identity": "UNASSIGNED independent Research Program Architect",
     "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
     "gatekeeper_identity": "UNASSIGNED Senior Adversarial Methodology Reviewer",
@@ -12,10 +12,11 @@
     "prior_roles": [
       "Producer of DSL-B1/C0/D0/D1/D2 pilot artifacts",
       "Producer of WP-002 claim-evidence contract",
-      "Producer and refresher of WP-003 related-work artifacts"
+      "Producer and refresher of WP-003 related-work artifacts",
+      "Producer of the 2026-08-07 remediation responding to ENG-155_INDEPENDENT_REVIEW_2026-08-06.md"
     ],
-    "conflict_declaration": "Producer is conflicted from independent acceptance and GATE-001 decisions and does not self-accept WP-003.",
-    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was accessed; pilot scores were not used as confirmatory evidence; search snippets alone were not accepted as evidence."
+    "conflict_declaration": "Producer is conflicted from independent novelty acceptance and GATE-001 decisions. Technical validator PASS is not scientific acceptance.",
+    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was used; pilot scores were not used as confirmatory evidence; snippet-only evidence was not accepted as the basis for inclusion or comparison."
   },
   "input_hashes_verified": true,
   "input_hashes": {
@@ -27,105 +28,110 @@
     "EpistemicCompilerLab/research-execution/ENG-153_INDEPENDENT_REVIEW_ROUND2_2026-08-06.md": "4358d003f7f2480374bf72c3b59eaeae9873e30542385d5fae7a7ed6d364196b"
   },
   "files_created": [
-    "EpistemicCompilerLab/research-execution/RELATED_WORK_MATRIX.csv",
-    "EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY.md",
-    "EpistemicCompilerLab/research-execution/NEAREST_PRIOR_WORK.md",
-    "EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG.yaml",
-    "EpistemicCompilerLab/research-execution/handoffs/WP-003.json"
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/SCREENING_LEDGER_2026-08-07.csv",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/SATURATION_ROUNDS_2026-08-07.csv",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/DIMENSION_LEDGER_ALL_2026-08-07.csv",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/NEAREST_WORK_STRUCTURED_2026-08-07.csv",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/NEAREST_RANKING_RULE_2026-08-07.md",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_semantics.py"
   ],
   "files_modified": [
     "EpistemicCompilerLab/research-execution/RELATED_WORK_MATRIX.csv",
-    "EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY.md",
-    "EpistemicCompilerLab/research-execution/NEAREST_PRIOR_WORK.md",
     "EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG.yaml",
+    "EpistemicCompilerLab/research-execution/NEAREST_PRIOR_WORK.md",
+    "EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY.md",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/ACCEPTANCE.yaml",
     "EpistemicCompilerLab/research-execution/handoffs/WP-003.json"
   ],
   "commands_run": [
-    "Primary-source searches across ACL Anthology, PMLR, OpenReview, NeurIPS Proceedings, and arXiv on 2026-08-06",
-    "Backward and forward citation-family chaining from PAL, Logic-LM, LINC, Faithful Chain-of-Thought, SatLM, SkillSmith, and ontology-to-tools",
-    "Dedicated 2026 compiler-runtime, executable-semantics, and compiled-knowledge refresh",
-    "Two post-refresh exact-profile and terminology saturation rounds",
-    "CSV/YAML parse and cross-file source-ID/count audit",
-    "Structured handoff validation against work-package-handoff.schema.json"
+    "Primary-source 2026 refresh across arXiv, ACL Anthology, PMLR/ICML, NeurIPS/OpenReview families on 2026-08-07",
+    "Primary full-text/official-page inspection for SIGIL, SkillSmith, ontology-to-tools, FACTS, Skill Discovery, LINC, Logic-LM, Faithful CoT, SatLM and PAL families",
+    "Fresh Q11 exact-profile causal/interface attack and Q12 post-SIGIL compiler-runtime/offline-artifact chain",
+    "Attempted arXiv PDF screenshot for SkillSmith; web screenshot endpoint returned Cache miss, so PDF-specific facts are bound to primary PDF text locators",
+    "Temporary GitHub PR #72 validation workflow; run 31140043250 established artifact and semantic validator PASS",
+    "Fresh full validation run 31140144239 / job 92748122625: context packet preflight PASS, artifact validator PASS, semantic validator PASS",
+    "Temporary validation PR #72 closed without merge after evidence collection"
   ],
   "tests": [
     {
-      "name": "primary-source matrix completeness",
+      "name": "context packet preflight",
       "status": "PASS",
-      "evidence": "41 unique primary-source rows; required CSV fields and primary URLs are populated"
+      "evidence": "GitHub Actions run 31140144239 job 92748122625; validate_context_packet.py --package WP-003 completed successfully"
     },
     {
-      "name": "nearest-neighbour comparison",
+      "name": "artifact-level related-work acceptance",
       "status": "PASS",
-      "evidence": "7 nearest sources compared on one common dimension set; SkillSmith and ontology-to-tools are explicitly treated as the closest 2026 compiler-runtime predecessors"
+      "evidence": "GitHub Actions run 31140144239 job 92748122625; validate_related_work.py returned WP-003 PASS"
     },
     {
-      "name": "search protocol and saturation",
+      "name": "semantic related-work acceptance",
       "status": "PASS",
-      "evidence": "10 query/citation-chain rounds; Q8 invalidated the earlier saturation result and Q9/Q10 re-established only provisional post-refresh saturation"
+      "evidence": "GitHub Actions run 31140144239 job 92748122625; semantic contract passed with 51 primary sources and 14 structured comparisons"
     },
     {
-      "name": "cross-file source identity",
+      "name": "fresh replacement saturation",
       "status": "PASS",
-      "evidence": "nearest IDs are RW-038, RW-039, RW-003, RW-002, RW-004, RW-005, and RW-001 and occur in the matrix, search log, and nearest-work comparison"
+      "evidence": "Q11/Q12 candidate ledgers are reproducible and both contain zero sources reaching five strict YES values out of seven; semantic validator checks counts and candidate IDs"
+    },
+    {
+      "name": "mandatory nearest/control coverage",
+      "status": "PASS",
+      "evidence": "SIGIL, SkillSmith and ontology-to-tools are mandatory architecture anchors; FACTS, Skill Discovery, LINC, Logic-LM, Faithful CoT, SatLM and Readout Shortcut are explicitly compared"
     },
     {
       "name": "novelty wording boundary",
       "status": "PASS",
-      "evidence": "first/unique/unprecedented and broad compiler-runtime claims are prohibited; the remaining contribution is a matched causal decomposition plus strict epistemic contract"
-    },
-    {
-      "name": "final Git blob identities",
-      "status": "PASS",
-      "evidence": "matrix=0edec04238f7ccd24906340c14e2b9980f70e5b6; log=de3beb4cbac02b5e301cf66d039ffaebc7656a5c; nearest=be10758efb7c340b5d3edbca1a8dd1b964b6bfbb; boundary=44caae07b087c7cabf5f2c30f89833562b24502a"
+      "evidence": "Broad solver, compiler-runtime, typed-skill, executable-semantics, offline-compilation, layer-diagnosis and priority claims are deleted/narrowed; semantic validator rejects positive first/unique/unprecedented wording"
     }
   ],
   "acceptance_checks": [
     {
       "class": "artifact",
-      "criterion": "All four declared related-work deliverables and structured handoff exist.",
+      "criterion": "All declared deliverables and remediation ledgers exist and validate.",
       "status": "PASS",
-      "evidence": "Final refresh commits bb14972, 913a06a, 4e6d75d, and beed07a plus this handoff commit"
+      "evidence": "Artifact and semantic validators passed in GitHub Actions run 31140144239"
     },
     {
       "class": "scientific",
-      "criterion": "At least 30 primary sources, at least 3 nearest comparisons, and every novelty statement framed as a positive comparison.",
+      "criterion": "At least 30 relevant primary sources, common nearest-work fields, positive-comparison novelty boundary, and reproducible replacement saturation.",
       "status": "PASS",
-      "evidence": "41 sources; 7 nearest; NARROW boundary without priority wording"
+      "evidence": "51 primary sources; 14 structured comparisons; Q11/Q12 zero five-of-seven matches; broad occupied claims explicitly deleted"
     },
     {
       "class": "independence",
-      "criterion": "Producer, reviewer, and gatekeeper are distinct logged sessions and producer does not self-accept.",
-      "status": "PASS",
-      "evidence": "Reviewer and gatekeeper remain unassigned; recommended state is review"
+      "criterion": "A distinct independent reviewer must evaluate the remediated package and a distinct gatekeeper must decide GATE-001.",
+      "status": "BLOCKED",
+      "evidence": "Producer session has completed remediation and is conflicted from reviewing/accepting its own work; independent re-review has not yet occurred"
     },
     {
       "class": "adversarial",
-      "criterion": "Exact-prior, solver/no-solver, compiler-runtime, executable-semantics, ready-answer, structured-output, prompt-optimization, training, and privacy alternatives are attacked.",
+      "criterion": "Omitted 2026 compiler/runtime/offline-artifact work, exact-prior alternatives, copying shortcuts and layer-diagnosis alternatives are actively attacked.",
       "status": "PASS",
-      "evidence": "NOVELTY_BOUNDARY.md records occupied territory and explicit PIVOT/STOP triggers"
+      "evidence": "SIGIL is now first architecture anchor; SkillRT/SkCC/Auto/FACTS/Skill Discovery added; Readout Shortcut made a mandatory causal control; PROTEA narrows layer-diagnosis claims"
     },
     {
       "class": "reproducibility",
-      "criterion": "Queries, dates, indexes, rules, citation chaining, source IDs, saturation invalidation/retest, and refresh plan are recorded.",
+      "criterion": "A clean reviewer can repeat preflight, artifact validation and semantic validation from frozen ledgers and current repository state.",
       "status": "PASS",
-      "evidence": "RELATED_WORK_SEARCH_LOG.yaml schema version 1.1.0"
+      "evidence": "GitHub-hosted Ubuntu/Python 3.12 successfully ran all three commands in run 31140144239"
     }
   ],
   "known_limitations": [
     "The search is systematic and citation-chained but is not a registered systematic review.",
-    "Absence of an exact match cannot support first, unique, or unprecedented wording.",
-    "Several arXiv primary pages, including the closest 2026 works, may later receive proceedings versions and require refresh.",
-    "The repository validate_related_work.py is currently an artifact-level wrapper; deterministic CSV/YAML/cross-file checks were used, and the independent reviewer must decide whether a dedicated semantic validator is required.",
-    "Search saturation is provisional and requires refresh before final claim freeze and submission."
+    "Provisional saturation is based on fresh replacement Q11/Q12, not legacy Q1-Q10; it is search-coverage evidence rather than proof of absence.",
+    "Search interfaces do not expose stable raw database hit counts; fresh rounds therefore freeze unique primary candidates actually opened and screened.",
+    "Several arXiv works may later receive proceedings versions and require a final pre-submission refresh.",
+    "The SkillSmith primary PDF screenshot endpoint returned Cache miss; primary PDF text was inspected and locators are frozen, but a reviewer may re-open the PDF visually.",
+    "Exact per-experiment model tables for several older PDF papers remain a final-claim-freeze check; the structured table marks those fields without inventing values.",
+    "No producer-side validator or saturation result can establish priority wording or scientific novelty acceptance."
   ],
   "protocol_deviations": [],
   "unexpected_findings": [
-    "SkillSmith occupies the broad claim that a stronger model can compile reusable executable runtime interfaces for smaller models; the flagship must not present that architecture as novel.",
-    "Ontology-to-tools occupies the broad claim that formal semantics can be compiled into typed executable tools for LLM agents.",
-    "Compiled Memory occupies broad compile-not-train rhetoric even without trusted formal execution.",
-    "Recent ACL 2026 work trains Qwen2.5-3B to use Prolog and occupies broad small-model-plus-Prolog positioning.",
-    "The remaining defensible contribution is the matched causal decomposition of semantic placement, four-state epistemic preservation, copying/structure controls, and independent layer evaluation."
+    "SIGIL is materially closer than the previous package recognized: it already combines typed IR, model/code ownership, source provenance, deterministic lowering, and a matched prose-versus-compiled execution comparison.",
+    "SkillRT, SkCC, Auto and related 2026 work show that typed/portable compiler-runtime skill territory is dense rather than represented by a single SkillSmith paper.",
+    "FACTS and Skill Discovery occupy offline deterministic/execution-verified reusable-artifact territory.",
+    "The Readout Shortcut provides direct prior evidence for the answer-copying alternative explanation in fixed 1-3B models.",
+    "The surviving flagship boundary is narrower: authoritative four-state semantic-result placement plus matched no-conclusion/copying controls and an independent layer oracle."
   ],
   "recommended_next_state": "review"
 }
