@@ -1,0 +1,12 @@
+BEGIN;
+INSERT INTO relational_cmp.proposition (proposition_id, subject_text, predicate_text, object_text) VALUES ('p-allowed', 'component-alpha', 'allowed_for', 'environment-x');
+INSERT INTO relational_cmp.proposition (proposition_id, subject_text, predicate_text, object_text) VALUES ('p-certified', 'component-beta', 'certified_for', 'environment-y');
+INSERT INTO relational_cmp.proposition (proposition_id, subject_text, predicate_text, object_text) VALUES ('p-compatible', 'component-gamma', 'compatible_with', 'assembly-z');
+INSERT INTO relational_cmp.proposition (proposition_id, subject_text, predicate_text, object_text) VALUES ('p-documented', 'component-delta', 'documented_for', 'assembly-z');
+INSERT INTO relational_cmp.proposition (proposition_id, subject_text, predicate_text, object_text) VALUES ('p-qualified', 'component-alpha', 'qualified_for', 'environment-x');
+INSERT INTO relational_cmp.source_assertion (assertion_id, proposition_id, polarity, scope_id, version_text, source_id) VALUES ('a-001', 'p-qualified', 'positive', 'prototype-scope', 'v1', 'src-spec-001');
+INSERT INTO relational_cmp.source_assertion (assertion_id, proposition_id, polarity, scope_id, version_text, source_id) VALUES ('a-002', 'p-certified', 'negative', 'prototype-scope', 'v1', 'src-spec-002');
+INSERT INTO relational_cmp.source_assertion (assertion_id, proposition_id, polarity, scope_id, version_text, source_id) VALUES ('a-003', 'p-compatible', 'positive', 'prototype-scope', 'v1', 'src-spec-003');
+INSERT INTO relational_cmp.source_assertion (assertion_id, proposition_id, polarity, scope_id, version_text, source_id) VALUES ('a-004', 'p-compatible', 'negative', 'prototype-scope', 'v1', 'src-spec-004');
+INSERT INTO relational_cmp.strict_implication (rule_id, antecedent_proposition_id, consequent_proposition_id, scope_id, version_text) VALUES ('r-001', 'p-qualified', 'p-allowed', 'prototype-scope', 'v1');
+COMMIT;

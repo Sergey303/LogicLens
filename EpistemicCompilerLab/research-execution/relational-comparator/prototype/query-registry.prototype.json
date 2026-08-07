@@ -1,0 +1,10 @@
+{
+  "registry_version": "1.0.0",
+  "selection_policy": "frozen_outcome_blind_exact_case_registry_for_prototype_only",
+  "entries": [
+    {"case_id": "proto-01", "call": {"endpoint": "resolve_claim", "arguments": {"proposition_id": "p-allowed", "scope_id": "prototype-scope", "version": "v1"}}},
+    {"case_id": "proto-02", "call": {"endpoint": "resolve_claim", "arguments": {"proposition_id": "p-certified", "scope_id": "prototype-scope", "version": "v1"}}},
+    {"case_id": "proto-03", "call": {"endpoint": "resolve_claim", "arguments": {"proposition_id": "p-compatible", "scope_id": "prototype-scope", "version": "v1"}}},
+    {"case_id": "proto-04", "call": {"endpoint": "resolve_claim", "arguments": {"proposition_id": "p-documented", "scope_id": "prototype-scope", "version": "v1"}}}
+  ]
+}

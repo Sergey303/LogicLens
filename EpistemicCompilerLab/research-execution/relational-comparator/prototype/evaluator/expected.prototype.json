@@ -1,0 +1,9 @@
+{
+  "visibility": "EVALUATOR_ONLY_NOT_GENERATOR_OR_MODEL_INPUT",
+  "cases": [
+    {"case_id": "proto-01", "question": "Is component alpha allowed for environment X?", "expected_status": "supported", "expected_action": "accept"},
+    {"case_id": "proto-02", "question": "Is component beta certified for environment Y?", "expected_status": "refuted", "expected_action": "reject"},
+    {"case_id": "proto-03", "question": "Is component gamma compatible with assembly Z?", "expected_status": "conflicting", "expected_action": "review"},
+    {"case_id": "proto-04", "question": "Is component delta documented for assembly Z?", "expected_status": "unknown", "expected_action": "review"}
+  ]
+}

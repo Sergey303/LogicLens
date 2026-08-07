@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:eng-197:relational-result:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status_code", "action_code", "evidence", "provenance"],
+  "properties": {
+    "status_code": {"enum": ["supported", "refuted", "unknown", "conflicting"]},
+    "action_code": {"enum": ["accept", "reject", "review"]},
+    "evidence": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "provenance": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  }
+}
