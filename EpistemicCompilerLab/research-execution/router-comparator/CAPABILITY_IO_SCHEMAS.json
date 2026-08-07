@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-200",
+  "capabilities": {
+    "db.resolve_claim": {
+      "input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposition_id": {"type": "string", "minLength": 1},
+          "scope_id": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "minLength": 1}
+        },
+        "required": ["proposition_id", "scope_id", "version"]
+      },
+      "result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rows": {"type": "array", "items": {"type": "object"}},
+          "provenance": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        },
+        "required": ["rows", "provenance"]
+      }
+    },
+    "db.lookup_provenance": {
+      "input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "scope_id": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "minLength": 1}
+        },
+        "required": ["source_id", "scope_id", "version"]
+      },
+      "result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rows": {"type": "array", "items": {"type": "object"}},
+          "provenance": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        },
+        "required": ["rows", "provenance"]
+      }
+    },
+    "prolog.resolve_epistemic": {
+      "input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposition_id": {"type": "string", "minLength": 1},
+          "scope_id": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "minLength": 1}
+        },
+        "required": ["proposition_id", "scope_id", "version"]
+      },
+      "result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {"enum": ["supported", "refuted", "unknown", "conflicting"]},
+          "action": {"type": ["string", "null"]},
+          "allowedConclusion": {"type": ["string", "null"]},
+          "provenance": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        },
+        "required": ["status", "action", "allowedConclusion", "provenance"]
+      }
+    },
+    "python.threshold_check": {
+      "input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "value": {"type": "number"},
+          "threshold": {"type": "number"},
+          "comparator": {"enum": ["gt", "gte", "lt", "lte", "eq"]}
+        },
+        "required": ["value", "threshold", "comparator"]
+      },
+      "result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "decision": {"type": "boolean"},
+          "value": {"type": "number"},
+          "threshold": {"type": "number"},
+          "comparator": {"enum": ["gt", "gte", "lt", "lte", "eq"]}
+        },
+        "required": ["decision", "value", "threshold", "comparator"]
+      }
+    },
+    "prompt.explain_result": {
+      "input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {"structured_result": {"type": "object"}},
+        "required": ["structured_result"]
+      },
+      "result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {"type": "string"},
+          "source_result_unchanged": {"const": true}
+        },
+        "required": ["text", "source_result_unchanged"]
+      }
+    },
+    "clarification.missing_scope": {
+      "input": {"type": "object", "additionalProperties": false, "properties": {}, "required": []},
+      "result": {
+        "type": "object", "additionalProperties": false,
+        "properties": {"action": {"const": "clarify"}, "reason": {"const": "missing_scope"}},
+        "required": ["action", "reason"]
+      }
+    },
+    "clarification.missing_version": {
+      "input": {"type": "object", "additionalProperties": false, "properties": {}, "required": []},
+      "result": {
+        "type": "object", "additionalProperties": false,
+        "properties": {"action": {"const": "clarify"}, "reason": {"const": "missing_version"}},
+        "required": ["action", "reason"]
+      }
+    },
+    "clarification.unsupported_goal": {
+      "input": {"type": "object", "additionalProperties": false, "properties": {}, "required": []},
+      "result": {
+        "type": "object", "additionalProperties": false,
+        "properties": {"action": {"const": "clarify"}, "reason": {"const": "unsupported_goal"}},
+        "required": ["action", "reason"]
+      }
+    },
+    "reject.unsupported_write": {
+      "input": {"type": "object", "additionalProperties": false, "properties": {}, "required": []},
+      "result": {
+        "type": "object", "additionalProperties": false,
+        "properties": {"action": {"const": "reject"}, "reason": {"const": "unsupported_write"}},
+        "required": ["action", "reason"]
+      }
+    }
+  }
+}
