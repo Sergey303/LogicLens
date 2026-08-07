@@ -1,12 +1,13 @@
-schema_version: 2.0.0
+schema_version: 2.1.0
 work_package_id: WP-003
 linear_issue: ENG-155
 as_of: '2026-08-07'
-status: producer_remediation_complete_pending_independent_review
+status: producer_scope_refresh_complete_pending_independent_re_review
 research_question: >-
-  Which prior work most closely matches a causal comparison among raw formal
-  context, teacher-edited representations, trusted execution, and typed verified
-  interfaces for fixed-weight small language models?
+  Which prior work most closely matches the surviving fixed-weight causal comparison
+  of authoritative semantic-result placement, and which established mechanisms
+  occupy the expanded transfer ladder from contextual teaching through executable
+  programs and symbolic routing to tool-schema adaptation and weight adaptation?
 databases_and_primary_indexes:
 - name: ACL Anthology
   scope: peer-reviewed NLP papers and Findings
@@ -26,21 +27,19 @@ legacy_rounds:
   dates: ['2026-08-06']
   disposition: legacy_context_only_not_reproducible_saturation_evidence
   reason: >-
-    The independent review found that Q1-Q10 lacked a complete candidate-level
+    The first independent review found that Q1-Q10 lacked a complete candidate-level
     screening ledger, exact exclusion trail, and reproducible source-by-dimension
-    scoring. Their included sources remain in the matrix, but their old saturation
-    conclusion is withdrawn. Fresh Q11/Q12 replace them for saturation evidence.
-  families:
-  - program-aided and neurosymbolic execution
-  - tool use and modular systems
-  - constrained decoding and structured output
-  - prompt and program optimization
-  - refinement supervision verification
-  - recent Prolog and formal verification
-  - citation-chain refresh
-  - 2026 compiler-runtime interfaces and compiled knowledge
-  - exact-interface causal-design attack
-  - post-refresh terminology attack
+    scoring. Their included sources remain in the matrix, but they do not support
+    saturation.
+
+superseded_reproducible_rounds:
+  ids: [Q11, Q12]
+  disposition: reproducible_but_not_final_after_transfer_ladder_expansion
+  reason: >-
+    Q11/Q12 closed the original B1-B6 remediation, but independent re-review round 2
+    found that ENG-200/201/202 added decision-graph/router, executable-program and
+    weight-adaptation families after those rounds were frozen. Q13/Q14 therefore
+    replace Q11/Q12 as the latest usable W0 saturation evidence.
 
 query_rounds:
 - round_id: Q11
@@ -57,7 +56,7 @@ query_rounds:
   screened_candidate_ids: [C-050, C-051, E-003, E-004, C-043, C-044]
   added_source_ids: [RW-043, RW-044, RW-050, RW-051]
   threshold_matches: 0
-  result: usable_replacement_saturation_round
+  result: superseded_reproducible_round
 - round_id: Q12
   date: '2026-08-07'
   family: post-SIGIL compiler-runtime and offline-artifact chain
@@ -71,18 +70,51 @@ query_rounds:
   screened_candidate_ids: [C-042, C-045, C-046, C-047, C-048, C-049, E-001, E-002, C-044]
   added_source_ids: [RW-042, RW-045, RW-046, RW-047, RW-048, RW-049]
   threshold_matches: 0
-  result: usable_replacement_saturation_round
+  result: superseded_reproducible_round
+- round_id: Q13
+  date: '2026-08-07'
+  family: post-transfer-ladder router and schema attack
+  indexes: [arXiv, ACL Anthology]
+  queries:
+  - decision graph SOP LLM agent tool selection filtered function calls
+  - symbolic router Prolog router LLM tool selection small model
+  - small language model tool schema adaptation tool selection no training
+  - decision tree workflow language agent tool routing
+  retrieval_count_kind: inspected_unique_primary_candidates
+  retrieved_unique_primary_candidates: 6
+  screened_candidate_ids: [C-052, C-053, E-005, E-006, E-007, E-011]
+  added_source_ids: [RW-052, RW-053]
+  threshold_matches: 0
+  result: usable_latest_saturation_round
+- round_id: Q14
+  date: '2026-08-07'
+  family: teacher supervision and Qwen weight-adaptation attack
+  indexes: [ACL Anthology]
+  queries:
+  - agent distillation small language model teacher reason act observe trajectories ACL 2026
+  - teacher generated corpus Qwen SFT reasoning distillation ACL 2026
+  - reinforcement distillation teacher traces Qwen 1.5B
+  - small Qwen tool use reinforcement learning synthetic agent trajectories 2026
+  - tool-use behavior distillation teacher student agent ACL 2026
+  retrieval_count_kind: inspected_unique_primary_candidates
+  retrieved_unique_primary_candidates: 8
+  screened_candidate_ids: [C-054, C-055, C-056, C-057, C-058, E-008, E-009, E-010]
+  added_source_ids: [RW-054, RW-055, RW-056, RW-057, RW-058]
+  threshold_matches: 0
+  result: usable_latest_saturation_round
 
 inclusion_rules:
 - Read a primary paper or official proceedings/preprint page; snippets alone are insufficient.
-- Include work changing or evaluating fixed weights, execution, symbolic representation, typed constraints, teacher optimization, verifier independence, or small-model behavior.
+- Include work changing or evaluating fixed weights, execution, symbolic representation, typed constraints, teacher optimization, verifier independence, small-model behavior, routing, schema adaptation, or weight adaptation.
 - Include adjacent work when it supplies an alternative explanation or matched-control family.
-- Compare nearest neighbours with one common field set and one frozen dimension set.
+- Compare core nearest neighbours with one common field set and one frozen seven-dimension set.
+- Treat newly added router/schema/distillation papers as adversarial transfer-ladder controls unless they meet the core nearest-neighbour eligibility gate.
 exclusion_rules:
 - Exclude secondary surveys without a distinct primary method or experiment.
 - Exclude blogs, marketing, repository claims, and snippets without a primary paper.
-- Exclude generic retrieval work without formal execution, interface, teacher, verifier, or structured-output relevance.
-- Exclude compiler terminology collisions that compile model inference rather than domain/procedural semantics.
+- Exclude generic retrieval work without formal execution, interface, teacher, verifier, structured-output, routing, schema, or adaptation relevance.
+- Exclude model/provider routing papers from the core domain-router comparison when they do not move domain semantics or tool-choice knowledge.
+- Exclude generic reasoning distillation from the mandatory transfer controls when a closer agent/tool/Qwen distillation paper covers the same broad weight-changing claim.
 - Do not use future HOLDOUT/REPLICATION or pilot scores as confirmatory evidence.
 
 audit_artifacts:
@@ -91,33 +123,43 @@ audit_artifacts:
   replacement_saturation_rounds: context-packets/WP-003/SATURATION_ROUNDS_2026-08-07.csv
   nearest_structured_fields: context-packets/WP-003/NEAREST_WORK_STRUCTURED_2026-08-07.csv
   nearest_ranking_rule: context-packets/WP-003/NEAREST_RANKING_RULE_2026-08-07.md
+  transfer_ladder_controls: context-packets/WP-003/TRANSFER_LADDER_CONTROLS_2026-08-07.csv
   semantic_validator: context-packets/WP-003/validate_wp003_semantics.py
 
 refresh_findings:
 - source_id: RW-042
   finding: >-
-    SIGIL is a materially nearest paper and occupies typed skill IR, deterministic
-    lowering, model-owned versus code-owned responsibility, source provenance,
-    and a prose-versus-compiled causal execution comparison. It is a mandatory
-    top-three architecture anchor.
-- source_ids: [RW-043, RW-044]
+    SIGIL remains a materially nearest paper and occupies typed skill IR,
+    deterministic lowering, model-owned versus code-owned responsibility, source
+    provenance and prose-versus-compiled causal execution comparison.
+- source_ids: [RW-043, RW-044, RW-045, RW-046, RW-047, RW-048, RW-049]
   finding: >-
-    FACTS and Skill Discovery occupy offline generation of reusable deterministic
-    or execution-verified artifacts. They narrow any broad offline-compilation claim.
-- source_ids: [RW-045, RW-046, RW-047, RW-048, RW-049]
-  finding: >-
-    SkillRT, skill programs, Auto, SkCC and Anything2Skill further occupy portable
-    compiler/runtime, typed skill compilation, reusable executable behavior and
-    knowledge-to-skill territory.
+    Offline verified artifacts and agent-skill compilers occupy broad compiler,
+    reusable-program and executable-harness territory.
 - source_id: RW-050
   finding: >-
-    The Readout Shortcut directly motivates the answer-copying control: small
-    fixed models can copy answer-like trailing values rather than causally use
-    intermediate reasoning.
-- source_id: RW-051
+    The Readout Shortcut directly motivates the answer-copying control for the
+    fixed-weight core claim.
+- source_id: RW-052
   finding: >-
-    PROTEA occupies part of intermediate-artifact scoring and workflow-node
-    localization, narrowing any broad claim for layer-wise workflow diagnosis.
+    SOP-Agent explicitly represents SOPs as decision graphs, traverses them to
+    guide agent behavior and filters valid function calls. Decision-graph/SOP or
+    Prolog routing is therefore established mechanism territory, not ENG-200 novelty.
+- source_id: RW-053
+  finding: >-
+    PA-Tool demonstrates that training-free tool-schema renaming can materially
+    improve small-model tool selection. Schema naming/alignment is a mandatory
+    alternative explanation for M15/M20/M22-style routing/tool-selection gains.
+- source_ids: [RW-035, RW-054, RW-055, RW-056, RW-057]
+  finding: >-
+    Prolog-tool training, teacher agent trajectory distillation, teacher-generated
+    Qwen SFT, reinforcement distillation and small-Qwen agentic RL occupy broad
+    teacher-to-weight adaptation. ENG-202 is a boundary comparator only.
+- source_id: RW-058
+  finding: >-
+    Distillation can create teacher-specific convergence in tool-use action graphs
+    and response patterns, so adapted-model behavior similarity must not be read as
+    evidence for the fixed-weight semantic-placement mechanism.
 
 saturation_test:
   defining_dimensions:
@@ -130,17 +172,18 @@ saturation_test:
   - independent oracle/scorer and layer error localization
   score_values: {yes: 1.0, partial: 0.5, no: 0.0, unclear: 0.0}
   exact_threshold: at_least_five_yes_of_seven
-  replacement_rounds_assessed: [Q11, Q12]
+  superseded_reproducible_rounds: [Q11, Q12]
+  latest_usable_saturation_rounds: [Q13, Q14]
   threshold_matches: 0
-  outcome: provisional_saturation_reestablished_by_fresh_replacement_rounds
+  outcome: provisional_saturation_reestablished_after_transfer_ladder_refresh
   caveat: >-
     This is producer-side search coverage, not proof of absence and not novelty
-    acceptance. The independent reviewer must decide whether the replacement
-    audit is adequate. It never licenses first, unique, unprecedented, or a
-    general compiler-runtime novelty claim.
+    acceptance. It never licenses first, unique, unprecedented, a general
+    compiler/runtime claim, a router novelty claim, or a distillation novelty claim.
 
 nearest_source_ids: [RW-042, RW-038, RW-039, RW-048, RW-045, RW-047, RW-004, RW-003, RW-044, RW-005, RW-002, RW-046, RW-043, RW-001]
-source_count: 51
+mandatory_transfer_control_ids: [RW-052, RW-053, RW-035, RW-054, RW-055, RW-056, RW-057, RW-058]
+source_count: 58
 nearest_count: 14
 
 pre_submission_refresh:
@@ -148,15 +191,18 @@ pre_submission_refresh:
   timing: Before final claim freeze and immediately before submission packaging.
   actions:
   - Repeat all query families with dates after 2026-08-07.
-  - Check forward citations of the architecture anchors and all structured nearest sources.
+  - Check forward citations of architecture anchors and transfer-ladder controls.
+  - Re-run decision-graph/SOP/router and tool-schema-adaptation searches.
+  - Re-run teacher-generated SFT/LoRA/QLoRA/RL/distillation and small-Qwen tool-use searches.
   - Search ACL, NeurIPS, ICML/PMLR, ICLR/OpenReview, arXiv and accepted-paper lists.
-  - Re-run the seven-dimension ledger and replacement saturation protocol.
+  - Re-run the seven-dimension ledger and latest saturation protocol.
   - Record occupied claims and narrow or pivot before submission.
 
 known_limitations:
 - Systematic and citation-chained but not a registered systematic review.
 - Legacy Q1-Q10 cannot independently support saturation because their candidate-level screening trail was not frozen at search time.
-- Search interfaces do not expose stable raw database-hit counts; fresh rounds therefore freeze unique primary candidates actually opened and screened.
+- Q11/Q12 are reproducible but superseded for final W0 coverage after the transfer ladder expanded.
+- Search interfaces do not expose stable raw database-hit counts; fresh rounds freeze unique primary candidates actually opened and screened.
 - Some arXiv entries may later receive proceedings versions and require refresh.
-- Absence of an exact match cannot support first, unique, unprecedented, or general paradigm priority wording.
+- Absence of an exact match cannot support first, unique, unprecedented or general mechanism-priority wording.
 - Producer cannot independently accept WP-003 or GATE-001.
