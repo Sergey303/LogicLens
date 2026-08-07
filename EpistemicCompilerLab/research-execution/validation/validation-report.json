@@ -4,8 +4,8 @@
   "as_of": "2026-08-06",
   "attestation": {
     "model": "clean candidate parent plus report-only child",
-    "reviewed_git_commit": "8a2570a5b0fd4dcd62bf68dd776997dbbcfae450",
-    "head_at_validation": "8a2570a5b0fd4dcd62bf68dd776997dbbcfae450",
+    "reviewed_git_commit": "87d46c06edbda7a9a1dbc45bfb1b9d9f917c0eb5",
+    "head_at_validation": "87d46c06edbda7a9a1dbc45bfb1b9d9f917c0eb5",
     "dirty_tree_before_validation": false,
     "validator_sha256": "ede5fe373e04698964f19af64d22f89c151bffc7f6f35d90d0a3157d442a038e",
     "report_path": "EpistemicCompilerLab/research-execution/validation/validation-report.json",
