@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-197",
+  "parent_work_package": "WP-004",
+  "scientific_label": "pure_relational_trusted_execution",
+  "implementation_label": "deterministic_postgresql_generator_v0",
+  "prototype_scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+  "candidate_modes": {
+    "M15": {
+      "name": "Relational Query Agent",
+      "query_formation_owner": "qwen",
+      "visible": ["question", "typed_query_catalogue", "frozen_query_guide", "response_schema"]
+    },
+    "M16": {
+      "name": "Relational Result Interface",
+      "query_formation_owner": "frozen_outcome_blind_registry",
+      "visible": ["question", "typed_relational_result", "provenance", "response_schema"]
+    }
+  },
+  "semantic_ownership": {
+    "source_normalization": "frozen_upstream_contract",
+    "retrieval": "postgresql",
+    "recursive_closure": "postgresql",
+    "epistemic_status": "postgresql",
+    "decision_policy": "postgresql",
+    "result_transport": "typed_adapter",
+    "natural_language_rendering": "qwen"
+  },
+  "runtime_semantics": {
+    "positive_closure": "explicit positive assertions plus transitive strict implication edges",
+    "negative_evidence": "explicit negative assertion for the target proposition only",
+    "status_rule": {
+      "supported": "positive and not negative",
+      "refuted": "negative and not positive",
+      "conflicting": "positive and negative",
+      "unknown": "neither positive nor negative"
+    },
+    "action_rule": {
+      "supported": "accept",
+      "refuted": "reject",
+      "conflicting": "review",
+      "unknown": "review"
+    }
+  },
+  "typed_endpoint": {
+    "name": "resolve_claim",
+    "arguments": [
+      {"name": "proposition_id", "type": "string"},
+      {"name": "scope_id", "type": "string"},
+      {"name": "version", "type": "string"}
+    ],
+    "result": "one typed summary row",
+    "maximum_rows": 1,
+    "oversize_policy": "reject_before_scoring_never_truncate"
+  },
+  "failure_layers": [
+    "query_formation",
+    "adapter_validation",
+    "db_execution",
+    "result_transport",
+    "rendering"
+  ],
+  "security": {
+    "free_sql": false,
+    "writes": false,
+    "network": false,
+    "filesystem": false,
+    "declared_endpoints_only": true,
+    "parameter_binding": true,
+    "immutable_db_snapshot_per_run_block": true
+  },
+  "freeze_artifacts": [
+    "source",
+    "generator",
+    "schema_sql",
+    "seed_sql",
+    "permissions_sql",
+    "query_catalogue",
+    "query_guide",
+    "package_manifest",
+    "call_schema",
+    "result_schema"
+  ],
+  "eligibility": {
+    "m14_baseline_eligible": false,
+    "reason": "SQL computes recursive closure, status and decision action; this is a trusted-execution comparator."
+  }
+}
