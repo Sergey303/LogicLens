@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-200",
+  "scope": "TRAIN_DEV_ONLY",
+  "prototype_static_costs": {
+    "capabilities": 9,
+    "decision_nodes": 10,
+    "action_nodes": 9,
+    "typed_features": 5,
+    "synthetic_cases": 9,
+    "feature_space_vectors": 80
+  },
+  "measure_before_confirmatory_freeze": [
+    "teacher generation tokens and wall time per candidate",
+    "M20 policy explanation tokens by frozen Qwen tokenizer",
+    "neutral and schema-adapted catalogue tokens",
+    "decision-graph execution latency distribution",
+    "SWI-Prolog routing latency distribution including cold start",
+    "direct-Qwen tool-selection calls/tokens",
+    "routing annotation/adjudication seconds",
+    "capability-unavailable and malformed-route failure rates"
+  ],
+  "confirmatory_default": "DEV_ONLY_UNTIL_WP004_WP006_WP007_ADJUDICATION",
+  "stop_rule": "Drop routing arms if direct Qwen selection or simple static routing matches them, or if powered inclusion would displace primary falsification controls."
+}
