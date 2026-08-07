@@ -41,6 +41,9 @@ jobs:
           cmp /tmp/neutral.json prototype/generated/qwen-catalogue.neutral.json
           cmp /tmp/adapted.json prototype/generated/qwen-catalogue.adapted.json
           git diff --exit-code
+      - name: Verify leakage mutation detection
+        working-directory: EpistemicCompilerLab/research-execution/router-comparator
+        run: python prototype/verify_leakage_mutation.py
       - name: Run exhaustive tree-Prolog verification
         working-directory: EpistemicCompilerLab/research-execution/router-comparator
         run: python prototype/verify.py --require-swipl
