@@ -1,0 +1,78 @@
+{
+  "linear_issue": "ENG-197",
+  "parent_work_package": "WP-004 / ENG-156",
+  "status": "ready_for_independent_review",
+  "artifact_kind": "pure_relational_trusted_execution_comparator",
+  "identity_and_session": {
+    "producer_identity": "OpenAI GPT-5.6 Thinking — Relational Comparator Architect",
+    "producer_session": "ChatGPT ENG-197 producer / 2026-08-07",
+    "reviewer_identity": "UNASSIGNED Independent Causal and Database Systems Reviewer",
+    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
+    "conflict_declaration": "Producer does not self-accept ENG-197 and cannot make the independent WP-004 mode-adjudication decision.",
+    "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed. No confirmatory outcome was used to choose SQL semantics, catalogue shape, row policy, guide content or mode inclusion."
+  },
+  "git": {
+    "repository": "Sergey303/LogicLens",
+    "base_commit": "a51c0ddeb6505398f2bf7a4d9183882df90f09c0",
+    "pull_request": 71,
+    "implementation_merge_commit": "26c599dd0791dbae77d29bcc0acabc71bfe15419"
+  },
+  "scientific_decision": {
+    "m15": "Qwen forms one validated typed call and renders the returned relational result.",
+    "m16": "A frozen outcome-blind registry forms the same typed call before Qwen; Qwen renders the returned relational result.",
+    "postgresql_owns": ["retrieval", "positive recursive closure", "four-state epistemic status", "decision action"],
+    "qwen_owns": ["natural-language rendering"],
+    "m15_additional_qwen_ownership": ["typed query formation"],
+    "m14_baseline_eligible": false,
+    "m14_exclusion_reason": "SQL computes status/action and therefore M15/M16 are trusted-execution comparators, not non-compiled source baselines."
+  },
+  "prototype": {
+    "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+    "free_sql": false,
+    "write_path": false,
+    "typed_calls_per_scenario": 1,
+    "maximum_result_rows": 1,
+    "generated_package_bytes": 7878,
+    "result_policy": "exactly one row; zero/multiple rows fail transport; never truncate or repair"
+  },
+  "frozen_hashes": {
+    "source_sha256": "8a7132cf3eeec38814c9092738e463adcb6c78f989d4534c7f4fe12cbbdd3667",
+    "generator_sha256": "4154dd720ee7f82c6b9b6d572916466fa0b3b8df49a1a6548147a4cc89609dc9",
+    "schema_sql_sha256": "9d08e43c5ff94f04100f9caa190a94bbc8ec1f32b79e0383e5cc7ab906e058d0",
+    "seed_sql_sha256": "43d0540d0795b6294555f261958a3f1d7e52fc57be7a249b219ae90a56b1dc8e",
+    "permissions_sql_sha256": "4493edd343106ddbbb5e3f3eafbe4196e2dd6bc9a9c18f6c55d01b0d7dc2452c",
+    "catalogue_sha256": "0d59f438e8fabad7826a18037d7292f6a048adf78091ba7e15ec8ba9d3c8f97c",
+    "query_guide_sha256": "8dd303a544ce47c19f484408be3a60ee57a7415a881982038f284d06e631735a"
+  },
+  "producer_verification": [
+    {"check": "contract and ownership", "status": "PASS"},
+    {"check": "byte-for-byte deterministic rebuild and manifest hashes", "status": "PASS"},
+    {"check": "supported/refuted/conflicting/unknown plus recursive closure", "status": "PASS"},
+    {"check": "typed-call parameterization, undeclared endpoint and free-SQL rejection", "status": "PASS"},
+    {"check": "case/question/expected-field leakage scan", "status": "PASS"},
+    {"check": "one-row lossless result policy and feasibility constants", "status": "PASS"},
+    {"check": "static SQL read-only/security contract", "status": "PASS"},
+    {"check": "existing GitHub ENG-153 reproducibility workflow on producer head", "status": "PASS"},
+    {"check": "existing GitHub synthetic Epistemic kernel workflow on producer head", "status": "PASS"}
+  ],
+  "failure_layers": ["query_formation", "adapter_validation", "db_execution", "result_transport", "rendering"],
+  "wp006_wp007_inputs": {
+    "artifact": "EpistemicCompilerLab/research-execution/relational-comparator/FEASIBILITY_INPUT.json",
+    "wp006_decision": "Power/adjudicate M15+M16, M16-only, or DEV-only before HOLDOUT.",
+    "wp007_pending_measurements": ["catalogue/guide/result tokens per frozen tokenizer", "clean PostgreSQL build time", "cold/warm query latency", "database storage bytes", "M16 registry annotation/adjudication cost"]
+  },
+  "known_limitations": [
+    "The producer execution environment had no PostgreSQL server, so the generated SQL package was not instantiated against a live PostgreSQL engine in this session.",
+    "Actual PostgreSQL build/query/storage/latency evidence is therefore a mandatory WP-007 and independent-review gate before confirmatory inclusion.",
+    "The prototype covers the strict relational subset only; extension that requires hidden bespoke semantic code must be rejected or separately adjudicated rather than silently implemented."
+  ],
+  "pivot_rules": [
+    "If M16 is non-inferior to M6, remove claims that Prolog or the full custom epistemic frame is necessary.",
+    "If M15 is weak but M16 is strong, identify query formation/tool use as the bottleneck.",
+    "If guide/no-guide DEV ablation explains the gain, report bounded interface teaching.",
+    "If the relational package matches M6 at lower cost, prefer the simpler engineering solution.",
+    "If lossless relational representation requires hidden semantic code or truncation, reject the comparator with evidence."
+  ],
+  "reviewer_decision_options": ["include M15 and M16", "include M16 only", "retain as DEV-only diagnostics", "reject as invalid or infeasible"],
+  "recommended_next_state": "In Review"
+}
