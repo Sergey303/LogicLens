@@ -1,0 +1,22 @@
+{
+  "package_id": "eng197-relational-prototype-v0",
+  "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+  "scope_id": "prototype-scope",
+  "version": "v1",
+  "propositions": [
+    {"id": "p-qualified", "subject": "component-alpha", "predicate": "qualified_for", "object": "environment-x"},
+    {"id": "p-allowed", "subject": "component-alpha", "predicate": "allowed_for", "object": "environment-x"},
+    {"id": "p-certified", "subject": "component-beta", "predicate": "certified_for", "object": "environment-y"},
+    {"id": "p-compatible", "subject": "component-gamma", "predicate": "compatible_with", "object": "assembly-z"},
+    {"id": "p-documented", "subject": "component-delta", "predicate": "documented_for", "object": "assembly-z"}
+  ],
+  "assertions": [
+    {"id": "a-001", "proposition_id": "p-qualified", "polarity": "positive", "scope_id": "prototype-scope", "version": "v1", "source_id": "src-spec-001"},
+    {"id": "a-002", "proposition_id": "p-certified", "polarity": "negative", "scope_id": "prototype-scope", "version": "v1", "source_id": "src-spec-002"},
+    {"id": "a-003", "proposition_id": "p-compatible", "polarity": "positive", "scope_id": "prototype-scope", "version": "v1", "source_id": "src-spec-003"},
+    {"id": "a-004", "proposition_id": "p-compatible", "polarity": "negative", "scope_id": "prototype-scope", "version": "v1", "source_id": "src-spec-004"}
+  ],
+  "implications": [
+    {"id": "r-001", "antecedent_proposition_id": "p-qualified", "consequent_proposition_id": "p-allowed", "scope_id": "prototype-scope", "version": "v1"}
+  ]
+}
