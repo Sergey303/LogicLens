@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 from typing import cast
 
+from read_plan_openapi_contract import validate_read_plan_security
+
 ROOT = Path(__file__).resolve().parents[2]
 SERVICE = ROOT / "services" / "document-evidence"
 OPENAPI = SERVICE / "openapi" / "document-evidence-v1.json"
@@ -66,6 +68,7 @@ def validate_openapi(content: bytes) -> None:
     """Fail closed when the supported OpenAPI surface drifts."""
     raw: object = json.loads(content)
     spec = mapping(raw, "root")
+    validate_read_plan_security(spec)
     info = mapping(spec.get("info"), "info")
     if info.get("version") != "1.0.0":
         message = "Document Evidence OpenAPI version must remain 1.0.0."
