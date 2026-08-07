@@ -21,6 +21,7 @@ def build(policy: dict[str, Any]) -> str:
     lines = [
         ":- set_prolog_flag(double_quotes, string).",
         "% Generated from policy.ir.json. Do not hand-edit.",
+        f"% Feature contract: {policy['feature_contract_id']} sha256={policy['feature_contract_sha256']}",
         "",
     ]
     for node in policy["nodes"]:

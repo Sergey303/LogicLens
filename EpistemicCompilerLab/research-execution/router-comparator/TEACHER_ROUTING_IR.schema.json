@@ -1,26 +1,24 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:eng-200:teacher-routing-ir:v1",
+  "$id": "urn:eng-200:teacher-routing-ir:v1.1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "policy_id", "root", "feature_contract", "capability_registry_version", "nodes"],
+  "required": [
+    "schema_version",
+    "policy_id",
+    "root",
+    "feature_contract_id",
+    "feature_contract_sha256",
+    "capability_registry_version",
+    "nodes"
+  ],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
+    "schema_version": {"const": "1.1.0"},
     "policy_id": {"type": "string", "pattern": "^[a-z0-9._-]+$"},
     "root": {"type": "string", "minLength": 1},
-    "capability_registry_version": {"const": "1.0.0"},
-    "feature_contract": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["goal_class", "has_scope", "has_version", "asks_write", "requires_strict_policy"],
-      "properties": {
-        "goal_class": {"type": "array", "items": {"enum": ["claim_resolution", "provenance_lookup", "numeric_threshold", "explanation", "other"]}, "minItems": 5, "maxItems": 5, "uniqueItems": true},
-        "has_scope": {"const": "boolean"},
-        "has_version": {"const": "boolean"},
-        "asks_write": {"const": "boolean"},
-        "requires_strict_policy": {"const": "boolean"}
-      }
-    },
+    "feature_contract_id": {"const": "eng200.routing-features.v1"},
+    "feature_contract_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capability_registry_version": {"const": "1.1.0"},
     "nodes": {
       "type": "array",
       "minItems": 1,

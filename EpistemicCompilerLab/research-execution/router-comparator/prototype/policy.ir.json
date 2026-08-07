@@ -1,15 +1,10 @@
 {
-  "schema_version": "1.0.0",
-  "policy_id": "eng200.synthetic.train-dev.v0",
+  "schema_version": "1.1.0",
+  "policy_id": "eng200.synthetic.train-dev.v1",
   "root": "n_write",
-  "capability_registry_version": "1.0.0",
-  "feature_contract": {
-    "goal_class": ["claim_resolution", "provenance_lookup", "numeric_threshold", "explanation", "other"],
-    "has_scope": "boolean",
-    "has_version": "boolean",
-    "asks_write": "boolean",
-    "requires_strict_policy": "boolean"
-  },
+  "feature_contract_id": "eng200.routing-features.v1",
+  "feature_contract_sha256": "49ef3a01e7977a44abe4dcc3878d102416e2650218e526d98389e044c6bab92e",
+  "capability_registry_version": "1.1.0",
   "nodes": [
     {"id":"n_write","type":"condition","feature":"asks_write","op":"eq","value":true,"if_true":"a_reject_write","if_false":"n_claim"},
     {"id":"n_claim","type":"condition","feature":"goal_class","op":"eq","value":"claim_resolution","if_true":"n_claim_scope","if_false":"n_prov"},

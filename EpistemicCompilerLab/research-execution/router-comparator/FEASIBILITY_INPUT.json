@@ -7,16 +7,18 @@
     "decision_nodes": 10,
     "action_nodes": 9,
     "typed_features": 5,
-    "synthetic_cases": 9,
+    "synthetic_cases": 12,
     "feature_space_vectors": 80
   },
   "measure_before_confirmatory_freeze": [
     "teacher generation tokens and wall time per candidate",
     "M20 policy explanation tokens by frozen Qwen tokenizer",
     "neutral and schema-adapted catalogue tokens",
+    "typed feature serialization tokens/bytes",
     "decision-graph execution latency distribution",
     "SWI-Prolog routing latency distribution including cold start",
     "direct-Qwen tool-selection calls/tokens",
+    "argument-binder latency and error rate",
     "routing annotation/adjudication seconds",
     "capability-unavailable and malformed-route failure rates"
   ],

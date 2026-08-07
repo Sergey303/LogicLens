@@ -1,0 +1,15 @@
+schema_version: 1.0.0
+linear_issue: ENG-200
+python:
+  ci_version: '3.12'
+  packages:
+    PyYAML: 6.0.2
+    jsonschema: 4.25.0
+swipl:
+  required: true
+  ci_package: swi-prolog-nox
+  minimum_version: 9.0.0
+  record_actual_version_in_report: true
+os:
+  ci_runner: ubuntu-24.04
+note: Exact hosted-runner package patch versions may evolve; every accepted CI report records the observed Python and SWI-Prolog versions.
