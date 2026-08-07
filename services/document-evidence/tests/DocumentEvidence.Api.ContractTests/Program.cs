@@ -7,6 +7,8 @@ internal static class Program
         await ApiEndpointContractTests.GeneratedClientTraversesRealEndpointsAsync();
         await ApiEndpointContractTests.ReadPlanTraversesHeaderOnlyStreamingBoundaryAsync();
         await ApiEndpointContractTests.ReadPlanResponsesAreNeverCacheableAsync();
+        await ReadPlanHttpNegativeContractTests.MissingTokenStopsBeforeOperationAsync();
+        await ReadPlanHttpNegativeContractTests.OversizedTokenStopsBeforeOperationAsync();
         await ApiEndpointContractTests.MissingActorHeaderReturnsTypedBadRequestAsync();
         Console.WriteLine("Document Evidence real HTTP contract tests passed.");
         return 0;
