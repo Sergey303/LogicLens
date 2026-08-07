@@ -5,30 +5,31 @@ on:
     paths:
       - 'EpistemicCompilerLab/research-execution/router-comparator/**'
       - 'EpistemicCompilerLab/scripts/run-router-comparator-tests.ps1'
-      - 'EpistemicCompilerLab/scripts/launch.ps1'
       - '.github/workflows/eng-200-router-validation.yml'
   push:
     branches:
-      - eng-200-router-comparator
+      - 'eng-200-*'
     paths:
       - 'EpistemicCompilerLab/research-execution/router-comparator/**'
       - 'EpistemicCompilerLab/scripts/run-router-comparator-tests.ps1'
-      - 'EpistemicCompilerLab/scripts/launch.ps1'
       - '.github/workflows/eng-200-router-validation.yml'
 
 jobs:
   verify-router:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install dependencies
+
+      - name: Install frozen dependencies
+        working-directory: EpistemicCompilerLab/research-execution/router-comparator
         run: |
           sudo apt-get update
           sudo apt-get install -y swi-prolog-nox
-          python -m pip install --disable-pip-version-check PyYAML==6.0.2 jsonschema==4.25.0
+          python -m pip install --disable-pip-version-check -r requirements-eng200.txt
+
       - name: Verify deterministic generation is clean
         working-directory: EpistemicCompilerLab/research-execution/router-comparator
         run: |
@@ -41,15 +42,22 @@ jobs:
           cmp /tmp/neutral.json prototype/generated/qwen-catalogue.neutral.json
           cmp /tmp/adapted.json prototype/generated/qwen-catalogue.adapted.json
           git diff --exit-code
-      - name: Verify leakage mutation detection
+
+      - name: Verify immutable freeze manifest
+        working-directory: EpistemicCompilerLab/research-execution/router-comparator
+        run: python prototype/build_freeze_manifest.py --check
+
+      - name: Verify leakage mutations
         working-directory: EpistemicCompilerLab/research-execution/router-comparator
         run: python prototype/verify_leakage_mutation.py
-      - name: Run exhaustive tree-Prolog verification
+
+      - name: Run exhaustive causal-contract and tree-Prolog verification
         working-directory: EpistemicCompilerLab/research-execution/router-comparator
         run: python prototype/verify.py --require-swipl
+
       - name: Upload machine-readable verification
         uses: actions/upload-artifact@v4
         with:
-          name: eng-200-router-verification
+          name: eng-200-router-verification-r2
           path: EpistemicCompilerLab/research-execution/router-comparator/prototype/verification-report.json
           if-no-files-found: error
