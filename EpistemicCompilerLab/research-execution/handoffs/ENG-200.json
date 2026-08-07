@@ -1,34 +1,72 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "linear_issue": "ENG-200",
   "parent_work_package": "WP-004 / ENG-156",
-  "status": "ready_for_independent_review",
-  "artifact_kind": "teacher_generated_routing_policy_comparator_prototype",
+  "status": "ready_for_independent_re_review",
+  "artifact_kind": "teacher_generated_routing_policy_comparator_remediation",
   "identity_and_session": {
-    "producer_identity": "OpenAI GPT-5.6 Sol — Teacher Routing Architect",
-    "producer_session": "ChatGPT ENG-200 producer / 2026-08-07",
-    "reviewer_identity": "UNASSIGNED Independent Tool-Routing and Causal Reviewer",
-    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
-    "conflict_declaration": "This producer session does not independently review or accept ENG-200 and cannot decide GATE-001.",
-    "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed. The prototype uses synthetic TRAIN/DEV-only routing cases and contains no confirmatory outcome data."
+    "remediation_producer_identity": "OpenAI GPT-5.6 Sol — Teacher Routing Architect",
+    "remediation_producer_session": "ChatGPT ENG-200 remediation producer / 2026-08-07",
+    "prior_independent_review_artifact": "EpistemicCompilerLab/research-execution/ENG-200_INDEPENDENT_REVIEW_2026-08-07.md",
+    "prior_independent_review_commit": "a1e6bfd128fd2d5af9777792f25758b0d34826b4",
+    "next_reviewer_identity": "UNASSIGNED Independent Tool-Routing and Causal Reviewer",
+    "next_reviewer_session": "MUST BE A NEW DISTINCT REVIEW CONTEXT AND MUST NOT BE THIS REMEDIATION PRODUCER",
+    "conflict_declaration": "This remediation producer used the prior reviewer findings as required inputs and therefore is not eligible to independently accept the remediation or decide GATE-001.",
+    "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed. All remediation artifacts and tests are TRAIN/DEV-only synthetic design evidence."
   },
   "git": {
     "repository": "Sergey303/LogicLens",
-    "pull_request": 74,
-    "producer_head": "7075eb3c576ae3a396f6d0810592df69615f1b9b",
-    "implementation_merge_commit": "b32de2be597e67280a3f5021e0b46a9f3a323da5",
-    "merge_method": "squash"
+    "remediation_pull_request": 75,
+    "remediation_head": "1744ec9d73a81c8429a9b5447eddcfb5d8c4c563",
+    "remediation_merge_commit": "3e3ed8f952fff02885d4e05d36da3cd6312d1799",
+    "merge_method": "squash",
+    "previous_implementation_merge": "b32de2be597e67280a3f5021e0b46a9f3a323da5"
+  },
+  "review_blockers_closed_by_candidate": {
+    "B1_same_routing_input": {
+      "status": "CANDIDATE_CLOSED",
+      "evidence": "ROUTING_FEATURE_CONTRACT.json and ROUTING_MODE_CONTRACTS.yaml require exact same canonical typed feature bytes for M19, M20 and direct_qwen_selection; raw-question parsing is DEV-only separate."
+    },
+    "B2_independent_feature_boundary_and_proxy_guard": {
+      "status": "CANDIDATE_CLOSED",
+      "evidence": "Standalone feature contract id eng200.routing-features.v1 is independently hashed and referenced by policy IR; feature definitions forbid implementation identity; strict-policy toggling is invariant outside claim_resolution and reaches 8 unique capabilities under both boolean values in exhaustive checks."
+    },
+    "B3_typed_capability_contract": {
+      "status": "CANDIDATE_CLOSED",
+      "evidence": "Nine capabilities validate against ROUTING_CAPABILITY_REGISTRY.schema.json and CAPABILITY_IO_SCHEMAS.json with typed input/result schemas, provenance flags, no side effects, one-call budgets, time/output bounds and fail-closed canonical failure codes."
+    },
+    "B4_capability_vs_arguments_scope": {
+      "status": "CANDIDATE_CLOSED",
+      "evidence": "ENG-200 and Linear are frozen as capability-selection-only; ARGUMENT_BINDING_CONTRACT.md defines one independent held-equal downstream binder and separate error accounting."
+    },
+    "B5_hash_closure": {
+      "status": "CANDIDATE_CLOSED",
+      "evidence": "ENG-200_FREEZE_MANIFEST.json freezes 30 scientific, runtime, visibility, generator, executor, verifier, workflow and launcher files; CI regenerates and byte-checks the manifest."
+    },
+    "B6_canonical_id_leak_mutation": {
+      "status": "CANDIDATE_CLOSED",
+      "evidence": "Dedicated leakage verifier injects both a case ID and an internal canonical capability ID; shared scanner rejects both; verification report records all 10 mutation names."
+    }
   },
   "scientific_decisions": {
     "normative_policy_source": "EpistemicCompilerLab/research-execution/router-comparator/prototype/policy.ir.json",
-    "M19": "Executed Teacher Router: a deterministic runtime executes the frozen canonical routing policy before Qwen; Qwen does not select the capability.",
-    "M20": "Explained Teacher Router: Qwen receives the frozen policy explanation plus typed neutral capability catalogue and selects an opaque capability handle.",
-    "tree_vs_prolog": "The SWI-Prolog router is deterministically lowered from the same canonical IR. Tree-versus-Prolog is an engineering representation/runtime comparison, not an independent semantic treatment and not a Qwen-effect claim when downstream inputs are identical.",
-    "capability_identity": "Policy nodes reference canonical internal capability IDs. Qwen-visible catalogues expose opaque handles; canonical IDs are hidden from Qwen.",
-    "schema_surface": "Neutral labels/descriptions are the primary M20 surface. Schema-adapted labels/descriptions are a separate DEV-only treatment factor under identical canonical IDs, handles, versions and semantics.",
-    "router_scope": "The router selects capabilities only. It does not compute epistemic status, action, conclusion, SQL rows, Prolog proofs, Python results or final answers.",
-    "prototype_teacher_status": "The committed policy is a producer-authored synthetic contract exemplar. It is not represented as an empirical Codex-generated policy and cannot by itself support a teacher-effect claim.",
-    "confirmatory_status": "M19/M20 and representation/schema ablations remain DEV-first proposals until WP-004, WP-006 and WP-007 independently adjudicate a powered feasible subset before HOLDOUT."
+    "feature_contract": {
+      "id": "eng200.routing-features.v1",
+      "sha256": "49ef3a01e7977a44abe4dcc3878d102416e2650218e526d98389e044c6bab92e",
+      "owner": "independent_feature_layer",
+      "primary_input_rule": "M19, M20 and direct-Qwen selection receive exact same canonical serialized typed feature bytes",
+      "raw_question_routing": "DEV_ONLY_SEPARATE_ABLATION"
+    },
+    "M19": "Executed Teacher Router: deterministic runtime consumes the frozen typed feature vector and selects one capability before Qwen; Qwen does not select the capability.",
+    "M20": "Explained Teacher Router: fixed-weight Qwen consumes the exact same frozen typed feature vector plus neutral typed capability catalogue and frozen policy explanation, then selects one opaque capability handle.",
+    "direct_qwen_baseline": "Same frozen typed feature vector and neutral typed capability catalogue as M20, but no teacher policy/explanation.",
+    "routing_scope": "capability_selection_only",
+    "argument_binding": "independent_held_equal_adapter_after_route_selection",
+    "tree_vs_prolog": "SWI-Prolog is deterministically lowered from the same canonical IR; tree-vs-Prolog is an engineering representation/runtime comparison and cannot support a Qwen-effect claim when selections are identical.",
+    "schema_surface": "Neutral vs schema-adapted labels/descriptions remain a separate DEV-only factor while typed schemas, budgets, failure semantics, handles, versions and capability semantics are held equal.",
+    "router_scope": "The router does not compute epistemic status, action, conclusion, tool result, proof, final answer, raw-question features or bound arguments.",
+    "prototype_teacher_status": "The committed policy remains a producer-authored synthetic contract exemplar, not an empirical Codex-generated policy and not evidence of a teacher effect.",
+    "confirmatory_status": "All router variants remain DEV-first proposals until WP-004, WP-006 and WP-007 independently adjudicate a powered feasible subset before HOLDOUT."
   },
   "prototype": {
     "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
@@ -36,58 +74,80 @@
     "decision_nodes": 10,
     "action_nodes": 9,
     "typed_features": 5,
-    "synthetic_cases": 9,
+    "synthetic_cases": 12,
     "complete_feature_space_vectors": 80,
     "qwen_source_code_visibility": "none",
     "free_form_commands": false,
-    "domain_reasoning_in_router": false
+    "domain_reasoning_in_router": false,
+    "raw_question_feature_extraction_in_primary_contrast": false
   },
-  "frozen_hashes_from_successful_ci": {
-    "registry_sha256": "2d29edbd71e01eed6c77f0231853b476b640378e9a65ef898e6fbf2c681b084e",
-    "routing_ir_schema_sha256": "7cc429e1776c1a196bbc5323a9d88ae9f83ab024e5670949e59a40b197d05358",
-    "policy_ir_sha256": "d0103430eb528faffff997ae1078f8c147942a53da2eebb2fc6810484c866219",
-    "generated_prolog_sha256": "115cff8964792a69797d99251c87e5e40d169bde3240638c25e1901b6ca68802",
-    "cases_sha256": "56f290ff585b0cc7cde98e30e1f432543e29e099f0ab63de61b3fe47f4fa13b4",
-    "policy_explanation_sha256": "fc9fb4141f0b85c4b37225c146e33bf6b6b31670eb4c9e41509401e2a7798fff",
-    "neutral_catalogue_sha256": "97dec3318861a3fbf31d7a106405ca3b1e6d20cfbf5486102b1d31089a31ab44",
-    "adapted_catalogue_sha256": "efb66239ddfb89f47bb27eed49421dbc9d21d52a88d8a40e39f7dad9ad2d7905"
-  },
-  "ci_evidence": {
+  "successful_ci": {
     "workflow_name": "ENG-200 router comparator validation",
-    "workflow_run_id": 31142949125,
-    "job_id": 92756456753,
-    "producer_head": "7075eb3c576ae3a396f6d0810592df69615f1b9b",
+    "workflow_run_id": 31149715285,
+    "job_id": 92776668839,
+    "remediation_head": "1744ec9d73a81c8429a9b5447eddcfb5d8c4c563",
     "conclusion": "success",
     "python_version": "3.12.13",
     "swipl_version": "SWI-Prolog version 9.0.4 for x86_64-linux",
     "deterministic_generation": "PASS",
-    "explicit_leakage_mutation_detection": "PASS",
-    "synthetic_cases": "9/9 PASS",
+    "freeze_manifest": "30/30 files PASS",
+    "freeze_manifest_sha256": "1ecf52bab2e1989fce31862ac3c2fa890bdc4afd40f5d72cb1ec2ebec1678837",
+    "typed_feature_primary_input_same_bytes": true,
+    "raw_question_primary_contrast": false,
+    "anti_label_proxy": {
+      "strict_true_unique_capabilities": 8,
+      "strict_false_unique_capabilities": 8,
+      "non_claim_strict_toggle_invariant": true
+    },
+    "typed_capability_contracts": "9/9 valid; input/result schemas, budgets and fail-closed semantics PASS",
+    "synthetic_cases": "12/12 PASS",
     "tree_prolog_equivalence": "80/80 PASS",
-    "mutation_tests": "9 PASS",
-    "artifact_id": 8980425785,
-    "artifact_zip_sha256": "8fc300206b652a42ff69b4cf7dcf3207b46d7c6ba5145659a8f3758be9760164"
+    "named_mutation_tests": [
+      "missing_feature",
+      "invalid_goal",
+      "stale_capability_version",
+      "unavailable_capability",
+      "missing_node",
+      "policy_cycle",
+      "wrong_branch",
+      "case_id_leak_detected",
+      "canonical_capability_id_leak_detected",
+      "schema_surface_identity_preserved"
+    ],
+    "artifact_id": 8982831177,
+    "artifact_zip_sha256": "d795f3324943267e3a3dc3cfca122f5e329ee767db4caf21ec02a5d2c209359e"
   },
-  "producer_findings": [
-    "The first CI attempt correctly failed because YAML inline mapping syntax truncated comma-containing Qwen-visible descriptions; the registry was corrected to explicit mappings and deterministic regeneration subsequently passed.",
-    "A single canonical IR can drive both decision-graph and Prolog routing without duplicating normative policy rules.",
-    "Schema/name adaptation can be isolated from routing policy by preserving canonical IDs, opaque handles, versions and capability semantics byte-for-byte at the identity layer."
-  ],
+  "frozen_hashes_from_successful_ci": {
+    "feature_contract_sha256": "49ef3a01e7977a44abe4dcc3878d102416e2650218e526d98389e044c6bab92e",
+    "registry_sha256": "5bde04ded5828c289fa532efc841c5a0f3a318b408f9fd47d534df20448ec77f",
+    "registry_schema_sha256": "78c99724a556c3a7c22dffe4d0f5c0f20f8bc47865f19c253742b2d2f22604ba",
+    "capability_io_schemas_sha256": "0b9cf4bd94231ecb116a861f2c46288d0c15e403576aa47070bdfcd780465d97",
+    "routing_ir_schema_sha256": "9def768dde3dc12f79ec8de8b0eeb518c5034993fb8f902fdc61f1917deb7120",
+    "policy_ir_sha256": "3fee50b80ffea5bf40a963145320902fc3b45910e6a5c320d77995adcd43149b",
+    "generated_prolog_sha256": "56a6f740e89416374e7d77552dbbb454c64e4a777163273640d3d05673ffd3e9",
+    "cases_sha256": "b04de9345fc47fbc3c1bf82c6951e7a7e695f74704b6032d13fd9b74412c77bd",
+    "policy_explanation_sha256": "b076e34cb87f276b3b3e0e70dba8f3a60e662683a14edaf0b723a4cfc0d45cf4",
+    "neutral_catalogue_sha256": "20e4966104b63bfe94fa4d37ea96658f586e68cc47c5436bc293726feaf281c4",
+    "adapted_catalogue_sha256": "2c6da52133793cff6a5f49dd403f2d688f815be4beac18a570cfe33e4314791a",
+    "freeze_manifest_sha256": "1ecf52bab2e1989fce31862ac3c2fa890bdc4afd40f5d72cb1ec2ebec1678837"
+  },
   "known_limitations": [
-    "No actual Qwen routing/model run is part of this producer package; M19/M20 behavioral effects remain unmeasured.",
-    "No empirical Codex-generated routing-policy candidate has been produced or selected; the committed policy is a synthetic contract exemplar only.",
-    "The required direct-Qwen capability-selection baseline and simple human/static SOP router are defined but not empirically executed in this package.",
-    "The neutral-versus-schema-adapted catalogue ablation has contract evidence only and has not yet been evaluated with Qwen.",
-    "Teacher-generation token/time, Qwen catalogue/policy token counts, tree/Prolog latency, annotation cost and routing failure rates remain WP-006/WP-007 inputs to measure before confirmatory inclusion.",
-    "Unrelated repository workflows may fail on later HEADs because of their own attestation assumptions; only the named ENG-200 workflow/run is producer evidence for this package."
+    "No actual Qwen routing/model run is part of this remediation; M19/M20 behavioral effects remain unmeasured.",
+    "No empirical Codex-generated routing-policy candidate has been generated or selected; the frozen policy remains a synthetic contract exemplar only.",
+    "Direct-Qwen capability selection and simple human/static SOP routing are contractually defined but not empirically executed here.",
+    "Neutral-versus-schema-adapted catalogue effect is contractually isolated but not yet evaluated with Qwen.",
+    "Argument-binding implementation and its empirical error rate remain downstream; ENG-200 freezes only its causal boundary.",
+    "Teacher-generation cost, Qwen token cost, router latency and failure rates remain WP-006/WP-007 inputs before confirmatory inclusion.",
+    "The unrelated ENG-153 workflow can fail on later repository heads due to its own attestation assumptions; only the named dedicated ENG-200 run is scoped evidence for this remediation."
   ],
-  "required_independent_review": [
-    "Verify the implementation merge contains exactly the declared routing scope and no hidden domain reasoning.",
-    "Re-run or independently inspect deterministic generation, leakage mutation detection and 80-vector tree/Prolog equivalence.",
-    "Challenge whether the feature contract gives the router outcome-correlated information that would make M19/M20 an unfair baseline.",
-    "Verify M19/M20 held-equal fields and the separation of policy effect from visible schema/name effect.",
-    "Decide whether the synthetic contract is sufficient to accept ENG-200 design, while keeping behavioral empirical work DEV-only and downstream.",
-    "Issue PASS, REVISE or PIVOT in a distinct reviewer session."
+  "required_independent_re_review": [
+    "Verify all six blockers in ENG-200_INDEPENDENT_REVIEW_2026-08-07.md are closed by the merged remediation rather than only asserted in this handoff.",
+    "Re-run or independently inspect the 30-file freeze manifest, deterministic generation and real SWI-Prolog 80-vector equivalence.",
+    "Challenge whether the standalone feature definitions, especially requires_strict_policy, remain target-tool independent in the intended benchmark construction.",
+    "Verify M19/M20/direct-Qwen receive identical typed routing inputs and that raw-question parsing is excluded from the primary contrast.",
+    "Verify the typed capability registry and I/O schemas actually constrain budgets and failure semantics and do not leak canonical capability IDs to Qwen.",
+    "Verify argument binding cannot silently become a treatment-specific source of correct tool calls.",
+    "Issue PASS, REVISE or PIVOT in a new distinct review context; only PASS may move ENG-200 to Done."
   ],
   "recommended_next_state": "In Review"
 }
