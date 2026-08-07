@@ -54,8 +54,12 @@ jobs:
 
       - name: Check client generator style
         run: |
-          ruff check tools/document_evidence/generate_client.py
-          ruff format --diff --check tools/document_evidence/generate_client.py
+          ruff check \
+            tools/document_evidence/generate_client.py \
+            tools/document_evidence/read_plan_openapi_contract.py
+          ruff format --diff --check \
+            tools/document_evidence/generate_client.py \
+            tools/document_evidence/read_plan_openapi_contract.py
 
       - name: Check deterministic client regeneration
         run: python tools/document_evidence/generate_client.py --check
