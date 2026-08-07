@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+  "cases": [
+    {"case_id":"train-route-001","question":"Check the claim in the requested scope and version.","features":{"goal_class":"claim_resolution","has_scope":true,"has_version":true,"asks_write":false,"requires_strict_policy":false},"expected_capability":"db.resolve_claim"},
+    {"case_id":"train-route-002","question":"Resolve this claim under strict policy rules.","features":{"goal_class":"claim_resolution","has_scope":true,"has_version":true,"asks_write":false,"requires_strict_policy":true},"expected_capability":"prolog.resolve_epistemic"},
+    {"case_id":"train-route-003","question":"Show the source-linked records.","features":{"goal_class":"provenance_lookup","has_scope":true,"has_version":true,"asks_write":false,"requires_strict_policy":false},"expected_capability":"db.lookup_provenance"},
+    {"case_id":"train-route-004","question":"Compare the observed value with the threshold.","features":{"goal_class":"numeric_threshold","has_scope":false,"has_version":false,"asks_write":false,"requires_strict_policy":false},"expected_capability":"python.threshold_check"},
+    {"case_id":"train-route-005","question":"Explain the structured result.","features":{"goal_class":"explanation","has_scope":false,"has_version":false,"asks_write":false,"requires_strict_policy":false},"expected_capability":"prompt.explain_result"},
+    {"case_id":"dev-route-001","question":"Check a claim but the scope is not supplied.","features":{"goal_class":"claim_resolution","has_scope":false,"has_version":true,"asks_write":false,"requires_strict_policy":false},"expected_capability":"clarification.missing_scope"},
+    {"case_id":"dev-route-002","question":"Check a claim but the version is not supplied.","features":{"goal_class":"claim_resolution","has_scope":true,"has_version":false,"asks_write":false,"requires_strict_policy":false},"expected_capability":"clarification.missing_version"},
+    {"case_id":"dev-route-003","question":"Modify the stored rule.","features":{"goal_class":"claim_resolution","has_scope":true,"has_version":true,"asks_write":true,"requires_strict_policy":true},"expected_capability":"reject.unsupported_write"},
+    {"case_id":"dev-route-004","question":"Do something outside the declared capabilities.","features":{"goal_class":"other","has_scope":false,"has_version":false,"asks_write":false,"requires_strict_policy":false},"expected_capability":"clarification.unsupported_goal"}
+  ]
+}
