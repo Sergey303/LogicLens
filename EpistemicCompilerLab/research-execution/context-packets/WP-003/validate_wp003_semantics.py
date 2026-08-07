@@ -20,6 +20,7 @@ SCREENING = PACKET / "SCREENING_LEDGER_2026-08-07.csv"
 ROUNDS = PACKET / "SATURATION_ROUNDS_2026-08-07.csv"
 STRUCTURED = PACKET / "NEAREST_WORK_STRUCTURED_2026-08-07.csv"
 RANKING_RULE = PACKET / "NEAREST_RANKING_RULE_2026-08-07.md"
+TRANSFER_CONTROLS = PACKET / "TRANSFER_LADDER_CONTROLS_2026-08-07.csv"
 
 SCORES = {"yes", "partial", "no", "unclear"}
 DIMENSIONS = [
@@ -35,7 +36,16 @@ REQUIRED_NEAREST = [
     "rank", "source_id", "title", "exact_task", "model_scale", "weights_updated",
     "runtime", "baselines", "data", "evaluation", "distinction_from_flagship", "evidence",
 ]
+REQUIRED_TRANSFER_FIELDS = [
+    "source_id", "family", "exact_task", "model_scale", "weights_updated",
+    "runtime_or_mechanism", "baselines_or_contrast", "data", "evaluation",
+    "occupied_claim", "flagship_role", "evidence",
+]
 ANCHORS = ["RW-042", "RW-038", "RW-039"]
+TRANSFER_CONTROL_IDS = {
+    "RW-052", "RW-053", "RW-035", "RW-054",
+    "RW-055", "RW-056", "RW-057", "RW-058",
+}
 PROHIBITED_POSITIVE = [
     re.compile(r"\bwe\s+(?:are|introduce|present)\s+(?:the\s+)?first\b", re.I),
     re.compile(r"\bour\s+(?:method|approach|architecture)\s+is\s+unique\b", re.I),
@@ -56,7 +66,10 @@ def rows(path: Path) -> list[dict[str, str]]:
 
 
 def required_files() -> None:
-    for path in (MATRIX, LOG, BOUNDARY, NEAREST_MD, LEDGER, SCREENING, ROUNDS, STRUCTURED, RANKING_RULE):
+    for path in (
+        MATRIX, LOG, BOUNDARY, NEAREST_MD, LEDGER, SCREENING, ROUNDS,
+        STRUCTURED, RANKING_RULE, TRANSFER_CONTROLS,
+    ):
         if not path.is_file():
             raise ContractError(f"missing required artifact: {path}")
 
@@ -84,6 +97,9 @@ def validate_matrix() -> tuple[list[dict[str, str]], set[str]]:
         for field in required:
             if not row.get(field, "").strip():
                 raise ContractError(f"{row.get('source_id')}: missing matrix field {field}")
+    missing_controls = TRANSFER_CONTROL_IDS - set(ids)
+    if missing_controls:
+        raise ContractError(f"matrix missing transfer-ladder controls: {sorted(missing_controls)}")
     return matrix, set(ids)
 
 
@@ -136,6 +152,23 @@ def validate_nearest(matrix_ids: set[str]) -> set[str]:
     return set(ids)
 
 
+def validate_transfer_controls(matrix_ids: set[str]) -> None:
+    controls = rows(TRANSFER_CONTROLS)
+    ids = [row.get("source_id", "") for row in controls]
+    unique(ids, "transfer control source_id")
+    control_ids = set(ids)
+    missing = TRANSFER_CONTROL_IDS - control_ids
+    if missing:
+        raise ContractError(f"transfer control table missing mandatory IDs: {sorted(missing)}")
+    extra_unknown = control_ids - matrix_ids
+    if extra_unknown:
+        raise ContractError(f"transfer control table references unknown IDs: {sorted(extra_unknown)}")
+    for row in controls:
+        for field in REQUIRED_TRANSFER_FIELDS:
+            if not row.get(field, "").strip():
+                raise ContractError(f"{row.get('source_id')}: missing transfer-control field {field}")
+
+
 def validate_screening_and_rounds(matrix_ids: set[str]) -> None:
     screening = rows(SCREENING)
     candidate_ids = [row.get("candidate_id", "") for row in screening]
@@ -157,9 +190,16 @@ def validate_screening_and_rounds(matrix_ids: set[str]) -> None:
             raise ContractError(f"{row['candidate_id']}: evidence locator missing")
 
     rounds = rows(ROUNDS)
-    if len(rounds) < 2:
-        raise ContractError("at least two fresh saturation rounds required")
+    by_id = {row.get("round_id", ""): row for row in rounds}
+    for old in ("Q11", "Q12"):
+        if old not in by_id:
+            raise ContractError(f"missing superseded reproducible round {old}")
+        if by_id[old].get("saturation_usable", "").strip().lower() != "no":
+            raise ContractError(f"{old}: must be superseded after transfer-ladder expansion")
     latest = rounds[-2:]
+    latest_ids = [row.get("round_id", "") for row in latest]
+    if latest_ids != ["Q13", "Q14"]:
+        raise ContractError(f"latest saturation rounds must be Q13/Q14, got {latest_ids}")
     for row in latest:
         if row.get("saturation_usable", "").strip().lower() != "yes":
             raise ContractError(f"{row['round_id']}: not usable for saturation")
@@ -193,10 +233,14 @@ def validate_search_log(matrix_count: int, nearest_ids: set[str]) -> None:
     as_of = scalar(r"^as_of:\s*['\"]?([^'\"\n]+)", text, "as_of")
     if as_of.strip() < "2026-08-07":
         raise ContractError(f"search log is stale: as_of={as_of}")
-    if "Q11" not in text or "Q12" not in text:
-        raise ContractError("search log must record fresh Q11/Q12 replacement rounds")
-    if "legacy" not in text.lower() or "Q1-Q10" not in text:
-        raise ContractError("search log must state that legacy Q1-Q10 are not reproducible saturation evidence")
+    for token in ("Q13", "Q14", "latest_usable_saturation_rounds", "superseded_reproducible_rounds"):
+        if token not in text:
+            raise ContractError(f"search log missing transfer-ladder saturation token: {token}")
+    if "Q11" not in text or "Q12" not in text or "superseded" not in text.lower():
+        raise ContractError("search log must preserve Q11/Q12 as superseded reproducible rounds")
+    for control_id in sorted(TRANSFER_CONTROL_IDS):
+        if control_id not in text:
+            raise ContractError(f"search log omits mandatory transfer control {control_id}")
     match = re.search(r"^nearest_source_ids:\s*\[([^\]]+)\]", text, re.M)
     if not match:
         raise ContractError("search log nearest_source_ids missing")
@@ -205,6 +249,18 @@ def validate_search_log(matrix_count: int, nearest_ids: set[str]) -> None:
         raise ContractError("search log omits mandatory architecture anchors")
     if not logged <= nearest_ids:
         raise ContractError(f"search log nearest IDs absent from structured table: {sorted(logged-nearest_ids)}")
+
+
+def validate_boundary_scope() -> None:
+    text = BOUNDARY.read_text(encoding="utf-8")
+    mandatory_tokens = [
+        "SOP-Agent", "PA-Tool", "SmartAD", "AgenticQwen", "REDI",
+        "decision graph", "schema", "teacher-generated", "ENG-200", "ENG-202",
+        "Q13", "Q14", "fixed-weight", "authoritative semantic-result placement",
+    ]
+    missing = [token for token in mandatory_tokens if token.lower() not in text.lower()]
+    if missing:
+        raise ContractError(f"novelty boundary missing scope-refresh concepts: {missing}")
 
 
 def validate_priority_language() -> None:
@@ -229,11 +285,15 @@ def main() -> int:
     matrix, matrix_ids = validate_matrix()
     validate_dimension_ledger(matrix_ids)
     nearest_ids = validate_nearest(matrix_ids)
+    validate_transfer_controls(matrix_ids)
     validate_screening_and_rounds(matrix_ids)
     validate_search_log(len(matrix), nearest_ids)
+    validate_boundary_scope()
     validate_priority_language()
-    print(f"WP-003 semantic contract passed: {len(matrix)} primary sources, {len(nearest_ids)} structured comparisons")
-    print("Fresh Q11/Q12 saturation rounds are reproducible and contain zero five-of-seven matches")
+    print(f"WP-003 semantic contract passed: {len(matrix)} primary sources, {len(nearest_ids)} core structured comparisons")
+    print(f"Transfer-ladder controls passed: {len(TRANSFER_CONTROL_IDS)} mandatory controls")
+    print("Fresh Q13/Q14 saturation rounds are reproducible and contain zero five-of-seven matches")
+    print("Q11/Q12 are preserved as superseded reproducible rounds after ENG-200/201/202 scope expansion")
     print("This validator does not constitute independent novelty acceptance or GATE-001 approval")
     return 0
 
