@@ -10,6 +10,7 @@ internal static class DocumentEvidenceReadPlanEndpoints
         Guid workspaceId,
         Guid revisionId,
         HttpRequest request,
+        HttpResponse response,
         [FromServices] IDocumentEvidenceReadPlanApiOperations operations,
         CancellationToken cancellationToken
     )
@@ -22,6 +23,7 @@ internal static class DocumentEvidenceReadPlanEndpoints
                 revisionId,
                 cancellationToken
             );
+            response.Headers.CacheControl = "no-store";
             return Results.Created(DocumentEvidenceApiV1.ReadPlan(workspaceId, revisionId), result);
         }
         catch (DocumentEvidenceApiException exception)
@@ -44,6 +46,7 @@ internal static class DocumentEvidenceReadPlanEndpoints
                 DocumentEvidenceRequestHeaders.ReadPlanToken(request),
                 cancellationToken
             );
+            response.Headers.CacheControl = "private, no-store";
             response.ContentLength = result.SizeBytes;
             response.Headers[DocumentEvidenceApiV1.ContentSha256Header] = result.ContentSha256;
             return Results.Stream(result.Content, result.MediaType);
