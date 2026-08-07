@@ -6,14 +6,26 @@ import yaml
 ROOT = Path(__file__).resolve().parent
 PACKAGE = ROOT.parent
 REGISTRY = PACKAGE / "ROUTING_CAPABILITY_REGISTRY.yaml"
+IO_SCHEMAS = PACKAGE / "CAPABILITY_IO_SCHEMAS.json"
 OUT = ROOT / "generated"
+
+
+def resolve_schema_ref(ref: str, schemas: dict) -> dict:
+    prefix = "CAPABILITY_IO_SCHEMAS.json#/capabilities/"
+    if not ref.startswith(prefix):
+        raise ValueError(f"unsupported schema ref: {ref}")
+    tail = ref[len(prefix):]
+    capability_id, kind = tail.rsplit("/", 1)
+    return schemas["capabilities"][capability_id][kind]
 
 
 def build(surface: str) -> bytes:
     registry = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
+    schemas = json.loads(IO_SCHEMAS.read_text(encoding="utf-8"))
     key = "neutral_surface" if surface == "neutral" else "schema_adapted_dev_surface"
+
     payload = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "surface": surface,
         "capabilities": [
             {
@@ -21,9 +33,12 @@ def build(surface: str) -> bytes:
                 "kind": item["kind"],
                 "label": item[key]["label"],
                 "description": item[key]["description"],
-                "input_fields": item["input_fields"],
-                "result_contract": item["result_contract"],
+                "input_schema": resolve_schema_ref(item["input_schema_ref"], schemas),
+                "result_schema": resolve_schema_ref(item["result_schema_ref"], schemas),
+                "provenance_required": item["provenance_required"],
                 "side_effects": item["side_effects"],
+                "tool_budget": item["tool_budget"],
+                "failure_semantics": item["failure_semantics"],
             }
             for item in registry["capabilities"]
         ],
