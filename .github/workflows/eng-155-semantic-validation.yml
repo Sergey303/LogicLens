@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install validator dependencies
+        run: python -m pip install --disable-pip-version-check "PyYAML==6.0.2"
       - name: Artifact-level WP-003 validation
         run: |
           python EpistemicCompilerLab/research-execution/scripts/validate_related_work.py \
