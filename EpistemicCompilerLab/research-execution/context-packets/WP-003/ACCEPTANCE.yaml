@@ -1,4 +1,4 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 work_package_id: WP-003
 linear_issue: ENG-155
 acceptance_gate: GATE-001
@@ -12,7 +12,7 @@ command_contracts:
   - WP-003
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
-- name: package_acceptance_1
+- name: package_acceptance_artifact
   working_directory: .
   argv:
   - python
@@ -32,22 +32,30 @@ command_contracts:
   - '30'
   - --min-nearest
   - '3'
-  source_command: python research-execution/scripts/validate_related_work.py --matrix
-    research-execution/RELATED_WORK_MATRIX.csv --log research-execution/RELATED_WORK_SEARCH_LOG.yaml
-    --min-primary 30 --min-nearest 3
-  availability_contract: The versioned wrapper is available before task start. The
-    exact source command is retained and becomes mandatory after its declared deliverables
-    exist.
+  source_command: python research-execution/scripts/validate_related_work.py --matrix research-execution/RELATED_WORK_MATRIX.csv --log research-execution/RELATED_WORK_SEARCH_LOG.yaml --min-primary 30 --min-nearest 3
+- name: package_acceptance_semantic
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_semantics.py
+  stage: post_completion
+  must_exit_zero_when: >-
+    matrix identities and URLs are unique; every included source has a seven-dimension
+    score; the structured nearest comparison is complete; mandatory architecture and
+    causal-control comparisons are present; screened exclusions and fresh Q11/Q12
+    counts are reproducible; the search log is current and cross-file counts agree;
+    and prohibited positive priority wording is absent
 checks:
   artifact:
-  - 'All declared deliverables exist and validate: matrix, novelty boundary, nearest
-    work, search log.'
+  - 'All declared deliverables exist and validate: matrix, novelty boundary, nearest work, search log, dimension ledger, screening ledger, structured nearest table, ranking rule, replacement saturation rounds, semantic validator.'
   scientific:
-  - Every novelty sentence is a positive comparison and search saturation is documented.
+  - Every novelty sentence is a positive comparison and saturation is supported only by the fresh reproducible replacement rounds.
   independence:
-  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions
-    and declare prior roles/conflicts.
+  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
   adversarial:
-  - Exact prior work and convenient-baseline selection are actively attacked.
+  - SIGIL, SkillSmith, ontology-to-tools, FACTS, Skill Discovery, solver predecessors, answer-copying and layer-localization alternatives are actively attacked.
   reproducibility:
-  - A clean reviewer can repeat the commands from hashes and manifests.
+  - A clean reviewer can repeat both artifact-level and semantic commands from the repository checkout and frozen ledgers.
+notes:
+- Passing either validator does not accept novelty or authorize GATE-001; independent review remains mandatory.
+- Legacy Q1-Q10 are retained as search history but are not valid replacement-round saturation evidence.
