@@ -2,7 +2,7 @@
 
 Date frozen: 2026-08-07
 
-This rule exists so `nearest` is not assigned by rhetoric, citation count, or whichever paper is convenient for the flagship claim.
+This rule exists so `nearest` is not assigned by rhetoric, citation count, or whichever paper is convenient for the flagship claim. The output is an **adversarial comparison priority**, not a claim that one scalar perfectly captures scientific similarity.
 
 ## 1. Eligibility gate
 
@@ -52,15 +52,23 @@ If scores tie, compare in this order:
 5. more recent primary-source version date;
 6. lexicographically smaller `source_id` for deterministic final ordering.
 
-## 4. Mandatory architecture anchors
+## 4. Mandatory architecture anchors and final selection
 
-The ranking must not hide materially occupied architecture behind a numerical score. Until a later independent review changes this based on primary-source evidence, the comparison must include these three architecture anchors in the top comparison set:
+A pure scalar score can hide a qualitatively distinct occupied architecture. The final comparison set is therefore selected deterministically in two stages.
 
-- RW-042 SIGIL — typed AG-IR, prose-vs-harness causal comparison, deterministic lowering, model/code ownership and provenance;
-- RW-038 SkillSmith — offline compiled executable boundary contracts and stronger-model artifact reuse across runtime models;
-- RW-039 Ontology-to-tools — formal ontological semantics compiled into executable LLM tool interfaces.
+**Stage A — reserve three architecture-anchor slots, in this order:**
 
-This is an **adversarial inclusion floor**, not a producer assertion that the three are ordered by scientific importance.
+1. RW-042 SIGIL — typed AG-IR, prose-vs-harness causal comparison, deterministic lowering, model/code ownership and provenance;
+2. RW-038 SkillSmith — offline compiled executable boundary contracts and stronger-model artifact reuse across runtime models;
+3. RW-039 Ontology-to-tools — formal ontological semantics compiled into executable LLM tool interfaces.
+
+These are mandatory because the independent review requires the surviving claim to be attacked against all three qualitatively different occupied territories: typed harness compilation, small/efficient-model compiler-runtime reuse, and executable formal-domain semantics.
+
+**Stage B — fill remaining comparison slots** from eligible non-anchor sources in descending distance score using the tie breakers above.
+
+The anchor reservation is an **adversarial inclusion floor**, not a producer assertion that RW-039 has a larger scalar similarity score than every procedural compiler paper. Both the raw score and the anchor rule remain visible so a reviewer can challenge either choice.
+
+Mandatory control sources such as RW-050 are compared in the causal-design/control section even when they are not eligible for the compiler/runtime nearest list.
 
 ## 5. Saturation rule
 
