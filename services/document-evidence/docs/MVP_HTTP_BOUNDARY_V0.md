@@ -47,8 +47,12 @@ object metadata but no storage key or path. Issuance executes:
 authorization -> revision metadata -> revocation/supersede check -> signed plan
 ```
 
-Execution never accepts the token in a URL. The generated client sends it only in
-`X-Read-Plan-Token`, and the service executes:
+Execution never accepts the token in a URL. The generated client sends it only in the bounded
+`X-Read-Plan-Token` request header, and the OpenAPI generator fails closed if that credential drifts
+to another location or a credential-bearing `relativeUrl` reappears. Infrastructure must redact this
+header anywhere request headers are logged.
+
+The service executes:
 
 ```text
 signature/expiry/actor check
@@ -59,15 +63,19 @@ signature/expiry/actor check
 ```
 
 The returned stream owns the HTTP response lifetime. Closing the caller stream releases the response;
-the response is not disposed before the caller can read it.
+the response is not disposed before the caller can read it. Token-bearing issue responses use
+`Cache-Control: no-store`; binary content responses use `Cache-Control: private, no-store` so a shared
+HTTP cache cannot reuse one actor's revision bytes for another request.
 
 ## Executable contracts
 
 - Application contracts prove authorization ordering, expiry, actor binding, stale snapshot rejection,
   and revocation/supersede failure before object access.
 - Security contracts prove token tamper rejection and bounded HMAC payload validation.
+- The OpenAPI validator proves header-only bounded credential transport and rejects a URL-bearing token
+  contract.
 - Generated client contracts prove header-only token transport and response-owned streaming.
-- Real HTTP contracts exercise issue and content routes through the generated client.
+- Real HTTP contracts exercise issue/content routes and prove read-plan responses are non-cacheable.
 - PostgreSQL contracts derive supersede state from the current document revision and preserve
   workspace isolation.
 
