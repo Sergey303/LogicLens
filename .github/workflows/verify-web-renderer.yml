@@ -44,6 +44,12 @@ jobs:
       - name: Install committed dependency graph
         run: npm ci --ignore-scripts --no-audit --no-fund
 
+      - name: Reject high or critical npm advisories
+        run: npm audit --audit-level=high
+
+      - name: Verify npm registry signatures and provenance
+        run: npm audit signatures
+
       - name: Verify dependency tree
         run: npm ls --all
 
