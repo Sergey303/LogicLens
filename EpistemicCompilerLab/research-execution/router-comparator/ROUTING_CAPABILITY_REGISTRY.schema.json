@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:eng-200:routing-capability-registry:v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "linear_issue",
+    "scope",
+    "canonical_id_contract",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.1.0"
+    },
+    "linear_issue": {
+      "const": "ENG-200"
+    },
+    "scope": {
+      "const": "TRAIN_DEV_ONLY"
+    },
+    "canonical_id_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_references",
+        "qwen_outputs",
+        "visible_labels_are_treatment_factor",
+        "canonical_ids_hidden_from_qwen"
+      ],
+      "properties": {
+        "policy_references": {
+          "const": "canonical_id_only"
+        },
+        "qwen_outputs": {
+          "const": "handle_only"
+        },
+        "visible_labels_are_treatment_factor": {
+          "const": true
+        },
+        "canonical_ids_hidden_from_qwen": {
+          "const": true
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "canonical_id",
+          "handle",
+          "kind",
+          "version",
+          "available",
+          "side_effects",
+          "provenance_required",
+          "input_schema_ref",
+          "result_schema_ref",
+          "tool_budget",
+          "failure_semantics",
+          "neutral_surface",
+          "schema_adapted_dev_surface"
+        ],
+        "properties": {
+          "canonical_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "handle": {
+            "type": "string",
+            "pattern": "^cap_[0-9]{2}$"
+          },
+          "kind": {
+            "enum": [
+              "view_id",
+              "procedure_id",
+              "query_template_id",
+              "prolog_goal_id",
+              "python_tool_id",
+              "prompt_id",
+              "clarification_action",
+              "reject_action"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "side_effects": {
+            "const": "none"
+          },
+          "provenance_required": {
+            "type": "boolean"
+          },
+          "input_schema_ref": {
+            "type": "string",
+            "pattern": "^CAPABILITY_IO_SCHEMAS\\.json#/capabilities/.+/input$"
+          },
+          "result_schema_ref": {
+            "type": "string",
+            "pattern": "^CAPABILITY_IO_SCHEMAS\\.json#/capabilities/.+/result$"
+          },
+          "tool_budget": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "max_invocations",
+              "timeout_ms",
+              "max_output_bytes",
+              "max_rows",
+              "max_output_tokens"
+            ],
+            "properties": {
+              "max_invocations": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "timeout_ms": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 60000
+              },
+              "max_output_bytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1048576
+              },
+              "max_rows": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000
+              },
+              "max_output_tokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4096
+              }
+            }
+          },
+          "failure_semantics": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "fail_closed",
+              "retry_policy",
+              "codes"
+            ],
+            "properties": {
+              "fail_closed": {
+                "const": true
+              },
+              "retry_policy": {
+                "const": "none"
+              },
+              "codes": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z][A-Z0-9_]+$"
+                }
+              }
+            }
+          },
+          "neutral_surface": {
+            "$ref": "#/$defs/surface"
+          },
+          "schema_adapted_dev_surface": {
+            "$ref": "#/$defs/surface"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "description"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
