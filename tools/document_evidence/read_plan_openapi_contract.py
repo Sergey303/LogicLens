@@ -5,6 +5,9 @@ from __future__ import annotations
 
 from typing import cast
 
+TOKEN_MIN_LENGTH = 1
+TOKEN_MAX_LENGTH = 4096
+
 
 def _mapping(value: object, label: str) -> dict[str, object]:
     if not isinstance(value, dict):
@@ -30,8 +33,8 @@ def validate_read_plan_security(spec: dict[str, object]) -> None:
         token.get("name") != "X-Read-Plan-Token"
         or token.get("in") != "header"
         or token.get("required") is not True
-        or token_schema.get("minLength") != 1
-        or token_schema.get("maxLength") != 4096
+        or token_schema.get("minLength") != TOKEN_MIN_LENGTH
+        or token_schema.get("maxLength") != TOKEN_MAX_LENGTH
     ):
         message = "Read-plan credential must remain a required bounded header."
         raise ValueError(message)
