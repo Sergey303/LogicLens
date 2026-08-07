@@ -1,0 +1,30 @@
+name: ENG-155 semantic validation
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/eng-155-semantic-validation.yml"
+      - "EpistemicCompilerLab/research-execution/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Artifact-level WP-003 validation
+        run: |
+          python EpistemicCompilerLab/research-execution/scripts/validate_related_work.py \
+            --matrix EpistemicCompilerLab/research-execution/RELATED_WORK_MATRIX.csv \
+            --log EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG.yaml \
+            --min-primary 30 \
+            --min-nearest 3
+      - name: Semantic WP-003 validation
+        run: python EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_semantics.py
