@@ -1,0 +1,144 @@
+schema_version: 1.0.0
+linear_issue: ENG-200
+scope: TRAIN_DEV_ONLY
+canonical_id_contract:
+  policy_references: canonical_id_only
+  qwen_outputs: handle_only
+  visible_labels_are_treatment_factor: true
+  canonical_ids_hidden_from_qwen: true
+capabilities:
+  - canonical_id: db.resolve_claim
+    handle: cap_01
+    kind: procedure_id
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: [proposition_id, scope_id, version]
+    result_contract: typed_relational_result
+    provenance_required: true
+    neutral_surface:
+      label: Claim resolver
+      description: Resolve one declared claim for a supplied scope and version.
+    schema_adapted_dev_surface:
+      label: Check a scoped claim
+      description: Use when the request asks whether one declared claim holds for a particular scope and version.
+  - canonical_id: db.lookup_provenance
+    handle: cap_02
+    kind: view_id
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: [source_id, scope_id, version]
+    result_contract: typed_provenance_rows
+    provenance_required: true
+    neutral_surface:
+      label: Evidence lookup
+      description: Retrieve source-linked records for a supplied source, scope and version.
+    schema_adapted_dev_surface:
+      label: Find supporting records
+      description: Use when the request asks which source records are attached to an item in a scope and version.
+  - canonical_id: prolog.resolve_epistemic
+    handle: cap_03
+    kind: prolog_goal_id
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: [proposition_id, scope_id, version]
+    result_contract: typed_epistemic_frame
+    provenance_required: true
+    neutral_surface:
+      label: Policy resolver
+      description: Resolve a declared claim through the strict policy contract.
+    schema_adapted_dev_surface:
+      label: Resolve claim with policy rules
+      description: Use when the request explicitly requires strict policy, conflict handling, or an auditable rule trace.
+  - canonical_id: python.threshold_check
+    handle: cap_04
+    kind: python_tool_id
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: [value, threshold, comparator]
+    result_contract: typed_numeric_decision
+    provenance_required: false
+    neutral_surface:
+      label: Threshold check
+      description: Compare a supplied numeric value with a supplied threshold.
+    schema_adapted_dev_surface:
+      label: Compare a value to a threshold
+      description: Use for deterministic greater-than, less-than, or equal-to threshold checks.
+  - canonical_id: prompt.explain_result
+    handle: cap_05
+    kind: prompt_id
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: [structured_result]
+    result_contract: explanation_text
+    provenance_required: false
+    neutral_surface:
+      label: Result explainer
+      description: Explain a structured result without changing it.
+    schema_adapted_dev_surface:
+      label: Explain an existing result
+      description: Use only after a structured result already exists and the request asks for an explanation.
+  - canonical_id: clarification.missing_scope
+    handle: cap_06
+    kind: clarification_action
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: []
+    result_contract: clarification_request
+    provenance_required: false
+    neutral_surface:
+      label: Ask for scope
+      description: Request the missing scope required by the selected capability.
+    schema_adapted_dev_surface:
+      label: Ask which scope applies
+      description: Use when the requested operation cannot be executed safely without a scope.
+  - canonical_id: clarification.missing_version
+    handle: cap_07
+    kind: clarification_action
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: []
+    result_contract: clarification_request
+    provenance_required: false
+    neutral_surface:
+      label: Ask for version
+      description: Request the missing version required by the selected capability.
+    schema_adapted_dev_surface:
+      label: Ask which version applies
+      description: Use when the requested operation cannot be executed safely without a version.
+  - canonical_id: clarification.unsupported_goal
+    handle: cap_08
+    kind: clarification_action
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: []
+    result_contract: clarification_request
+    provenance_required: false
+    neutral_surface:
+      label: Clarify request
+      description: Ask for a supported goal when the request cannot be routed.
+    schema_adapted_dev_surface:
+      label: Clarify the requested operation
+      description: Use when no declared capability matches the requested goal.
+  - canonical_id: reject.unsupported_write
+    handle: cap_09
+    kind: reject_action
+    version: 1.0.0
+    available: true
+    side_effects: none
+    input_fields: []
+    result_contract: rejected_request
+    provenance_required: false
+    neutral_surface:
+      label: Decline modification
+      description: Refuse state-changing operations in this read-only routing study.
+    schema_adapted_dev_surface:
+      label: Reject write or mutation request
+      description: Use when the request would modify database, policy, files, or other protected state.
