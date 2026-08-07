@@ -1,40 +1,64 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 linear_issue: ENG-200
 scope: TRAIN_DEV_ONLY
 normative_policy_source: prototype/policy.ir.json
+feature_contract:
+  path: ROUTING_FEATURE_CONTRACT.json
+  id: eng200.routing-features.v1
+  sha256: 49ef3a01e7977a44abe4dcc3878d102416e2650218e526d98389e044c6bab92e
+  primary_rule: M19, M20 and direct_qwen_selection receive the exact same precomputed typed feature vector bytes
+routing_scope:
+  selection_unit: capability_only
+  argument_binding_owner: independent_held_equal_adapter
+  argument_binding_contract: ARGUMENT_BINDING_CONTRACT.md
+  argument_errors_scored_separately: true
 candidate_modes:
   M19:
     name: Executed Teacher Router
     fixed_weight: true
     routing_owner: deterministic_runtime
+    routing_input: same_frozen_typed_feature_vector
     qwen_sees_policy: false
     qwen_selects_capability: false
-    qwen_visible_surface: selected_capability_result_contract
+    qwen_visible_surface_after_routing: selected_capability_result_contract
     confirmatory_status: proposed_dev_first
   M20:
     name: Explained Teacher Router
     fixed_weight: true
     routing_owner: qwen_following_frozen_policy
+    routing_input: same_frozen_typed_feature_vector
     qwen_sees_policy: true
     qwen_selects_capability: true
-    qwen_visible_surface: neutral_capability_catalogue_plus_policy_explanation
+    qwen_visible_surface: same_typed_features_plus_neutral_capability_catalogue_plus_policy_explanation
     confirmatory_status: proposed_dev_first
 controls:
   direct_qwen_selection:
+    routing_input: same_frozen_typed_feature_vector
     policy_visible: false
     catalogue_surface: neutral
+    argument_binding: same_independent_held_equal_adapter
     purpose: isolate teacher-routing value
   human_static_router:
     required_if_feasible: true
     same_feature_contract: true
     same_capability_registry: true
+    same_argument_binding: true
     purpose: conventional SOP/rule-router baseline
   schema_surface_ablation:
     scope: DEV_ONLY
+    routing_input: same_frozen_typed_feature_vector
     neutral_surface: primary
     adapted_surface: separate_factor
     policy_bytes_held_equal: true
     canonical_ids_held_equal: true
+    typed_io_schemas_held_equal: true
+    budgets_held_equal: true
+    failure_semantics_held_equal: true
+  raw_question_feature_extraction_ablation:
+    scope: DEV_ONLY_SEPARATE_ABLATION
+    primary_contrast_member: false
+    input: raw_question_plus_same_policy_and_catalogue
+    purpose: measure feature extraction plus routing separately; never interpret as pure M19-vs-M20 policy following
 representation_ablation:
   decision_graph:
     executor: prototype/decision_graph.py
@@ -44,9 +68,10 @@ representation_ablation:
     generated_from_same_ir: true
     qwen_effect_claim_allowed: false
 failure_layers:
-  - feature_extraction
-  - route_selection
-  - capability_availability
-  - tool_execution
-  - result_transport
-  - rendering
+- feature_extraction
+- route_selection
+- argument_binding
+- capability_availability
+- tool_execution
+- result_transport
+- rendering
