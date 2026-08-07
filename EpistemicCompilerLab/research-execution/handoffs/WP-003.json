@@ -3,20 +3,20 @@
   "linear_issue": "ENG-155",
   "status": "ready_for_review",
   "identity_and_session": {
-    "producer_identity": "OpenAI GPT-5.6 Thinking — WP-003 producer/remediation session",
-    "producer_session": "ChatGPT Polar based project / WP-003 remediation after independent REVISE / 2026-08-07",
-    "reviewer_identity": "UNASSIGNED independent Research Program Architect",
+    "producer_identity": "OpenAI GPT-5.6 Sol — WP-003 scope-refresh producer",
+    "producer_session": "ChatGPT Polar based project / WP-003 Q13-Q14 remediation after independent re-review round 2 / 2026-08-07",
+    "reviewer_identity": "UNASSIGNED independent Research Program Architect for round 3",
     "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
     "gatekeeper_identity": "UNASSIGNED Senior Adversarial Methodology Reviewer",
     "gatekeeper_session": "MUST DIFFER FROM PRODUCER AND REVIEWER SESSIONS",
     "prior_roles": [
-      "Producer of DSL-B1/C0/D0/D1/D2 pilot artifacts",
-      "Producer of WP-002 claim-evidence contract",
-      "Producer and refresher of WP-003 related-work artifacts",
-      "Producer of the 2026-08-07 remediation responding to ENG-155_INDEPENDENT_REVIEW_2026-08-06.md"
+      "Producer of earlier LogicLens strict-epistemic engineering artifacts",
+      "Producer/refresher of WP-003 related-work artifacts",
+      "Producer of the first B1-B6 WP-003 remediation",
+      "Producer of the bounded Q13/Q14 scope refresh requested by independent re-review round 2"
     ],
-    "conflict_declaration": "Producer is conflicted from independent novelty acceptance and GATE-001 decisions. Technical validator PASS is not scientific acceptance.",
-    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was used; pilot scores were not used as confirmatory evidence; snippet-only evidence was not accepted as the basis for inclusion or comparison."
+    "conflict_declaration": "Producer is conflicted from independent novelty acceptance and GATE-001 decisions. GitHub validation PASS is technical producer evidence only.",
+    "forbidden_context_attestation": "No future HOLDOUT or REPLICATION content was accessed or used; pilot scores were not used as confirmatory evidence; included and excluded works were dispositioned from primary proceedings/preprint sources rather than search snippets alone."
   },
   "input_hashes_verified": true,
   "input_hashes": {
@@ -33,105 +33,111 @@
     "EpistemicCompilerLab/research-execution/context-packets/WP-003/DIMENSION_LEDGER_ALL_2026-08-07.csv",
     "EpistemicCompilerLab/research-execution/context-packets/WP-003/NEAREST_WORK_STRUCTURED_2026-08-07.csv",
     "EpistemicCompilerLab/research-execution/context-packets/WP-003/NEAREST_RANKING_RULE_2026-08-07.md",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/TRANSFER_LADDER_CONTROLS_2026-08-07.csv",
     "EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_semantics.py"
   ],
   "files_modified": [
     "EpistemicCompilerLab/research-execution/RELATED_WORK_MATRIX.csv",
     "EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG.yaml",
-    "EpistemicCompilerLab/research-execution/NEAREST_PRIOR_WORK.md",
     "EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY.md",
-    "EpistemicCompilerLab/research-execution/context-packets/WP-003/ACCEPTANCE.yaml",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/DIMENSION_LEDGER_ALL_2026-08-07.csv",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/SCREENING_LEDGER_2026-08-07.csv",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/SATURATION_ROUNDS_2026-08-07.csv",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_semantics.py",
     "EpistemicCompilerLab/research-execution/handoffs/WP-003.json"
   ],
   "commands_run": [
-    "Primary-source 2026 refresh across arXiv, ACL Anthology, PMLR/ICML, NeurIPS/OpenReview families on 2026-08-07",
-    "Primary full-text/official-page inspection for SIGIL, SkillSmith, ontology-to-tools, FACTS, Skill Discovery, LINC, Logic-LM, Faithful CoT, SatLM and PAL families",
-    "Fresh Q11 exact-profile causal/interface attack and Q12 post-SIGIL compiler-runtime/offline-artifact chain",
-    "Attempted arXiv PDF screenshot for SkillSmith; web screenshot endpoint returned Cache miss, so PDF-specific facts are bound to primary PDF text locators",
-    "Temporary GitHub PR #72 validation workflow; run 31140043250 established artifact and semantic validator PASS",
-    "Fresh full validation run 31140144239 / job 92748122625: context packet preflight PASS, artifact validator PASS, semantic validator PASS",
-    "Temporary validation PR #72 closed without merge after evidence collection"
+    "Primary-source Q13 refresh across arXiv and ACL Anthology for SOP/decision-graph/symbolic-router/tool-schema-adaptation families on 2026-08-07",
+    "Primary-source Q14 refresh across ACL Anthology for teacher trajectories, agent distillation, Qwen SFT/RL and reinforcement-distillation families on 2026-08-07",
+    "Candidate-level inclusion/exclusion and seven-dimension scoring for Q13/Q14",
+    "Temporary GitHub PR #73 clean-run validation on Ubuntu 24.04 / Python 3.12 with pinned PyYAML 6.0.2",
+    "GitHub Actions run 31142475331 / job 92755061190: context packet preflight PASS, artifact validator PASS, semantic validator PASS",
+    "Temporary validation PR #73 closed without merge after evidence collection"
   ],
   "tests": [
     {
       "name": "context packet preflight",
       "status": "PASS",
-      "evidence": "GitHub Actions run 31140144239 job 92748122625; validate_context_packet.py --package WP-003 completed successfully"
+      "evidence": "GitHub Actions run 31142475331 job 92755061190; validate_context_packet.py --package WP-003 returned PASS with no findings"
     },
     {
       "name": "artifact-level related-work acceptance",
       "status": "PASS",
-      "evidence": "GitHub Actions run 31140144239 job 92748122625; validate_related_work.py returned WP-003 PASS"
+      "evidence": "GitHub Actions run 31142475331 job 92755061190; validate_related_work.py returned WP-003 PASS"
     },
     {
-      "name": "semantic related-work acceptance",
+      "name": "semantic related-work acceptance after transfer-ladder expansion",
       "status": "PASS",
-      "evidence": "GitHub Actions run 31140144239 job 92748122625; semantic contract passed with 51 primary sources and 14 structured comparisons"
+      "evidence": "GitHub Actions run 31142475331 job 92755061190; semantic contract passed with 58 primary sources, 14 core structured comparisons and 8 mandatory transfer-ladder controls"
     },
     {
-      "name": "fresh replacement saturation",
+      "name": "latest saturation scope",
       "status": "PASS",
-      "evidence": "Q11/Q12 candidate ledgers are reproducible and both contain zero sources reaching five strict YES values out of seven; semantic validator checks counts and candidate IDs"
+      "evidence": "Semantic validator requires Q11/Q12 saturation_usable=no and latest usable Q13/Q14; both Q13/Q14 contain zero sources reaching five strict YES dimensions out of seven"
     },
     {
-      "name": "mandatory nearest/control coverage",
+      "name": "router and schema alternative-explanation coverage",
       "status": "PASS",
-      "evidence": "SIGIL, SkillSmith and ontology-to-tools are mandatory architecture anchors; FACTS, Skill Discovery, LINC, Logic-LM, Faithful CoT, SatLM and Readout Shortcut are explicitly compared"
+      "evidence": "RW-052 SOP-Agent and RW-053 PA-Tool are mandatory transfer controls; decision-graph/SOP routing and schema naming are explicitly removed from novelty claims"
+    },
+    {
+      "name": "weight-adaptation boundary coverage",
+      "status": "PASS",
+      "evidence": "RW-035 plus RW-054..RW-058 cover Prolog training, agent trajectory distillation, teacher-generated Qwen SFT, reinforcement distillation, AgenticQwen RL and distillation-induced behavioral convergence"
     },
     {
       "name": "novelty wording boundary",
       "status": "PASS",
-      "evidence": "Broad solver, compiler-runtime, typed-skill, executable-semantics, offline-compilation, layer-diagnosis and priority claims are deleted/narrowed; semantic validator rejects positive first/unique/unprecedented wording"
+      "evidence": "NOVELTY_BOUNDARY.md states ENG-200/201/202 are comparator/boundary regimes and retains only the fixed-weight authoritative semantic-result placement candidate claim"
     }
   ],
   "acceptance_checks": [
     {
       "class": "artifact",
-      "criterion": "All declared deliverables and remediation ledgers exist and validate.",
+      "criterion": "All declared WP-003 artifacts and bounded Q13/Q14 remediation ledgers exist and validate.",
       "status": "PASS",
-      "evidence": "Artifact and semantic validators passed in GitHub Actions run 31140144239"
+      "evidence": "Clean GitHub Actions validation passed in run 31142475331"
     },
     {
       "class": "scientific",
-      "criterion": "At least 30 relevant primary sources, common nearest-work fields, positive-comparison novelty boundary, and reproducible replacement saturation.",
+      "criterion": "Expanded transfer-ladder prior work is screened, occupied broad claims are removed, and latest saturation evidence post-dates ENG-200/201/202 scope expansion.",
       "status": "PASS",
-      "evidence": "51 primary sources; 14 structured comparisons; Q11/Q12 zero five-of-seven matches; broad occupied claims explicitly deleted"
+      "evidence": "58 primary sources; Q13/Q14 latest usable rounds; zero five-of-seven matches; mandatory router/schema/distillation controls frozen"
     },
     {
       "class": "independence",
-      "criterion": "A distinct independent reviewer must evaluate the remediated package and a distinct gatekeeper must decide GATE-001.",
+      "criterion": "A distinct independent reviewer must evaluate this Q13/Q14 remediation and a distinct gatekeeper must decide GATE-001.",
       "status": "BLOCKED",
-      "evidence": "Producer session has completed remediation and is conflicted from reviewing/accepting its own work; independent re-review has not yet occurred"
+      "evidence": "Independent re-review round 2 requested this remediation; the current producer implemented it and cannot issue the round-3 acceptance decision"
     },
     {
       "class": "adversarial",
-      "criterion": "Omitted 2026 compiler/runtime/offline-artifact work, exact-prior alternatives, copying shortcuts and layer-diagnosis alternatives are actively attacked.",
+      "criterion": "Decision-graph/SOP/Prolog routing, schema adaptation, executable programs, teacher-generated Qwen adaptation and distillation-induced imitation are treated as occupied mechanisms or alternative explanations.",
       "status": "PASS",
-      "evidence": "SIGIL is now first architecture anchor; SkillRT/SkCC/Auto/FACTS/Skill Discovery added; Readout Shortcut made a mandatory causal control; PROTEA narrows layer-diagnosis claims"
+      "evidence": "SOP-Agent, PA-Tool, SmartAD, Skill-Aware, REDI, AgenticQwen, Prolog-tool training and When Agents Look the Same are frozen as transfer-ladder controls"
     },
     {
       "class": "reproducibility",
-      "criterion": "A clean reviewer can repeat preflight, artifact validation and semantic validation from frozen ledgers and current repository state.",
+      "criterion": "A clean reviewer can repeat preflight, artifact validation and semantic validation with candidate-level Q13/Q14 ledgers.",
       "status": "PASS",
-      "evidence": "GitHub-hosted Ubuntu/Python 3.12 successfully ran all three commands in run 31140144239"
+      "evidence": "GitHub-hosted Ubuntu 24.04/Python 3.12 executed the complete validation chain successfully in run 31142475331"
     }
   ],
   "known_limitations": [
     "The search is systematic and citation-chained but is not a registered systematic review.",
-    "Provisional saturation is based on fresh replacement Q11/Q12, not legacy Q1-Q10; it is search-coverage evidence rather than proof of absence.",
-    "Search interfaces do not expose stable raw database hit counts; fresh rounds therefore freeze unique primary candidates actually opened and screened.",
+    "Legacy Q1-Q10 are not reproducible saturation evidence; Q11/Q12 are reproducible but superseded by transfer-ladder scope expansion; Q13/Q14 are the latest usable producer-side rounds.",
+    "Search interfaces do not expose stable raw database hit counts; fresh rounds freeze the unique primary candidates actually opened and screened.",
     "Several arXiv works may later receive proceedings versions and require a final pre-submission refresh.",
-    "The SkillSmith primary PDF screenshot endpoint returned Cache miss; primary PDF text was inspected and locators are frozen, but a reviewer may re-open the PDF visually.",
-    "Exact per-experiment model tables for several older PDF papers remain a final-claim-freeze check; the structured table marks those fields without inventing values.",
-    "No producer-side validator or saturation result can establish priority wording or scientific novelty acceptance."
+    "AgenticQwen exact per-model size details are not inferred from the abstract; the control table explicitly leaves exact sizes to primary-paper review rather than inventing values.",
+    "No producer-side validator or saturation result establishes novelty acceptance, priority wording or GATE-001 PASS."
   ],
   "protocol_deviations": [],
   "unexpected_findings": [
-    "SIGIL is materially closer than the previous package recognized: it already combines typed IR, model/code ownership, source provenance, deterministic lowering, and a matched prose-versus-compiled execution comparison.",
-    "SkillRT, SkCC, Auto and related 2026 work show that typed/portable compiler-runtime skill territory is dense rather than represented by a single SkillSmith paper.",
-    "FACTS and Skill Discovery occupy offline deterministic/execution-verified reusable-artifact territory.",
-    "The Readout Shortcut provides direct prior evidence for the answer-copying alternative explanation in fixed 1-3B models.",
-    "The surviving flagship boundary is narrower: authoritative four-state semantic-result placement plus matched no-conclusion/copying controls and an independent layer oracle."
+    "SOP-Agent directly occupies the broad decision-graph/SOP routing mechanism that ENG-200 might otherwise appear to introduce.",
+    "PA-Tool makes tool-schema naming a concrete causal alternative: small-model tool-use gains can arise without training or teacher reasoning.",
+    "SmartAD, Skill-Aware, REDI and AgenticQwen make the teacher-to-small-model weight-adaptation boundary dense rather than hypothetical.",
+    "Distillation-induced tool-use action-graph convergence is measurable and must not be confused with the fixed-weight semantic-placement mechanism.",
+    "The independent re-review round-2 scope refresh did not force a PIVOT of the fixed-weight core claim; it forced stricter boundary accounting around ENG-200/201/202."
   ],
   "recommended_next_state": "review"
 }
