@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-158",
+  "work_package": "WP-006",
+  "status": "ready_for_distinct_independent_statistical_review",
+  "candidate_resolution": {
+    "rule": "The scientific candidate is the first parent of the Git commit that introduced this handoff file.",
+    "reason": "The handoff was committed last after all WP-006 normative artifacts and the final local no-Actions producer preflight."
+  },
+  "identity": {
+    "producer": "OpenAI GPT-5.6 Sol — WP-006 power-design producer",
+    "producer_session": "ChatGPT ENG-158 producer / 2026-08-09",
+    "reviewer": "UNASSIGNED distinct Independent Statistical Reviewer",
+    "reviewer_session_must_differ": true,
+    "producer_may_accept": false,
+    "gatekeeper_must_be_distinct": true
+  },
+  "scope": {
+    "allowed": ["TRAIN", "DEV", "outcome-blind nuisance statistics"],
+    "forbidden": ["HOLDOUT", "REPLICATION", "directional confirmatory effect for power tuning"],
+    "confirmatory_execution_authorized": false
+  },
+  "normative_artifacts": [
+    "EpistemicCompilerLab/research-execution/power-analysis/README.md",
+    "EpistemicCompilerLab/research-execution/power-analysis/POWER_ANALYSIS_PROTOCOL.md",
+    "EpistemicCompilerLab/research-execution/power-analysis/PRIMARY_ANALYSIS_CONTRACT.json",
+    "EpistemicCompilerLab/research-execution/power-analysis/POWER_SCENARIOS.json",
+    "EpistemicCompilerLab/research-execution/power-analysis/BLINDED_NUISANCE_UPDATE_PROTOCOL.json",
+    "EpistemicCompilerLab/research-execution/power-analysis/MULTIPLICITY_AND_MISSINGNESS.md",
+    "EpistemicCompilerLab/research-execution/power-analysis/SIMULATION_PROTOCOL.md",
+    "EpistemicCompilerLab/research-execution/power-analysis/POWER_GATE_INPUT.schema.json",
+    "EpistemicCompilerLab/research-execution/power-analysis/prototype/calculate_power.py",
+    "EpistemicCompilerLab/research-execution/power-analysis/prototype/simulate_power.py",
+    "EpistemicCompilerLab/research-execution/power-analysis/prototype/evaluate_power_gate.py",
+    "EpistemicCompilerLab/research-execution/power-analysis/prototype/validate_wp006_contract.py",
+    "EpistemicCompilerLab/research-execution/power-analysis/prototype/validate_wp006_complete.py",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-006/ACCEPTANCE.v1.0.yaml",
+    "EpistemicCompilerLab/research-execution/power-analysis/ENG-158_PRODUCER_PREFLIGHT_2026-08-09.json"
+  ],
+  "primary_design": {
+    "endpoint": "publication_composite_correctness from accepted WP-005 scorer",
+    "paired": true,
+    "treatment_semantic_id": "authoritative_semantic_result_placement_fixed_weight",
+    "control_semantic_id": "matched_fixed_weight_baseline",
+    "exact_arm_binding": "must come from accepted WP-004 before confirmatory execution; best-DEV selection prohibited",
+    "SESOI_absolute": 0.08,
+    "alpha_two_sided": 0.05,
+    "target_power": 0.90,
+    "primary_confirmatory_contrasts": 1,
+    "cluster_id": "source_family_id",
+    "minimum_independent_clusters": 30
+  },
+  "planning_result": {
+    "discordance_q": 0.35,
+    "mean_cluster_size": 8,
+    "icc": 0.05,
+    "non_evaluable_attrition": 0.05,
+    "minimum_eligible_paired_n": 802,
+    "N801": "below 90 percent target",
+    "N802": "at or above 90 percent target",
+    "planning_model": "paired binary variance with source-family design-effect inflation"
+  },
+  "independent_crosscheck": {
+    "method": "Monte Carlo exact-exchangeable-ICC shared-cluster mixture plus cluster-robust paired-difference analysis",
+    "repetitions": 20000,
+    "seed": 158006,
+    "primary_N": 802,
+    "maximum_allowed_absolute_gap_vs_analytical_power": 0.02,
+    "producer_preflight_result": "PASS",
+    "seed_shopping": false
+  },
+  "blinded_nuisance_update": {
+    "maximum": 1,
+    "before_HOLDOUT": true,
+    "direction_removed": true,
+    "allowed": ["discordance without winner direction", "cluster size", "blinded dependence proxy", "non-evaluable attrition"],
+    "immutable": ["SESOI", "alpha", "target power", "primary endpoint", "primary contrast count"],
+    "if_blinding_not_demonstrated": "retain frozen conservative planning assumptions"
+  },
+  "multiplicity_and_missingness": {
+    "one_primary_contrast": true,
+    "secondary_family": "Holm FWER 0.05",
+    "exploratory_not_substitute_for_primary": true,
+    "system_or_response_failures_not_silently_missing": true,
+    "arm_independent_non_evaluability_required_for_exclusion": true,
+    "optional_stopping": false,
+    "significance_based_sample_extension": false
+  },
+  "machine_gate": {
+    "input_schema": "power-analysis/POWER_GATE_INPUT.schema.json",
+    "evaluator": "power-analysis/prototype/evaluate_power_gate.py",
+    "synthetic_positive_control": "N802 + 100 clusters -> POWER_GATE_PASS",
+    "negative_control_underpowered": "N801 + 100 clusters -> POWER_GATE_FAIL",
+    "negative_control_too_few_clusters": "N1000 + 29 clusters -> POWER_GATE_FAIL",
+    "real_inventory_gate": "NOT_EVALUATED"
+  },
+  "producer_preflight": {
+    "github_actions_used": false,
+    "evidence": "EpistemicCompilerLab/research-execution/power-analysis/ENG-158_PRODUCER_PREFLIGHT_2026-08-09.json",
+    "complete_contract": "PASS",
+    "analytical_sensitivity_scenarios": 243,
+    "monte_carlo_crosscheck": "PASS",
+    "gate_positive_and_negative_fixtures": "PASS"
+  },
+  "explicit_remaining_non_evidence": [
+    "No independent statistical reviewer acceptance is claimed.",
+    "Real frozen benchmark inventory has not been passed through the machine power gate in this handoff.",
+    "Exact executable treatment/control arm IDs still require accepted WP-004 binding.",
+    "The primary endpoint still requires accepted WP-005 scorer/oracle contract.",
+    "No HOLDOUT or REPLICATION data were accessed.",
+    "GATE-001 remains blocked until all required independent inputs and the real inventory gate are satisfied."
+  ],
+  "required_independent_review": [
+    "Resolve the candidate as the first parent of this handoff-introducing commit and review exactly those bytes.",
+    "Challenge the 8 percentage-point SESOI as a pre-outcome scientific threshold rather than an observed-effect choice.",
+    "Check paired-binary variance and design-effect approximation, and whether q=.35, mean cluster size 8, ICC=.05 and 5 percent attrition are sufficiently conservative for the intended benchmark.",
+    "Inspect the exact-ICC Monte-Carlo generator and cluster-robust analysis for mismatch with the analytical planning model.",
+    "Challenge the >=30-cluster asymptotic rule and require a new preregistered finite-cluster method rather than post-hoc substitution if it fails.",
+    "Verify the blinded nuisance update cannot reveal directional arm performance or change SESOI/alpha/power/endpoint.",
+    "Verify system failures cannot be reclassified as missing to improve an arm.",
+    "Verify the real inventory gate cannot PASS with N<required N, <30 clusters, unaccepted WP-004/WP-005 dependencies, or sealed/directional access.",
+    "Issue PASS, REVISE or PIVOT in a distinct reviewer session."
+  ],
+  "recommended_linear_state": "In Review",
+  "gate_effect": "NONE until independent statistical PASS plus real frozen-inventory POWER_GATE_PASS and accepted dependencies"
+}
