@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "linear_issue": "ENG-201",
   "parent_work_package": "WP-004 / ENG-156",
   "status": "ready_for_independent_review",
@@ -14,14 +14,17 @@
   },
   "git": {
     "repository": "Sergey303/LogicLens",
-    "candidate_commit": "ed7977e05ee4df100a6a131d9eadec5558d07112",
+    "candidate_commit": "ed1381a541b662c5430acbc927b7d6fdb7f3eeac",
     "freeze_manifest": "EpistemicCompilerLab/research-execution/python-program-comparator/ENG-201_FREEZE_MANIFEST.json",
-    "freeze_manifest_git_blob_sha": "808ee9f4e6d98145d1643db1fd1993b719863f10"
+    "freeze_manifest_git_blob_sha": "3dd57d00b459ec85b1ce543552cd515d28ec5d3d",
+    "superseded_pre_fix_handoff_commit": "00595e3303c315ccc89da00cf2fdbeecdd1e5694",
+    "supersession_reason": "Producer self-audit found that the initial runner exposed the capability catalogue in M21 and that the initial tool API described types nominally. The final candidate removes the M21 catalogue and freezes real nested JSON Schemas for every capability argument/result contract."
   },
   "scientific_decisions": {
-    "M21": "Frozen outcome-blind mapper selects one typed capability plus arguments, the frozen Python artifact executes, and fixed-weight Qwen receives only the question plus typed result/provenance/response contract.",
-    "M22": "Fixed-weight Qwen selects capability plus arguments from the same frozen public API; the same Python artifact executes; M22 is DEV-only by default.",
+    "M21": "Frozen outcome-blind mapper selects one typed capability plus arguments, the frozen Python artifact executes, and fixed-weight Qwen receives only the question plus typed result/provenance/response contract; the capability catalogue is not visible in M21.",
+    "M22": "Fixed-weight Qwen selects capability plus arguments from the same frozen public API; the same Python artifact executes; the public capability catalogue is visible because selection is the treatment; M22 is DEV-only by default.",
     "same_executable_artifact": true,
+    "typed_api_contract": "Each capability freezes a closed JSON Schema for arguments and result, plus provenance obligation, no-side-effects declaration and shared call/time/result-size budget.",
     "qwen_python_source_visibility": "none",
     "program_synthesis_novelty_claim": false,
     "python_execution_novelty_claim": false,
@@ -46,10 +49,13 @@
     "python_version": "3.13.5",
     "github_actions_used": false,
     "command": "python prototype/verify.py",
-    "cases": "7/7 PASS twice with byte-stable canonical payloads",
+    "freeze_closure_files": 13,
+    "cases": "7/7 PASS twice with byte-stable canonical M21 payloads",
+    "mode_visibility": "PASS — M21 catalogue empty; M22 exposes exactly three frozen typed capabilities",
+    "typed_api_validation": "PASS — closed nested argument/result schemas match runner contract for all three capabilities",
     "deterministic_rerun": "PASS",
     "program_sha256": "d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde",
-    "tool_api_sha256": "93595a04db469f7b2c6c5a1b4131c1fea1d5bf7d33ec34306c1535f0312074cc",
+    "tool_api_sha256": "20a492c5d0b34f96678c0735251119c744e6a7eecf584d0908cb47436ebdd95f",
     "named_mutations": [
       "wrong_branch",
       "arithmetic_inversion",
@@ -69,13 +75,13 @@
     "No empirical Codex-generated Python candidate has been produced or selected; the committed program is a producer-authored synthetic contract exemplar.",
     "No Qwen behavioral run is part of this package; M21/M22 effect sizes and tool-selection error rates are unknown.",
     "The deterministic/human-written Python baseline is required by the contract but has not been behaviorally compared because model execution is downstream.",
-    "No GitHub Actions evidence is claimed; validation was performed locally on the exact producer candidate bytes before upload."
+    "No GitHub Actions evidence is claimed; producer validation is local deterministic evidence recorded by the freeze manifest."
   ],
   "required_independent_review": [
-    "Verify M22-vs-M21 changes only capability/argument selection and does not silently change visible information or semantic obligations.",
+    "Verify M22-vs-M21 changes only capability/argument selection and does not silently change post-execution result/provenance semantics; explicitly confirm that M21 does not receive the tool catalogue.",
     "Challenge the M21 mapper for hidden answer/routing information and verify it reads only public request fields.",
-    "Review the typed API/result contracts and Qwen visibility boundary for source/code/hidden-label leakage.",
-    "Re-run the deterministic verifier from a clean checkout and independently inspect all named mutations.",
+    "Review the machine-typed API/result contracts and Qwen visibility boundary for source/code/hidden-label leakage.",
+    "Re-run the deterministic verifier from a clean checkout and independently inspect all ten named mutations.",
     "Decide whether the W0 security boundary is sufficient for design acceptance while keeping OS-level sandbox implementation downstream.",
     "Issue PASS, REVISE or PIVOT in a distinct reviewer session."
   ],
