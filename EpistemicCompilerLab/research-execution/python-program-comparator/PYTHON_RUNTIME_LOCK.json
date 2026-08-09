@@ -1,0 +1,14 @@
+{
+  "contract_id": "eng201.python-runtime.v1",
+  "implementation": "CPython",
+  "version": "3.13.5",
+  "third_party_dependencies": [],
+  "standard_library_only": true,
+  "program_imports_allowed": [],
+  "determinism": {
+    "randomness": "forbidden",
+    "wall_clock": "forbidden",
+    "locale_dependency": "forbidden",
+    "environment_variable_dependency": "forbidden"
+  }
+}
