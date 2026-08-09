@@ -8,10 +8,10 @@ This package defines a separate weight-changing boundary study for WP-004. It mu
 
 - **W-A — Base Qwen:** exact upstream Qwen checkpoint; no adapter.
 - **W-B — Gold-only QLoRA/SFT:** independently adjudicated TRAIN targets only.
-- **W-C — Codex-distilled QLoRA/SFT:** Codex replaces the target with TRAIN-only supervision under the same target schema and the same supervised-token/optimizer budget as W-B.
+- **W-C — Codex-distilled QLoRA/SFT:** gold-blind Codex independently generates a TRAIN target from the frozen TRAIN input/evidence view under the same target schema and matched supervised-token/optimizer budget as W-B.
 - **W-D — executable-trace distillation:** disabled and DEV-only until separately justified, powered and frozen.
 
-W-C does not receive free extra rationale tokens. Free-form rationale/program-trace supervision belongs to W-D so W-C-vs-W-B does not silently become a target-length treatment.
+W-C does not receive adjudicated gold targets or free extra rationale tokens. Free-form rationale/program-trace supervision belongs to W-D so W-C-vs-W-B does not silently become a gold-copying or target-length treatment.
 
 ## Exact model anchors
 
@@ -27,17 +27,35 @@ The tokenizer is loaded from the same immutable revision as the selected model. 
 
 ## Artifacts
 
+Scientific/data contract:
+
 - `WEIGHT_ADAPTATION_PROTOCOL.md`
 - `DISTILLATION_DATA_CONTRACT.md`
 - `TRAINING_MANIFEST.yaml`
 - `ADAPTER_SELECTION_RULE.yaml`
+- `TEACHER_RUNTIME_CONTRACT.md`
+- `TEACHER_GENERATION_LEDGER.schema.json`
 - `LEAKAGE_MEMORIZATION_REPORT.schema.json`
+- `TRAINING_RUN_REPORT.schema.json`
+- `GENERAL_REGRESSION_CHECK_PLAN.md`
+
+Environment/smoke contract:
+
 - `TRAINING_ENVIRONMENT_LOCK.json`
+- `requirements-smoke.txt`
 - `SMOKE_TRAINING_CONTRACT.md`
-- `prototype/validate_eng202_contract.py`
 - `prototype/smoke_train.py`
 - `prototype/synthetic_train.jsonl`
 
-The contract validator is stdlib-only and does not download a model or train weights. The smoke command is frozen before any large run, but a successful ML smoke run must be recorded separately before ENG-202 can be handed to independent review.
+Pre-frozen general regression diagnostic:
 
-No HOLDOUT or REPLICATION content is permitted in this package.
+- `prototype/general_regression_dev.jsonl`
+- `prototype/score_general_regression.py`
+
+Contract validation:
+
+- `prototype/validate_eng202_contract.py`
+
+The stdlib-only contract validator does not download a model or train weights. The smoke command is frozen before any large run, but **a real successful CUDA QLoRA smoke from the exact frozen contract remains mandatory before producer handoff to independent review**. Merely having a script or passing static contract validation cannot substitute for smoke evidence.
+
+No HOLDOUT or REPLICATION content is permitted in this package. Hidden-split overlap checks, when eventually required, are performed by a sealed custodian/scanner that returns only frozen report status and aggregate evidence; producer and teacher do not receive hidden examples.
