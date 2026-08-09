@@ -1,4 +1,4 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 issue: ENG-202
 status: DESIGN_FROZEN_NO_TRAINING_EVIDENCE
 study_class: WEIGHT_CHANGING_BOUNDARY
@@ -64,7 +64,8 @@ arms:
   W-C:
     weights: qlora_adapter
     training: true
-    supervision: codex_train_only_replacement_targets_same_schema
+    supervision: independently_generated_codex_train_targets_same_schema
+    teacher_gold_targets_visible: false
     extra_rationale: false
     match_to: W-B
   W-D:
@@ -75,6 +76,8 @@ arms:
 
 teacher:
   visible_split: TRAIN
+  visible_fields: [input_text, teacher_evidence_view, target_schema, teacher_instructions]
+  gold_targets_visible: false
   forbidden_splits: [DEV, HOLDOUT, REPLICATION]
   student_outputs_visible: false
   aggregate_dev_visible: false
@@ -82,6 +85,12 @@ teacher:
   call_budget_per_record: 1
   retry_policy: infrastructure_failure_only_same_frozen_request
   target_schema_must_equal_gold_schema: true
+
+sealed_split_custodian:
+  producer_hidden_content_access: false
+  teacher_hidden_content_access: false
+  permitted_output: leakage_report_status_and_aggregate_evidence_only
+  procedure_must_be_frozen: true
 
 inference:
   prompt_contract: held_equal_W-A_W-B_W-C
@@ -104,6 +113,7 @@ prohibited:
   - arm_specific_learning_rate_tuning_after_dev
   - RL
   - GRPO
+  - teacher_gold_target_copying
   - teacher_generated_dev_labels_as_truth
   - retroactive_train_repair_after_holdout
   - fixed_weight_claim_from_weight_changing_result
