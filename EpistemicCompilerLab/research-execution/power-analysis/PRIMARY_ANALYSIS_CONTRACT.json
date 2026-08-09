@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "linear_issue": "ENG-158",
+  "status": "PRODUCER_DESIGN_CANDIDATE",
+  "primary_estimand": {
+    "population": "all preregistered confirmatory benchmark cases eligible under the frozen benchmark/oracle contract",
+    "unit": "benchmark_case",
+    "paired": true,
+    "treatment_semantic_id": "authoritative_semantic_result_placement_fixed_weight",
+    "control_semantic_id": "matched_fixed_weight_baseline",
+    "arm_binding_rule": "exact executable arm IDs are imported from accepted WP-004 before confirmatory execution; best-DEV-arm selection is forbidden",
+    "outcome": "publication_composite_correctness",
+    "outcome_type": "binary",
+    "contrast": "P(treatment_correct)-P(control_correct)",
+    "se_soi_absolute": 0.08
+  },
+  "hypothesis": {
+    "null": "delta = 0",
+    "alternative": "delta != 0",
+    "alpha_two_sided": 0.05,
+    "target_power_at_sesoi": 0.90
+  },
+  "primary_analysis": {
+    "case_level_difference_values": [-1, 0, 1],
+    "point_estimate": "mean paired case-level treatment-minus-control correctness difference",
+    "cluster_id": "source_family_id",
+    "variance": "source-family cluster-robust sandwich variance for intercept-only paired differences",
+    "small_cluster_rule": "if fewer than 30 independent source-family clusters remain, asymptotic primary PASS is prohibited and a separately preregistered finite-cluster randomization/bootstrap method is required before confirmatory scoring",
+    "confidence_interval": 0.95,
+    "effect_report": ["absolute_difference", "confidence_interval", "discordant_pair_counts", "cluster_count", "eligible_case_count"]
+  },
+  "publication_composite": {
+    "source": "accepted WP-005 field-level scorer contract",
+    "rule": "correct only when every publication-critical applicable field is correct",
+    "malformed_response": "incorrect",
+    "forbidden_tool_use": "incorrect",
+    "infrastructure_failure": "retained and handled under frozen missingness/infrastructure rules, never silently dropped as success"
+  },
+  "multiplicity": {
+    "primary_confirmatory_contrasts": 1,
+    "primary_alpha_allocation": 0.05,
+    "secondary_family": "Holm step-down at familywise alpha 0.05",
+    "exploratory": "reported with effect sizes and uncertainty, explicitly non-confirmatory"
+  },
+  "selection_prohibitions": [
+    "choose treatment arm by best DEV composite result",
+    "choose baseline by weakest DEV result",
+    "change SESOI after observing directional treatment difference",
+    "change alpha or target power after observing results",
+    "drop difficult source families to reach significance",
+    "replace final endpoint with a favorable field-level endpoint",
+    "treat secondary or exploratory significance as the preregistered primary claim"
+  ],
+  "confirmatory_authorization": {
+    "holdout_access": false,
+    "replication_access": false,
+    "requires_independent_statistical_review": true,
+    "requires_accepted_WP004_arm_binding": true,
+    "requires_accepted_WP005_oracle_scorer": true,
+    "requires_frozen_case_and_cluster_counts": true,
+    "requires_power_gate_pass": true
+  }
+}
