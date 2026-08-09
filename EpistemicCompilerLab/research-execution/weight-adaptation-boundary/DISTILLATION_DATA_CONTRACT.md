@@ -12,11 +12,12 @@ Required evaluator-side fields:
 - `split`: exactly `TRAIN`;
 - `source_family_id`: grouping key used for split/leakage audits, never inserted into target;
 - `input_text`;
+- `teacher_evidence_view`: frozen TRAIN-only evidence/context permitted to Codex;
 - `gold_target`;
 - `teacher_target` for W-C only;
 - `target_schema_id`;
 - `source_refs`;
-- SHA-256 of canonical input and each target;
+- SHA-256 of canonical input/evidence and each target;
 - tokenizer revision;
 - token counts computed with that tokenizer;
 - generation provenance for teacher targets.
@@ -31,9 +32,9 @@ Neither arm receives `record_id`, split name, source-family identifier, evaluato
 
 ## Teacher contract
 
-The teacher may see only TRAIN material supplied by the frozen teacher workspace. It cannot query DEV, HOLDOUT, REPLICATION, future source families, student outputs or aggregate outcome reports.
+The teacher may see only `input_text`, `teacher_evidence_view`, the frozen target schema and teacher instructions for TRAIN records. **It must not receive `gold_target`.** It cannot query DEV, HOLDOUT, REPLICATION, future source families, student outputs or aggregate outcome reports.
 
-For core W-C, the teacher must output exactly the same target schema used by W-B. Free-form chain-of-thought, rationale, Python/Prolog trace or extra commentary is rejected from W-C and belongs only to separately frozen W-D.
+For core W-C, the teacher must independently produce exactly the same target schema used by W-B. Free-form chain-of-thought, rationale, Python/Prolog trace or extra commentary is rejected from W-C and belongs only to separately frozen W-D.
 
 Teacher calls, request/response hashes, model identifier, token counts, temperature/seed when exposed, errors and retries are retained. Failed calls are not silently regenerated under a different prompt/model/budget.
 
@@ -47,13 +48,14 @@ The training manifest additionally fixes equal optimizer steps, batches, sequenc
 
 ## Content integrity
 
-Canonical UTF-8 LF text is hashed with SHA-256. Corpus generation produces an immutable manifest with ordered record hashes and aggregate hash. Changes to any input/target/provenance field create a new corpus version.
+Canonical UTF-8 LF text is hashed with SHA-256. Corpus generation produces an immutable manifest with ordered record hashes and aggregate hash. Changes to any input/evidence/target/provenance field create a new corpus version.
 
 ## Prohibited leakage
 
-Reject a corpus if model-visible text contains or encodes:
+Reject a corpus if model-visible or teacher-visible text contains or encodes:
 
 - internal case IDs or source-family IDs;
+- adjudicated `gold_target` in the W-C teacher workspace;
 - expected metric/scorer outputs;
 - DEV/HOLDOUT/REPLICATION examples or identifiers;
 - hidden answer tables;
@@ -62,6 +64,8 @@ Reject a corpus if model-visible text contains or encodes:
 - instructions derived from confirmatory outcomes.
 
 Unknown overlap is not treated as safe. If a required leakage check cannot be run, the report records `unknown` and the corpus is not eligible for confirmatory use.
+
+Checks requiring hidden DEV/HOLDOUT/REPLICATION content are run by a sealed split custodian/scanner under a frozen procedure. It returns only report statuses and aggregate evidence; hidden examples are not exposed to the producer, teacher, corpus builder or student.
 
 ## No retroactive repair
 
