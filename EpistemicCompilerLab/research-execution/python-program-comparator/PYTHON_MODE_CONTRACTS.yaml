@@ -9,6 +9,7 @@ shared:
   decoding: held_equal
   final_response_schema: eng201.student-response.v1
   qwen_source_code_visibility: none
+  pre_execution_schema: QWEN_VISIBLE_PYTHON_REQUEST.schema.json
   execution_result_schema: QWEN_VISIBLE_PYTHON_INTERFACE.schema.json
 modes:
   M21:
