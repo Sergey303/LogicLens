@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent
-GENERATOR_ID = "eng197-relational-generator-v0"
+GENERATOR_ID = "eng197-relational-generator-v1"
 GENERATED_FILES = (
     "schema.sql",
     "seed.sql",
@@ -175,11 +175,13 @@ def permissions_sql() -> str:
     return """DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'relational_cmp_reader') THEN
-        CREATE ROLE relational_cmp_reader NOLOGIN;
+        CREATE ROLE relational_cmp_reader;
     END IF;
 END
 $$;
 
+ALTER ROLE relational_cmp_reader
+    NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS;
 REVOKE ALL ON SCHEMA relational_cmp FROM PUBLIC;
 REVOKE ALL ON ALL TABLES IN SCHEMA relational_cmp FROM PUBLIC;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA relational_cmp FROM PUBLIC;
@@ -218,11 +220,11 @@ def catalogue() -> dict[str, Any]:
 
 
 def guide() -> str:
-    return """# Frozen Qwen guide — relational comparator v0
+    return """# Frozen Qwen guide — relational comparator v1
 
 Use only the typed catalogue. Never write SQL.
 
-For a question about whether one declared proposition holds in a scope/version, call `resolve_claim` with the proposition identifier, scope identifier and version supplied by the experiment adapter. Do not invent identifiers and do not substitute another endpoint.
+For the current DEV-only M15 diagnostic, the visible identifier packet supplies the proposition identifier, scope identifier and version required by the typed call. Construct only the declared `resolve_claim` call. Do not invent identifiers and do not substitute another endpoint. The current single-endpoint catalogue is not an endpoint-routing experiment.
 
 The returned row is authoritative for the relational comparator. Preserve `supported`, `refuted`, `unknown` and `conflicting` as distinct states. Preserve the returned action. Use evidence/provenance only to explain the result; do not repair, override or infer a different database result.
 
@@ -244,7 +246,7 @@ def build(source_path: Path, output_dir: Path) -> dict[str, Any]:
         (output_dir / name).write_bytes(payload)
 
     manifest = {
-        "manifest_version": "1.0.0",
+        "manifest_version": "1.1.0",
         "generator_id": GENERATOR_ID,
         "generator_sha256": sha256_file(Path(__file__).resolve()),
         "source_path": source_path.name,
