@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0",
+  "semantic_version": "wp005.semantic.v1",
+  "canonical_json": {
+    "encoding": "UTF-8",
+    "object_keys": "lexicographic Unicode code point order",
+    "separators": [",", ":"],
+    "whitespace": "none",
+    "trailing_newline": false,
+    "array_order": "preserved unless field-specific set normalization says otherwise"
+  },
+  "identifier": {
+    "canonical_pattern": "^[a-z][a-z0-9_.-]*$",
+    "comparison": "exact UTF-8 byte equality after schema validation",
+    "case_folding": false,
+    "unicode_normalization": "not_applicable_canonical_ids_are_ASCII",
+    "alias_resolution": "only explicit alias table entries before semantic execution; unknown alias is invalid_query"
+  },
+  "scalar_types": {
+    "string": {"normalization": "Unicode NFC", "coercion": "none"},
+    "integer": {"normalization": "mathematical integer", "coercion": "none_from_string_or_boolean"},
+    "number": {"normalization": "finite JSON number", "coercion": "integer_may_widen_to_number_only_when_declared_type_is_number"},
+    "boolean": {"normalization": "JSON true/false", "coercion": "none"},
+    "identifier": {"normalization": "canonical identifier rule", "coercion": "explicit_alias_resolution_only"},
+    "instant": {"normalization": "UTC RFC3339 second precision YYYY-MM-DDTHH:MM:SSZ", "coercion": "timezone_offset_must_be_normalized_before_packet_freeze"}
+  },
+  "typed_argument_rules": {
+    "arity": "exact declared predicate arity",
+    "argument_order": "preserved and semantically significant",
+    "unknown_fields": "invalid_query",
+    "missing_required_argument": "needs_clarification_for_natural_question_track_or_invalid_query_for_gold_query_track",
+    "wrong_type": "invalid_query"
+  },
+  "scope": {
+    "dimensions": ["jurisdiction", "domain", "tenant"],
+    "value_type": "canonical identifier or null",
+    "assertion_compatibility": "for each non-null query dimension, assertion dimension must equal it exactly; null query dimension matches any assertion value; rules may not invent scope values",
+    "cross_scope_fusion": "forbidden unless query dimension is null and all other proposition fields are identical",
+    "output_scope": "exact normalized query scope"
+  },
+  "version_and_time": {
+    "version_id": "canonical identifier",
+    "version_comparison": "exact equality only; no lexical or semantic-version ordering is inferred",
+    "effective_from": "inclusive UTC instant or null meaning unbounded past",
+    "effective_to": "exclusive UTC instant or null meaning unbounded future",
+    "query_time": "required when candidate assertions or rules have bounded effective intervals",
+    "effective": "effective_from <= query_time and (effective_to is null or query_time < effective_to)",
+    "incompatible_version": "assertion or rule excluded from derivation; a query naming an unknown version is invalid_query"
+  },
+  "proposition_normal_form": {
+    "fields_in_order": ["predicate", "arguments", "scope", "version"],
+    "polarity_excluded_from_identity": true,
+    "canonicalization": "validate predicate and typed ordered arguments; normalize scalar values; normalize scope dimensions in fixed order; require exact version id; canonical JSON serialize fields_in_order",
+    "equality": "canonical JSON byte equality"
+  },
+  "assertions": {
+    "duplicate_assertion_id": "invalid_source_packet",
+    "byte_identical_duplicate_content_with_distinct_ids": "allowed_as_distinct_provenance_roots_but_does_not_change_P_or_N_existence",
+    "absence_is_negative": false,
+    "polarity_values": ["positive", "negative"]
+  },
+  "rules": {
+    "rule_id": "unique canonical identifier; duplicate ID invalid_source_packet",
+    "ordering": "unordered set semantics; evaluation order cannot affect closure",
+    "semantically_duplicate_distinct_rule_ids": "allowed; may create duplicate derivations but cannot change status",
+    "range_restriction": "every variable in head or negative/support condition must be bound by a positive typed premise",
+    "priority": "none",
+    "exceptions": "none",
+    "negation_as_failure": false,
+    "fixpoint": "least monotone closure over finite validated assertions/rules; terminate when no new normalized proposition+polarity pair is added"
+  },
+  "evidence": {
+    "derivation_leaf_roots": "sorted unique source assertion IDs reachable from a derivation proof",
+    "polarity_evidence_roots": "sorted union of derivation_leaf_roots for every valid derivation of that polarity",
+    "minimality_claim": false,
+    "completeness": "all loaded valid derivations under the frozen finite rule set contribute to the union",
+    "sorting": "lexicographic canonical identifier order"
+  },
+  "proof_normal_form": {
+    "node_kinds": ["assertion", "rule_application"],
+    "assertion_node": ["kind", "assertion_id", "proposition_normal_form", "polarity"],
+    "rule_node": ["kind", "rule_id", "conclusion_proposition_normal_form", "conclusion_polarity", "premise_node_ids"],
+    "node_id": "sha256 of canonical JSON of the node fields excluding node_id; premise_node_ids are sorted lexicographically before hashing",
+    "graph": "sorted node array by node_id plus sorted directed edges [premise_node_id,rule_node_id]",
+    "roots": "sorted node IDs whose conclusions equal the queried proposition and requested polarity",
+    "cycles": "invalid_proof",
+    "unresolvable_edge": "invalid_proof",
+    "ordering": "node IDs and edge pairs lexicographic"
+  },
+  "outcomes": {
+    "semantic_status": ["supported", "refuted", "conflicting", "unknown"],
+    "query_outcome": ["valid", "needs_clarification", "invalid_query", "runtime_error"],
+    "invalid_query": "structural/schema/registry/type/arity/version error; no semantic status is produced",
+    "needs_clarification": "natural-question interpretation has unresolved mandatory field or multiple non-equivalent frozen query alternatives; no guessed query/status is produced",
+    "runtime_error": "implementation/infrastructure failure after a valid query; never mapped to unknown/refuted/supported/conflicting",
+    "unknown": "valid query with no positive and no negative derivation"
+  },
+  "acceptable_alternative_normal_form": {
+    "query_fields": ["predicate", "arguments", "scope", "version", "query_time"],
+    "outcome_fields": ["status", "positive_evidence_roots", "negative_evidence_roots", "action", "allowed_conclusion", "warnings", "policy_id", "semantic_version"],
+    "set_fields_sorted": ["positive_evidence_roots", "negative_evidence_roots", "warnings"],
+    "equivalence": "canonical JSON byte equality after field-specific normalization; no fuzzy/semantic equivalence at scoring time",
+    "multiple_alternatives": "only alternatives frozen in query/outcome registries before first model output"
+  }
+}
