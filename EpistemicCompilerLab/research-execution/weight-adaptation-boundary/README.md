@@ -1,0 +1,43 @@
+# ENG-202 — Codex-supervised Qwen weight-adaptation boundary
+
+Status: **producer design candidate; TRAIN/DEV-only; no training evidence yet; independent review required**.
+
+This package defines a separate weight-changing boundary study for WP-004. It must never be used as evidence that the fixed-weight primary treatment worked.
+
+## Frozen treatment classes
+
+- **W-A — Base Qwen:** exact upstream Qwen checkpoint; no adapter.
+- **W-B — Gold-only QLoRA/SFT:** independently adjudicated TRAIN targets only.
+- **W-C — Codex-distilled QLoRA/SFT:** Codex replaces the target with TRAIN-only supervision under the same target schema and the same supervised-token/optimizer budget as W-B.
+- **W-D — executable-trace distillation:** disabled and DEV-only until separately justified, powered and frozen.
+
+W-C does not receive free extra rationale tokens. Free-form rationale/program-trace supervision belongs to W-D so W-C-vs-W-B does not silently become a target-length treatment.
+
+## Exact model anchors
+
+Scientific 7B candidate:
+
+`Qwen/Qwen2.5-Coder-7B-Instruct@c03e6d358207e414f1eca0bb1891e29f1db0e242`
+
+Pipeline-smoke candidate only:
+
+`Qwen/Qwen2.5-Coder-0.5B-Instruct@bbf27711794f58ebd1796058f4280b53c32e19fc`
+
+The tokenizer is loaded from the same immutable revision as the selected model. Moving tags/branches such as `main` are forbidden.
+
+## Artifacts
+
+- `WEIGHT_ADAPTATION_PROTOCOL.md`
+- `DISTILLATION_DATA_CONTRACT.md`
+- `TRAINING_MANIFEST.yaml`
+- `ADAPTER_SELECTION_RULE.yaml`
+- `LEAKAGE_MEMORIZATION_REPORT.schema.json`
+- `TRAINING_ENVIRONMENT_LOCK.json`
+- `SMOKE_TRAINING_CONTRACT.md`
+- `prototype/validate_eng202_contract.py`
+- `prototype/smoke_train.py`
+- `prototype/synthetic_train.jsonl`
+
+The contract validator is stdlib-only and does not download a model or train weights. The smoke command is frozen before any large run, but a successful ML smoke run must be recorded separately before ENG-202 can be handed to independent review.
+
+No HOLDOUT or REPLICATION content is permitted in this package.
