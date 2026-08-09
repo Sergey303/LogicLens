@@ -11,7 +11,7 @@ The local Codex CLI is invoked without an unsupported guessed `--codex-model` ov
 - request API/runtime metadata exposed by Codex;
 - teacher system/instruction/template SHA-256;
 - generation start/end timestamps;
-- per-request input/output token accounting when exposed.
+- per-attempt input/output token accounting when exposed.
 
 `codex_cli_default` is **not** treated as an immutable scientific model identity. If the runtime cannot expose a stable resolved model identifier, the run must record `teacher_model_reproducibility: limited` and ENG-202 cannot claim exact teacher-model reproducibility. A model/runtime change during corpus generation invalidates that corpus version.
 
@@ -32,24 +32,27 @@ The teacher must not receive adjudicated `gold_target`, internal IDs, DEV/HOLDOU
 
 For each frozen TRAIN record:
 
-- maximum teacher calls: `1`;
-- maximum teacher-visible input tokens: `4096`;
-- maximum generated output tokens: `256`;
-- retries: only transport/infrastructure retry of the byte-identical frozen request, and it counts as an attempted call in the audit ledger even if provider billing semantics differ.
+- maximum successful semantic generation responses: `1`;
+- maximum provider attempts: `2`;
+- attempt 2 is permitted only when attempt 1 failed before producing a semantic response, and must use the byte-identical frozen request;
+- no retry is permitted after a refusal, schema-invalid semantic response, budget violation or successful semantic response;
+- maximum teacher-visible input tokens per attempt: `4096`;
+- maximum generated output tokens for the single semantic response: `256`.
 
-For a corpus with `N` frozen TRAIN records, the planned scientific budget is therefore:
+For a corpus with `N` frozen TRAIN records, the planned worst-case audit budget is therefore:
 
-- successful generation requests: at most `N`;
-- nominal input-token ceiling: `4096 * N`;
-- nominal output-token ceiling: `256 * N`.
+- successful generation responses: at most `N`;
+- provider attempts: at most `2 * N`;
+- input-token ceiling across attempts: `8192 * N`;
+- successful semantic output-token ceiling: `256 * N`.
 
-The exact observed token usage is retained. If the runtime cannot enforce a hard input/output token limit, the producer must validate observed usage against the ceiling and reject any response exceeding it.
+Every attempt is retained in the audit ledger, including an infrastructure-failed first attempt. The exact observed token usage is retained. If the runtime cannot enforce a hard token limit, observed usage must be validated against the ceiling; a semantic response exceeding the per-attempt/output ceiling is rejected rather than truncated or repaired.
 
 ## Determinism and failures
 
 If the runtime exposes temperature, seed or sampling controls, freeze them before generation and record them. If it does not, preserve every request/response hash and report teacher stochasticity as an external-source limitation.
 
-Malformed schema output, content-policy refusal, timeout or provider error remains in the generation ledger. A malformed semantic output cannot be manually repaired; the record is rejected from that candidate corpus or the entire candidate is versioned under a predeclared deterministic rule.
+Malformed schema output, content-policy refusal, timeout or provider error remains in the generation ledger. A malformed/refused semantic response cannot be retried or manually repaired within the same candidate corpus. Only a pre-semantic transport/infrastructure failure is retryable once with the byte-identical request.
 
 ## No outcome-directed regeneration
 
