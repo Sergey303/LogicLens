@@ -40,7 +40,8 @@ FILES = [
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/generated/query-guide.md",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/generated/package-manifest.json",
     "EpistemicCompilerLab/scripts/run-relational-comparator-tests.ps1",
-    "EpistemicCompilerLab/scripts/run-relational-postgres-smoke.ps1"
+    "EpistemicCompilerLab/scripts/run-relational-postgres-smoke.ps1",
+    "EpistemicCompilerLab/scripts/launch.ps1"
 ]
 
 
