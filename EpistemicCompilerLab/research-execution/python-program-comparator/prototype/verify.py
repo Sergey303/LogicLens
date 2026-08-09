@@ -62,6 +62,24 @@ def assert_expected(case, result):
         raise AssertionError("semantic_vector_mismatch")
 
 
+def verify_api_contract(runner):
+    expected = {handle: set(args) for handle, args in runner._ALLOWED_ARGS.items()}
+    seen = set()
+    for cap in runner.API["capabilities"]:
+        handle = cap["handle"]
+        seen.add(handle)
+        assert cap["arguments"]["type"] == "object"
+        assert cap["arguments"]["additionalProperties"] is False
+        assert set(cap["arguments"]["required"]) == expected[handle]
+        assert set(cap["arguments"]["properties"]) == expected[handle]
+        assert cap["result"]["type"] == "object"
+        assert cap["result"]["additionalProperties"] is False
+        assert set(cap["result"]["required"]) == {"status", "value"}
+        assert cap["provenance_required"] is True
+        assert cap["side_effects"] == "none"
+    assert seen == set(expected)
+
+
 def verify_cases(runner):
     data = json.loads(CASES.read_text(encoding="utf-8"))
     assert data["scope"] == "TRAIN_DEV_ONLY_SYNTHETIC"
@@ -70,7 +88,11 @@ def verify_cases(runner):
         result = execute_case(runner, case)
         assert_expected(case, result)
         payload = runner.qwen_visible_payload("M21", case["question"], result)
+        assert payload["capabilities"] == []
         scan_visible(payload)
+        m22_payload = runner.qwen_visible_payload("M22", case["question"], result)
+        assert len(m22_payload["capabilities"]) == 3
+        scan_visible(m22_payload)
         outputs.append(canonical(payload))
     again = []
     for case in data["cases"]:
@@ -140,6 +162,7 @@ def mutations(runner, data):
 def main():
     scan_source(PROGRAM.read_text(encoding="utf-8"))
     runner = load_runner()
+    verify_api_contract(runner)
     data, cases = verify_cases(runner)
     mutation_names = mutations(runner, data)
     report = {
