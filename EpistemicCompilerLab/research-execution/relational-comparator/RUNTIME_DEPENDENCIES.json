@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-197",
+  "scope": "TRAIN_DEV_ONLY",
+  "postgresql": {
+    "required_server_version": "18.4",
+    "required_server_version_num": 180004,
+    "database_name_prefix": "eng197_",
+    "live_execution_required_for_review": true
+  },
+  "python": {
+    "supported": "3.10-3.14",
+    "psycopg": {
+      "distribution": "psycopg[binary]",
+      "version": "3.3.4"
+    }
+  },
+  "identity_evidence": {
+    "required": [
+      "postgresql_version_string",
+      "server_version",
+      "server_version_num",
+      "psycopg_version",
+      "libpq_version",
+      "database_name",
+      "package_freeze_manifest_sha256"
+    ],
+    "container_image_digest": "required_when_container_execution_is_used",
+    "native_installation": "exact PostgreSQL server version is required and the report must label execution_identity=native_exact_version_not_image_pinned"
+  },
+  "references": {
+    "postgresql_version_policy": "PostgreSQL 18.4 is the current supported minor frozen for this remediation candidate",
+    "psycopg_installation": "Psycopg 3 binary installation is used only as the typed PostgreSQL transport driver"
+  }
+}
