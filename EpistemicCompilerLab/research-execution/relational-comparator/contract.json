@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "linear_issue": "ENG-197",
   "parent_work_package": "WP-004",
   "scientific_label": "pure_relational_trusted_execution",
@@ -9,13 +9,24 @@
     "M15": {
       "name": "Relational Query Agent",
       "query_formation_owner": "qwen",
-      "visible": ["question", "typed_query_catalogue", "frozen_query_guide", "response_schema"]
+      "confirmatory_status": "DEV_ONLY_SINGLE_ENDPOINT_NOT_QUERY_SELECTION",
+      "visibility_contract": "M15_IDENTIFIER_VISIBILITY_CONTRACT.md",
+      "visible": ["question", "opaque_typed_identifiers", "typed_query_catalogue", "frozen_query_guide", "response_schema"]
     },
     "M16": {
       "name": "Relational Result Interface",
       "query_formation_owner": "frozen_outcome_blind_registry",
+      "confirmatory_status": "CANDIDATE_ONLY_AFTER_LIVE_POSTGRES_AND_INDEPENDENT_REVIEW",
       "visible": ["question", "typed_relational_result", "provenance", "response_schema"]
     }
+  },
+  "subset_eligibility": {
+    "contract_id": "eng197.relational-subset.v1",
+    "contract_path": "RELATIONAL_SUBSET_CONTRACT.json",
+    "mapping_path": "RELATIONAL_STRICT_SUBSET_MAPPING.md",
+    "decision_timing": "before_split_assignment_outcome_blind",
+    "ineligible_policy": "reject_never_approximate",
+    "paired_analysis": "eligible_base_scenarios_only"
   },
   "semantic_ownership": {
     "source_normalization": "frozen_upstream_contract",
@@ -27,7 +38,7 @@
     "natural_language_rendering": "qwen"
   },
   "runtime_semantics": {
-    "positive_closure": "explicit positive assertions plus transitive strict implication edges",
+    "positive_closure": "explicit positive assertions plus transitive unary positive strict implication edges",
     "negative_evidence": "explicit negative assertion for the target proposition only",
     "status_rule": {
       "supported": "positive and not negative",
@@ -40,7 +51,8 @@
       "refuted": "reject",
       "conflicting": "review",
       "unknown": "review"
-    }
+    },
+    "proof_visibility": "root_evidence_and_source_provenance_only_not_full_M6_proof_graph"
   },
   "typed_endpoint": {
     "name": "resolve_claim",
@@ -54,7 +66,8 @@
     "oversize_policy": "reject_before_scoring_never_truncate"
   },
   "failure_layers": [
-    "query_formation",
+    "identifier_preparation",
+    "typed_call_construction",
     "adapter_validation",
     "db_execution",
     "result_transport",
@@ -67,9 +80,18 @@
     "filesystem": false,
     "declared_endpoints_only": true,
     "parameter_binding": true,
-    "immutable_db_snapshot_per_run_block": true
+    "immutable_db_snapshot_per_run_block": true,
+    "read_only_role_permission_negatives_required": true
+  },
+  "live_execution": {
+    "required_before_re_review": true,
+    "contract": "LIVE_POSTGRES_SMOKE_CONTRACT.md",
+    "runtime_lock": "RUNTIME_DEPENDENCIES.json",
+    "pre_score_source": "actual_PostgreSQL_rows_only",
+    "python_reference_oracle_may_substitute": false
   },
   "freeze_artifacts": [
+    "complete_ENG_197_FREEZE_MANIFEST",
     "source",
     "generator",
     "schema_sql",
@@ -79,10 +101,24 @@
     "query_guide",
     "package_manifest",
     "call_schema",
-    "result_schema"
+    "result_schema",
+    "adapter",
+    "db_executor",
+    "query_registry",
+    "evaluator_expectations",
+    "subset_contract",
+    "runtime_lock",
+    "verification_scripts"
   ],
   "eligibility": {
     "m14_baseline_eligible": false,
-    "reason": "SQL computes recursive closure, status and decision action; this is a trusted-execution comparator."
+    "reason": "SQL computes recursive closure, status and decision action; this is a trusted-execution comparator.",
+    "m16_wp004_candidate": "only_after_live_postgres_lossless_subset_and_independent_review",
+    "m15_wp004_candidate": false
+  },
+  "contrast_interpretation": {
+    "M16_vs_M6": "conventional_relational_trusted_result_interface_vs_explicit_epistemic_decision_frame_bundle",
+    "proof_obligations_identical": false,
+    "M15_vs_M16": "DEV_only_typed_call_construction_diagnostic_until_multi_endpoint_contract_exists"
   }
 }
