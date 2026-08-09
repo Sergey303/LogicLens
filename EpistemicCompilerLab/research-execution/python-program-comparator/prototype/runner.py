@@ -57,13 +57,16 @@ def execute(handle, arguments, provenance):
 def qwen_visible_payload(mode, question, result):
     if mode not in {"M21", "M22"}:
         raise ValueError("contract_violation")
+    capabilities = []
+    if mode == "M22":
+        capabilities = [
+            {k: cap[k] for k in ("handle", "name", "description", "arguments", "result")}
+            for cap in API["capabilities"]
+        ]
     return {
         "mode": mode,
         "question": question,
-        "capabilities": [
-            {k: cap[k] for k in ("handle", "name", "description", "arguments", "result")}
-            for cap in API["capabilities"]
-        ],
+        "capabilities": capabilities,
         "execution_result": result,
         "response_schema_id": "eng201.student-response.v1",
     }
