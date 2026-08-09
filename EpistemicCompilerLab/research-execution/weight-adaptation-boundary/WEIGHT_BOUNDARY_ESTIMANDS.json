@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "issue": "ENG-202",
+  "status": "DESIGN_ONLY_PENDING_WP006_APPROVAL",
+  "analysis_unit": "base_scenario_id",
+  "training_seeds": [17, 29, 43],
+  "seed_role": "training_run_replication_not_independent_benchmark_sample",
+  "pseudoreplication_forbidden": true,
+  "primary_teacher_increment_estimand": {
+    "contrast": "W-C_minus_W-B",
+    "endpoint": "exact_epistemic_contract_correctness",
+    "per_seed_case_outcome": "binary",
+    "per_case_arm_value": "arithmetic_mean_of_binary_outcomes_over_all_three_predeclared_training_seeds",
+    "per_case_contrast": "W-C_per_case_arm_value_minus_W-B_per_case_arm_value",
+    "population_summary": "mean_per_case_contrast_over_base_scenario_id",
+    "seed_pairing": "same_seed_ids_paired_across_W-B_and_W-C",
+    "best_seed_selection": false,
+    "seed_pooling_as_three_times_sample_size": false
+  },
+  "secondary_adaptation_estimands": [
+    {
+      "contrast": "W-B_minus_W-A",
+      "per_case_W-A_value": "single_frozen_base_model_outcome",
+      "per_case_adapted_value": "mean_over_all_three_W-B_seed_outcomes",
+      "interpretation": "gold_only_parameter_adaptation_value"
+    },
+    {
+      "contrast": "W-C_minus_W-A",
+      "per_case_W-A_value": "single_frozen_base_model_outcome",
+      "per_case_adapted_value": "mean_over_all_three_W-C_seed_outcomes",
+      "interpretation": "descriptive_total_teacher_distilled_adaptation_effect"
+    },
+    {
+      "contrast": "strongest_fixed_weight_external_interface_minus_or_vs_W-B_W-C",
+      "requires_MODEL_BINDING_CONTRACT_pass": true,
+      "interpretation": "external_verified_interface_vs_parameter_update_boundary"
+    }
+  ],
+  "failed_training_seed": {
+    "scientific_recipe_failure": "retain_seed_and_report_failure; no replacement_seed; WP006 must preregister how nonproducing adapters enter the system-level estimand before confirmatory use",
+    "presemantic_infrastructure_block_failure": "may_rerun_only_under_a_separately_frozen_symmetric_block_rerun_rule_before_outcome_inspection",
+    "silent_discard_or_replacement_seed": false
+  },
+  "inference": {
+    "confidence_interval_and_test": "DEFERRED_TO_WP006_BUT_MUST_PRESERVE_base_scenario_id_AS_PRIMARY_UNIT_AND_training_seed_AS_NESTED_REPLICATION",
+    "three_seed_t_test_as_primary": false,
+    "holdout_rule_must_be_frozen_before_access": true
+  },
+  "reporting": {
+    "per_seed_results_required": true,
+    "cross_seed_mean_required": true,
+    "cross_seed_range_or_dispersion_required": true,
+    "training_failure_rate_required": true,
+    "adapter_hash_per_seed_required": true
+  }
+}
