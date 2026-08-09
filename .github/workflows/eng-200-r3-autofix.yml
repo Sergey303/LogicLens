@@ -45,3 +45,5 @@ jobs:
                   EpistemicCompilerLab/research-execution/router-comparator/ENG-200_FREEZE_MANIFEST.json
           git commit -m "ENG-200 R3: apply canonical serialization fix"
           git push origin HEAD:eng-200-remediation-r3
+
+# Triggered after workflow creation so the push workflow exists before execution.
