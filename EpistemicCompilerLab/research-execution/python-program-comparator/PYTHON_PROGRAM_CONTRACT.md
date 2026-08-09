@@ -40,7 +40,7 @@ The only intended M22-vs-M21 difference is capability/argument selection by Qwen
 
 Program generation may use only TRAIN examples plus the written task/interface contract. It may not use DEV questions, HOLDOUT, REPLICATION, model outputs, hidden expected fields or post-hoc outcome summaries.
 
-The committed prototype is a producer-authored synthetic contract exemplar, not evidence that Codex generated a better program and not evidence of a teacher effect.
+The committed prototype is a producer-authored synthetic contract exemplar, not evidence that Codex generated a better program and not evidence of a teacher effect. `PYTHON_RUNTIME_LOCK.json` freezes CPython 3.13.5 with no third-party dependencies; `PYTHON_SANDBOX_PROFILE.json` freezes the later execution resource/security envelope.
 
 ## Allowed program class
 
