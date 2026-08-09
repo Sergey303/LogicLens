@@ -57,7 +57,9 @@ def require(ok: bool, message: str) -> None:
 
 
 def canonical_feature_bytes(features: dict) -> bytes:
-    return (json.dumps(features, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+    data = json.dumps(features, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    require(not data.endswith(b"\n"), "canonical feature serialization must not have trailing LF")
+    return data
 
 
 def resolve_schema_ref(ref: str, io_schemas: dict) -> dict:
@@ -357,7 +359,6 @@ def main() -> int:
     require(PROLOG_PATH.read_bytes() == build_prolog(policy).encode("utf-8"), "committed Prolog does not match clean lowering")
     neutral_catalogue, adapted_catalogue = validate_visible_catalogues(registry, io_schemas)
     scan_visible_registry(registry)
-
     cases_doc = load_json(CASES_PATH)
     require(cases_doc["feature_contract_id"] == feature_contract["contract_id"], "case feature-contract ID drift")
     require(cases_doc["feature_contract_sha256"] == sha(FEATURE_PATH), "case feature-contract hash drift")
@@ -401,6 +402,7 @@ def main() -> int:
             "id": feature_contract["contract_id"],
             "sha256": sha(FEATURE_PATH),
             "primary_input_same_bytes": True,
+            "canonical_serialization_no_trailing_lf": True,
             "raw_question_primary_contrast": False,
             "anti_label_proxy": proxy_report,
         },
