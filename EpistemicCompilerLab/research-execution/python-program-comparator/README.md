@@ -14,6 +14,9 @@ The committed program is a synthetic producer-authored exemplar. It is not repre
 - `PYTHON_PROGRAM_CONTRACT.md`
 - `PYTHON_TOOL_API.schema.json`
 - `QWEN_VISIBLE_PYTHON_INTERFACE.schema.json`
+- `PYTHON_SANDBOX_PROFILE.json`
+- `PYTHON_RUNTIME_LOCK.json`
+- `QWEN_VISIBLE_PYTHON_REQUEST.schema.json`
 - `PYTHON_SECURITY_BOUNDARY.md`
 - `PYTHON_MUTATION_PLAN.yaml`
 - `prototype/program.py`
