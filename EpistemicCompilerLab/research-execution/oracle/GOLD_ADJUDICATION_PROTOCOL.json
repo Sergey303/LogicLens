@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-005",
+  "purpose": "Create query-adjudication and semantic-outcome gold independently of Path A, Path B and model behavior before any scored model output.",
+  "roles": {
+    "query_adjudicators_per_case": 2,
+    "outcome_adjudicators_per_case": 2,
+    "third_adjudicator_on_disagreement": 1,
+    "forbidden_roles": [
+      "Path_A_implementer_for_same_candidate",
+      "Path_B_implementer_for_same_candidate",
+      "B_scorer_implementer_for_same_candidate",
+      "model_output_analyst_for_same_candidate",
+      "teacher_target_generator_for_same_candidate"
+    ],
+    "sealed_confirmatory_gold_custodian": "distinct data-steward session that does not expose held-out semantic content to producer, teacher, Path A or Path B before authorization"
+  },
+  "query_adjudication": {
+    "visible_inputs": [
+      "raw_natural_question",
+      "source_bound_context_per_benchmark_contract",
+      "predicate_type_identifier_registries",
+      "SEMANTIC_SPEC",
+      "SEMANTIC_REGISTRY"
+    ],
+    "forbidden_inputs": [
+      "Path_A_query",
+      "Path_A_output",
+      "Path_B_query",
+      "Path_B_output",
+      "student_or_teacher_output",
+      "model_metrics",
+      "outcome_gold_registry"
+    ],
+    "recorded_output": [
+      "case_id",
+      "question_hash",
+      "alternative_id",
+      "normalized_query",
+      "interpretation_requirements",
+      "clarification_expected",
+      "adjudicator_identities",
+      "independent_decisions",
+      "disagreement",
+      "third_adjudication_if_needed",
+      "source_and_registry_evidence",
+      "reason_code"
+    ],
+    "multiple_alternatives": "allowed only when two source/spec-grounded interpretations are genuinely non-equivalent; every alternative must be independently adjudicated before first model output",
+    "unresolved_disagreement": "case_not_eligible_for_freeze"
+  },
+  "outcome_adjudication": {
+    "visible_inputs": [
+      "source_assertions",
+      "strict_rules",
+      "one_frozen_normalized_query_alternative",
+      "SEMANTIC_SPEC",
+      "SEMANTIC_REGISTRY",
+      "POLICY_TABLE",
+      "source_locator_registry"
+    ],
+    "forbidden_inputs": [
+      "Path_A_output",
+      "Path_B_output",
+      "production_expected_frame",
+      "student_or_teacher_output",
+      "model_metrics",
+      "post_model_error_analysis"
+    ],
+    "manual_derivation_required": true,
+    "recorded_output": [
+      "case_id",
+      "alternative_id",
+      "expected_status",
+      "expected_action",
+      "expected_conclusion",
+      "expected_warnings",
+      "expected_positive_evidence_roots",
+      "expected_negative_evidence_roots",
+      "expected_provenance",
+      "expected_proof_normal_form",
+      "policy_id",
+      "semantic_version",
+      "adjudicator_identities",
+      "independent_derivation_records",
+      "disagreement",
+      "third_adjudication_if_needed",
+      "source_locators",
+      "reason_code"
+    ],
+    "exact_agreement_required_before_freeze": [
+      "status",
+      "action",
+      "conclusion_class",
+      "warning_set",
+      "positive_evidence_root_set",
+      "negative_evidence_root_set",
+      "provenance_resolution",
+      "proof_normal_form"
+    ],
+    "unresolved_disagreement": "case_not_eligible_for_freeze"
+  },
+  "freeze_order": [
+    "semantic_spec_registry_policy_hashes_frozen",
+    "source_rule_query_packet_hashes_frozen",
+    "query_adjudicators_complete_blind_decisions",
+    "query_disagreements_adjudicated",
+    "query_adjudication_registry_hash_frozen",
+    "outcome_adjudicators_complete_blind_manual_derivations",
+    "outcome_disagreements_adjudicated",
+    "outcome_gold_registry_hash_frozen",
+    "scorer_source_and_hash_frozen",
+    "first_scored_model_output_may_exist"
+  ],
+  "post_model_governance": {
+    "in_place_query_alternative_addition": "prohibited",
+    "in_place_outcome_alternative_addition": "prohibited",
+    "gold_repair_from_model_behavior": "prohibited",
+    "new_legitimate_ambiguity": "new_benchmark_version_and_new_blind_adjudication; current_confirmatory_eligibility_invalidated",
+    "implementation_only_scorer_fix": "allowed only when query and outcome gold semantic bytes remain unchanged"
+  },
+  "audit": {
+    "full_registry_provenance_required": true,
+    "human_audit_protocol": "HUMAN_AUDIT_PROTOCOL.json",
+    "randomized_manual_audit_is_secondary_check_not_gold_source": true,
+    "all_adjudication_records_hash_frozen": true,
+    "identity_and_session_attestations_required": true
+  },
+  "claim_boundary": "Agreement between Path B and independently adjudicated outcome gold is evidence about Path B semantic correctness only after the B-oracle computation was physically unable to access this gold."
+}
