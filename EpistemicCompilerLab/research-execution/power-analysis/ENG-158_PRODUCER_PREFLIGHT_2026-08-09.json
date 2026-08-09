@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-158",
+  "work_package": "WP-006",
+  "date_utc": "2026-08-09",
+  "candidate_resolution": "This evidence belongs to the scientific candidate resolved as the first parent of the commit that introduces the final WP-006 handoff after this file.",
+  "github_actions_used": false,
+  "execution": {
+    "retrieval": "fresh exact main checkout immediately before execution",
+    "complete_contract_command": "python EpistemicCompilerLab/research-execution/power-analysis/prototype/validate_wp006_complete.py",
+    "complete_contract_exit_code": 0,
+    "analytical_sensitivity_command": "python EpistemicCompilerLab/research-execution/power-analysis/prototype/calculate_power.py --sensitivity",
+    "analytical_sensitivity_exit_code": 0,
+    "monte_carlo_command": "python EpistemicCompilerLab/research-execution/power-analysis/prototype/simulate_power.py --repetitions 20000 --seed 158006",
+    "monte_carlo_exit_code": 0
+  },
+  "primary_design": {
+    "endpoint": "publication_composite_correctness",
+    "paired": true,
+    "SESOI_absolute": 0.08,
+    "alpha_two_sided": 0.05,
+    "target_power": 0.90,
+    "discordance_q": 0.35,
+    "mean_cluster_size": 8,
+    "icc": 0.05,
+    "attrition": 0.05,
+    "minimum_independent_clusters": 30,
+    "minimum_eligible_paired_n": 802,
+    "N801_power_below_target": true,
+    "N802_power_at_or_above_target": true
+  },
+  "sensitivity": {
+    "delta_values": [0.05, 0.08, 0.10],
+    "discordance_values": [0.20, 0.35, 0.50],
+    "mean_cluster_size_values": [4, 8, 12],
+    "icc_values": [0.0, 0.05, 0.10],
+    "attrition_values": [0.0, 0.05, 0.10],
+    "scenario_count": 243
+  },
+  "monte_carlo_crosscheck": {
+    "repetitions": 20000,
+    "seed": 158006,
+    "generator": "exact_exchangeable_ICC_shared_cluster_mixture",
+    "primary_eligible_n": 802,
+    "analytical_gap_tolerance": 0.02,
+    "crosscheck_pass": true,
+    "absolute_simulation_analytic_gap_leq_0_02": true,
+    "seed_shopping": false
+  },
+  "power_gate_negative_controls": {
+    "fixture_N802_clusters100": "POWER_GATE_PASS",
+    "fixture_N801_clusters100": "POWER_GATE_FAIL",
+    "fixture_N1000_clusters29": "POWER_GATE_FAIL",
+    "fixtures_are_real_inventory_evidence": false
+  },
+  "real_inventory_gate": {
+    "status": "NOT_EVALUATED",
+    "reason": "Requires accepted WP-004 exact arm binding, accepted WP-005 scorer, frozen benchmark inventory and independent statistical review.",
+    "holdout_accessed": false,
+    "replication_accessed": false,
+    "directional_confirmatory_effect_used": false
+  },
+  "explicit_non_evidence": [
+    "independent statistical reviewer acceptance",
+    "real benchmark inventory POWER_GATE_PASS",
+    "accepted exact WP-004 arm binding",
+    "accepted WP-005 scorer",
+    "HOLDOUT or REPLICATION authorization",
+    "GATE-001 approval"
+  ],
+  "producer_conflict": "The producer session cannot independently accept ENG-158 or GATE-001.",
+  "recommended_next_state_after_final_handoff": "In Review"
+}
