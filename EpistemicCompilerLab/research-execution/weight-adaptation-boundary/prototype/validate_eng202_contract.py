@@ -1,6 +1,7 @@
 import ast
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -66,8 +67,20 @@ def validate_manifest():
         "target_token_matching: exact_total_effective_supervised_tokens",
         "independently_generated_codex_train_targets_same_schema",
         "teacher_gold_targets_visible: false",
+        "runtime: codex_cli",
+        "model_selection: runtime_default_no_guessed_override",
+        "resolved_model_identity_required_before_generation: true",
         "gold_targets_visible: false",
         "visible_fields: [input_text, teacher_evidence_view, target_schema, teacher_instructions]",
+        "max_successful_semantic_responses_per_record: 1",
+        "max_provider_attempts_per_record: 2",
+        "retry_attempt_condition: pre_semantic_transport_or_infrastructure_failure_only",
+        "retry_after_refusal_or_schema_failure: false",
+        "max_input_tokens_per_attempt: 4096",
+        "max_output_tokens_per_semantic_response: 256",
+        "total_provider_attempt_ceiling_formula: 2*N_train",
+        "total_input_token_ceiling_formula: 8192*N_train",
+        "total_output_token_ceiling_formula: 256*N_train",
         "producer_hidden_content_access: false",
         "teacher_hidden_content_access: false",
         "permitted_output: leakage_report_status_and_aggregate_evidence_only",
@@ -76,6 +89,9 @@ def validate_manifest():
         "scope: DEV_ONLY",
         "holdout_access_authorized: false",
         "replication_access_authorized: false",
+        "retry_after_semantic_response",
+        "outcome_directed_teacher_regeneration",
+        "silent_teacher_model_fallback",
         "fixed_weight_claim_from_weight_changing_result",
     ]
     for fragment in required_fragments:
@@ -85,7 +101,6 @@ def validate_manifest():
     require("match_to: W-B" in text, "W-C matching rule missing")
     require("visible_split: TRAIN" in text, "teacher TRAIN-only visibility missing")
     require("student_outputs_visible: false" in text, "teacher must not see student outputs")
-    require("call_budget_per_record: 1" in text, "teacher call budget not frozen")
     return text
 
 
@@ -145,7 +160,48 @@ def validate_leakage_schema():
     require("allOf" in schema, "confirmatory fail-closed rule missing")
 
 
-def validate_data_and_smoke():
+def validate_teacher_contract_and_ledger():
+    contract = read("TEACHER_RUNTIME_CONTRACT.md")
+    for fragment in [
+        "without an unsupported guessed `--codex-model` override",
+        "teacher_model_reproducibility: limited",
+        "maximum successful semantic generation responses: `1`",
+        "maximum provider attempts: `2`",
+        "byte-identical frozen request",
+        "no retry is permitted after a refusal",
+        "`8192 * N`",
+        "No target may be regenerated because W-C underperforms",
+    ]:
+        require(fragment in contract, f"teacher runtime contract missing: {fragment}")
+
+    schema = json.loads(read("TEACHER_GENERATION_LEDGER.schema.json"))
+    budget = schema["properties"]["budget"]["properties"]
+    require(budget["max_successful_semantic_responses_per_record"]["const"] == 1, "teacher success budget drift")
+    require(budget["max_provider_attempts_per_record"]["const"] == 2, "teacher attempt budget drift")
+    require(budget["max_input_tokens_per_attempt"]["const"] == 4096, "teacher input token budget drift")
+    require(budget["max_output_tokens_per_semantic_response"]["const"] == 256, "teacher output token budget drift")
+    attempts = schema["properties"]["records"]["items"]["properties"]["attempts"]
+    require(attempts["maxItems"] == 2, "teacher ledger permits too many attempts")
+    successful = schema["properties"]["records"]["items"]["properties"]["successful_semantic_responses"]
+    require(successful["maximum"] == 1, "teacher ledger permits multiple semantic successes")
+    outcome_directed = schema["properties"]["summary"]["properties"]["outcome_directed_regeneration"]
+    require(outcome_directed["const"] is False, "teacher ledger allows outcome-directed regeneration")
+
+
+def validate_training_report_schema():
+    schema = json.loads(read("TRAINING_RUN_REPORT.schema.json"))
+    props = schema["properties"]
+    require(props["seed"]["enum"] == EXPECTED_SEEDS, "training report seed set drift")
+    require(props["base_model"]["properties"]["repository"]["const"] == SCIENTIFIC_REPO, "training report base repository drift")
+    require(props["base_model"]["properties"]["revision"]["const"] == SCIENTIFIC_REV, "training report base revision drift")
+    recipe = props["recipe"]["properties"]
+    require(recipe["optimizer_steps"]["const"] == 256, "training report step count drift")
+    require(recipe["rank"]["const"] == 16, "training report rank drift")
+    require(recipe["selected_checkpoint"]["const"] == "final_step_256", "training report checkpoint selection drift")
+    require(props["failure_retained"]["const"] is True, "training report may discard failures")
+
+
+def validate_smoke_data_and_script():
     rows = []
     data_path = PROTO / "synthetic_train.jsonl"
     for line in data_path.read_text(encoding="utf-8").splitlines():
@@ -183,6 +239,38 @@ def validate_data_and_smoke():
         require(code_fragment in smoke_source, f"smoke implementation missing: {code_fragment}")
 
 
+def validate_general_regression():
+    plan = read("GENERAL_REGRESSION_CHECK_PLAN.md")
+    for fragment in [
+        "exactly 12 DEV-only synthetic cases",
+        "three cases per family",
+        "must not be used to",
+        "choose the best W-B/W-C seed",
+        "REGRESSION_SEVERE",
+        "no broad claim such as",
+    ]:
+        require(fragment in plan, f"general regression plan missing: {fragment}")
+
+    rows = []
+    for line in (PROTO / "general_regression_dev.jsonl").read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            rows.append(json.loads(line))
+    require(len(rows) == 12, "general regression set must contain exactly 12 cases")
+    require(len({row["id"] for row in rows}) == 12, "duplicate general regression case id")
+    require(all(row["split"] == "DEV" for row in rows), "general regression set is not DEV-only")
+    families = Counter(row["family"] for row in rows)
+    require(families == Counter({"arithmetic": 3, "instruction": 3, "python_understanding": 3, "json_transform": 3}), "general regression family balance drift")
+    for row in rows:
+        require(set(row) == {"id", "split", "family", "prompt", "expected"}, "general regression fields drift")
+        visible = (row["prompt"] + "\n" + row["expected"]).upper()
+        require("HOLDOUT" not in visible and "REPLICATION" not in visible, "hidden-split text in general regression set")
+
+    scorer = (PROTO / "score_general_regression.py").read_text(encoding="utf-8")
+    ast.parse(scorer)
+    require('.replace("\\r\\n", "\\n").strip()' in scorer, "regression normalization drift")
+    require("prediction id mismatch" in scorer, "regression scorer does not fail closed on case mismatch")
+
+
 def validate_docs():
     protocol = read("WEIGHT_ADAPTATION_PROTOCOL.md")
     data = read("DISTILLATION_DATA_CONTRACT.md")
@@ -208,7 +296,10 @@ def main():
     validate_selection_rule()
     validate_environment()
     validate_leakage_schema()
-    validate_data_and_smoke()
+    validate_teacher_contract_and_ledger()
+    validate_training_report_schema()
+    validate_smoke_data_and_script()
+    validate_general_regression()
     validate_docs()
     report = {
         "issue": "ENG-202",
@@ -219,6 +310,8 @@ def main():
         "arms": ["W-A", "W-B", "W-C"],
         "W-D": "DISABLED_DEV_ONLY",
         "teacher_gold_targets_visible": False,
+        "teacher_max_provider_attempts_per_record": 2,
+        "general_regression_cases": 12,
         "holdout_access": "FORBIDDEN",
         "github_actions_used": False,
     }
