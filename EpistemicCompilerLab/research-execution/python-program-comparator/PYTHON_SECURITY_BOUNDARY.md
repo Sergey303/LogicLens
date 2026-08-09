@@ -12,7 +12,7 @@ The frozen W0 sandbox profile also records one call, 100 ms wall/CPU budgets, 64
 
 ## Qwen visibility
 
-Qwen-visible payloads may contain only fields permitted by `QWEN_VISIBLE_PYTHON_INTERFACE.schema.json`.
+Pre-execution Qwen-visible requests may contain only fields permitted by `QWEN_VISIBLE_PYTHON_REQUEST.schema.json`; post-execution payloads may contain only fields permitted by `QWEN_VISIBLE_PYTHON_INTERFACE.schema.json`.
 
 They must not contain:
 
