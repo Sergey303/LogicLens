@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://logiclens.local/eng201/qwen-visible-python-interface.schema.json",
-  "title": "ENG-201 Qwen-visible Python interface",
+  "title": "ENG-201 Qwen-visible Python interface after execution",
   "type": "object",
   "additionalProperties": false,
   "required": ["mode", "question", "capabilities", "execution_result", "response_schema_id"],
@@ -35,5 +35,9 @@
       }
     },
     "response_schema_id": {"const": "eng201.student-response.v1"}
-  }
+  },
+  "allOf": [
+    {"if": {"properties": {"mode": {"const": "M21"}}}, "then": {"properties": {"capabilities": {"maxItems": 0}}}},
+    {"if": {"properties": {"mode": {"const": "M22"}}}, "then": {"properties": {"capabilities": {"minItems": 3, "maxItems": 3}}}}
+  ]
 }
