@@ -10,6 +10,7 @@ param(
         'relational-comparator-tests',
         'router-comparator-tests',
         'progressive-core-tests',
+        'eng202-contract-check',
         'generate-strict-epistemic-benchmark',
         'cases',
         'cases-v1',
@@ -60,6 +61,7 @@ try {
         'relational-comparator-tests' { & (Join-Path $scriptsRoot 'run-relational-comparator-tests.ps1') }
         'router-comparator-tests' { & (Join-Path $scriptsRoot 'run-router-comparator-tests.ps1') }
         'progressive-core-tests' { & (Join-Path $scriptsRoot 'run-progressive-core-tests.ps1') }
+        'eng202-contract-check' { & (Join-Path $scriptsRoot 'run-eng202-contract-check.ps1') }
         'generate-strict-epistemic-benchmark' {
             & (Join-Path $scriptsRoot 'run-generate-strict-epistemic-benchmark.ps1')
         }
