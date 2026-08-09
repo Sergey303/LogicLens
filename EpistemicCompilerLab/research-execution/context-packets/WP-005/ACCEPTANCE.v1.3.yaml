@@ -1,0 +1,134 @@
+schema_version: 1.3.0
+work_package_id: WP-005
+linear_issue: ENG-157
+status: PRODUCER_REMEDIATION_FINAL_REFREEZE_CANDIDATE
+scope:
+  allowed_splits: [TRAIN, DEV]
+  forbidden_splits: [HOLDOUT, REPLICATION]
+  confirmatory_work_authorized: false
+
+normative_artifacts:
+  - oracle/SEMANTIC_SPEC.md
+  - oracle/SEMANTIC_REGISTRY.json
+  - oracle/POLICY_TABLE.json
+  - oracle/ORACLE_PACKET_CONTRACT.json
+  - oracle/GOLD_ADJUDICATION_PROTOCOL.json
+  - oracle/CONFORMANCE_VECTORS.json
+  - oracle/INVARIANT_COVERAGE_MATRIX.csv
+  - oracle/INDEPENDENCE_BOUNDARY.md
+  - oracle/MUTATION_MATRIX.yaml
+  - oracle/DEPENDENCY_AUDIT_PLAN.md
+  - oracle/HUMAN_AUDIT_PROTOCOL.json
+  - oracle/AUDIT_TOOL_TRUST_MANIFEST.json
+  - scripts/validate_oracle_semantics.py
+  - scripts/validate_oracle_gold_governance.py
+  - scripts/validate_oracle_boundary.py
+
+freeze_order:
+  - semantic_spec_registry_policy_hashes_frozen
+  - source_rule_packet_hashes_frozen
+  - blind_query_adjudication_completed
+  - query_adjudication_registry_hash_frozen
+  - blind_outcome_gold_adjudication_completed
+  - outcome_gold_registry_hash_frozen
+  - isolated_B_oracle_computes_without_outcome_gold_mount
+  - B_oracle_output_hash_frozen
+  - B_vs_outcome_gold_consistency_checked
+  - scorer_source_and_hash_frozen
+  - first_scored_model_output_may_exist
+
+expected_value_authority:
+  scorer_authority: outcome_gold_registry
+  B_oracle_role: independent_consistency_check
+  unexplained_B_gold_disagreement: block_scoring_and_benchmark_freeze
+  majority_vote: prohibited
+  B_may_override_gold: false
+  gold_may_be_repaired_from_B: false
+
+acceptance_contract:
+  blind_gold:
+    query_adjudicators_per_case: 2
+    outcome_adjudicators_per_case: 2
+    third_adjudicator_on_disagreement: 1
+    path_A_B_scorer_model_teacher_roles_forbidden: true
+    unresolved_disagreement_case_eligible: false
+    pre_model_freeze_required: true
+    post_model_query_expansion: prohibited
+    post_model_outcome_expansion: prohibited
+    post_model_gold_repair_from_behavior: prohibited
+  semantics:
+    semantic_version: wp005.semantic.v1
+    four_state_truth_table_complete: true
+    open_world_absence_is_negative: false
+    query_outcomes_distinct_from_semantic_status: true
+    canonicalization_machine_readable: true
+    evidence_root_semantics_machine_readable: true
+    proof_normal_form_machine_readable: true
+    exact_policy_table_machine_readable: true
+  track_separation:
+    gold_query_execution_validates: [formal_execution, decision_policy, frame_serialization]
+    gold_query_execution_must_not_validate: [natural_question_interpretation, student_query_formation]
+    renderer_ceiling_must_not_validate: [question_interpretation, query_formation, formal_execution]
+  conformance:
+    invariant_count: 18
+    minimum_vector_count: 36
+    every_invariant_requires_positive_vector: true
+    every_invariant_requires_negative_vector: true
+    every_invariant_requires_mutation: true
+    every_invariant_requires_expected_A_and_B_results: true
+    every_invariant_requires_scorer_fields: true
+    publication_score_fields: 14
+  mutation:
+    minimum_mutation_count: 42
+    critical_kill_rate_required: 1.0
+    unexplained_survivor_blocks_freeze: true
+    post_model_equivalent_mutant_waiver: prohibited
+  human_audit:
+    sample_size: 120
+    selection_seed: 157005
+    cases_per_status: 30
+    independent_reviewers_per_case: 2
+    adjudicator_on_disagreement: 1
+    pre_adjudication_exact_case_agreement_min: 0.95
+    per_stratum_pre_adjudication_agreement_min: 0.90
+    post_adjudication_unresolved_disagreements: 0
+    semantic_or_scorer_errors_allowed: 0
+  audit_tool:
+    negative_controls_required: 16
+    positive_controls_required: true
+    known_blind_spots_report_required: true
+    unobservable_required_channel_blocks_pass: true
+  independence:
+    producer_cannot_accept_own_artifact: true
+    distinct_gold_adjudicators_required: true
+    distinct_path_B_implementer_required: true
+    distinct_dependency_mutation_auditor_required: true
+    distinct_gatekeeper_required: true
+
+validation_commands:
+  - id: wp005_semantic_and_boundary
+    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight --boundary EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+    expected_exit_code: 0
+  - id: wp005_gold_governance
+    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py
+    expected_exit_code: 0
+  - id: wp005_windows_complete_local_no_actions
+    command: "& 'D:\\projects\\ChatPilotGroup\\LogicLens\\EpistemicCompilerLab\\scripts\\run-wp005-remediation-check.ps1'"
+    expected_exit_code: 0
+
+producer_preflight_is_not:
+  - independent_review
+  - accepted_path_B_implementation
+  - mutation_execution_evidence
+  - dependency_audit_execution_evidence
+  - human_audit_execution_evidence
+  - GATE-001_approval
+
+freeze_rule:
+  final_handoff_committed_last: true
+  scientific_candidate_resolver: first parent of commit that introduces final handoff
+
+next_required_state:
+  after_complete_producer_preflight_and_final_handoff: In Review
+  independent_reviewer_verdict: [PASS, REVISE, PIVOT]
+  gate_effect_before_independent_PASS: NONE
