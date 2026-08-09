@@ -68,6 +68,35 @@ def assert_adapter_negatives() -> list[str]:
     return passed
 
 
+def attest_reader_role(connection: Any) -> dict[str, Any]:
+    row = connection.execute(
+        """
+        SELECT oid, rolcanlogin, rolsuper, rolcreatedb, rolcreaterole, rolreplication, rolbypassrls
+        FROM pg_roles
+        WHERE rolname = 'relational_cmp_reader'
+        """
+    ).fetchone()
+    require(row is not None, "relational_cmp_reader role missing")
+    oid, can_login, is_super, create_db, create_role, replication, bypass_rls = row
+    memberships = int(connection.execute("SELECT count(*) FROM pg_auth_members WHERE member = %s", (oid,)).fetchone()[0])
+    require(can_login is False, "reader role unexpectedly LOGIN")
+    require(is_super is False, "reader role unexpectedly SUPERUSER")
+    require(create_db is False, "reader role unexpectedly CREATEDB")
+    require(create_role is False, "reader role unexpectedly CREATEROLE")
+    require(replication is False, "reader role unexpectedly REPLICATION")
+    require(bypass_rls is False, "reader role unexpectedly BYPASSRLS")
+    require(memberships == 0, "reader role inherits membership in another role")
+    return {
+        "rolcanlogin": can_login,
+        "rolsuper": is_super,
+        "rolcreatedb": create_db,
+        "rolcreaterole": create_role,
+        "rolreplication": replication,
+        "rolbypassrls": bypass_rls,
+        "role_memberships": memberships,
+    }
+
+
 def assert_db_write_denials(connection: Any) -> list[str]:
     statements = {
         "insert_denied": "INSERT INTO relational_cmp.proposition VALUES ('evil','x','x','x')",
@@ -135,6 +164,7 @@ def main() -> int:
         "status": "RUNNING",
         "subset_eligibility": eligibility,
         "runtime": {},
+        "reader_role": {},
         "hashes": {},
         "cases": [],
         "security_negatives": {},
@@ -173,6 +203,7 @@ def main() -> int:
             execute_script(connection, GENERATED / "permissions.sql")
             build_ns = time.perf_counter_ns() - build_started
 
+            report["reader_role"] = attest_reader_role(connection)
             connection.execute("SET statement_timeout = '5s'")
             connection.execute("SET ROLE relational_cmp_reader")
 
