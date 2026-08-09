@@ -30,6 +30,7 @@ FILES = [
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/subset_eligibility.py",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/db_executor.py",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/live_postgres_smoke.py",
+    "EpistemicCompilerLab/research-execution/relational-comparator/prototype/build_subset_equivalence_report.py",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/verify.py",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/build_freeze_manifest.py",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/generated/schema.sql",
