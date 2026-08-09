@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "issue": "ENG-202",
+  "reference_environment": {
+    "os": "Linux x86_64",
+    "python": "3.11",
+    "cuda": "12.4",
+    "packages": {
+      "torch": "2.5.1",
+      "transformers": "4.46.3",
+      "peft": "0.14.0",
+      "accelerate": "1.2.1",
+      "datasets": "3.2.0",
+      "bitsandbytes": "0.46.0"
+    }
+  },
+  "installation_contract": {
+    "isolated_virtual_environment": true,
+    "exact_versions_required": true,
+    "dependency_resolution_log_required": true,
+    "pip_freeze_required_per_run": true,
+    "gpu_name_required": true,
+    "driver_version_required": true,
+    "cuda_runtime_required": true
+  },
+  "scientific_rule": "Environment drift creates a new candidate version; successful execution under an unrecorded environment cannot be substituted silently."
+}
