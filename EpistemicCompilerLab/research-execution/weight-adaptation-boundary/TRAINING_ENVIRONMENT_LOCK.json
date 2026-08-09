@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "issue": "ENG-202",
   "reference_environment": {
     "os": "Linux x86_64",
@@ -23,5 +23,18 @@
     "driver_version_required": true,
     "cuda_runtime_required": true
   },
-  "scientific_rule": "Environment drift creates a new candidate version; successful execution under an unrecorded environment cannot be substituted silently."
+  "scientific_replicability_contract": {
+    "normative_document": "TRAINING_REPLICABILITY_CONTRACT.md",
+    "bitwise_cross_hardware_determinism_claimed": false,
+    "all_predeclared_seeds_required": true,
+    "same_seed_W-B_W-C_order_required": true,
+    "ordered_record_manifest_hash_required": true,
+    "pythonhashseed_required": true,
+    "cublas_workspace_config": ":4096:8",
+    "torch_deterministic_algorithms_required_or_predeclared_fail_closed_exception": true,
+    "tf32_allowed": false,
+    "dataloader_worker_count_required": true,
+    "rng_state_and_seed_settings_recorded": true
+  },
+  "scientific_rule": "Environment or reproducibility-setting drift creates a new candidate version; successful execution under an unrecorded environment cannot be substituted silently."
 }
