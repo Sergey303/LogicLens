@@ -8,8 +8,8 @@
       "handle": "py_cap_01",
       "name": "evidence_status",
       "description": "Combine explicit positive and negative evidence without treating absence as false.",
-      "arguments": {"positive_evidence": "boolean", "negative_evidence": "boolean"},
-      "result": {"status": ["supported", "refuted", "conflicting", "unknown"], "value": ["boolean", "null"]},
+      "arguments": {"type": "object", "additionalProperties": false, "required": ["positive_evidence", "negative_evidence"], "properties": {"positive_evidence": {"type": "boolean"}, "negative_evidence": {"type": "boolean"}}},
+      "result": {"type": "object", "additionalProperties": false, "required": ["status", "value"], "properties": {"status": {"enum": ["supported", "refuted", "conflicting", "unknown"]}, "value": {"type": ["boolean", "null"]}}},
       "provenance_required": true,
       "side_effects": "none"
     },
@@ -17,8 +17,8 @@
       "handle": "py_cap_02",
       "name": "threshold_relation",
       "description": "Compare one numeric value with a threshold.",
-      "arguments": {"value": "number", "threshold": "number"},
-      "result": {"status": ["ok"], "value": ["above", "below", "equal"]},
+      "arguments": {"type": "object", "additionalProperties": false, "required": ["value", "threshold"], "properties": {"value": {"type": "number"}, "threshold": {"type": "number"}}},
+      "result": {"type": "object", "additionalProperties": false, "required": ["status", "value"], "properties": {"status": {"const": "ok"}, "value": {"enum": ["above", "below", "equal"]}}},
       "provenance_required": true,
       "side_effects": "none"
     },
@@ -26,8 +26,8 @@
       "handle": "py_cap_03",
       "name": "interval_threshold",
       "description": "Determine whether an interval is wholly above, wholly below, or crosses a threshold.",
-      "arguments": {"lower": "number", "upper": "number", "threshold": "number"},
-      "result": {"status": ["supported", "refuted", "unknown"], "value": ["above", "null"]},
+      "arguments": {"type": "object", "additionalProperties": false, "required": ["lower", "upper", "threshold"], "properties": {"lower": {"type": "number"}, "upper": {"type": "number"}, "threshold": {"type": "number"}}},
+      "result": {"type": "object", "additionalProperties": false, "required": ["status", "value"], "properties": {"status": {"enum": ["supported", "refuted", "unknown"]}, "value": {"enum": ["above", null]}}},
       "provenance_required": true,
       "side_effects": "none"
     }
