@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/wp006/power-gate-input.schema.json",
+  "title": "WP-006 confirmatory power gate input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "wp004_arm_binding", "wp005_scorer", "inventory", "nuisance", "evidence", "sealed_access"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "wp004_arm_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["treatment_arm_id", "control_arm_id", "contract_sha256", "independent_review_ref"],
+      "properties": {
+        "treatment_arm_id": {"type": "string", "minLength": 1},
+        "control_arm_id": {"type": "string", "minLength": 1},
+        "contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "independent_review_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "wp005_scorer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_version", "scorer_sha256", "independent_review_ref"],
+      "properties": {
+        "semantic_version": {"const": "wp005.semantic.v1"},
+        "scorer_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "independent_review_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["benchmark_manifest_sha256", "eligible_paired_n", "independent_source_family_clusters", "cluster_size_summary_sha256", "attrition_ledger_sha256"],
+      "properties": {
+        "benchmark_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "eligible_paired_n": {"type": "integer", "minimum": 1},
+        "independent_source_family_clusters": {"type": "integer", "minimum": 1},
+        "cluster_size_summary_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "attrition_ledger_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "nuisance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "discordance_q", "mean_cluster_size", "icc", "attrition", "report_sha256"],
+      "properties": {
+        "source": {"enum": ["frozen_primary_planning", "single_blinded_nuisance_update"]},
+        "discordance_q": {"type": "number", "minimum": 0.08, "maximum": 1},
+        "mean_cluster_size": {"type": "number", "minimum": 1},
+        "icc": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
+        "attrition": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
+        "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["calculator_sha256", "validator_sha256", "power_protocol_sha256", "independent_statistical_review_ref"],
+      "properties": {
+        "calculator_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "validator_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "power_protocol_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "independent_statistical_review_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "sealed_access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["holdout_accessed", "replication_accessed", "directional_confirmatory_effect_seen_by_power_analyst"],
+      "properties": {
+        "holdout_accessed": {"const": false},
+        "replication_accessed": {"const": false},
+        "directional_confirmatory_effect_seen_by_power_analyst": {"const": false}
+      }
+    }
+  }
+}
