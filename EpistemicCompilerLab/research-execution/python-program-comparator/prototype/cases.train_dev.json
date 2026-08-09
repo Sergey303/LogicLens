@@ -1,0 +1,12 @@
+{
+  "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+  "cases": [
+    {"id": "train-evidence-positive", "family": "evidence", "question": "Is the proposition supported?", "public_request": {"kind": "evidence_status", "positive_evidence": true, "negative_evidence": false}, "provenance": ["synthetic:train:e1"], "expected": {"status": "supported", "value": true}},
+    {"id": "train-evidence-unknown", "family": "evidence", "question": "Is the proposition supported when no explicit evidence is loaded?", "public_request": {"kind": "evidence_status", "positive_evidence": false, "negative_evidence": false}, "provenance": ["synthetic:train:e2"], "expected": {"status": "unknown", "value": null}},
+    {"id": "dev-evidence-conflict", "family": "evidence", "question": "What is the status when positive and negative evidence coexist?", "public_request": {"kind": "evidence_status", "positive_evidence": true, "negative_evidence": true}, "provenance": ["synthetic:dev:e3"], "expected": {"status": "conflicting", "value": null}},
+    {"id": "train-threshold-above", "family": "threshold", "question": "Is 12 above 10?", "public_request": {"kind": "threshold_relation", "value": 12, "threshold": 10}, "provenance": ["synthetic:train:t1"], "expected": {"status": "ok", "value": "above"}},
+    {"id": "dev-threshold-equal", "family": "threshold", "question": "How does 10 compare with 10?", "public_request": {"kind": "threshold_relation", "value": 10, "threshold": 10}, "provenance": ["synthetic:dev:t2"], "expected": {"status": "ok", "value": "equal"}},
+    {"id": "train-interval-above", "family": "interval", "question": "Is the full interval [12, 15] above 10?", "public_request": {"kind": "interval_threshold", "lower": 12, "upper": 15, "threshold": 10}, "provenance": ["synthetic:train:i1"], "expected": {"status": "supported", "value": "above"}},
+    {"id": "dev-interval-crosses", "family": "interval", "question": "Is the full interval [8, 12] above 10?", "public_request": {"kind": "interval_threshold", "lower": 8, "upper": 12, "threshold": 10}, "provenance": ["synthetic:dev:i2"], "expected": {"status": "unknown", "value": null}}
+  ]
+}
