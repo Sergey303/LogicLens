@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/eng202/leakage-memorization-report.schema.json",
+  "title": "ENG-202 leakage and memorization report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "corpus_id", "arm", "corpus_sha256", "checks", "confirmatory_eligible"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "corpus_id": {"type": "string", "minLength": 1},
+    "arm": {"enum": ["W-B", "W-C", "W-D"]},
+    "corpus_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exact_normalized_overlap", "internal_identifier_leak", "forbidden_split_reference", "lexical_near_duplicate", "semantic_near_duplicate", "source_family_policy", "teacher_prompt_audit", "target_schema_validity", "matched_token_budget"],
+      "properties": {
+        "exact_normalized_overlap": {"$ref": "#/$defs/check"},
+        "internal_identifier_leak": {"$ref": "#/$defs/check"},
+        "forbidden_split_reference": {"$ref": "#/$defs/check"},
+        "lexical_near_duplicate": {"$ref": "#/$defs/check"},
+        "semantic_near_duplicate": {"$ref": "#/$defs/check"},
+        "source_family_policy": {"$ref": "#/$defs/check"},
+        "teacher_prompt_audit": {"$ref": "#/$defs/check"},
+        "target_schema_validity": {"$ref": "#/$defs/check"},
+        "matched_token_budget": {"$ref": "#/$defs/check"}
+      }
+    },
+    "confirmatory_eligible": {"type": "boolean"}
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "method", "evidence"],
+      "properties": {
+        "status": {"enum": ["pass", "fail", "unknown"]},
+        "method": {"type": "string", "minLength": 1},
+        "threshold": {"type": ["number", "string", "null"]},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"confirmatory_eligible": {"const": true}}},
+      "then": {
+        "properties": {
+          "checks": {
+            "properties": {
+              "exact_normalized_overlap": {"properties": {"status": {"const": "pass"}}},
+              "internal_identifier_leak": {"properties": {"status": {"const": "pass"}}},
+              "forbidden_split_reference": {"properties": {"status": {"const": "pass"}}},
+              "lexical_near_duplicate": {"properties": {"status": {"const": "pass"}}},
+              "semantic_near_duplicate": {"properties": {"status": {"const": "pass"}}},
+              "source_family_policy": {"properties": {"status": {"const": "pass"}}},
+              "teacher_prompt_audit": {"properties": {"status": {"const": "pass"}}},
+              "target_schema_validity": {"properties": {"status": {"const": "pass"}}},
+              "matched_token_budget": {"properties": {"status": {"const": "pass"}}}
+            }
+          }
+        }
+      }
+    }
+  ]
+}
