@@ -55,7 +55,15 @@ Pre-frozen general regression diagnostic:
 Contract validation:
 
 - `prototype/validate_eng202_contract.py`
+- `EpistemicCompilerLab/scripts/run-eng202-contract-check.ps1`
+- launcher action: `eng202-contract-check`
 
-The stdlib-only contract validator does not download a model or train weights. The smoke command is frozen before any large run, but **a real successful CUDA QLoRA smoke from the exact frozen contract remains mandatory before producer handoff to independent review**. Merely having a script or passing static contract validation cannot substitute for smoke evidence.
+Local static validation without GitHub Actions:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' eng202-contract-check
+```
+
+This stdlib-only validator does not download a model or train weights. A static PASS is therefore only contract evidence. **A real successful CUDA QLoRA smoke from the exact frozen contract remains mandatory before producer handoff to independent review.** Merely having a script or passing static contract validation cannot substitute for smoke evidence.
 
 No HOLDOUT or REPLICATION content is permitted in this package. Hidden-split overlap checks, when eventually required, are performed by a sealed custodian/scanner that returns only frozen report status and aggregate evidence; producer and teacher do not receive hidden examples.
