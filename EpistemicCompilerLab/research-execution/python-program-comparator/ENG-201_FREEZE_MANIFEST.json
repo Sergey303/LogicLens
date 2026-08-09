@@ -1,93 +1,36 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "issue": "ENG-201",
   "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
   "files": [
-    {
-      "path": "M21_MAPPER_CONTRACT.md",
-      "sha256": "4c69882d51fd013e6d49661cf433eb4fedeac5e57959d5b241f062fe1a4a5ccd",
-      "bytes": 1478
-    },
-    {
-      "path": "PYTHON_MODE_CONTRACTS.yaml",
-      "sha256": "7bb4bee0d188b750caea3524a32bc8142b9765338bd4ceaa680e300dcff50cfe",
-      "bytes": 1399
-    },
-    {
-      "path": "PYTHON_MUTATION_PLAN.yaml",
-      "sha256": "1d0b699e4b91743726d76cf897299e30b71158185740bb689946f0d46ba0d35d",
-      "bytes": 915
-    },
-    {
-      "path": "PYTHON_PROGRAM_CONTRACT.md",
-      "sha256": "59569e033329e3966c5b9facf530e4fa9faefa8592740f549e84f8d6807bbaf6",
-      "bytes": 4172
-    },
-    {
-      "path": "PYTHON_SECURITY_BOUNDARY.md",
-      "sha256": "e9fc1afb45eb706f5d003c68d499396ae2d26e102b551a2d3c4239b0703ca1c1",
-      "bytes": 2130
-    },
-    {
-      "path": "PYTHON_TOOL_API.schema.json",
-      "sha256": "92163f8341a54b809bb52d93fe0cc56140135c5993d9b54135671b0c258967e8",
-      "bytes": 2120
-    },
-    {
-      "path": "QWEN_VISIBLE_PYTHON_INTERFACE.schema.json",
-      "sha256": "46bf812e4b6db8af1d1faab071ce6c9c74c3352b8d7863a9da6416df64d53a02",
-      "bytes": 1715
-    },
-    {
-      "path": "README.md",
-      "sha256": "93f3a70c2e5bddb9876e64c2e5eb8c926cc112ec95f96e6cf08da5b96d1fec14",
-      "bytes": 1449
-    },
-    {
-      "path": "prototype/cases.train_dev.json",
-      "sha256": "ec0bb7a4ac7a22746a4c3af8fd34055d16594d74e2d2f693c113194ca8df84be",
-      "bytes": 2130
-    },
-    {
-      "path": "prototype/program.py",
-      "sha256": "d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde",
-      "bytes": 1511
-    },
-    {
-      "path": "prototype/runner.py",
-      "sha256": "17e0bfcb78f80726c7834ce3377068d87d41db160d83e2f72895b114be817b43",
-      "bytes": 2424
-    },
-    {
-      "path": "prototype/tool_api.json",
-      "sha256": "20a492c5d0b34f96678c0735251119c744e6a7eecf584d0908cb47436ebdd95f",
-      "bytes": 2242
-    },
-    {
-      "path": "prototype/verify.py",
-      "sha256": "7a81eb5fe78539f2a17af9560a25082217e2a97e4784e1a0db57b333be01ca21",
-      "bytes": 7432
-    }
+    {"path":"M21_MAPPER_CONTRACT.md","sha256":"4c69882d51fd013e6d49661cf433eb4fedeac5e57959d5b241f062fe1a4a5ccd","bytes":1478},
+    {"path":"PYTHON_MODE_CONTRACTS.yaml","sha256":"0fe67ba0eb242af2363ecc36caa0bbe31d7055a2d8b17ddc11f3b7efffa7e1de","bytes":1463},
+    {"path":"PYTHON_MUTATION_PLAN.yaml","sha256":"4436280a1f6c4af3bb0316b61f04e8825268f05436677c00f869c0e7570ea19b","bytes":1159},
+    {"path":"PYTHON_PROGRAM_CONTRACT.md","sha256":"95959ff4669c484e30061dde3db477072e40bde488a96c975c994d3d27854dfb","bytes":4342},
+    {"path":"PYTHON_RUNTIME_LOCK.json","sha256":"e053b9ade21509ac93cf68986e260ed26cebb9e255cfd3ba0d911541bc32ad8c","bytes":377},
+    {"path":"PYTHON_SANDBOX_PROFILE.json","sha256":"49fed1bfa44a7b1ba1ea773f78f656f8d97b546d87d3d82dc9522a8845cf9af3","bytes":414},
+    {"path":"PYTHON_SECURITY_BOUNDARY.md","sha256":"c8ec48836af319943fc4596b557f99b93b4ba34c5c64f5242470b934ed97f80f","bytes":2492},
+    {"path":"PYTHON_TOOL_API.schema.json","sha256":"675b8cd4918fedc08a8ce131eae95e2e3ed5380a0c382618c8c9b64dc327dc7a","bytes":2177},
+    {"path":"QWEN_VISIBLE_PYTHON_INTERFACE.schema.json","sha256":"46bf812e4b6db8af1d1faab071ce6c9c74c3352b8d7863a9da6416df64d53a02","bytes":1715},
+    {"path":"QWEN_VISIBLE_PYTHON_REQUEST.schema.json","sha256":"594d7ee4931440c899c748080c711125adc4505fc0b4a189c03cb6de7368917b","bytes":1152},
+    {"path":"README.md","sha256":"69591d13303e9c2b57d64181362cf001f1e18124372b2b32b0f3544e8bfcd407","bytes":1554},
+    {"path":"prototype/cases.train_dev.json","sha256":"ec0bb7a4ac7a22746a4c3af8fd34055d16594d74e2d2f693c113194ca8df84be","bytes":2130},
+    {"path":"prototype/program.py","sha256":"d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde","bytes":1511},
+    {"path":"prototype/runner.py","sha256":"fef5101b931a03457c84d2384d9b1840f2179184ad783f7831e429e20d907804","bytes":2658},
+    {"path":"prototype/tool_api.json","sha256":"dae8832bebfbf5d7a5181c615c35f4876bae501b39ac472e91b7ff8d9824110f","bytes":2763},
+    {"path":"prototype/verify.py","sha256":"8beda54d90181718b5951fee83c4663befdbf7fc139716d8973e1a03a9899cf3","bytes":10532}
   ],
   "validation": {
     "cases_passed": 7,
     "deterministic_rerun": true,
     "issue": "ENG-201",
-    "mutations_passed": [
-      "wrong_branch",
-      "arithmetic_inversion",
-      "stale_program_version",
-      "fabricated_provenance",
-      "hidden_lookup_table",
-      "case_id_branch",
-      "forbidden_import",
-      "filesystem_attempt",
-      "subprocess_attempt",
-      "qwen_visible_source_leak"
-    ],
+    "mutations_passed": ["wrong_branch","arithmetic_inversion","stale_program_version","fabricated_provenance","hidden_lookup_table","case_id_branch","mapper_case_id_branch","forbidden_import","filesystem_attempt","subprocess_attempt","network_attempt","dynamic_eval_attempt","qwen_visible_source_leak"],
+    "pre_and_post_visibility": "PASS",
     "program_sha256": "d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde",
     "qwen_source_visibility": "none",
+    "runtime_lock": "PASS",
     "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
-    "tool_api_sha256": "20a492c5d0b34f96678c0735251119c744e6a7eecf584d0908cb47436ebdd95f"
+    "tool_api_sha256": "dae8832bebfbf5d7a5181c615c35f4876bae501b39ac472e91b7ff8d9824110f",
+    "typed_api": "PASS"
   }
 }
