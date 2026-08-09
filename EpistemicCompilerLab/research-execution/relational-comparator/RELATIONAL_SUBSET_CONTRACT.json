@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "eng197.relational-subset.v1",
+  "linear_issue": "ENG-197",
+  "decision_timing": "before_split_assignment_outcome_blind",
+  "eligible_when": {
+    "source_scope": "same_exact_scope_and_version",
+    "polarity": ["positive", "negative"],
+    "negative_inference": "direct_target_assertion_only",
+    "positive_rules": "single_positive_premise_to_single_positive_head",
+    "rule_semantics": "monotone_no_priority_no_exception_no_negation_as_failure",
+    "dependency_groups_affect_result": false,
+    "multi_premise_rules": false,
+    "negative_premises": false,
+    "negative_rule_heads": false,
+    "polarity_transforms": false,
+    "arithmetic_predicates": false,
+    "result_truncation": false,
+    "full_root_evidence_and_source_provenance_preserved": true
+  },
+  "ineligible_reason_codes": [
+    "MIXED_SCOPE_OR_VERSION",
+    "DEPENDENCY_SEMANTICS_REQUIRED",
+    "MULTI_PREMISE_RULE",
+    "NEGATIVE_PREMISE",
+    "NEGATIVE_RULE_HEAD",
+    "POLARITY_TRANSFORM",
+    "PRIORITY_OR_EXCEPTION",
+    "NEGATION_AS_FAILURE",
+    "ARITHMETIC_PREDICATE",
+    "PROVENANCE_NOT_LOSSLESS",
+    "UNKNOWN_STRUCTURE"
+  ],
+  "visible_contract_difference": {
+    "m16_returns": ["status_code", "action_code", "evidence", "provenance"],
+    "m16_proof_graph_visible": false,
+    "m6_proof_frame_obligation_matched": false,
+    "interpretation": "M16_vs_M6_is_trusted_result_interface_bundle_not_proof_equivalence"
+  },
+  "analysis": {
+    "paired_eligible_scenarios_only": true,
+    "wp006_must_power_on_eligible_count": true,
+    "ineligible_cases_are_never_approximated": true
+  }
+}
