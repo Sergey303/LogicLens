@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-005",
+  "population": "all eligible non-sealed TRAIN/DEV oracle cases after semantic/query registries freeze and before confirmatory HOLDOUT",
+  "sample": {
+    "size": 120,
+    "selection_seed": 157005,
+    "hash_function": "SHA-256",
+    "primary_status_quota": {
+      "supported": 30,
+      "refuted": 30,
+      "conflicting": 30,
+      "unknown": 30
+    },
+    "mandatory_coverage_dimensions": ["domain", "status", "difficulty", "source_family", "mutation_family"],
+    "selection_algorithm": [
+      "construct eligible case x coverage-strata incidence matrix",
+      "within each status quota sort candidate cases by SHA256('157005|' + case_id) ascending",
+      "first choose cases greedily by maximum number of still-uncovered strata; break ties by seeded hash order",
+      "fill remaining status quota by seeded hash order without replacement",
+      "after all four quotas, verify every observed mandatory stratum in the eligible population has at least one sampled case",
+      "if any mandatory stratum is uncovered or any status has fewer than 30 eligible cases, STOP and version a new protocol before audit; do not silently change quota"
+    ]
+  },
+  "reviewers": {
+    "independent_reviewers_per_case": 2,
+    "adjudicator_on_disagreement": 1,
+    "reviewer_must_not_be": ["Path_A_implementer", "Path_B_implementer", "model_output_analyst_for_same_candidate"],
+    "visible_inputs": ["source_documents", "source_bound_annotations", "normalized_query_or_natural_question_per_track", "SEMANTIC_SPEC", "SEMANTIC_REGISTRY", "POLICY_TABLE", "public_schemas"],
+    "forbidden_inputs": ["Path_A_output", "Path_B_output", "student_output", "model_metrics", "HOLDOUT", "REPLICATION"]
+  },
+  "recorded_fields": [
+    "case_id",
+    "reviewer_identity",
+    "reviewer_session",
+    "track",
+    "field_decisions",
+    "evidence_locators",
+    "disagreement",
+    "adjudicator_identity_if_needed",
+    "adjudicated_decision",
+    "reason_code"
+  ],
+  "acceptance": {
+    "pre_adjudication_exact_case_agreement_min": 0.95,
+    "per_stratum_pre_adjudication_agreement_min": 0.90,
+    "post_adjudication_unresolved_disagreements": 0,
+    "semantic_or_scorer_errors_allowed": 0,
+    "uncovered_mandatory_strata_allowed": 0,
+    "action_on_threshold_failure": "REVISE; retain original audit; fix only in a new version and repeat the entire 120-case audit under a reviewed protocol"
+  },
+  "claim_boundary": "PASS validates only the audited non-sealed sample and protocol; it does not prove perfect human correctness on unaudited or sealed cases"
+}
