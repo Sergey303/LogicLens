@@ -1,0 +1,120 @@
+schema_version: 1.0.0
+work_package_id: WP-006
+linear_issue: ENG-158
+status: PRODUCER_DESIGN_PREFLIGHT_READY
+scope:
+  allowed_splits: [TRAIN, DEV]
+  forbidden_splits: [HOLDOUT, REPLICATION]
+  confirmatory_execution_authorized: false
+
+primary_design:
+  endpoint: publication_composite_correctness
+  paired: true
+  treatment_semantic_id: authoritative_semantic_result_placement_fixed_weight
+  control_semantic_id: matched_fixed_weight_baseline
+  executable_arm_ids_must_bind_from_accepted_WP004: true
+  best_DEV_arm_selection: prohibited
+  SESOI_absolute: 0.08
+  alpha_two_sided: 0.05
+  target_power: 0.90
+  primary_confirmatory_contrasts: 1
+  cluster_id: source_family_id
+  minimum_independent_clusters: 30
+
+frozen_primary_planning:
+  discordance_q: 0.35
+  mean_cluster_size: 8
+  icc: 0.05
+  non_evaluable_attrition: 0.05
+  minimum_eligible_paired_n: 802
+  N801_power_gate: FAIL
+  N802_power_gate: PASS
+
+analysis:
+  point_estimate: paired_absolute_correctness_difference
+  uncertainty: source_family_cluster_robust
+  two_sided: true
+  report_discordant_pairs: true
+  report_cluster_count: true
+  report_eligible_N: true
+
+blinded_nuisance_update:
+  maximum_updates: 1
+  before_HOLDOUT: true
+  allowed: [non_directional_discordance_q, cluster_size, blinded_dependence_proxy, non_evaluable_attrition]
+  forbidden: [signed_treatment_difference, arm_labelled_accuracy, discordant_winner_direction, HOLDOUT, REPLICATION]
+  immutable: [SESOI, alpha, target_power, endpoint, primary_contrast_count]
+
+multiplicity:
+  primary_alpha: 0.05
+  secondary_declared_family: Holm_FWER_0.05
+  exploratory_cannot_replace_primary: true
+
+missingness:
+  model_or_response_failure_is_not_silently_missing: true
+  exclusions_require_arm_independent_non_evaluability: true
+  symmetric_pair_rule: true
+  attrition_ledger_required: true
+  optional_stopping: prohibited
+  significance_based_sample_extension: prohibited
+
+monte_carlo_crosscheck:
+  repetitions: 20000
+  seed: 158006
+  generator: exact_exchangeable_ICC_shared_cluster_mixture
+  primary_N: 802
+  maximum_absolute_gap_vs_analytical_power: 0.02
+  seed_shopping: prohibited
+
+real_inventory_gate:
+  status: NOT_EVALUATED_BY_PRODUCER_DESIGN_PREFLIGHT
+  input_schema: power-analysis/POWER_GATE_INPUT.schema.json
+  evaluator: power-analysis/prototype/evaluate_power_gate.py
+  pass_requires:
+    - accepted_WP004_arm_binding
+    - accepted_WP005_scorer
+    - frozen_benchmark_inventory
+    - eligible_N_at_least_computed_required_N
+    - independent_source_family_clusters_at_least_30
+    - no_HOLDOUT_or_REPLICATION_access
+    - no_directional_confirmatory_effect_seen_by_power_analyst
+    - independent_statistical_review
+
+negative_controls:
+  synthetic_N802_clusters100: POWER_GATE_PASS
+  synthetic_N801_clusters100: POWER_GATE_FAIL
+  synthetic_N1000_clusters29: POWER_GATE_FAIL
+  fixtures_are_real_inventory_evidence: false
+
+validation_commands:
+  - id: complete_contract
+    command: python EpistemicCompilerLab/research-execution/power-analysis/prototype/validate_wp006_complete.py
+    expected_exit_code: 0
+  - id: analytical_sensitivity
+    command: python EpistemicCompilerLab/research-execution/power-analysis/prototype/calculate_power.py --sensitivity
+    expected_exit_code: 0
+  - id: monte_carlo_crosscheck
+    command: python EpistemicCompilerLab/research-execution/power-analysis/prototype/simulate_power.py --repetitions 20000 --seed 158006
+    expected_exit_code: 0
+  - id: windows_local_no_actions
+    command: "& 'D:\\projects\\ChatPilotGroup\\LogicLens\\EpistemicCompilerLab\\scripts\\run-wp006-power-preflight.ps1'"
+    expected_exit_code: 0
+
+producer_preflight_is_not:
+  - independent_statistical_review
+  - real_inventory_POWER_GATE_PASS
+  - accepted_WP004_arm_binding
+  - accepted_WP005_scorer
+  - HOLDOUT_authorization
+  - REPLICATION_authorization
+  - GATE-001_approval
+
+independence:
+  producer_cannot_accept_own_artifact: true
+  statistical_reviewer_session_must_be_distinct: true
+  gatekeeper_session_must_be_distinct: true
+
+next_required_state:
+  after_final_producer_handoff: In Review
+  reviewer_verdict: [PASS, REVISE, PIVOT]
+  GATE_effect_before_independent_PASS_and_real_inventory_gate: NONE
