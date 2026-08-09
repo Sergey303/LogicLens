@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "purpose": "Allow a pre-HOLDOUT sample-size recalculation from non-directional nuisance information without changing the SESOI or inspecting which confirmatory arm is better.",
+  "allowed_timing": "after TRAIN/DEV pipeline feasibility but before any HOLDOUT or REPLICATION access and before any confirmatory directional effect is revealed",
+  "allowed_inputs": [
+    "paired disagreement indicator without direction",
+    "source_family_id with blinded treatment/control labels",
+    "non_evaluable_case_indicator and predeclared reason code",
+    "eligible case count",
+    "independent source-family cluster count"
+  ],
+  "forbidden_inputs": [
+    "signed treatment-minus-control difference",
+    "arm-labelled correctness rates",
+    "which arm wins a discordant pair",
+    "field-level directional treatment effects",
+    "HOLDOUT",
+    "REPLICATION",
+    "reviewer or analyst narrative describing directional treatment performance"
+  ],
+  "updatable_parameters": [
+    "discordance_q",
+    "mean_cluster_size",
+    "icc_of_blinded_disagreement_or_predeclared_conservative_proxy",
+    "non_evaluable_attrition"
+  ],
+  "immutable_parameters": {
+    "se_soi_absolute": 0.08,
+    "alpha_two_sided": 0.05,
+    "target_power": 0.90,
+    "primary_outcome": "publication_composite_correctness",
+    "primary_estimand": "paired absolute correctness difference",
+    "primary_confirmatory_contrasts": 1
+  },
+  "blinding": {
+    "arm_labels_replaced_with": ["arm_X", "arm_Y"],
+    "direction_removed_before_analyst": true,
+    "analyst_must_not_receive_mapping": true,
+    "mapping_custodian_distinct_from_power_analyst": true,
+    "update_report_must_contain_only_nuisance_statistics_and_required_N": true
+  },
+  "decision_rule": {
+    "recalculate_required_n_once": true,
+    "required_n": "ceil minimum N giving >=0.90 power at fixed delta=0.08 under updated nuisance estimates plus frozen attrition rule",
+    "if_available_confirmatory_cases_below_required_n": "POWER_GATE_FAIL_OR_REDESIGN_BEFORE_HOLDOUT",
+    "if_independent_clusters_below_30": "POWER_GATE_FAIL_FOR_ASYMPTOTIC_PRIMARY_ANALYSIS",
+    "if_updated_nuisance_estimate_unavailable": "use frozen conservative primary planning assumptions, never substitute a favorable guess"
+  },
+  "audit": {
+    "input_manifest_hash_required": true,
+    "blinding_transform_hash_required": true,
+    "analyst_identity_session_required": true,
+    "nuisance_output_hash_required": true,
+    "arm_mapping_not_in_power_packet": true,
+    "independent_statistical_review_required": true
+  }
+}
