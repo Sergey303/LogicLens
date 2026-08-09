@@ -18,9 +18,9 @@ Uses independently adjudicated TRAIN targets. It receives no Codex explanation, 
 
 ### W-C — Codex-distilled QLoRA/SFT
 
-Codex sees only TRAIN inputs, independently adjudicated TRAIN targets where the teacher contract explicitly permits them, the frozen output schema and teacher instructions. It emits one replacement supervision target in exactly the same output schema as W-B. The deterministic corpus builder enforces the same supervised-target token budget and optimizer-step budget as W-B.
+Codex sees only the frozen TRAIN input/evidence view, target schema and teacher instructions. **Core W-C does not expose independently adjudicated gold targets to Codex.** Codex emits one independently generated supervision target in exactly the same output schema as W-B. The deterministic corpus builder enforces the same supervised-target token budget and optimizer-step budget as W-B.
 
-W-C does not append unconstrained rationales. This prevents W-C-vs-W-B from conflating teacher identity with extra target information/length.
+W-C does not append unconstrained rationales. This prevents W-C-vs-W-B from conflating teacher identity with gold copying or extra target information/length.
 
 ### W-D — Executable-trace distillation
 
@@ -30,9 +30,9 @@ RL/GRPO/reward optimization is out of scope and requires a new protocol.
 
 ## Causal contrasts
 
-1. **W-C vs W-B** — incremental value of Codex-produced TRAIN supervision under matched training budget.
+1. **W-C vs W-B** — independently generated Codex TRAIN targets versus independently adjudicated gold TRAIN targets under matched training budget.
 2. **W-B vs W-A** — value of gold-only parameter adaptation.
-3. **W-C vs W-A** — descriptive total adapted effect; not sufficient to identify teacher contribution.
+3. **W-C vs W-A** — descriptive total adapted effect; not sufficient by itself to establish why teacher-generated targets help.
 4. **strongest fixed-weight arm vs W-B/W-C** — external verified interface versus parameter update, reported jointly with compute/update/audit costs.
 
 No adapted result may be re-described as evidence for the fixed-weight primary hypothesis.
@@ -42,6 +42,8 @@ No adapted result may be re-described as evidence for the fixed-weight primary h
 Freeze and match:
 
 - same immutable base-model and tokenizer revision;
+- same grouped TRAIN record set and student-visible input template;
+- same target schema;
 - QLoRA method and quantization;
 - adapter rank/alpha/dropout/target modules/bias;
 - optimizer and learning-rate schedule;
@@ -66,13 +68,15 @@ DEV may be used only as an aggregate boundary/feasibility diagnostic under the f
 
 ## Data visibility
 
-Teacher generation: TRAIN only.
+Teacher generation: TRAIN input/evidence view only; no adjudicated gold target, student output or outcome metric.
 
 Training: TRAIN only.
 
 Development diagnostics: aggregate DEV after adapters are produced.
 
-HOLDOUT and REPLICATION remain inaccessible until the adapter recipe, corpus hashes, leakage report, adapter-selection rule and analysis contract are frozen and independently accepted.
+HOLDOUT and REPLICATION remain inaccessible to producer/teacher until the adapter recipe, corpus hashes, leakage report, adapter-selection rule and analysis contract are frozen and independently accepted.
+
+A sealed split custodian may later run predefined overlap scanners against hidden split material and return only the frozen report fields/aggregate evidence needed for eligibility. This does not authorize producer or teacher access to held-out text.
 
 ## Leakage and memorization
 
@@ -86,7 +90,7 @@ Before any adapter training, each training corpus must pass the frozen leakage r
 - group/source-family overlap policy;
 - generated-target provenance and hashes.
 
-A leakage failure invalidates the affected arm until a new versioned corpus is independently reviewed. Silent repair is forbidden.
+Checks requiring hidden split material are executed only by the sealed custodian/scanner; the producer receives pass/fail/unknown plus aggregate evidence, not hidden examples. A leakage failure invalidates the affected arm until a new versioned corpus is independently reviewed. Silent repair is forbidden.
 
 ## Failure retention
 
@@ -98,7 +102,7 @@ For every arm retain teacher calls/tokens, corpus bytes/tokens, GPU model, wall 
 
 ## STOP / PIVOT
 
-- W-B approximately matches W-C: no Codex-teaching attribution.
+- W-B approximately matches W-C: no useful incremental Codex-supervision effect.
 - Fixed-weight external interface approximately matches adapted Qwen: weight modification is unnecessary for the evaluated class; report that directly.
 - Adaptation wins only with materially larger compute/update burden: report the trade-off, not a universal win.
 - Leakage/memorization cannot be excluded: adapted arm is invalid for publication evidence.
