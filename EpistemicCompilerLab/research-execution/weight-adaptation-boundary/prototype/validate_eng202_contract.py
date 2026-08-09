@@ -64,6 +64,13 @@ def validate_manifest():
         "early_stopping: false",
         "checkpoint_selection: final_step_only",
         "target_token_matching: exact_total_effective_supervised_tokens",
+        "independently_generated_codex_train_targets_same_schema",
+        "teacher_gold_targets_visible: false",
+        "gold_targets_visible: false",
+        "visible_fields: [input_text, teacher_evidence_view, target_schema, teacher_instructions]",
+        "producer_hidden_content_access: false",
+        "teacher_hidden_content_access: false",
+        "permitted_output: leakage_report_status_and_aggregate_evidence_only",
         "W-D:",
         "enabled: false",
         "scope: DEV_ONLY",
@@ -107,6 +114,15 @@ def validate_environment():
     install = env["installation_contract"]
     require(install["exact_versions_required"] is True, "exact package versions not required")
     require(install["pip_freeze_required_per_run"] is True, "pip freeze evidence not required")
+
+    requirements = {}
+    for line in read("requirements-smoke.txt").splitlines():
+        if not line.strip():
+            continue
+        require("==" in line, f"unpinned requirement: {line}")
+        name, version = line.split("==", 1)
+        requirements[name] = version
+    require(requirements == EXPECTED_PACKAGES, "requirements-smoke.txt differs from environment lock")
 
 
 def validate_leakage_schema():
@@ -172,11 +188,15 @@ def validate_docs():
     data = read("DISTILLATION_DATA_CONTRACT.md")
     smoke = read("SMOKE_TRAINING_CONTRACT.md")
     require("W-C vs W-B" in protocol, "primary teacher contrast missing")
+    require("does not expose independently adjudicated gold targets to Codex" in protocol, "gold-blind teacher rule missing")
     require("same supervised-target token budget" in protocol, "matched target-token principle missing")
     require("There is no best-seed selection" in protocol, "no-best-seed rule missing")
+    require("It must not receive `gold_target`" in data, "teacher gold exclusion missing")
     require("Free-form chain-of-thought" in data, "rationale separation rule missing")
     require("Unknown overlap is not treated as safe" in data, "unknown leakage fail-closed rule missing")
+    require("sealed split custodian" in data, "sealed hidden-split scanner boundary missing")
     require(SMOKE_REV in smoke and SMOKE_REPO in smoke, "smoke immutable anchor missing")
+    require("requirements-smoke.txt" in smoke, "smoke environment install command missing")
     require("Existence of this command is not evidence that it ran" in smoke, "smoke evidence boundary missing")
 
 
@@ -198,6 +218,7 @@ def main():
         "seeds": EXPECTED_SEEDS,
         "arms": ["W-A", "W-B", "W-C"],
         "W-D": "DISABLED_DEV_ONLY",
+        "teacher_gold_targets_visible": False,
         "holdout_access": "FORBIDDEN",
         "github_actions_used": False,
     }
