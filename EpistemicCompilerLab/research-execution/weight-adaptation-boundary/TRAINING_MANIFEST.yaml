@@ -1,4 +1,4 @@
-schema_version: 1.3.0
+schema_version: 1.4.0
 issue: ENG-202
 status: DESIGN_FROZEN_NO_TRAINING_EVIDENCE
 study_class: WEIGHT_CHANGING_BOUNDARY
@@ -11,6 +11,9 @@ models:
     tokenizer_repository: Qwen/Qwen2.5-Coder-7B-Instruct
     tokenizer_revision: c03e6d358207e414f1eca0bb1891e29f1db0e242
     moving_revision_forbidden: true
+    binding_status: PROVISIONAL_UNTIL_WP004_FIXED_WEIGHT_PROFILE_ACCEPTED
+    model_binding_contract: MODEL_BINDING_CONTRACT.json
+    causal_fixed_weight_comparison_requires_exact_same_base: true
   smoke_only:
     repository: Qwen/Qwen2.5-Coder-0.5B-Instruct
     revision: bbf27711794f58ebd1796058f4280b53c32e19fc
@@ -34,7 +37,10 @@ method:
 
 training:
   seeds: [17, 29, 43]
-  seed_selection: report_all_no_best_seed
+  seed_selection: report_all_no_best_seed_no_replacement_seed
+  seed_role: nested_training_run_replication_not_independent_benchmark_unit
+  estimand_contract: WEIGHT_BOUNDARY_ESTIMANDS.json
+  replicability_contract: TRAINING_REPLICABILITY_CONTRACT.md
   max_sequence_length: 2048
   optimizer: adamw_torch
   learning_rate: 0.0002
@@ -50,7 +56,16 @@ training:
   checkpoint_selection: final_step_only
   save_intermediate_for_diagnostics: true
   max_grad_norm: 1.0
-  target_token_matching: exact_total_effective_supervised_tokens
+  record_membership_matching: exact_same_grouped_record_ids_W-B_W-C
+  record_ordering: sha256_decimal_seed_nul_record_id_ascending
+  record_order_same_within_seed_W-B_W-C: true
+  data_order_may_depend_on_target_bytes: false
+  target_length_policy: complete_targets_same_schema_same_predeclared_cap_no_semantic_truncation
+  exact_total_target_token_equality_required: false
+  actual_target_token_totals_reported: true
+  per_record_target_length_distribution_reported: true
+  semantic_target_truncation_for_matching: prohibited
+  supervised_noop_padding_for_matching: prohibited
 
 arms:
   W-A:
@@ -68,6 +83,10 @@ arms:
     teacher_gold_targets_visible: false
     extra_rationale: false
     match_to: W-B
+    student_weakness_directed_example_selection: false
+    multiple_teacher_trajectory_selection: false
+    segment_specific_teacher_loss_weighting: false
+    outcome_driven_curriculum: false
   W-D:
     enabled: false
     confirmatory_eligible: false
@@ -121,9 +140,12 @@ confirmatory:
   requires_adapter_recipe_freeze: true
   requires_corpus_hash_freeze: true
   requires_leakage_report_pass: true
+  requires_exact_fixed_weight_model_binding_for_causal_weight_placement_claim: true
+  requires_seed_aware_estimand_freeze: true
 
 prohibited:
   - best_seed_selection
+  - replacement_training_seed
   - extend_steps_until_success
   - arm_specific_learning_rate_tuning_after_dev
   - RL
@@ -132,6 +154,13 @@ prohibited:
   - retry_after_semantic_response
   - outcome_directed_teacher_regeneration
   - silent_teacher_model_fallback
+  - student_weakness_directed_example_selection_in_core_W-C
+  - teacher_trajectory_selection_in_core_W-C
+  - segment_specific_teacher_loss_weighting_in_core_W-C
+  - outcome_driven_curriculum_in_core_W-C
+  - semantic_target_truncation_for_token_matching
   - teacher_generated_dev_labels_as_truth
   - retroactive_train_repair_after_holdout
+  - cross_model_result_described_as_causal_weight_placement
+  - seed_pseudoreplication
   - fixed_weight_claim_from_weight_changing_result
