@@ -20,6 +20,7 @@ FILES = [
     "EpistemicCompilerLab/research-execution/relational-comparator/RELATIONAL_SUBSET_CONTRACT.json",
     "EpistemicCompilerLab/research-execution/relational-comparator/RUNTIME_DEPENDENCIES.json",
     "EpistemicCompilerLab/research-execution/relational-comparator/LIVE_POSTGRES_SMOKE_CONTRACT.md",
+    "EpistemicCompilerLab/research-execution/relational-comparator/ENG-197_REMEDIATION_MATRIX.md",
     "EpistemicCompilerLab/research-execution/relational-comparator/requirements-eng197.txt",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/source.prototype.json",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/query-registry.prototype.json",
