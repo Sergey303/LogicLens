@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-157",
+  "work_package": "WP-005",
+  "date_utc": "2026-08-09",
+  "candidate_resolution": "This evidence is part of the scientific candidate resolved as the first parent of the commit that introduces the final WP-005 remediation handoff.",
+  "execution": {
+    "github_actions_used": false,
+    "retrieval": "fresh exact main bytes fetched into an isolated local directory immediately before execution",
+    "semantic_boundary_command": "python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight --boundary EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml",
+    "semantic_boundary_exit_code": 0,
+    "gold_governance_command": "python EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py",
+    "gold_governance_exit_code": 0
+  },
+  "semantic_boundary_result": {
+    "semantic_contract": "PASS",
+    "semantic_version": "wp005.semantic.v1",
+    "invariants": 18,
+    "publication_score_fields_covered": 14,
+    "minimum_conformance_vectors": 36,
+    "minimum_mutations": 42,
+    "human_audit_sample_contract": 120
+  },
+  "gold_governance_result": {
+    "gold_governance": "PASS",
+    "query_adjudicators_per_case": 2,
+    "outcome_adjudicators_per_case": 2,
+    "third_adjudicator_on_disagreement": 1,
+    "outcome_gold_visible_to_B_oracle": false,
+    "Path_A_B_scorer_model_teacher_roles_forbidden_from_gold_adjudication": true,
+    "post_model_query_alternative_expansion": "PROHIBITED",
+    "post_model_outcome_alternative_expansion": "PROHIBITED",
+    "post_model_gold_repair_from_behavior": "PROHIBITED",
+    "unresolved_gold_disagreement": "CASE_NOT_ELIGIBLE_FOR_FREEZE"
+  },
+  "validated_contracts": [
+    "four-state truth table and open-world semantics",
+    "query-outcome versus semantic-status separation",
+    "canonicalization, scope/version/time, evidence roots and proof normal form",
+    "exact declarative decision policy",
+    "B-oracle packet excludes expected outcomes, outcome gold and model/production outputs",
+    "blind query and outcome gold adjudication precedes scored model output",
+    "gold and acceptable alternatives cannot be repaired or expanded in place after model behavior exists",
+    "gold-query execution and natural-question query-formation claims are separate",
+    "18 critical invariants have positive, negative, mutation, A/B and scorer coverage",
+    "all 14 publication score fields are covered",
+    "quantitative 120-case human-audit protocol",
+    "audit-tool trust, negative/positive controls and fail-closed observability/blind-spot policy"
+  ],
+  "explicit_non_evidence": [
+    "independent reviewer acceptance",
+    "accepted implementation of Path B",
+    "executed 100 percent critical mutation kill rate",
+    "executed dependency/canary audit",
+    "executed 120-case human audit",
+    "HOLDOUT or REPLICATION evidence",
+    "GATE-001 approval"
+  ],
+  "producer_conflict": "The producer session cannot independently accept ENG-157 or GATE-001.",
+  "recommended_next_state_after_final_handoff": "In Review"
+}
