@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.2.0",
+  "schema_version": "1.3.0",
   "linear_issue": "ENG-201",
   "parent_work_package": "WP-004 / ENG-156",
   "status": "ready_for_independent_review",
@@ -14,14 +14,14 @@
   },
   "git": {
     "repository": "Sergey303/LogicLens",
-    "candidate_commit": "f3e31afd2b170adf85cfbe7346fb193884b06289",
+    "candidate_commit": "e306c488fcec7e76104d167afeaa4a5e84c1322d",
     "freeze_manifest": "EpistemicCompilerLab/research-execution/python-program-comparator/ENG-201_FREEZE_MANIFEST.json",
-    "freeze_manifest_git_blob_sha": "55e1fecd2a5e2dbcc7caf4d0a93585490965aa98",
+    "freeze_manifest_git_blob_sha": "85ccd179f9d9eb6f981ae4b12003ec76d2b8a47a",
     "prototype_program_original_commit": "def6f1de6a42f64fcfe824e9b7ef643a424c5650",
     "synthetic_cases_original_commit": "b3e747e90348605ec42ebac5df7446611c8f5761",
     "generation_order_evidence": "The synthetic program was committed before the TRAIN/DEV case file and its SHA-256 remains unchanged in the final freeze, so the committed DEV test vectors did not drive subsequent program edits.",
-    "superseded_pre_fix_handoff_commits": ["00595e3303c315ccc89da00cf2fdbeecdd1e5694", "28609f9bba3e6d57f6fd8321208cb5c17246c0ca"],
-    "supersession_reason": "Producer self-audit first removed an unintended M21 catalogue and nominal type descriptions, then strengthened the candidate with explicit pre-execution visibility, interpreter/dependency and sandbox resource locks, mapper leakage scanning, exact trusted-provenance boundary and expanded security mutations."
+    "superseded_pre_fix_handoff_commits": ["00595e3303c315ccc89da00cf2fdbeecdd1e5694", "28609f9bba3e6d57f6fd8321208cb5c17246c0ca", "4028f00e243647e4ff8a76b90620b5d50136790c"],
+    "supersession_reason": "Producer self-audit removed unintended M21 catalogue visibility and nominal type descriptions, then strengthened the candidate with explicit pre-execution visibility, interpreter/dependency and resource locks, mapper leakage scanning, trusted-provenance enforcement, expanded security mutations, and actual interpreter-version validation."
   },
   "scientific_decisions": {
     "M21": "Frozen outcome-blind mapper selects one typed capability plus arguments, the frozen Python artifact executes, and fixed-weight Qwen receives only the question plus typed result/provenance/response contract; the capability catalogue is not visible in M21.",
@@ -53,13 +53,15 @@
   "producer_validation": {
     "execution_environment": "ephemeral local container",
     "python_version": "3.13.5",
+    "python_implementation": "CPython",
+    "actual_interpreter_matches_lock": true,
     "github_actions_used": false,
     "command": "python prototype/verify.py",
     "freeze_closure_files": 16,
     "cases": "7/7 PASS twice with byte-stable canonical M21 payloads",
     "mode_visibility": "PASS — before and after execution M21 catalogue is empty; M22 exposes exactly three frozen typed capabilities",
     "typed_api_validation": "PASS — closed nested argument/result schemas match runner contract for all three capabilities",
-    "runtime_lock_validation": "PASS — CPython/dependency lock and API/sandbox resource fields agree",
+    "runtime_lock_validation": "PASS — actual CPython/version matches lock; dependency lock and API/sandbox CPU/wall/memory/result fields agree",
     "deterministic_rerun": "PASS",
     "program_sha256": "d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde",
     "tool_api_sha256": "dae8832bebfbf5d7a5181c615c35f4876bae501b39ac472e91b7ff8d9824110f",
@@ -78,8 +80,8 @@
     "Challenge the M21 mapper for hidden answer/routing information and verify it reads only public request fields; inspect the mapper-case mutation.",
     "Review machine-typed API/result contracts, pre/post Qwen visibility schemas and source/code/hidden-label leakage controls.",
     "Verify the program cannot inject provenance into the trusted wrapper and independently inspect the fabricated-provenance mutation.",
-    "Re-run the deterministic verifier from a clean checkout and independently inspect all thirteen named mutations.",
-    "Assess whether the frozen CPython/dependency/resource contract is sufficient for W0 design acceptance while keeping OS-level sandbox enforcement downstream.",
+    "Re-run the deterministic verifier from a clean checkout under CPython 3.13.5 and independently inspect all thirteen named mutations.",
+    "Assess whether the frozen interpreter/dependency/resource contract is sufficient for W0 design acceptance while keeping OS-level sandbox enforcement downstream.",
     "Issue PASS, REVISE or PIVOT in a distinct reviewer session."
   ],
   "recommended_linear_state": "In Review",
