@@ -1,0 +1,50 @@
+schema_version: 1.0.0
+issue: ENG-202
+selection_unit: seed
+eligible_arms: [W-B, W-C]
+seeds: [17, 29, 43]
+
+checkpoint_rule:
+  early_stopping: disabled
+  eligible_checkpoint: final_step_only
+  optimizer_step: 256
+  dev_checkpoint_selection: forbidden
+  intermediate_checkpoints:
+    retain_for_diagnostics: true
+    eligible_for_reported_adapter: false
+
+seed_rule:
+  select_best_seed: false
+  discard_failed_seed: false
+  report_all_seeds: true
+  aggregate_primary_summary: paired_across_identical_seed_set
+
+recipe_change_rule:
+  if_any_of_changes:
+    - base_revision
+    - tokenizer_revision
+    - corpus_version
+    - target_token_budget
+    - optimizer_steps
+    - optimizer
+    - learning_rate
+    - scheduler
+    - sequence_length
+    - adapter_rank
+    - adapter_alpha
+    - adapter_dropout
+    - target_modules
+    - quantization
+  action: new_candidate_version_and_rerun_all_W-B_W-C_seeds
+
+failure_retention:
+  retain_oom: true
+  retain_nan: true
+  retain_divergence: true
+  retain_schema_failure: true
+  retain_overfit_diagnostic: true
+  retry_training_failure: false
+
+holdout_boundary:
+  selection_rule_must_be_frozen_before_holdout: true
+  change_after_holdout: prohibited
