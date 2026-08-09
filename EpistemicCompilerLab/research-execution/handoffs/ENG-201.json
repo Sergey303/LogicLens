@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-201",
+  "parent_work_package": "WP-004 / ENG-156",
+  "status": "ready_for_independent_review",
+  "artifact_kind": "codex_to_python_executable_program_comparator_design_candidate",
+  "identity_and_session": {
+    "producer_identity": "OpenAI GPT-5.6 Sol — Executable Program Comparator Architect",
+    "producer_session": "ChatGPT ENG-201 producer / 2026-08-09",
+    "reviewer_identity": "UNASSIGNED Independent Program-Synthesis, Security and Causal Reviewer",
+    "reviewer_session": "MUST DIFFER FROM PRODUCER SESSION",
+    "conflict_declaration": "This producer session cannot independently accept ENG-201, mark it Done, or decide GATE-001.",
+    "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed. The committed prototype uses synthetic TRAIN/DEV-only cases and contains no confirmatory outcome data."
+  },
+  "git": {
+    "repository": "Sergey303/LogicLens",
+    "candidate_commit": "ed7977e05ee4df100a6a131d9eadec5558d07112",
+    "freeze_manifest": "EpistemicCompilerLab/research-execution/python-program-comparator/ENG-201_FREEZE_MANIFEST.json",
+    "freeze_manifest_git_blob_sha": "808ee9f4e6d98145d1643db1fd1993b719863f10"
+  },
+  "scientific_decisions": {
+    "M21": "Frozen outcome-blind mapper selects one typed capability plus arguments, the frozen Python artifact executes, and fixed-weight Qwen receives only the question plus typed result/provenance/response contract.",
+    "M22": "Fixed-weight Qwen selects capability plus arguments from the same frozen public API; the same Python artifact executes; M22 is DEV-only by default.",
+    "same_executable_artifact": true,
+    "qwen_python_source_visibility": "none",
+    "program_synthesis_novelty_claim": false,
+    "python_execution_novelty_claim": false,
+    "teacher_effect_claim_from_prototype": false,
+    "primary_interpretation": "Executable semantic-result placement comparator; any precomputed-result gain is an interface benefit, not weight training.",
+    "router_scope_boundary": "Nontrivial capability-routing experiments belong to ENG-200; ENG-201 M21 mapper remains simple and outcome-blind.",
+    "confirmatory_status": "No Python arm is authorized for HOLDOUT. Inclusion requires downstream WP-004/WP-006/WP-007 decisions before confirmatory freeze."
+  },
+  "prototype": {
+    "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+    "program_version": "0.1.0",
+    "capabilities": 3,
+    "synthetic_cases": 7,
+    "student_model_runs": 0,
+    "teacher_model_runs": 0,
+    "external_side_effects_in_program": false,
+    "program_imports": 0,
+    "qwen_source_code_visibility": "none"
+  },
+  "producer_validation": {
+    "execution_environment": "ephemeral local container",
+    "python_version": "3.13.5",
+    "github_actions_used": false,
+    "command": "python prototype/verify.py",
+    "cases": "7/7 PASS twice with byte-stable canonical payloads",
+    "deterministic_rerun": "PASS",
+    "program_sha256": "d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde",
+    "tool_api_sha256": "93595a04db469f7b2c6c5a1b4131c1fea1d5bf7d33ec34306c1535f0312074cc",
+    "named_mutations": [
+      "wrong_branch",
+      "arithmetic_inversion",
+      "stale_program_version",
+      "fabricated_provenance",
+      "hidden_lookup_table",
+      "case_id_branch",
+      "forbidden_import",
+      "filesystem_attempt",
+      "subprocess_attempt",
+      "qwen_visible_source_leak"
+    ],
+    "named_mutations_result": "10/10 rejected"
+  },
+  "known_limitations": [
+    "This is W0 design/prototype evidence, not a production OS sandbox. The AST deny-by-default boundary and mutation suite do not replace later isolated runtime implementation and platform-specific resource enforcement.",
+    "No empirical Codex-generated Python candidate has been produced or selected; the committed program is a producer-authored synthetic contract exemplar.",
+    "No Qwen behavioral run is part of this package; M21/M22 effect sizes and tool-selection error rates are unknown.",
+    "The deterministic/human-written Python baseline is required by the contract but has not been behaviorally compared because model execution is downstream.",
+    "No GitHub Actions evidence is claimed; validation was performed locally on the exact producer candidate bytes before upload."
+  ],
+  "required_independent_review": [
+    "Verify M22-vs-M21 changes only capability/argument selection and does not silently change visible information or semantic obligations.",
+    "Challenge the M21 mapper for hidden answer/routing information and verify it reads only public request fields.",
+    "Review the typed API/result contracts and Qwen visibility boundary for source/code/hidden-label leakage.",
+    "Re-run the deterministic verifier from a clean checkout and independently inspect all named mutations.",
+    "Decide whether the W0 security boundary is sufficient for design acceptance while keeping OS-level sandbox implementation downstream.",
+    "Issue PASS, REVISE or PIVOT in a distinct reviewer session."
+  ],
+  "recommended_linear_state": "In Review",
+  "gate_effect": "NONE — ENG-201 producer completion does not unblock GATE-001 or accept WP-004."
+}
