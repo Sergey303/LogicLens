@@ -1,0 +1,12 @@
+{"id":"arith-01","split":"DEV","family":"arithmetic","prompt":"Return only the integer result of 17 + 25.","expected":"42"}
+{"id":"arith-02","split":"DEV","family":"arithmetic","prompt":"Return only the integer result of 9 * 7.","expected":"63"}
+{"id":"arith-03","split":"DEV","family":"arithmetic","prompt":"Return only the integer result of 100 - 37.","expected":"63"}
+{"id":"instr-01","split":"DEV","family":"instruction","prompt":"Return exactly: alpha-beta","expected":"alpha-beta"}
+{"id":"instr-02","split":"DEV","family":"instruction","prompt":"Return exactly three lowercase letters: xyz","expected":"xyz"}
+{"id":"instr-03","split":"DEV","family":"instruction","prompt":"Return exactly: [ok]","expected":"[ok]"}
+{"id":"py-01","split":"DEV","family":"python_understanding","prompt":"Python: x = [1, 2, 3]; print(len(x)). Return only stdout.","expected":"3"}
+{"id":"py-02","split":"DEV","family":"python_understanding","prompt":"Python: print('ab'.upper()). Return only stdout.","expected":"AB"}
+{"id":"py-03","split":"DEV","family":"python_understanding","prompt":"Python: print(sum([2, 3, 4])). Return only stdout.","expected":"9"}
+{"id":"json-01","split":"DEV","family":"json_transform","prompt":"Input JSON {\"a\":1,\"b\":2}. Return compact JSON with keys in order b,a and unchanged values.","expected":"{\"b\":2,\"a\":1}"}
+{"id":"json-02","split":"DEV","family":"json_transform","prompt":"Input JSON {\"name\":\"Ada\",\"active\":true}. Return compact JSON containing only key name.","expected":"{\"name\":\"Ada\"}"}
+{"id":"json-03","split":"DEV","family":"json_transform","prompt":"Input JSON [1,2,3]. Return compact JSON array in reverse order.","expected":"[3,2,1]"}
