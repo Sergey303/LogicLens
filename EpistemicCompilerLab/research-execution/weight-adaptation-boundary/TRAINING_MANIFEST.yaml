@@ -1,0 +1,109 @@
+schema_version: 1.0.0
+issue: ENG-202
+status: DESIGN_FROZEN_NO_TRAINING_EVIDENCE
+study_class: WEIGHT_CHANGING_BOUNDARY
+primary_fixed_weight_claim_effect: NONE
+
+models:
+  scientific_base:
+    repository: Qwen/Qwen2.5-Coder-7B-Instruct
+    revision: c03e6d358207e414f1eca0bb1891e29f1db0e242
+    tokenizer_repository: Qwen/Qwen2.5-Coder-7B-Instruct
+    tokenizer_revision: c03e6d358207e414f1eca0bb1891e29f1db0e242
+    moving_revision_forbidden: true
+  smoke_only:
+    repository: Qwen/Qwen2.5-Coder-0.5B-Instruct
+    revision: bbf27711794f58ebd1796058f4280b53c32e19fc
+    tokenizer_repository: Qwen/Qwen2.5-Coder-0.5B-Instruct
+    tokenizer_revision: bbf27711794f58ebd1796058f4280b53c32e19fc
+    scientific_evidence_eligible: false
+
+method:
+  family: QLoRA_SFT
+  quantization_bits: 4
+  quantization_type: nf4
+  double_quantization: true
+  compute_dtype: bfloat16
+  lora:
+    rank: 16
+    alpha: 32
+    dropout: 0.05
+    target_modules: all-linear
+    bias: none
+    task_type: CAUSAL_LM
+
+training:
+  seeds: [17, 29, 43]
+  seed_selection: report_all_no_best_seed
+  max_sequence_length: 2048
+  optimizer: adamw_torch
+  learning_rate: 0.0002
+  scheduler: cosine
+  warmup_ratio: 0.03
+  weight_decay: 0.0
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  effective_batch_size_single_device: 8
+  optimizer_steps: 256
+  gradient_checkpointing: true
+  early_stopping: false
+  checkpoint_selection: final_step_only
+  save_intermediate_for_diagnostics: true
+  max_grad_norm: 1.0
+  target_token_matching: exact_total_effective_supervised_tokens
+
+arms:
+  W-A:
+    weights: immutable_base
+    training: false
+  W-B:
+    weights: qlora_adapter
+    training: true
+    supervision: independently_adjudicated_gold_train_targets
+    extra_rationale: false
+  W-C:
+    weights: qlora_adapter
+    training: true
+    supervision: codex_train_only_replacement_targets_same_schema
+    extra_rationale: false
+    match_to: W-B
+  W-D:
+    enabled: false
+    confirmatory_eligible: false
+    scope: DEV_ONLY
+    supervision: executable_trace_or_rationale
+
+teacher:
+  visible_split: TRAIN
+  forbidden_splits: [DEV, HOLDOUT, REPLICATION]
+  student_outputs_visible: false
+  aggregate_dev_visible: false
+  generated_validation_labels_are_ground_truth: false
+  call_budget_per_record: 1
+  retry_policy: infrastructure_failure_only_same_frozen_request
+  target_schema_must_equal_gold_schema: true
+
+inference:
+  prompt_contract: held_equal_W-A_W-B_W-C
+  decoding_contract: held_equal_W-A_W-B_W-C
+  output_schema: held_equal_W-A_W-B_W-C
+
+confirmatory:
+  holdout_access_authorized: false
+  replication_access_authorized: false
+  requires_independent_review: true
+  requires_WP006_power_approval: true
+  requires_WP007_feasibility_approval: true
+  requires_adapter_recipe_freeze: true
+  requires_corpus_hash_freeze: true
+  requires_leakage_report_pass: true
+
+prohibited:
+  - best_seed_selection
+  - extend_steps_until_success
+  - arm_specific_learning_rate_tuning_after_dev
+  - RL
+  - GRPO
+  - teacher_generated_dev_labels_as_truth
+  - retroactive_train_repair_after_holdout
+  - fixed_weight_claim_from_weight_changing_result
