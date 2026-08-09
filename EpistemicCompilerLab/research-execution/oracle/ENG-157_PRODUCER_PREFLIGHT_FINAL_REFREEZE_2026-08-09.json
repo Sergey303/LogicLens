@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-157",
+  "work_package": "WP-005",
+  "date_utc": "2026-08-09",
+  "candidate_resolution": "This evidence belongs to the scientific candidate resolved as the first parent of the commit that introduces the final handoff after this file.",
+  "github_actions_used": false,
+  "execution": {
+    "retrieval": "fresh exact main bytes fetched into an isolated local directory immediately before execution",
+    "semantic_boundary": {
+      "command": "python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight --boundary EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    "gold_governance": {
+      "command": "python EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py",
+      "exit_code": 0,
+      "result": "PASS"
+    }
+  },
+  "final_freeze_order": [
+    "semantic/spec/policy and source/rule hashes",
+    "blind query adjudication and query registry hash",
+    "blind outcome adjudication and outcome-gold registry hash",
+    "isolated B-oracle computation without outcome-gold mount",
+    "B-oracle output hash",
+    "B-vs-gold publication-critical consistency check",
+    "scorer source/hash",
+    "first scored model output"
+  ],
+  "expected_value_authority": {
+    "scorer": "outcome_gold_registry",
+    "B_oracle": "independent_consistency_check_only",
+    "unexplained_B_gold_disagreement": "BLOCK_SCORING_AND_BENCHMARK_FREEZE",
+    "majority_vote": "PROHIBITED",
+    "B_override_of_gold": "PROHIBITED",
+    "gold_repair_from_B": "PROHIBITED",
+    "gold_repair_from_model_behavior": "PROHIBITED"
+  },
+  "semantic_boundary_result": {
+    "semantic_version": "wp005.semantic.v1",
+    "invariants": 18,
+    "publication_score_fields_covered": 14,
+    "minimum_conformance_vectors": 36,
+    "minimum_mutations": 42,
+    "human_audit_sample_contract": 120
+  },
+  "blind_gold_result": {
+    "query_adjudicators_per_case": 2,
+    "outcome_adjudicators_per_case": 2,
+    "third_adjudicator_on_disagreement": 1,
+    "same_candidate_Path_A_B_scorer_model_teacher_roles_forbidden": true,
+    "outcome_gold_visible_to_B_oracle": false,
+    "post_model_alternative_expansion": "PROHIBITED",
+    "post_model_gold_repair": "PROHIBITED"
+  },
+  "explicit_non_evidence": [
+    "independent reviewer acceptance",
+    "accepted Path B implementation",
+    "executed 100 percent critical mutation kill rate",
+    "executed dependency/canary audit",
+    "executed audit-tool trust review",
+    "executed 120-case human audit",
+    "HOLDOUT or REPLICATION evidence",
+    "GATE-001 approval"
+  ],
+  "producer_conflict": "The producer session cannot independently accept ENG-157 or GATE-001.",
+  "recommended_next_state_after_final_handoff": "In Review"
+}
