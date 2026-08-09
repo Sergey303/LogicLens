@@ -1,8 +1,12 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "linear_issue": "ENG-197",
   "consumers": ["ENG-158", "ENG-188"],
   "prototype_scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+  "mode_adjudication": {
+    "M15": "DEV_ONLY_SINGLE_ENDPOINT",
+    "M16": "CANDIDATE_AFTER_LIVE_POSTGRES_AND_REVIEW"
+  },
   "static_costs": {
     "m15_typed_calls_per_scenario": 1,
     "m16_typed_calls_per_scenario": 1,
@@ -12,15 +16,29 @@
     "m16_registry_entries_per_scenario": 1,
     "m15_manual_registry_entries_per_scenario": 0
   },
+  "measured_costs": {
+    "postgresql_build_ns": "PENDING_LIVE_POSTGRES_SMOKE",
+    "db_call_latency_ns_distribution": "PENDING_LIVE_POSTGRES_SMOKE",
+    "database_relation_index_bytes": "PENDING_LIVE_POSTGRES_SMOKE",
+    "pre_score_result_bytes": "PENDING_LIVE_POSTGRES_SMOKE"
+  },
+  "live_evidence_contract": {
+    "report": "artifacts/eng-197/postgres-smoke/eng197-live-postgres-report.json",
+    "source": "LIVE_POSTGRES_SMOKE_CONTRACT.md",
+    "runtime": "RUNTIME_DEPENDENCIES.json",
+    "must_be_real_postgresql": true,
+    "python_reference_oracle_is_not_measurement_evidence": true
+  },
   "measurement_required_before_confirmatory_freeze": {
     "catalogue_tokens_by_model_profile": "measure with each frozen student tokenizer",
     "guide_tokens_by_model_profile": "measure with each frozen student tokenizer",
     "result_tokens_by_scenario_and_model_profile": "measure canonical typed result bytes with each frozen student tokenizer",
-    "postgresql_build_time_ms": "measure from clean immutable database image using frozen migration/seed package",
-    "postgresql_query_latency_ms": "measure cold/warm distributions under WP-007 hardware profile",
-    "database_storage_bytes": "measure post-build database relation/index size, not only generated file bytes",
-    "m16_registry_annotation_seconds": "measure outcome-blind endpoint mapping effort and independent adjudication rate"
+    "postgresql_build_time_ms": "derive from the frozen live PostgreSQL report and rerun under the accepted WP-007 hardware profile if different",
+    "postgresql_query_latency_ms": "derive cold/warm distributions under the accepted WP-007 hardware profile",
+    "database_storage_bytes": "use post-build relation/index size from live PostgreSQL, not generated file bytes",
+    "m16_registry_annotation_seconds": "measure outcome-blind registry mapping effort and independent adjudication rate",
+    "relational_subset_eligible_count_and_source_families": "compute outcome-blind before split assignment from eng197.relational-subset.v1"
   },
-  "power_note_for_wp006": "M15 and M16 add paired secondary contrasts. WP-006 must decide whether both, M16 only, or neither fit the powered confirmatory set before HOLDOUT.",
-  "feasibility_stop_rule": "Reject or keep DEV-only if token/context, database build/runtime, or registry annotation cost prevents a lossless matched run. Never truncate relational results after outcomes are known."
+  "power_note_for_wp006": "Current remediation recommends M16 only. WP-006 must power any accepted M16 contrast on paired relational-subset-eligible scenarios/source families, not total benchmark N. M15 remains DEV-only unless separately versioned before HOLDOUT.",
+  "feasibility_stop_rule": "Reject or keep M16 DEV-only if eligible count/source-family diversity, token/context, database build/runtime, or registry annotation cost prevents a lossless powered matched run. Never truncate relational results or relax subset eligibility after outcomes are known."
 }
