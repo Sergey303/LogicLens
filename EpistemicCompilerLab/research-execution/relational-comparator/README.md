@@ -1,103 +1,121 @@
 # ENG-197 — Pure relational comparator contract
 
-Status: **producer candidate, TRAIN/DEV prototype only; independent review required**  
+Status: **remediation producer candidate; TRAIN/DEV only; live PostgreSQL evidence still required; independent review required**  
 Parent: `WP-004 / ENG-156`  
-Scientific label: **pure relational trusted-execution comparator**  
-Implementation vehicle: PostgreSQL package generated deterministically from the same frozen source contract. AppForge may later replace the small generator without changing this contract.
+Scientific label: **pure relational trusted-execution comparator**
 
-## INPUTS
+## Current adjudication
 
-- the same normalized source assertions, scope, version and provenance available to matched modes;
-- strict positive implication edges required by the frozen task subset;
-- a typed question-to-call contract;
-- immutable fixed-weight Qwen profile supplied by the parent run protocol;
-- no HOLDOUT or REPLICATION content in this prototype.
+- **M16 Relational Result Interface:** may become a WP-004 falsification candidate only after the frozen live PostgreSQL smoke, lossless-subset checks, complete freeze closure and independent reviewer PASS.
+- **M15 Relational Query Agent:** **DEV-only** in the current single-endpoint design. It may diagnose typed-call construction/schema following, but must not be reported as endpoint/tool-selection evidence. See `M15_IDENTIFIER_VISIBILITY_CONTRACT.md`.
 
-## ACTION
+Neither mode is automatically authorized for HOLDOUT.
 
-The builder deterministically compiles the normalized source package into PostgreSQL DDL, seed/load SQL, one read-only typed query function, a typed catalogue, a frozen Qwen guide and a package manifest. M15 lets Qwen select and populate the typed call. M16 uses a frozen outcome-blind registry to select the same call before Qwen runs.
+## What the relational comparator tests
 
-PostgreSQL owns retrieval, positive recursive closure, four-state epistemic status and the frozen decision action. Qwen never receives unrestricted SQL. Qwen owns natural-language rendering only; M15 additionally owns query formation.
+The builder deterministically compiles the frozen normalized source package into PostgreSQL DDL/data, one declared parameterized read-only function, a typed catalogue and a conventional result interface. PostgreSQL owns retrieval, unary positive recursive closure, four-state status and frozen status→action mapping. Qwen owns final rendering; M15 additionally constructs the typed call in DEV.
 
-## MACHINE-CHECKABLE OUTPUTS
+This is intentionally a **conventional relational trusted-result alternative**, not a reimplementation of every M6 feature.
 
-- `contract.json` — implementation-neutral scientific and security contract;
-- `call.schema.json` and `result.schema.json` — typed interface schemas;
-- `prototype/source.prototype.json` — synthetic TRAIN/DEV-only normalized source;
-- `prototype/query-registry.prototype.json` — M16 outcome-blind call registry;
-- `prototype/evaluator/expected.prototype.json` — evaluator-only expected statuses, never generator-visible;
-- `prototype/generate_package.py` — deterministic package generator;
-- `prototype/adapter.py` — typed-call/result transport validator, not a semantic service;
-- `prototype/reference_oracle.py` — test-only independent reference semantics;
-- `prototype/generated/` — byte-frozen generated package and hashes;
-- `prototype/verify.py` — deterministic rebuild, leakage, security and contract checks;
-- `../handoffs/ENG-197.json` — immutable producer handoff after publication.
+## Lossless subset boundary
 
-## Semantic ownership
+`RELATIONAL_SUBSET_CONTRACT.json` and `RELATIONAL_STRICT_SUBSET_MAPPING.md` define the only scenarios eligible for M16:
 
-| Responsibility | M15 | M16 |
-| --- | --- | --- |
-| source normalization | frozen upstream contract | frozen upstream contract |
-| query formation | Qwen | frozen outcome-blind registry |
-| typed call validation | adapter | adapter |
-| retrieval | PostgreSQL | PostgreSQL |
-| recursive closure | PostgreSQL | PostgreSQL |
-| status computation | PostgreSQL | PostgreSQL |
-| decision action | PostgreSQL | PostgreSQL |
-| result transport | adapter | adapter |
-| natural-language rendering | Qwen | Qwen |
+- exact scope/version;
+- explicit positive/negative assertions;
+- direct negative evidence for the queried proposition;
+- unary positive strict implication chains;
+- no multi-premise rules, dependency fusion, negative rule heads/premises, polarity transforms, priorities/exceptions, negation-as-failure or arithmetic semantic rules;
+- complete root evidence and source provenance without truncation.
 
-Because SQL computes status and action, M15/M16 are **trusted-execution comparators**. They are never eligible for M14/B* selection. The comparison with M6 therefore asks whether the explicit epistemic decision-frame interface adds value over a conventional relational trusted runtime, not whether executable semantics exist at all.
+Eligibility is structural and outcome-blind **before split assignment**. Unsupported/unknown structures are rejected, never approximated. WP-006 must power M16 on the paired eligible count rather than the whole benchmark.
 
-## Typed interface
+M16 returns status, action, root evidence and source provenance. It does **not** expose the full M6 proof graph. Therefore `M16 vs M6` is a trusted-result-interface bundle contrast, not proof-interface equivalence.
 
-The confirmatory path exposes only declared catalogue endpoints. The prototype endpoint is `resolve_claim(proposition_id, scope_id, version)`. The adapter compiles it to a parameterized function call; model-provided SQL text, endpoint substitution, DDL/DML and undeclared functions have no representation in the call schema.
+## Real database boundary
 
-The function returns exactly one typed summary row with `status_code`, `action_code`, evidence and provenance. The prototype maximum-row policy is therefore one row. Any zero/multiple-row transport anomaly fails the run; it is never truncated or repaired.
+The original producer prototype validated SQL text and compared expected semantics with `reference_oracle.py`; that is no longer sufficient acceptance evidence.
 
-## Failure attribution
+`LIVE_POSTGRES_SMOKE_CONTRACT.md` now requires a real PostgreSQL execution path:
 
-Failures are frozen into separate layers: `query_formation`, `adapter_validation`, `db_execution`, `result_transport`, and `rendering`. A wrong M15 endpoint/argument choice is not counted as a database failure. A valid call with DB failure is not counted as a renderer failure. Raw typed calls and canonical result bytes are recorded before any scorer fields can be added.
+1. exact frozen runtime from `RUNTIME_DEPENDENCIES.json`;
+2. clean rebuild of committed schema/seed/permissions;
+3. actual M16 calls through `prototype/db_executor.py` using parameter binding;
+4. persistence of canonical **database-returned** result bytes before evaluator expectations are read;
+5. supported/refuted/conflicting/unknown and recursive-closure checks;
+6. read-only-role permission negatives;
+7. measured build time, DB latency, relation/index storage and artifact hashes.
 
-## Leakage boundary
+`reference_oracle.py` remains a test-only independent semantic reference and cannot substitute for the live database path.
 
-The generator sees only normalized source content. Evaluator case IDs, questions and expected statuses live in `prototype/evaluator/` and are not imported by the generator. Generated names, comments, guide text and seed data contain no per-case expected status or answer. Generic status vocabulary is part of the declared runtime semantics and is not a case-specific answer leak.
+## Runtime freeze
 
-## Security boundary
+Current remediation runtime:
 
-- no unrestricted SQL field exists;
-- only catalogue endpoint names are accepted;
-- calls use positional parameter binding;
-- source seed literals are escaped during trusted build;
-- runtime function is `STABLE` and read-only;
-- no network/filesystem primitive is exposed;
-- build SQL revokes public access and grants only schema usage, table select and function execute to a no-login reader role;
-- DB snapshot and generated procedures are hash-frozen for a run block.
+- PostgreSQL `18.4`;
+- `psycopg[binary]==3.3.4`;
+- disposable database name beginning `eng197_`.
 
-## Required contrasts and pivots
+A native exact-version run records that it is not image-bit-identical. A container run must additionally record its image digest.
 
-- `M15 vs M16`: cost of Qwen query formation/tool use;
-- `M16 vs M6`: pure relational trusted result interface versus explicit epistemic decision frame;
-- `M15 vs no-guide`: DEV-only interface-teaching ablation unless WP-006/WP-007 authorize otherwise;
-- `M16 vs M14`: execution-bundle diagnostic only, never a claim that M16 is a non-compiled baseline;
-- later `M16 vs M17`: pure SQL versus SQL→Prolog hybrid ownership.
+## Main artifacts
 
-If M16 is non-inferior to M6, claims that Prolog or the full custom frame is necessary must be removed. If M15 is weak and M16 strong, query formation is the bottleneck. If the guide alone explains the gain, report bounded interface teaching. If this conventional package matches M6 at lower cost, the engineering recommendation prefers the simpler package.
+Scientific/boundary:
 
-## FORBIDDEN ACTIONS
+- `contract.json`;
+- `M15_IDENTIFIER_VISIBILITY_CONTRACT.md`;
+- `RELATIONAL_STRICT_SUBSET_MAPPING.md`;
+- `RELATIONAL_SUBSET_CONTRACT.json`;
+- `LIVE_POSTGRES_SMOKE_CONTRACT.md`;
+- `RUNTIME_DEPENDENCIES.json`;
+- `call.schema.json`, `result.schema.json`;
+- `FEASIBILITY_INPUT.json`.
 
-- adding M15/M16 to confirmatory execution before independent WP-004 adjudication;
-- reading HOLDOUT/REPLICATION content during this producer task;
-- free SQL or write credentials in the model path;
-- hidden Python/Prolog semantic execution in M15/M16;
-- outcome-dependent endpoint selection, result truncation or repair;
-- encoding expected case status/answer in source IDs, schema names, guide or seed values;
-- calling AppForge itself the treatment.
+Executable/audit:
 
-## PASS GATE
+- `prototype/generate_package.py`;
+- `prototype/adapter.py`;
+- `prototype/db_executor.py`;
+- `prototype/subset_eligibility.py`;
+- `prototype/live_postgres_smoke.py`;
+- `prototype/reference_oracle.py` — test reference only;
+- `prototype/verify.py`;
+- `prototype/build_freeze_manifest.py`;
+- `prototype/generated/*`;
+- `ENG-197_FREEZE_MANIFEST.json` — generated/frozen from the exact candidate checkout before smoke;
+- `scripts/run-relational-comparator-tests.ps1`;
+- `scripts/run-relational-postgres-smoke.ps1`.
 
-Producer evidence passes only when `python prototype/verify.py` succeeds from this directory, the committed generated package byte-matches a clean deterministic rebuild, evaluator-only expected fields do not leak into generated artifacts, and the producer handoff records hashes plus the absence of HOLDOUT/REPLICATION access. Independent reviewer acceptance remains separate.
+## Typed interface and security
+
+The declared endpoint is `resolve_claim(proposition_id, scope_id, version)`. The adapter owns a constant parameterized query; model-provided SQL, endpoint substitution, DDL/DML and undeclared fields have no representation in the call schema.
+
+Runtime failures remain layered as identifier preparation, typed-call construction, adapter validation, DB execution, result transport and rendering. Zero/multiple rows fail closed; no result is truncated or repaired.
+
+The live smoke executes the declared path under `relational_cmp_reader` and requires direct INSERT/UPDATE/DELETE/CREATE attempts to fail.
+
+## Local execution
+
+Static producer checks:
+
+```powershell
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' relational-comparator-tests
+```
+
+Live PostgreSQL evidence:
+
+```powershell
+$env:ENG197_POSTGRES_DSN = 'postgresql://USER:PASSWORD@localhost:5432/eng197_smoke'
+& 'D:\projects\ChatPilotGroup\LogicLens\EpistemicCompilerLab\scripts\launch.ps1' relational-postgres-smoke
+```
+
+The live command installs the exact driver requirement, rebuilds/checks the full freeze closure and writes evidence to `artifacts/eng-197/postgres-smoke/` by default. Credentials are never committed.
 
 ## STOP / PIVOT
 
-STOP if the relational subset requires hidden bespoke semantic code, if a source assertion/provenance item cannot be represented losslessly, if row limits would require truncation, or if any generated artifact contains evaluator case IDs/questions. PIVOT to M16-only or reject the comparator if query formation is infeasible; narrow the paper if M16 matches/exceeds M6.
+- If a scenario is outside the frozen relational subset, it is M16-ineligible; do not simplify it.
+- If M16 cannot pass real PostgreSQL execution/security evidence, reject it from WP-004.
+- If the accepted benchmark cannot provide a powered paired eligible M16 subset, keep M16 DEV-only.
+- If M16 matches M6 at lower cost, narrow claims that the custom Prolog/full-frame path is necessary.
+- If a future multi-endpoint M15 is desired, version it before HOLDOUT with independent routing ground truth.
+- No HOLDOUT/REPLICATION access is authorized by this package.
