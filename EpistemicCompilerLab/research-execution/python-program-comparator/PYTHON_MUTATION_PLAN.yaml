@@ -1,9 +1,9 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 issue: ENG-201
 scope: TRAIN_DEV_ONLY_SYNTHETIC
 mutations:
   - id: wrong_branch
-    layer: program_semantics
+    layer: mapper_semantics
     expected: detector_rejects
   - id: arithmetic_inversion
     layer: program_semantics
@@ -20,6 +20,9 @@ mutations:
   - id: case_id_branch
     layer: anti_memorization
     expected: detector_rejects
+  - id: mapper_case_id_branch
+    layer: anti_memorization
+    expected: detector_rejects
   - id: forbidden_import
     layer: security
     expected: detector_rejects
@@ -27,6 +30,12 @@ mutations:
     layer: security
     expected: detector_rejects
   - id: subprocess_attempt
+    layer: security
+    expected: detector_rejects
+  - id: network_attempt
+    layer: security
+    expected: detector_rejects
+  - id: dynamic_eval_attempt
     layer: security
     expected: detector_rejects
   - id: qwen_visible_source_leak
