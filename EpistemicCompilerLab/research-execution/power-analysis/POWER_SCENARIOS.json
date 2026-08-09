@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "method": "paired_binary_normal_approximation_with_cluster_design_effect",
+  "formula": {
+    "paired_discordance": "q = p10 + p01",
+    "effect": "delta = p10 - p01",
+    "paired_difference_variance": "q - delta^2",
+    "design_effect": "1 + (mean_cluster_size - 1) * icc",
+    "effective_n": "eligible_n * (1 - attrition) / design_effect",
+    "noncentrality": "abs(delta) * sqrt(effective_n / (q - delta^2))",
+    "two_sided_power": "Phi(-z_alpha - noncentrality) + 1 - Phi(z_alpha - noncentrality)"
+  },
+  "primary_planning": {
+    "delta": 0.08,
+    "discordance_q": 0.35,
+    "mean_cluster_size": 8,
+    "icc": 0.05,
+    "attrition": 0.05,
+    "alpha_two_sided": 0.05,
+    "target_power": 0.90,
+    "expected_minimum_eligible_n": 802,
+    "minimum_clusters": 30
+  },
+  "sensitivity_axes": {
+    "delta": [0.05, 0.08, 0.10],
+    "discordance_q": [0.20, 0.35, 0.50],
+    "mean_cluster_size": [4, 8, 12],
+    "icc": [0.00, 0.05, 0.10],
+    "attrition": [0.00, 0.05, 0.10]
+  },
+  "candidate_n_grid": [240, 360, 480, 600, 800, 802, 900, 1000, 1200, 1500],
+  "interpretation": {
+    "primary_gate": "uses only primary_planning values unless a preregistered blinded nuisance update replaces discordance_q/mean_cluster_size/icc/attrition",
+    "sensitivity": "stress tests fragility and does not permit post-outcome choice of favorable assumptions",
+    "delta_sensitivity": "SESOI remains 0.08; delta 0.05 and 0.10 are reporting sensitivities, not alternate gate thresholds"
+  }
+}
