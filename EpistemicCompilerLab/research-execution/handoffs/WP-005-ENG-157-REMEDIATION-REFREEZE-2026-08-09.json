@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-157",
+  "work_package": "WP-005",
+  "status": "ready_for_distinct_independent_re_review",
+  "candidate_resolution": {
+    "rule": "The scientific candidate is the first parent of the Git commit that introduced this handoff file.",
+    "reason": "The handoff was intentionally committed last after every normative artifact and both no-Actions producer preflights, so its first parent is an immutable complete candidate without requiring a self-referential commit hash inside the handoff."
+  },
+  "supersedes": [
+    "EpistemicCompilerLab/research-execution/handoffs/WP-005.json",
+    "EpistemicCompilerLab/research-execution/handoffs/WP-005-ENG-157-REMEDIATION-2026-08-09.json",
+    "EpistemicCompilerLab/research-execution/oracle/ENG-157_PRODUCER_PREFLIGHT_2026-08-09.json"
+  ],
+  "prior_independent_review": {
+    "path": "EpistemicCompilerLab/research-execution/ENG-157_INDEPENDENT_REVIEW_2026-08-06.md",
+    "verdict": "REVISE",
+    "blocking_findings": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8"]
+  },
+  "identity": {
+    "producer": "OpenAI GPT-5.6 Sol — WP-005 remediation producer",
+    "producer_session": "ChatGPT ENG-157 remediation / 2026-08-09",
+    "reviewer": "UNASSIGNED distinct Independent Semantic Oracle Adjudicator",
+    "reviewer_session_must_differ": true,
+    "producer_may_accept": false,
+    "gatekeeper_must_be_distinct": true
+  },
+  "scope": {
+    "allowed": ["TRAIN", "DEV"],
+    "forbidden": ["HOLDOUT", "REPLICATION"],
+    "confirmatory_work_authorized": false
+  },
+  "normative_artifacts": [
+    "EpistemicCompilerLab/research-execution/oracle/SEMANTIC_SPEC.md",
+    "EpistemicCompilerLab/research-execution/oracle/SEMANTIC_REGISTRY.json",
+    "EpistemicCompilerLab/research-execution/oracle/POLICY_TABLE.json",
+    "EpistemicCompilerLab/research-execution/oracle/ORACLE_PACKET_CONTRACT.json",
+    "EpistemicCompilerLab/research-execution/oracle/GOLD_ADJUDICATION_PROTOCOL.json",
+    "EpistemicCompilerLab/research-execution/oracle/CONFORMANCE_VECTORS.json",
+    "EpistemicCompilerLab/research-execution/oracle/INVARIANT_COVERAGE_MATRIX.csv",
+    "EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md",
+    "EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml",
+    "EpistemicCompilerLab/research-execution/oracle/DEPENDENCY_AUDIT_PLAN.md",
+    "EpistemicCompilerLab/research-execution/oracle/HUMAN_AUDIT_PROTOCOL.json",
+    "EpistemicCompilerLab/research-execution/oracle/AUDIT_TOOL_TRUST_MANIFEST.json",
+    "EpistemicCompilerLab/research-execution/scripts/validate_oracle_semantics.py",
+    "EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py",
+    "EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py",
+    "EpistemicCompilerLab/research-execution/context-packets/WP-005/ACCEPTANCE.v1.2.yaml"
+  ],
+  "blocking_finding_remediation": {
+    "B1_gold_oracle_circularity_and_gold_provenance": {
+      "producer_status": "remediated",
+      "evidence": [
+        "oracle/ORACLE_PACKET_CONTRACT.json",
+        "oracle/GOLD_ADJUDICATION_PROTOCOL.json",
+        "oracle/INDEPENDENCE_BOUNDARY.md"
+      ],
+      "resolution": "B-oracle cannot see outcome gold or expected frame fields. Query gold and outcome gold are created by two blind independent adjudicators per case, with third adjudication on disagreement; Path A, Path B, scorer, model analyst and teacher roles are forbidden. Outcome gold is frozen before any scored model output and only becomes scorer-visible after B result and registry hashes freeze."
+    },
+    "B2_underdefined_semantics": {
+      "producer_status": "remediated",
+      "evidence": ["oracle/SEMANTIC_REGISTRY.json", "oracle/POLICY_TABLE.json", "oracle/SEMANTIC_SPEC.md"],
+      "resolution": "Canonical JSON/identifiers/scalars, exact typed ordered arguments, scope, opaque version equality, half-open time, finite least fixpoint, duplicate invariance, complete non-minimal evidence-root union, proof normal form, distinct query outcomes and exact policy mappings are frozen independently of implementation."
+    },
+    "B3_acceptable_alternative_normal_form_and_post_model_loophole": {
+      "producer_status": "remediated",
+      "evidence": ["oracle/SEMANTIC_REGISTRY.json", "oracle/GOLD_ADJUDICATION_PROTOCOL.json", "oracle/ORACLE_PACKET_CONTRACT.json"],
+      "resolution": "Alternatives use exact canonical normal form, are blindly adjudicated before first model output and cannot be expanded or repaired in place afterward. A newly discovered legitimate ambiguity requires a new benchmark version and invalidates the current confirmatory candidate."
+    },
+    "B4_missing_invariant_coverage_matrix": {
+      "producer_status": "remediated",
+      "evidence": ["oracle/CONFORMANCE_VECTORS.json", "oracle/INVARIANT_COVERAGE_MATRIX.csv", "oracle/MUTATION_MATRIX.yaml"],
+      "resolution": "18 publication-critical invariants each have positive and negative vectors, mapped mutations, expected Path A/B behavior and scorer fields; the matrix covers all 14 publication score fields."
+    },
+    "B5_non_quantitative_human_audit": {
+      "producer_status": "remediated_as_protocol",
+      "evidence": ["oracle/HUMAN_AUDIT_PROTOCOL.json", "oracle/GOLD_ADJUDICATION_PROTOCOL.json"],
+      "resolution": "Human audit is frozen at 120 deterministic non-sealed TRAIN/DEV cases, seed 157005, 30 per status, mandatory domain/status/difficulty/source-family/mutation-family coverage, two blind reviewers plus adjudicator, >=0.95 global and >=0.90 per-stratum pre-adjudication agreement, zero unresolved disagreements and zero semantic/scorer errors for PASS. Gold creation itself is separate full-registry blind adjudication, not derived from the sampled audit."
+    },
+    "B6_untrusted_audit_tool_and_blind_spots": {
+      "producer_status": "remediated_as_design_contract",
+      "evidence": ["oracle/AUDIT_TOOL_TRUST_MANIFEST.json", "oracle/DEPENDENCY_AUDIT_PLAN.md"],
+      "resolution": "Audit-tool producer/reviewer roles, privileges, required observation channels, exactly 16 negative controls, positive controls and non-empty fail-closed blind-spot handling are frozen. Actual implementation/execution remains downstream evidence and is not falsely claimed here."
+    },
+    "B7_gold_query_agreement_overclaim": {
+      "producer_status": "remediated",
+      "evidence": ["oracle/ORACLE_PACKET_CONTRACT.json", "oracle/INDEPENDENCE_BOUNDARY.md", "oracle/SEMANTIC_SPEC.md"],
+      "resolution": "Gold-query execution may validate only formal execution, policy and frame serialization. Natural-question query formation, production end-to-end and oracle-frame renderer ceiling remain separate claim tracks and cannot borrow each other's agreement."
+    },
+    "B8_generic_phrase_wrapper_instead_of_semantic_validator": {
+      "producer_status": "remediated_and_producer_preflight_executed",
+      "evidence": [
+        "scripts/validate_oracle_semantics.py",
+        "scripts/validate_oracle_gold_governance.py",
+        "scripts/validate_oracle_boundary.py",
+        "oracle/ENG-157_PRODUCER_PREFLIGHT_REFREEZE_2026-08-09.json"
+      ],
+      "resolution": "Dedicated stdlib validators parse and cross-check semantic registry, truth table, policy, packet separation, blind gold provenance/governance, invariant/vector/mutation/scorer coverage, human-audit thresholds and audit-tool trust contracts. Local exact-main no-Actions refreeze preflight exited 0 for both semantic/boundary and gold governance."
+    }
+  },
+  "producer_preflight": {
+    "github_actions_used": false,
+    "evidence": "EpistemicCompilerLab/research-execution/oracle/ENG-157_PRODUCER_PREFLIGHT_REFREEZE_2026-08-09.json",
+    "semantic_boundary": "PASS",
+    "gold_governance": "PASS",
+    "semantic_version": "wp005.semantic.v1",
+    "invariants": 18,
+    "publication_score_fields": 14,
+    "minimum_vectors": 36,
+    "minimum_mutations": 42,
+    "human_audit_sample_contract": 120
+  },
+  "explicit_remaining_non_evidence": [
+    "No independent re-review has accepted B1-B8 remediation.",
+    "No Path B implementation is accepted by this producer handoff.",
+    "100 percent critical mutation kill rate is a frozen acceptance requirement, not executed evidence claimed here.",
+    "Dependency/canary audit and audit-tool trust execution remain required downstream.",
+    "The 120-case human audit protocol is frozen but not claimed as executed evidence.",
+    "No HOLDOUT or REPLICATION material was accessed.",
+    "GATE-001 remains blocked."
+  ],
+  "required_independent_re_review": [
+    "Resolve the scientific candidate as the first parent of this handoff-introducing commit and review exactly those bytes.",
+    "Re-evaluate prior blockers B1-B8 against this refrozen candidate, not either superseded handoff.",
+    "Challenge blind gold provenance and the physical inability of B-oracle to access outcome gold.",
+    "Independently reason through or reimplement representative conformance vectors from the written semantic registry without production executable helpers.",
+    "Inspect both dedicated validators for fail-open assumptions or self-consistency checks that do not establish the claimed contract.",
+    "Treat B6/B5 execution as still outstanding where the handoff explicitly labels only a frozen design protocol.",
+    "Issue PASS, REVISE or PIVOT in a distinct reviewer session."
+  ],
+  "recommended_linear_state": "In Review",
+  "gate_effect": "NONE until distinct independent PASS and all later WP-005 execution acceptance evidence are satisfied"
+}
