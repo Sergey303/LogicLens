@@ -8,7 +8,7 @@ The candidate program module is rejected if its AST contains imports, attribute-
 
 Forbidden examples include `open`, `eval`, `exec`, `compile`, `__import__`, `getattr`, `setattr`, `globals`, `locals`, `vars`, `input`, `breakpoint`, `os`, `sys`, `socket`, `subprocess`, `pathlib`, `requests`, `urllib`, `random`, `secrets`, `time` and `datetime`.
 
-The runtime admits one capability call per request and rejects unknown capability handles or unexpected argument keys before execution.
+The frozen W0 sandbox profile also records one call, 100 ms wall/CPU budgets, 64 MiB memory, 4096 result bytes, and explicit network/filesystem/subprocess/shell denial. These are design constraints for later isolated execution; this package does not claim OS-level enforcement. The runtime rejects unknown capability handles or unexpected argument keys before execution.
 
 ## Qwen visibility
 
@@ -27,7 +27,7 @@ Public opaque handles (`py_cap_01` etc.) are interface identifiers, not implemen
 
 ## Failure semantics
 
-All failures are fail-closed and normalized to one of the public codes in `PYTHON_TOOL_API.schema.json`. Raw exceptions are retained only in evaluator-side diagnostics and are never copied into student prompts.
+All failures are fail-closed and normalized to one of the public codes in `PYTHON_TOOL_API.schema.json`. Raw program results must contain exactly `status` and `value`, so a program cannot inject provenance into the trusted wrapper. Raw exceptions are retained only in evaluator-side diagnostics and are never copied into student prompts.
 
 ## Reproducibility
 
