@@ -1,4 +1,4 @@
-schema_version: 1.1.0
+schema_version: 1.2.0
 issue: ENG-202
 status: DESIGN_FROZEN_NO_TRAINING_EVIDENCE
 study_class: WEIGHT_CHANGING_BOUNDARY
@@ -75,6 +75,10 @@ arms:
     supervision: executable_trace_or_rationale
 
 teacher:
+  runtime: codex_cli
+  model_selection: runtime_default_no_guessed_override
+  resolved_model_identity_required_before_generation: true
+  unresolved_model_identity_exact_reproducibility: false
   visible_split: TRAIN
   visible_fields: [input_text, teacher_evidence_view, target_schema, teacher_instructions]
   gold_targets_visible: false
@@ -82,8 +86,14 @@ teacher:
   student_outputs_visible: false
   aggregate_dev_visible: false
   generated_validation_labels_are_ground_truth: false
-  call_budget_per_record: 1
-  retry_policy: infrastructure_failure_only_same_frozen_request
+  budget:
+    max_calls_per_record: 1
+    max_input_tokens_per_record: 4096
+    max_output_tokens_per_record: 256
+    total_successful_calls_formula: N_train
+    total_input_token_ceiling_formula: 4096*N_train
+    total_output_token_ceiling_formula: 256*N_train
+  retry_policy: infrastructure_failure_only_byte_identical_request
   target_schema_must_equal_gold_schema: true
 
 sealed_split_custodian:
@@ -114,6 +124,8 @@ prohibited:
   - RL
   - GRPO
   - teacher_gold_target_copying
+  - outcome_directed_teacher_regeneration
+  - silent_teacher_model_fallback
   - teacher_generated_dev_labels_as_truth
   - retroactive_train_repair_after_holdout
   - fixed_weight_claim_from_weight_changing_result
