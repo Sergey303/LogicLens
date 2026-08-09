@@ -1,0 +1,34 @@
+schema_version: 1.0.0
+issue: ENG-201
+scope: TRAIN_DEV_ONLY_SYNTHETIC
+mutations:
+  - id: wrong_branch
+    layer: program_semantics
+    expected: detector_rejects
+  - id: arithmetic_inversion
+    layer: program_semantics
+    expected: detector_rejects
+  - id: stale_program_version
+    layer: freeze_contract
+    expected: detector_rejects
+  - id: fabricated_provenance
+    layer: result_contract
+    expected: detector_rejects
+  - id: hidden_lookup_table
+    layer: anti_memorization
+    expected: detector_rejects
+  - id: case_id_branch
+    layer: anti_memorization
+    expected: detector_rejects
+  - id: forbidden_import
+    layer: security
+    expected: detector_rejects
+  - id: filesystem_attempt
+    layer: security
+    expected: detector_rejects
+  - id: subprocess_attempt
+    layer: security
+    expected: detector_rejects
+  - id: qwen_visible_source_leak
+    layer: visibility
+    expected: detector_rejects
