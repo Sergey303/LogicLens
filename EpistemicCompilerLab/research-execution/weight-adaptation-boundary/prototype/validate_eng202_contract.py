@@ -198,7 +198,7 @@ def main():
         "seeds": EXPECTED_SEEDS,
         "arms": ["W-A", "W-B", "W-C"],
         "W-D": "DISABLED_DEV_ONLY",
-        "holdout_access": false if False else "FORBIDDEN",
+        "holdout_access": "FORBIDDEN",
         "github_actions_used": False,
     }
     print(json.dumps(report, sort_keys=True))
