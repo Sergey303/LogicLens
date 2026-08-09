@@ -26,6 +26,8 @@ jobs:
           python-version: '3.11'
       - name: Validate ENG-202 design contracts
         run: python EpistemicCompilerLab/research-execution/weight-adaptation-boundary/prototype/validate_eng202_contract.py
+      - name: Validate CUDA smoke evidence contract
+        run: python EpistemicCompilerLab/research-execution/weight-adaptation-boundary/prototype/validate_smoke_contract_static.py
       - name: Assert this workflow is not CUDA smoke evidence
         run: |
           python - <<'PY'
