@@ -1,6 +1,6 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 work_package_id: WP-005
-purpose: Prove that Path B and the field-level scorer detect every publication-critical semantic, provenance, policy, query and infrastructure corruption.
+purpose: Prove that Path B and the field-level scorer detect every publication-critical semantic, provenance, policy, query, independence and infrastructure corruption.
 execution_contract:
   mutation_granularity: exactly_one_declared_mutation_per_test_case
   immutable_ids: true
@@ -238,7 +238,7 @@ mutations:
   target: warning
   operation: remove_mandatory_warning
   expected_detection: warnings=false
-  required_test: provisional/version/conflict warning stratum
+  required_test: conflict/unknown/query-outcome warning strata
   severity: major
   blocks_freeze: true
 - mutation_id: MUT-FRAME-001
@@ -315,10 +315,10 @@ mutations:
   blocks_freeze: true
 - mutation_id: MUT-INFRA-002
   layer: infrastructure
-  target: timeout_or_exhausted_retry
-  operation: exclude_or_impute_success
-  expected_detection: infrastructure failure counted incorrect
-  required_test: forced timeout/provider-error fixture
+  target: runtime_failure_or_timeout
+  operation: map_to_unknown_or_exclude_or_impute_success
+  expected_detection: runtime_error/infrastructure failure is distinct and counted incorrect
+  required_test: forced implementation exception timeout/provider-error fixture
   severity: critical
   blocks_freeze: true
 - mutation_id: MUT-INFRA-003
@@ -327,6 +327,30 @@ mutations:
   operation: retain_semantic_score
   expected_detection: entire response incorrect
   required_test: synthetic forbidden event log
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-PACKET-001
+  layer: oracle_independence
+  target: b_oracle_input_packet
+  operation: inject_expected_status_or_expected_frame
+  expected_detection: packet validation hard-fails before B-oracle execution
+  required_test: ORACLE_PACKET_CONTRACT forbidden expected fields
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-PACKET-002
+  layer: oracle_independence
+  target: b_oracle_mounts
+  operation: mount_outcome_gold_registry_during_oracle_computation
+  expected_detection: dependency/canary audit failure before semantic result acceptance
+  required_test: outcome-gold registry canary plus filesystem trace
+  severity: critical
+  blocks_freeze: true
+- mutation_id: MUT-TRACK-001
+  layer: claim_governance
+  target: claim_scope
+  operation: report_gold_query_A_B_agreement_as_natural_query_or_extraction_validation
+  expected_detection: claim-scope validator rejects report/freeze
+  required_test: ORACLE_PACKET_CONTRACT track claim matrix
   severity: critical
   blocks_freeze: true
 coverage_requirements:
@@ -338,6 +362,8 @@ coverage_requirements:
   - frame_serialization
   - renderer
   - gold_governance
+  - oracle_independence
+  - claim_governance
   - infrastructure
   required_report_fields:
   - mutation_id
