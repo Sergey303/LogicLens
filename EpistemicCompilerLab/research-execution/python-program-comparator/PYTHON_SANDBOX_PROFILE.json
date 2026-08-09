@@ -1,0 +1,16 @@
+{
+  "contract_id": "eng201.python-sandbox-profile.v1",
+  "status": "W0_DESIGN_BOUNDARY_NOT_PRODUCTION_SANDBOX",
+  "max_calls_per_request": 1,
+  "wall_timeout_ms": 100,
+  "cpu_time_ms": 100,
+  "max_memory_mb": 64,
+  "max_result_bytes": 4096,
+  "network": false,
+  "filesystem": false,
+  "subprocess": false,
+  "shell": false,
+  "dynamic_import": false,
+  "dynamic_package_install": false,
+  "side_effects": false
+}
