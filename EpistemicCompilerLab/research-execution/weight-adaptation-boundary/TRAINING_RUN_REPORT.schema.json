@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["schema_version", "arm", "seed", "candidate_version", "base_model", "tokenizer", "corpus", "recipe", "environment", "outcome", "artifacts", "failure_retained"],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
+    "schema_version": {"const": "1.1.0"},
     "arm": {"enum": ["W-B", "W-C"]},
     "seed": {"enum": [17, 29, 43]},
     "candidate_version": {"type": "string", "minLength": 1},
@@ -62,7 +62,7 @@
       "additionalProperties": false,
       "required": ["python", "torch", "transformers", "peft", "accelerate", "datasets", "bitsandbytes", "cuda_runtime", "gpu", "driver", "pip_freeze_sha256"],
       "properties": {
-        "python": {"const": "3.11"},
+        "python": {"type": "string", "pattern": "^3\\.11(?:\\.[0-9]+)?$"},
         "torch": {"const": "2.5.1"},
         "transformers": {"const": "4.46.3"},
         "peft": {"const": "0.14.0"},
@@ -98,5 +98,16 @@
       }
     },
     "failure_retained": {"const": true}
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"outcome": {"properties": {"status": {"const": "success"}}}}},
+      "then": {
+        "properties": {
+          "outcome": {"properties": {"completed_optimizer_steps": {"const": 256}, "final_loss": {"type": "number"}}},
+          "artifacts": {"properties": {"adapter_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "adapter_bytes": {"type": "integer", "exclusiveMinimum": 0}}}
+        }
+      }
+    }
+  ]
 }
