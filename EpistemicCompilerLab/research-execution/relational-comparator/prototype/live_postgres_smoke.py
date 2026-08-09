@@ -115,6 +115,8 @@ def main() -> int:
     eligibility = evaluate_source(source)
     require(eligibility["eligible"] is True, f"prototype source is relational-ineligible: {eligibility}")
 
+    # Hashing the frozen evaluator file in the manifest is allowed; semantic fields
+    # are not parsed until every actual PostgreSQL result has been persisted.
     expected_freeze = build_freeze_manifest()
     actual_freeze = load(FREEZE)
     require(actual_freeze == expected_freeze, "ENG-197 freeze manifest drift before PostgreSQL smoke")
@@ -126,7 +128,6 @@ def main() -> int:
     pre_score_dir = output / "pre-score"
 
     registry = load(REGISTRY)["entries"]
-    expected = {row["case_id"]: row for row in load(EXPECTED)["cases"]}
     report: dict[str, Any] = {
         "schema_version": "1.0.0",
         "linear_issue": "ENG-197",
@@ -178,7 +179,7 @@ def main() -> int:
             adapter_negatives = assert_adapter_negatives()
             db_denials = assert_db_write_denials(connection)
 
-            # Execute and persist every actual DB result before opening evaluator expectations.
+            # Phase 1: execute and persist every actual DB result with evaluator semantics unopened.
             raw_results: dict[str, dict[str, Any]] = {}
             pre_score_hashes: dict[str, str] = {}
             for entry in registry:
@@ -196,7 +197,9 @@ def main() -> int:
                     "evaluation": "NOT_OPENED_YET",
                 })
 
-            # Only after all DB result artifacts exist do we consult evaluator-only expectations.
+            # Phase 2: evaluator-only expected outcomes are parsed for the first time now.
+            expected = {row["case_id"]: row for row in load(EXPECTED)["cases"]}
+            require(set(expected) == set(raw_results), "expected/DB case-set drift")
             for case_report in report["cases"]:
                 case_id = case_report["case_id"]
                 want = expected[case_id]
