@@ -154,10 +154,11 @@ def verify_live_path_is_database_owned() -> None:
     require("reference_oracle" not in live, "live PostgreSQL smoke imports reference oracle")
     require("cursor.execute(query, params)" in db_executor, "real parameterized database execution missing")
     require("pre_score_db_result" in db_executor, "database pre-score stage missing")
-    require("persist_pre_score_record" in live, "live smoke does not persist DB rows before evaluation")
-    first_persist = live.index("persist_pre_score_record")
-    evaluation_comment = live.index("Only after all DB result artifacts exist")
-    require(first_persist < evaluation_comment, "evaluator expectations can precede persisted DB evidence")
+    persist_call = 'pre_score_hashes[case_id] = persist_pre_score_record'
+    expected_load = 'expected = {row["case_id"]: row for row in load(EXPECTED)["cases"]}'
+    require(persist_call in live and expected_load in live, "live execution/evaluation phase markers missing")
+    require(live.index(persist_call) < live.index(expected_load), "evaluator expectations can precede persisted DB evidence")
+    require("Phase 1:" in live and "Phase 2:" in live, "explicit pre-score/evaluation phase boundary missing")
     for token in ("INSERT INTO relational_cmp.proposition", "UPDATE relational_cmp.proposition", "DELETE FROM relational_cmp.proposition", "CREATE TABLE relational_cmp.evil"):
         require(token in live, f"live permission negative missing: {token}")
 
