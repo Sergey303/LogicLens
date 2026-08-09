@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "issue": "ENG-202",
+  "study_class": "WEIGHT_CHANGING_BOUNDARY",
+  "candidate_scientific_base": {
+    "repository": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+    "tokenizer_repository": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "tokenizer_revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242"
+  },
+  "binding_status": "PROVISIONAL_UNTIL_WP004_FIXED_WEIGHT_PROFILE_ACCEPTED",
+  "causal_binding": {
+    "comparison": "strongest_fixed_weight_external_interface_vs_W-B_or_W-C",
+    "required_same_student_repository": true,
+    "required_same_student_revision": true,
+    "required_same_tokenizer_repository": true,
+    "required_same_tokenizer_revision": true,
+    "required_same_inference_prompt_contract": true,
+    "required_same_decoding_contract": true,
+    "required_same_output_schema": true,
+    "accepted_fixed_weight_profile_reference_required": true,
+    "accepted_fixed_weight_profile_hash_required": true
+  },
+  "if_binding_fails": {
+    "weight_vs_fixed_comparison_class": "DESCRIPTIVE_CROSS_MODEL_ONLY",
+    "causal_weight_placement_claim_allowed": false,
+    "may_select_a_different_scientific_base_after_dev_or_holdout": false,
+    "required_action": "version_ENG-202_before_any_HOLDOUT_and_rebind_to_an_accepted_fixed_weight_student_profile"
+  },
+  "scope": {
+    "boundary_profile_count": 1,
+    "all_flagship_student_profiles_required": false,
+    "reason": "ENG-202 is a boundary study; one preregistered Qwen profile is sufficient if it is exactly the same base student as the compared fixed-weight arm."
+  },
+  "smoke_model_is_binding_evidence": false
+}

@@ -38,17 +38,51 @@ For core W-C, the teacher must independently produce exactly the same target sch
 
 Teacher calls, request/response hashes, model identifier, token counts, temperature/seed when exposed, errors and retries are retained. Failed calls are not silently regenerated under a different prompt/model/budget.
 
-## Budget matching
+Teacher generation in core W-C may not select records using observed student weakness, choose among multiple correct teacher trajectories using student likelihood, reweight supervision spans, or regenerate a curriculum from student errors. Those are distinct distillation treatments identified in `DISTILLATION_CONTROL_BOUNDARY.md`.
 
-Primary matching variable: **effective supervised target tokens** under the exact frozen tokenizer revision.
+## Record-set and ordering match
 
-Before any training, a deterministic corpus builder constructs matched W-B/W-C views. For each source-family stratum it uses the same records and applies the same maximum target-token cap. Total effective target tokens must be equal across W-B/W-C; if exact equality is impossible because targets tokenize differently, deterministic end truncation is applied to the longer arm under the frozen output schema. Any truncation that makes a target schema-invalid rejects the candidate corpus instead of repairing it manually.
+W-B and W-C use **exactly the same ordered evaluator-side `record_id` set for each training seed**.
 
-The training manifest additionally fixes equal optimizer steps, batches, sequence length, adapter capacity and seeds.
+Data order may not depend on `gold_target`, `teacher_target`, target length, model loss or DEV performance. The normative per-seed ordering is defined in `TRAINING_REPLICABILITY_CONTRACT.md`:
+
+```text
+order_key = SHA256(utf8(decimal_seed) || 0x00 || utf8(record_id))
+sort ascending by (order_key, record_id)
+```
+
+The record ID/order manifest is evaluator-side evidence and is never student-visible.
+
+## Target-length and compute matching
+
+The target **content is the treatment**, so valid semantic targets must not be edited merely to equalize token totals.
+
+Core matching rules:
+
+1. identical grouped TRAIN record IDs;
+2. identical student-visible input template;
+3. identical target schema;
+4. identical predeclared maximum sequence length and maximum complete-target length;
+5. identical optimizer steps, effective batch/accumulation boundaries and adapter capacity;
+6. one frozen loss implementation for both arms;
+7. actual target-token totals and per-record target-length distributions retained for both arms.
+
+A complete target that exceeds the predeclared maximum target length makes the candidate corpus invalid. **Do not end-truncate a semantically valid target, delete a record from only one arm, append supervised no-op padding, or manually rewrite a target to force token equality.**
+
+If target-token totals differ because the two supervision sources produce different valid values under the same schema, the difference is reported as a property of the supervision treatment. A separately preregistered length-matched sensitivity analysis may be DEV-only; it cannot replace the core result after outcomes are observed.
 
 ## Content integrity
 
 Canonical UTF-8 LF text is hashed with SHA-256. Corpus generation produces an immutable manifest with ordered record hashes and aggregate hash. Changes to any input/evidence/target/provenance field create a new corpus version.
+
+The corpus manifest must separately hash:
+
+- unordered grouped record membership;
+- per-seed ordered record IDs;
+- student-visible input bytes;
+- W-B target bytes;
+- W-C target bytes;
+- tokenizer/revision used for token accounting.
 
 ## Prohibited leakage
 

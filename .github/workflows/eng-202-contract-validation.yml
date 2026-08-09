@@ -1,0 +1,39 @@
+name: ENG-202 weight-boundary contract validation
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/weight-adaptation-boundary/**'
+      - 'EpistemicCompilerLab/scripts/run-eng202-contract-check.ps1'
+      - '.github/workflows/eng-202-contract-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'EpistemicCompilerLab/research-execution/weight-adaptation-boundary/**'
+      - 'EpistemicCompilerLab/scripts/run-eng202-contract-check.ps1'
+      - '.github/workflows/eng-202-contract-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  static-contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate ENG-202 design contracts
+        run: python EpistemicCompilerLab/research-execution/weight-adaptation-boundary/prototype/validate_eng202_contract.py
+      - name: Assert this workflow is not CUDA smoke evidence
+        run: |
+          python - <<'PY'
+          import json
+          print(json.dumps({
+              'issue': 'ENG-202',
+              'evidence_class': 'STATIC_CONTRACT_ONLY',
+              'cuda_smoke': 'NOT_PERFORMED',
+              'scientific_training': 'NOT_PERFORMED'
+          }, sort_keys=True))
+          PY

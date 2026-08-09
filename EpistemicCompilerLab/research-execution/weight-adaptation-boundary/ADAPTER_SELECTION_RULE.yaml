@@ -1,4 +1,4 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 issue: ENG-202
 selection_unit: seed
 eligible_arms: [W-B, W-C]
@@ -16,15 +16,25 @@ checkpoint_rule:
 seed_rule:
   select_best_seed: false
   discard_failed_seed: false
+  replacement_seed: forbidden
   report_all_seeds: true
-  aggregate_primary_summary: paired_across_identical_seed_set
+  seed_role: nested_training_run_replication_not_independent_benchmark_unit
+  aggregate_primary_summary: defined_by_WEIGHT_BOUNDARY_ESTIMANDS.json
+  same_seed_pairing_W-B_W-C: true
+  benchmark_sample_size_multiplier_from_three_seeds: 1
+
+model_binding_rule:
+  contract: MODEL_BINDING_CONTRACT.json
+  causal_fixed_weight_comparison_requires_exact_same_base_and_tokenizer: true
+  cross_model_if_binding_fails: descriptive_only
+  model_switch_after_dev_or_holdout: prohibited
 
 recipe_change_rule:
   if_any_of_changes:
     - base_revision
     - tokenizer_revision
     - corpus_version
-    - target_token_budget
+    - target_length_policy
     - optimizer_steps
     - optimizer
     - learning_rate
@@ -35,6 +45,7 @@ recipe_change_rule:
     - adapter_dropout
     - target_modules
     - quantization
+    - record_ordering_rule
   action: new_candidate_version_and_rerun_all_W-B_W-C_seeds
 
 failure_retention:
@@ -44,7 +55,11 @@ failure_retention:
   retain_schema_failure: true
   retain_overfit_diagnostic: true
   retry_training_failure: false
+  failed_scientific_seed_may_be_replaced: false
+  infrastructure_block_rerun: only_if_predeclared_symmetric_paired_block_rule_and_before_outcome_inspection
 
 holdout_boundary:
   selection_rule_must_be_frozen_before_holdout: true
+  exact_model_binding_must_be_resolved_before_holdout: true
+  seed_aware_estimand_must_be_WP006_accepted_before_holdout: true
   change_after_holdout: prohibited
