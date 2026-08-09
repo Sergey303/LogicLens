@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "issue": "ENG-201",
+  "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+  "files": [
+    {"path": "M21_MAPPER_CONTRACT.md", "sha256": "4c69882d51fd013e6d49661cf433eb4fedeac5e57959d5b241f062fe1a4a5ccd", "bytes": 1478},
+    {"path": "PYTHON_MODE_CONTRACTS.yaml", "sha256": "7bb4bee0d188b750caea3524a32bc8142b9765338bd4ceaa680e300dcff50cfe", "bytes": 1399},
+    {"path": "PYTHON_MUTATION_PLAN.yaml", "sha256": "1d0b699e4b91743726d76cf897299e30b71158185740bb689946f0d46ba0d35d", "bytes": 915},
+    {"path": "PYTHON_PROGRAM_CONTRACT.md", "sha256": "59569e033329e3966c5b9facf530e4fa9faefa8592740f549e84f8d6807bbaf6", "bytes": 4172},
+    {"path": "PYTHON_SECURITY_BOUNDARY.md", "sha256": "e9fc1afb45eb706f5d003c68d499396ae2d26e102b551a2d3c4239b0703ca1c1", "bytes": 2130},
+    {"path": "PYTHON_TOOL_API.schema.json", "sha256": "e13366a17b12a072c2e8bbe03991b653c13262eb42b52fcb08b74c5435cb9d6e", "bytes": 1669},
+    {"path": "QWEN_VISIBLE_PYTHON_INTERFACE.schema.json", "sha256": "638ce58d01eb6813a339b7efd00320e3d4565e8c43eca022d4b2e6a24eeb51d0", "bytes": 1437},
+    {"path": "README.md", "sha256": "93f3a70c2e5bddb9876e64c2e5eb8c926cc112ec95f96e6cf08da5b96d1fec14", "bytes": 1449},
+    {"path": "prototype/cases.train_dev.json", "sha256": "ec0bb7a4ac7a22746a4c3af8fd34055d16594d74e2d2f693c113194ca8df84be", "bytes": 2130},
+    {"path": "prototype/program.py", "sha256": "d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde", "bytes": 1511},
+    {"path": "prototype/runner.py", "sha256": "05a90fde8ac3c3ac43587cca2278c51ffea8012729e2dc05fdf708dfc292f82f", "bytes": 2344},
+    {"path": "prototype/tool_api.json", "sha256": "93595a04db469f7b2c6c5a1b4131c1fea1d5bf7d33ec34306c1535f0312074cc", "bytes": 1489},
+    {"path": "prototype/verify.py", "sha256": "a78447867428a2382d5cd1a301811a9fcfe07ef282be16f96daf44d9ce9ede62", "bytes": 6385}
+  ],
+  "validation": {
+    "cases_passed": 7,
+    "deterministic_rerun": true,
+    "issue": "ENG-201",
+    "mutations_passed": ["wrong_branch", "arithmetic_inversion", "stale_program_version", "fabricated_provenance", "hidden_lookup_table", "case_id_branch", "forbidden_import", "filesystem_attempt", "subprocess_attempt", "qwen_visible_source_leak"],
+    "program_sha256": "d5f9b49786e6767b60bfc79e7620eb41fead0dda4268ad10f21a747e8a184fde",
+    "qwen_source_visibility": "none",
+    "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+    "tool_api_sha256": "93595a04db469f7b2c6c5a1b4131c1fea1d5bf7d33ec34306c1535f0312074cc"
+  }
+}
