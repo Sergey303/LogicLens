@@ -34,6 +34,6 @@ From this directory:
 python prototype/verify.py
 ```
 
-The verifier checks the synthetic cases twice for byte-stable outputs, statically rejects forbidden program capabilities, audits Qwen-visible payloads for code/hidden-field leakage, and executes the named mutation suite.
+The verifier checks the exact CPython/dependency/resource lock, the synthetic cases twice for byte-stable outputs, typed API and pre/post Qwen visibility, statically rejects forbidden program capabilities, and executes the named mutation suite.
 
 No HOLDOUT or REPLICATION content is used or required.
