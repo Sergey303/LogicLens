@@ -1,0 +1,49 @@
+schema_version: 1.0.0
+issue: ENG-201
+parent: ENG-156
+scope: TRAIN_DEV_ONLY
+shared:
+  program: prototype/program.py
+  api: prototype/tool_api.json
+  student_weights: fixed
+  decoding: held_equal
+  final_response_schema: eng201.student-response.v1
+  qwen_source_code_visibility: none
+  execution_result_schema: QWEN_VISIBLE_PYTHON_INTERFACE.schema.json
+modes:
+  M21:
+    name: executed_python_result_interface
+    selector: frozen_outcome_blind_mapper
+    qwen_selects_capability: false
+    qwen_forms_arguments: false
+    qwen_visible_before_execution:
+      - question
+    qwen_visible_after_execution:
+      - typed_execution_result
+      - provenance
+      - response_schema_id
+  M22:
+    name: python_tool_agent
+    confirmatory_status: DEV_ONLY_BY_DEFAULT
+    selector: fixed_weight_qwen
+    qwen_selects_capability: true
+    qwen_forms_arguments: true
+    qwen_visible_before_execution:
+      - question
+      - frozen_public_capability_catalogue
+    qwen_visible_after_execution:
+      - typed_execution_result
+      - provenance
+      - response_schema_id
+forbidden_qwen_visible:
+  - python_source
+  - bytecode
+  - stack_trace
+  - module_path
+  - implementation_function_name
+  - hidden_case_id
+  - expected_label
+causal_interpretation:
+  M22_vs_M21: capability_and_argument_selection_cost_given_same_executable_artifact
+  code_reading_effect: not_tested
+  weight_training_effect: not_tested
