@@ -30,7 +30,16 @@ The smoke script fails if:
 
 ## Reference environment
 
-Use `TRAINING_ENVIRONMENT_LOCK.json`. The first successful run must preserve:
+Use Python 3.11 and `TRAINING_ENVIRONMENT_LOCK.json`. Create an isolated environment and install the exact frozen package set:
+
+```bash
+python3.11 -m venv .venv-eng202
+source .venv-eng202/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r EpistemicCompilerLab/research-execution/weight-adaptation-boundary/requirements-smoke.txt
+```
+
+The first successful run must preserve:
 
 - `pip freeze`;
 - Python/PyTorch/CUDA versions;
