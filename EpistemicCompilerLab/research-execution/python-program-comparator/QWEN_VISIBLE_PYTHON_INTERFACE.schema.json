@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/eng201/qwen-visible-python-interface.schema.json",
+  "title": "ENG-201 Qwen-visible Python interface",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mode", "question", "capabilities", "execution_result", "response_schema_id"],
+  "properties": {
+    "mode": {"enum": ["M21", "M22"]},
+    "question": {"type": "string"},
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["handle", "name", "description", "arguments", "result"],
+        "properties": {
+          "handle": {"pattern": "^py_cap_[0-9]{2}$"},
+          "name": {"type": "string"},
+          "description": {"type": "string"},
+          "arguments": {"type": "object"},
+          "result": {"type": "object"}
+        }
+      }
+    },
+    "execution_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability_handle", "status", "value", "provenance"],
+      "properties": {
+        "capability_handle": {"pattern": "^py_cap_[0-9]{2}$"},
+        "status": {"enum": ["supported", "refuted", "conflicting", "unknown", "ok"]},
+        "value": {},
+        "provenance": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "response_schema_id": {"const": "eng201.student-response.v1"}
+  }
+}
