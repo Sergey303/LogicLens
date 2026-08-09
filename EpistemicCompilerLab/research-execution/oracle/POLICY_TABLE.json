@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "wp005.strict-answer-policy.v1",
+  "semantic_version": "wp005.semantic.v1",
+  "input_contract": {
+    "query_outcome": ["valid", "needs_clarification", "invalid_query", "runtime_error"],
+    "status_when_valid": ["supported", "refuted", "conflicting", "unknown"]
+  },
+  "mappings": [
+    {
+      "query_outcome": "needs_clarification",
+      "status": null,
+      "action": "request_clarification",
+      "allowed_conclusion": null,
+      "forbidden_conclusions": ["affirm", "deny"],
+      "mandatory_warnings": ["clarification_required"],
+      "proof_required": false,
+      "provenance_required": false
+    },
+    {
+      "query_outcome": "invalid_query",
+      "status": null,
+      "action": "reject_query",
+      "allowed_conclusion": null,
+      "forbidden_conclusions": ["affirm", "deny"],
+      "mandatory_warnings": ["invalid_query"],
+      "proof_required": false,
+      "provenance_required": false
+    },
+    {
+      "query_outcome": "runtime_error",
+      "status": null,
+      "action": "report_runtime_error",
+      "allowed_conclusion": null,
+      "forbidden_conclusions": ["affirm", "deny"],
+      "mandatory_warnings": ["runtime_error"],
+      "proof_required": false,
+      "provenance_required": false
+    },
+    {
+      "query_outcome": "valid",
+      "status": "supported",
+      "action": "answer_supported",
+      "allowed_conclusion": "affirm",
+      "forbidden_conclusions": ["deny"],
+      "mandatory_warnings": [],
+      "proof_required": true,
+      "provenance_required": true
+    },
+    {
+      "query_outcome": "valid",
+      "status": "refuted",
+      "action": "answer_refuted",
+      "allowed_conclusion": "deny",
+      "forbidden_conclusions": ["affirm"],
+      "mandatory_warnings": [],
+      "proof_required": true,
+      "provenance_required": true
+    },
+    {
+      "query_outcome": "valid",
+      "status": "conflicting",
+      "action": "abstain_conflict",
+      "allowed_conclusion": null,
+      "forbidden_conclusions": ["affirm", "deny"],
+      "mandatory_warnings": ["conflicting_evidence"],
+      "proof_required": true,
+      "provenance_required": true
+    },
+    {
+      "query_outcome": "valid",
+      "status": "unknown",
+      "action": "abstain_unknown",
+      "allowed_conclusion": null,
+      "forbidden_conclusions": ["affirm", "deny"],
+      "mandatory_warnings": ["insufficient_evidence"],
+      "proof_required": false,
+      "provenance_required": false
+    }
+  ],
+  "lookup_rule": "exactly one mapping must match query_outcome and status; zero or multiple matches is invalid_policy",
+  "warning_rule": "output warnings equal sorted union of mandatory_warnings from the matched mapping and any separately frozen source-validity warnings; the publication subset currently permits no additional source-validity warning types",
+  "policy_may_change_status": false
+}
