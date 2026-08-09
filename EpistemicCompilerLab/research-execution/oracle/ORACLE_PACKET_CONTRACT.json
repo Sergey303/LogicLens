@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-005",
+  "components": {
+    "b_oracle_input_packet": {
+      "purpose": "independent formal semantic execution",
+      "allowed": [
+        "source_assertions",
+        "strict_rules",
+        "normalized_query",
+        "semantic_spec",
+        "semantic_registry",
+        "policy_table",
+        "public_schemas",
+        "type_identifier_registry"
+      ],
+      "forbidden": [
+        "expected_status",
+        "expected_action",
+        "expected_conclusion",
+        "expected_warnings",
+        "expected_evidence_roots",
+        "expected_provenance",
+        "expected_proof_trace",
+        "expected_frame",
+        "student_response",
+        "production_frame",
+        "production_oracle_output",
+        "model_metrics"
+      ]
+    },
+    "query_adjudication_registry": {
+      "purpose": "pre-model natural-question query alternatives",
+      "visible_to_b_oracle": "only_as_explicit_execution_queries_for_natural_question_ceiling_or_gold_query_track",
+      "allowed_fields": [
+        "case_id",
+        "question_hash",
+        "alternative_id",
+        "normalized_query",
+        "interpretation_requirements",
+        "clarification_expected",
+        "adjudication_provenance"
+      ],
+      "forbidden_fields": [
+        "expected_status",
+        "expected_action",
+        "expected_conclusion",
+        "expected_warnings",
+        "expected_evidence_roots",
+        "expected_proof_trace",
+        "expected_frame"
+      ],
+      "freeze_before_first_model_output": true
+    },
+    "outcome_gold_registry": {
+      "purpose": "independently adjudicated semantic expectations",
+      "visible_to_b_oracle_during_computation": false,
+      "allowed_fields": [
+        "case_id",
+        "alternative_id",
+        "expected_status",
+        "expected_action",
+        "expected_conclusion",
+        "expected_warnings",
+        "expected_evidence_roots",
+        "expected_provenance",
+        "expected_proof_normal_form",
+        "policy_id",
+        "semantic_version",
+        "adjudication_provenance"
+      ],
+      "freeze_before_first_model_output": true
+    },
+    "b_scorer_packet": {
+      "purpose": "post-freeze field scoring",
+      "available_only_after": [
+        "b_oracle_output_hash_frozen",
+        "query_adjudication_registry_hash_frozen",
+        "outcome_gold_registry_hash_frozen",
+        "scorer_hash_frozen"
+      ],
+      "allowed": [
+        "raw_student_response",
+        "query_adjudication_registry",
+        "outcome_gold_registry",
+        "frozen_b_oracle_result",
+        "response_schema",
+        "field_scoring_contract"
+      ],
+      "forbidden": [
+        "production_generated_expected_frame",
+        "post_model_gold_edit",
+        "post_model_acceptable_alternative_addition"
+      ]
+    }
+  },
+  "tracks": {
+    "gold_query_execution": {
+      "input": "pre-model adjudicated normalized query",
+      "claim_scope": "formal execution plus decision policy only",
+      "may_validate": ["formal_execution", "decision_policy", "frame_serialization"],
+      "must_not_validate": ["natural_question_interpretation", "student_query_formation"]
+    },
+    "natural_question_query_scoring": {
+      "input": "raw natural question and raw student response",
+      "claim_scope": "student interpretation/query formation against frozen alternatives",
+      "may_validate": ["natural_question_interpretation", "student_query_formation"],
+      "must_not_use_b_oracle_outcome_as_query_gold": true
+    },
+    "production_end_to_end": {
+      "input": "natural question through production extraction/query/execution",
+      "claim_scope": "production end-to-end only",
+      "independence_claim": false
+    },
+    "oracle_frame_renderer_ceiling": {
+      "input": "frozen B-oracle frame to renderer",
+      "claim_scope": "renderer ceiling only",
+      "must_not_validate": ["question_interpretation", "query_formation", "formal_execution"]
+    }
+  },
+  "post_model_governance": {
+    "acceptable_alternative_addition_after_first_model_output": "prohibited",
+    "scorer_bug_fix": "allowed_only_if_expected_semantic_set_is_byte_identical",
+    "new_gold_ambiguity_after_model_output": "new_benchmark_version_confirmatory_status_invalidated",
+    "silent_in_place_expansion": "prohibited"
+  }
+}
