@@ -16,10 +16,11 @@
     "limits": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["max_calls", "timeout_ms", "max_result_bytes"],
+      "required": ["max_calls", "timeout_ms", "max_memory_mb", "max_result_bytes"],
       "properties": {
         "max_calls": {"const": 1},
         "timeout_ms": {"const": 100},
+        "max_memory_mb": {"const": 64},
         "max_result_bytes": {"const": 4096}
       }
     },
