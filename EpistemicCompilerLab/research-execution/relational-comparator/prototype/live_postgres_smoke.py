@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import statistics
 import time
 from pathlib import Path
@@ -26,6 +27,7 @@ EXPECTED = ROOT / "evaluator" / "expected.prototype.json"
 RUNTIME = PACKAGE / "RUNTIME_DEPENDENCIES.json"
 FREEZE = PACKAGE / "ENG-197_FREEZE_MANIFEST.json"
 ADVISORY_LOCK = 197004
+DOLLAR_TAG = re.compile(r"\$[A-Za-z_0-9]*\$")
 
 
 def load(path: Path) -> Any:
@@ -45,9 +47,75 @@ def require(ok: bool, message: str) -> None:
         raise RuntimeError(message)
 
 
-def execute_script(connection: Any, path: Path) -> None:
-    sql = path.read_text(encoding="utf-8")
-    connection.execute(sql, prepare=False)
+def split_sql_script(sql: str) -> list[str]:
+    """Split the committed generated SQL only at top-level semicolons.
+
+    Supports standard single-quoted literals and PostgreSQL dollar-quoted blocks.
+    The generated package contains no SQL comments, quoted identifiers or E-strings;
+    encountering an unterminated literal/block fails closed.
+    """
+    statements: list[str] = []
+    current: list[str] = []
+    single_quote = False
+    dollar_tag: str | None = None
+    i = 0
+    while i < len(sql):
+        if dollar_tag is not None:
+            if sql.startswith(dollar_tag, i):
+                current.append(dollar_tag)
+                i += len(dollar_tag)
+                dollar_tag = None
+            else:
+                current.append(sql[i])
+                i += 1
+            continue
+
+        ch = sql[i]
+        if single_quote:
+            current.append(ch)
+            if ch == "'":
+                if i + 1 < len(sql) and sql[i + 1] == "'":
+                    current.append("'")
+                    i += 2
+                    continue
+                single_quote = False
+            i += 1
+            continue
+
+        if ch == "'":
+            single_quote = True
+            current.append(ch)
+            i += 1
+            continue
+
+        if ch == "$":
+            match = DOLLAR_TAG.match(sql, i)
+            if match:
+                dollar_tag = match.group(0)
+                current.append(dollar_tag)
+                i = match.end()
+                continue
+
+        current.append(ch)
+        i += 1
+        if ch == ";":
+            statement = "".join(current).strip()
+            if statement:
+                statements.append(statement)
+            current = []
+
+    require(not single_quote and dollar_tag is None, "unterminated SQL literal/dollar block")
+    trailing = "".join(current).strip()
+    require(not trailing, "generated SQL has unterminated top-level statement")
+    require(bool(statements), "generated SQL script contains no statements")
+    return statements
+
+
+def execute_script(connection: Any, path: Path) -> int:
+    statements = split_sql_script(path.read_text(encoding="utf-8"))
+    for statement in statements:
+        connection.execute(statement)
+    return len(statements)
 
 
 def assert_adapter_negatives() -> list[str]:
@@ -166,6 +234,7 @@ def main() -> int:
         "runtime": {},
         "reader_role": {},
         "hashes": {},
+        "bootstrap_statement_counts": {},
         "cases": [],
         "security_negatives": {},
         "measurements": {},
@@ -198,9 +267,9 @@ def main() -> int:
         try:
             build_started = time.perf_counter_ns()
             connection.execute("DROP SCHEMA IF EXISTS relational_cmp CASCADE")
-            execute_script(connection, GENERATED / "schema.sql")
-            execute_script(connection, GENERATED / "seed.sql")
-            execute_script(connection, GENERATED / "permissions.sql")
+            report["bootstrap_statement_counts"]["schema"] = execute_script(connection, GENERATED / "schema.sql")
+            report["bootstrap_statement_counts"]["seed"] = execute_script(connection, GENERATED / "seed.sql")
+            report["bootstrap_statement_counts"]["permissions"] = execute_script(connection, GENERATED / "permissions.sql")
             build_ns = time.perf_counter_ns() - build_started
 
             report["reader_role"] = attest_reader_role(connection)
