@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-157",
+  "work_package": "WP-005",
+  "date_utc": "2026-08-09",
+  "scientific_candidate_commit": "0f26907000ea2999877c7f4c10d053fc4678feb7",
+  "execution": {
+    "github_actions_used": false,
+    "method": "local isolated exact-main byte retrieval followed by Python preflight",
+    "command": "python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight --boundary EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml",
+    "exit_code": 0,
+    "semantic_contract": "PASS",
+    "semantic_version": "wp005.semantic.v1",
+    "invariants": 18,
+    "publication_score_fields_covered": 14,
+    "human_audit_sample_contract": 120,
+    "dedicated_semantic_validator_executed": true
+  },
+  "validated_contracts": [
+    "four-state truth table is exact and open-world absence is not negative evidence",
+    "query outcomes valid/needs_clarification/invalid_query/runtime_error are distinct from semantic status",
+    "decision policy mapping is exact and policy cannot rewrite status",
+    "outcome gold and expected frame fields are forbidden from B-oracle computation",
+    "query and outcome alternatives are frozen before first model output and cannot expand in place afterward",
+    "gold-query execution and natural-question query-formation claim scopes are distinct",
+    "18 publication-critical invariants each have positive and negative vectors plus mapped mutations and A/B expectations",
+    "all 14 publication score fields are covered by the invariant matrix",
+    "human audit freezes 120-case deterministic sample and quantitative agreement thresholds",
+    "audit-tool trust freezes required observation channels, 16 negative controls, positive controls and fail-closed blind-spot handling"
+  ],
+  "explicit_non_evidence": [
+    "independent reviewer acceptance",
+    "implemented Path B oracle correctness",
+    "executed mutation kill-rate evidence",
+    "executed dependency/canary audit evidence",
+    "executed 120-case human audit evidence",
+    "HOLDOUT or REPLICATION evidence",
+    "GATE-001 approval"
+  ],
+  "producer_conflict": "The producer session that authored/remediated these artifacts cannot independently accept ENG-157 or GATE-001.",
+  "recommended_next_state": "In Review"
+}
