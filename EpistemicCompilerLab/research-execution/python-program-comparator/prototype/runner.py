@@ -31,17 +31,36 @@ def m21_map(public_request):
     return handle, arguments
 
 
+def _catalogue():
+    return [
+        {k: cap[k] for k in ("handle", "name", "description", "arguments", "result")}
+        for cap in API["capabilities"]
+    ]
+
+
+def qwen_visible_request(mode, question):
+    if mode not in {"M21", "M22"}:
+        raise ValueError("contract_violation")
+    return {
+        "mode": mode,
+        "question": question,
+        "capabilities": [] if mode == "M21" else _catalogue(),
+    }
+
+
 def execute(handle, arguments, provenance):
     if PROGRAM_VERSION != API["program_version"]:
         raise ValueError("contract_violation")
     if handle not in _HANDLE_TO_IMPL:
         raise ValueError("contract_violation")
-    expected = set(_ALLOWED_ARGS[handle])
-    if set(arguments) != expected:
+    allowed_keys = set(_ALLOWED_ARGS[handle])
+    if set(arguments) != allowed_keys:
         raise ValueError("invalid_arguments")
     if not provenance or not all(isinstance(item, str) and item for item in provenance):
         raise ValueError("contract_violation")
     raw = _HANDLE_TO_IMPL[handle](**arguments)
+    if not isinstance(raw, dict) or set(raw) != {"status", "value"}:
+        raise ValueError("contract_violation")
     result = {
         "capability_handle": handle,
         "status": raw["status"],
@@ -55,18 +74,9 @@ def execute(handle, arguments, provenance):
 
 
 def qwen_visible_payload(mode, question, result):
-    if mode not in {"M21", "M22"}:
-        raise ValueError("contract_violation")
-    capabilities = []
-    if mode == "M22":
-        capabilities = [
-            {k: cap[k] for k in ("handle", "name", "description", "arguments", "result")}
-            for cap in API["capabilities"]
-        ]
+    request = qwen_visible_request(mode, question)
     return {
-        "mode": mode,
-        "question": question,
-        "capabilities": capabilities,
+        **request,
         "execution_result": result,
         "response_schema_id": "eng201.student-response.v1",
     }
