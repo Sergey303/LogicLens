@@ -93,6 +93,6 @@ The resulting `smoke-attestation.json` is immutable evidence and must be include
 
 ## Acceptance boundary
 
-Existence of these commands, a static CI PASS, or a hand-written claim that training succeeded is **not evidence that the CUDA smoke ran**. ENG-202 remains producer **In Progress** until a real successful smoke artifact from this exact contract is recorded and passes `verify_smoke_artifact.py`.
+**Existence of this command is not evidence that it ran.** In particular, existence of the smoke command, verifier command, a static CI PASS, or a hand-written claim that training succeeded is **not evidence that the CUDA smoke ran**. ENG-202 remains producer **In Progress** until a real successful smoke artifact from this exact contract is recorded and passes `verify_smoke_artifact.py`.
 
 The smoke proves only pipeline executability. It does not prove W-B/W-C scientific training quality, a Codex teaching effect, model generalization, or any HOLDOUT/REPLICATION result.
