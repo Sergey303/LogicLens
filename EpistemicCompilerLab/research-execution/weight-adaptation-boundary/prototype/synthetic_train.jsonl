@@ -1,0 +1,4 @@
+{"split":"TRAIN","input_text":"Return the strict epistemic status when explicit positive evidence is present and explicit negative evidence is absent.","target_text":"{\"status\":\"supported\"}"}
+{"split":"TRAIN","input_text":"Return the strict epistemic status when explicit positive evidence and explicit negative evidence are both absent.","target_text":"{\"status\":\"unknown\"}"}
+{"split":"TRAIN","input_text":"Return the relation of numeric value 12 to threshold 10 using only above, below, or equal.","target_text":"{\"relation\":\"above\"}"}
+{"split":"TRAIN","input_text":"Return the relation of numeric value 10 to threshold 10 using only above, below, or equal.","target_text":"{\"relation\":\"equal\"}"}
