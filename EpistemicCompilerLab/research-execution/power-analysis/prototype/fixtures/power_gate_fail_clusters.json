@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "wp004_arm_binding": {
+    "treatment_arm_id": "fixture_treatment",
+    "control_arm_id": "fixture_control",
+    "contract_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "independent_review_ref": "FIXTURE_ONLY"
+  },
+  "wp005_scorer": {
+    "semantic_version": "wp005.semantic.v1",
+    "scorer_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "independent_review_ref": "FIXTURE_ONLY"
+  },
+  "inventory": {
+    "benchmark_manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "eligible_paired_n": 1000,
+    "independent_source_family_clusters": 29,
+    "cluster_size_summary_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "attrition_ledger_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "nuisance": {
+    "source": "frozen_primary_planning",
+    "discordance_q": 0.35,
+    "mean_cluster_size": 8,
+    "icc": 0.05,
+    "attrition": 0.05,
+    "report_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "evidence": {
+    "calculator_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "validator_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "power_protocol_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "independent_statistical_review_ref": "FIXTURE_ONLY"
+  },
+  "sealed_access": {
+    "holdout_accessed": false,
+    "replication_accessed": false,
+    "directional_confirmatory_effect_seen_by_power_analyst": false
+  }
+}
