@@ -8,6 +8,7 @@ param(
         'strict-epistemic-tests',
         'synthetic-kernel-tests',
         'relational-comparator-tests',
+        'relational-postgres-smoke',
         'router-comparator-tests',
         'progressive-core-tests',
         'eng202-contract-check',
@@ -59,6 +60,12 @@ try {
         'strict-epistemic-tests' { & (Join-Path $scriptsRoot 'run-strict-epistemic-tests.ps1') }
         'synthetic-kernel-tests' { & (Join-Path $scriptsRoot 'run-progressive-core-tests.ps1') }
         'relational-comparator-tests' { & (Join-Path $scriptsRoot 'run-relational-comparator-tests.ps1') }
+        'relational-postgres-smoke' {
+            if ($Arguments -and $Arguments.Count -gt 1) { throw 'Usage: relational-postgres-smoke [absolute-output-path]' }
+            $parameters = @{}
+            if ($Arguments) { $parameters.OutputPath = $Arguments[0] }
+            & (Join-Path $scriptsRoot 'run-relational-postgres-smoke.ps1') @parameters
+        }
         'router-comparator-tests' { & (Join-Path $scriptsRoot 'run-router-comparator-tests.ps1') }
         'progressive-core-tests' { & (Join-Path $scriptsRoot 'run-progressive-core-tests.ps1') }
         'eng202-contract-check' { & (Join-Path $scriptsRoot 'run-eng202-contract-check.ps1') }
