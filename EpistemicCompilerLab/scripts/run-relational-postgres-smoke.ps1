@@ -10,6 +10,7 @@ $Package = Join-Path $RepoRoot 'EpistemicCompilerLab\research-execution\relation
 $Requirements = Join-Path $Package 'requirements-eng197.txt'
 $ManifestBuilder = Join-Path $Package 'prototype\build_freeze_manifest.py'
 $Smoke = Join-Path $Package 'prototype\live_postgres_smoke.py'
+$Equivalence = Join-Path $Package 'prototype\build_subset_equivalence_report.py'
 
 if ([string]::IsNullOrWhiteSpace($Dsn)) {
     throw 'ENG197_POSTGRES_DSN or -Dsn is required. Use a disposable database whose name starts with eng197_.'
@@ -37,5 +38,10 @@ if ($LASTEXITCODE -ne 0) { throw "ENG-197 freeze manifest check failed: $LASTEXI
 
 & $python.Source $Smoke --dsn $Dsn --output $OutputPath
 if ($LASTEXITCODE -ne 0) { throw "ENG-197 live PostgreSQL smoke failed: $LASTEXITCODE" }
+
+# This is deliberately post-smoke: the direct-source reference implementation
+# never participates in database execution or pre-score result creation.
+& $python.Source $Equivalence --smoke-output $OutputPath
+if ($LASTEXITCODE -ne 0) { throw "ENG-197 relational subset equivalence check failed: $LASTEXITCODE" }
 
 Write-Host "ENG-197 live PostgreSQL evidence: $OutputPath"
