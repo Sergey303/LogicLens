@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eng202.smoke-report.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "issue",
+    "evidence_class",
+    "model_repository",
+    "model_revision",
+    "tokenizer_repository",
+    "tokenizer_revision",
+    "seed",
+    "optimizer_steps",
+    "max_sequence_length",
+    "corpus_sha256",
+    "packages",
+    "python",
+    "python_implementation",
+    "torch",
+    "cuda_runtime",
+    "gpu",
+    "driver",
+    "loss",
+    "wall_seconds",
+    "peak_allocated_vram_bytes",
+    "trainable_parameters",
+    "adapter_pre_sha256",
+    "adapter_post_sha256",
+    "adapter_files"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "issue": {"const": "ENG-202"},
+    "evidence_class": {"const": "INFRASTRUCTURE_SMOKE_ONLY_NOT_SCIENTIFIC"},
+    "model_repository": {"const": "Qwen/Qwen2.5-Coder-0.5B-Instruct"},
+    "model_revision": {"const": "bbf27711794f58ebd1796058f4280b53c32e19fc"},
+    "tokenizer_repository": {"const": "Qwen/Qwen2.5-Coder-0.5B-Instruct"},
+    "tokenizer_revision": {"const": "bbf27711794f58ebd1796058f4280b53c32e19fc"},
+    "seed": {"const": 17},
+    "optimizer_steps": {"const": 1},
+    "max_sequence_length": {"const": 256},
+    "corpus_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "packages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["torch", "transformers", "peft", "accelerate", "datasets", "bitsandbytes"],
+      "properties": {
+        "torch": {"const": "2.5.1"},
+        "transformers": {"const": "4.46.3"},
+        "peft": {"const": "0.14.0"},
+        "accelerate": {"const": "1.2.1"},
+        "datasets": {"const": "3.2.0"},
+        "bitsandbytes": {"const": "0.46.0"}
+      }
+    },
+    "python": {"type": "string", "pattern": "^3\\.11(\\.|$)"},
+    "python_implementation": {"const": "CPython"},
+    "torch": {"type": "string", "minLength": 1},
+    "cuda_runtime": {"type": "string", "minLength": 1},
+    "gpu": {"type": "string", "minLength": 1, "not": {"const": "unavailable"}},
+    "driver": {"type": "string", "minLength": 1, "not": {"const": "unavailable"}},
+    "loss": {"type": "number"},
+    "wall_seconds": {"type": "number", "exclusiveMinimum": 0},
+    "peak_allocated_vram_bytes": {"type": "integer", "exclusiveMinimum": 0},
+    "trainable_parameters": {"type": "integer", "exclusiveMinimum": 0},
+    "adapter_pre_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adapter_post_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adapter_files": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+    }
+  },
+  "allOf": [
+    {
+      "not": {
+        "properties": {
+          "adapter_pre_sha256": {"const": "__MATCH_POST__"}
+        }
+      }
+    }
+  ]
+}
