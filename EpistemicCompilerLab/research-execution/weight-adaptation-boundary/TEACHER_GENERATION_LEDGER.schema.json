@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/eng202/teacher-generation-ledger.schema.json",
+  "title": "ENG-202 Codex teacher generation ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "corpus_id", "runtime", "budget", "records", "summary"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "corpus_id": {"type": "string", "minLength": 1},
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["codex_cli_version", "executable_sha256", "resolved_provider", "resolved_model", "teacher_model_reproducibility", "instruction_sha256", "template_sha256"],
+      "properties": {
+        "codex_cli_version": {"type": "string", "minLength": 1},
+        "executable_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "resolved_provider": {"type": ["string", "null"]},
+        "resolved_model": {"type": ["string", "null"]},
+        "teacher_model_reproducibility": {"enum": ["exact", "limited"]},
+        "instruction_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "template_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_calls_per_record", "max_input_tokens_per_record", "max_output_tokens_per_record"],
+      "properties": {
+        "max_calls_per_record": {"const": 1},
+        "max_input_tokens_per_record": {"const": 4096},
+        "max_output_tokens_per_record": {"const": 256}
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["record_hash", "request_sha256", "attempts", "status", "response_sha256", "input_tokens", "output_tokens", "schema_valid", "started_at_utc", "ended_at_utc"],
+        "properties": {
+          "record_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "attempts": {"type": "integer", "minimum": 1},
+          "status": {"enum": ["success", "transport_failure", "provider_failure", "refusal", "schema_failure", "budget_failure"]},
+          "response_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+          "input_tokens": {"type": ["integer", "null"], "minimum": 0, "maximum": 4096},
+          "output_tokens": {"type": ["integer", "null"], "minimum": 0, "maximum": 256},
+          "schema_valid": {"type": "boolean"},
+          "started_at_utc": {"type": "string", "format": "date-time"},
+          "ended_at_utc": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n_train", "successes", "failed_records", "observed_input_tokens", "observed_output_tokens", "model_identity_stable", "outcome_directed_regeneration"],
+      "properties": {
+        "n_train": {"type": "integer", "minimum": 1},
+        "successes": {"type": "integer", "minimum": 0},
+        "failed_records": {"type": "integer", "minimum": 0},
+        "observed_input_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "observed_output_tokens": {"type": ["integer", "null"], "minimum": 0},
+        "model_identity_stable": {"type": "boolean"},
+        "outcome_directed_regeneration": {"const": false}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"runtime": {"properties": {"resolved_model": {"type": "null"}}}}},
+      "then": {"properties": {"runtime": {"properties": {"teacher_model_reproducibility": {"const": "limited"}}}}}
+    },
+    {
+      "if": {"properties": {"runtime": {"properties": {"teacher_model_reproducibility": {"const": "exact"}}}}},
+      "then": {"properties": {"runtime": {"properties": {"resolved_provider": {"type": "string", "minLength": 1}, "resolved_model": {"type": "string", "minLength": 1}}}}}
+    }
+  ]
+}
