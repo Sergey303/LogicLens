@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/eng202/training-run-report.schema.json",
+  "title": "ENG-202 adapter training run report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "arm", "seed", "candidate_version", "base_model", "tokenizer", "corpus", "recipe", "environment", "outcome", "artifacts", "failure_retained"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "arm": {"enum": ["W-B", "W-C"]},
+    "seed": {"enum": [17, 29, 43]},
+    "candidate_version": {"type": "string", "minLength": 1},
+    "base_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision"],
+      "properties": {
+        "repository": {"const": "Qwen/Qwen2.5-Coder-7B-Instruct"},
+        "revision": {"const": "c03e6d358207e414f1eca0bb1891e29f1db0e242"}
+      }
+    },
+    "tokenizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision"],
+      "properties": {
+        "repository": {"const": "Qwen/Qwen2.5-Coder-7B-Instruct"},
+        "revision": {"const": "c03e6d358207e414f1eca0bb1891e29f1db0e242"}
+      }
+    },
+    "corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["corpus_id", "sha256", "records", "effective_supervised_target_tokens", "leakage_report_sha256"],
+      "properties": {
+        "corpus_id": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "records": {"type": "integer", "minimum": 1},
+        "effective_supervised_target_tokens": {"type": "integer", "minimum": 1},
+        "leakage_report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "optimizer_steps", "rank", "alpha", "dropout", "target_modules", "max_sequence_length", "learning_rate", "early_stopping", "selected_checkpoint"],
+      "properties": {
+        "method": {"const": "QLoRA_SFT"},
+        "optimizer_steps": {"const": 256},
+        "rank": {"const": 16},
+        "alpha": {"const": 32},
+        "dropout": {"const": 0.05},
+        "target_modules": {"const": "all-linear"},
+        "max_sequence_length": {"const": 2048},
+        "learning_rate": {"const": 0.0002},
+        "early_stopping": {"const": false},
+        "selected_checkpoint": {"const": "final_step_256"}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["python", "torch", "transformers", "peft", "accelerate", "datasets", "bitsandbytes", "cuda_runtime", "gpu", "driver", "pip_freeze_sha256"],
+      "properties": {
+        "python": {"const": "3.11"},
+        "torch": {"const": "2.5.1"},
+        "transformers": {"const": "4.46.3"},
+        "peft": {"const": "0.14.0"},
+        "accelerate": {"const": "1.2.1"},
+        "datasets": {"const": "3.2.0"},
+        "bitsandbytes": {"const": "0.46.0"},
+        "cuda_runtime": {"const": "12.4"},
+        "gpu": {"type": "string", "minLength": 1},
+        "driver": {"type": "string", "minLength": 1},
+        "pip_freeze_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "final_loss", "wall_seconds", "peak_vram_bytes", "completed_optimizer_steps"],
+      "properties": {
+        "status": {"enum": ["success", "oom", "nan", "divergence", "schema_failure", "runtime_failure"]},
+        "final_loss": {"type": ["number", "null"]},
+        "wall_seconds": {"type": "number", "minimum": 0},
+        "peak_vram_bytes": {"type": "integer", "minimum": 0},
+        "completed_optimizer_steps": {"type": "integer", "minimum": 0, "maximum": 256}
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter_sha256", "adapter_bytes", "run_log_sha256"],
+      "properties": {
+        "adapter_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "adapter_bytes": {"type": ["integer", "null"], "minimum": 0},
+        "run_log_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "failure_retained": {"const": true}
+  }
+}
