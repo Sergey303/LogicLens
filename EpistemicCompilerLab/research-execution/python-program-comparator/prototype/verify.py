@@ -1,6 +1,7 @@
 import ast
 import hashlib
 import json
+import platform
 import re
 from pathlib import Path
 
@@ -84,6 +85,8 @@ def verify_runtime_contract(runner):
     sandbox = json.loads(SANDBOX_PROFILE.read_text(encoding="utf-8"))
     assert lock["implementation"] == "CPython"
     assert lock["version"] == "3.13.5"
+    assert platform.python_implementation() == lock["implementation"]
+    assert platform.python_version() == lock["version"]
     assert lock["third_party_dependencies"] == []
     assert lock["standard_library_only"] is True
     assert lock["program_imports_allowed"] == []
@@ -92,9 +95,11 @@ def verify_runtime_contract(runner):
     assert sandbox["subprocess"] is False
     assert sandbox["shell"] is False
     assert sandbox["dynamic_import"] is False
+    assert sandbox["dynamic_package_install"] is False
     assert sandbox["side_effects"] is False
     assert sandbox["max_calls_per_request"] == runner.API["limits"]["max_calls"]
     assert sandbox["wall_timeout_ms"] == runner.API["limits"]["timeout_ms"]
+    assert sandbox["cpu_time_ms"] == runner.API["limits"]["timeout_ms"]
     assert sandbox["max_memory_mb"] == runner.API["limits"]["max_memory_mb"]
     assert sandbox["max_result_bytes"] == runner.API["limits"]["max_result_bytes"]
 
