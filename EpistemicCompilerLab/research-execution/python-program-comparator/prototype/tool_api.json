@@ -1,0 +1,35 @@
+{
+  "contract_id": "eng201.python-api.v1",
+  "program_version": "0.1.0",
+  "failure_codes": ["invalid_arguments", "contract_violation", "execution_error", "budget_exceeded"],
+  "limits": {"max_calls": 1, "timeout_ms": 100, "max_result_bytes": 4096},
+  "capabilities": [
+    {
+      "handle": "py_cap_01",
+      "name": "evidence_status",
+      "description": "Combine explicit positive and negative evidence without treating absence as false.",
+      "arguments": {"positive_evidence": "boolean", "negative_evidence": "boolean"},
+      "result": {"status": ["supported", "refuted", "conflicting", "unknown"], "value": ["boolean", "null"]},
+      "provenance_required": true,
+      "side_effects": "none"
+    },
+    {
+      "handle": "py_cap_02",
+      "name": "threshold_relation",
+      "description": "Compare one numeric value with a threshold.",
+      "arguments": {"value": "number", "threshold": "number"},
+      "result": {"status": ["ok"], "value": ["above", "below", "equal"]},
+      "provenance_required": true,
+      "side_effects": "none"
+    },
+    {
+      "handle": "py_cap_03",
+      "name": "interval_threshold",
+      "description": "Determine whether an interval is wholly above, wholly below, or crosses a threshold.",
+      "arguments": {"lower": "number", "upper": "number", "threshold": "number"},
+      "result": {"status": ["supported", "refuted", "unknown"], "value": ["above", "null"]},
+      "provenance_required": true,
+      "side_effects": "none"
+    }
+  ]
+}
