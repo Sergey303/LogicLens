@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-005",
+  "status": "DESIGN_CONTRACT_PRE_IMPLEMENTATION",
+  "roles": {
+    "audit_tool_producer": "must be distinct from Path B implementer for final trust acceptance",
+    "audit_tool_reviewer": "independent Dependency Auditor distinct from Path B implementer and audit-tool producer",
+    "gatekeeper": "distinct GATE-001 session"
+  },
+  "freeze_requirements": [
+    "tool source hashes",
+    "dependency lock hashes",
+    "denylist registry hash",
+    "canary registry hash",
+    "negative-control corpus hash",
+    "platform/runtime version",
+    "privilege/capability manifest",
+    "known-blind-spots report hash"
+  ],
+  "privileges": {
+    "sealed_semantic_content": false,
+    "model_outputs": false,
+    "production_expected_frames": false,
+    "network_during_candidate_audit": false,
+    "write_to_candidate_source": false,
+    "read_allowed_packet": true,
+    "read_forbidden_canary_locations_for_instrumentation_only": true,
+    "return_forbidden_content": false
+  },
+  "required_observation_channels": [
+    "static_import_dependency_graph",
+    "source_and_binary_forbidden_symbol_scan",
+    "file_open_trace",
+    "module_import_trace",
+    "process_and_executable_trace",
+    "dynamic_library_FFI_trace",
+    "network_socket_DNS_trace",
+    "environment_variable_read_trace",
+    "symlink_and_mount_resolution",
+    "language_cache_and_HOME_access",
+    "editable_local_package_resolution",
+    "dynamic_import_plugin_discovery",
+    "stdout_stderr_canary_scan",
+    "built_artifact_canary_scan",
+    "output_artifact_canary_scan",
+    "post_freeze_registry_write_detection"
+  ],
+  "channel_status_values": ["observed_pass", "observed_fail", "not_observable"],
+  "fail_closed_rule": "any required channel with status not_observable prevents PASS; use a second independently frozen tool/environment that observes it or return REVISE/STOP",
+  "negative_controls": [
+    "direct_production_import",
+    "transitive_production_dependency",
+    "production_prolog_subprocess",
+    "environment_path_dynamic_import",
+    "generated_frame_read",
+    "production_canary_copy",
+    "model_output_metric_read",
+    "network_repository_fetch",
+    "sealed_path_access",
+    "post_freeze_alternative_registry_write",
+    "symlink_escape_from_allowed_packet",
+    "HOME_cache_leak",
+    "editable_install_escape",
+    "FFI_load_production_library",
+    "plugin_discovery_forbidden_module",
+    "environment_secret_or_path_read"
+  ],
+  "negative_control_acceptance": {
+    "required_detected": 16,
+    "correct_reason_required": true,
+    "always_fail_detector_rejected_by_positive_controls": true
+  },
+  "positive_controls": [
+    "clean_packet_build",
+    "clean_packet_reference_tests",
+    "allowed_read_only_source_access",
+    "allowed_output_directory_write",
+    "second_clean_environment_reproduction"
+  ],
+  "known_blind_spots_policy": {
+    "report_required": true,
+    "empty_report_allowed": false,
+    "each_entry_fields": ["channel", "platform", "limitation", "residual_risk", "mitigation", "pass_impact"],
+    "pass_impact_values": ["none", "requires_secondary_observer", "blocks_pass"],
+    "unmitigated_required_channel": "blocks_pass"
+  },
+  "final_report_rule": "audit-tool PASS is evidence about detection coverage only; it does not certify Path B independence until the frozen toolchain is applied to the frozen Path B candidate"
+}
