@@ -6,7 +6,7 @@ Status: **producer causal-design artifact; pending distinct independent review**
 
 The primary contrast is `M6 − M14(global B*)`. It estimates the total effect of a trusted compiled verified-interface bundle versus the globally strongest full-information non-compiled source interface under matched student, question, answer schema and a lossless common token envelope that has separately passed the frozen padding-invariance audit.
 
-It is intentionally a bundle estimand. It does not by itself identify whether execution, typed structure, explicit conclusion, provenance, policy fields or another component causes the effect. Component claims require separately valid contrasts.
+It is intentionally a **multi-component deployed-interface bundle estimand**. It does not by itself identify whether execution, typed structure, explicit conclusion, provenance, policy fields or another component causes the effect. Component claims require separately valid contrasts.
 
 ## 1. Solver versus no solver
 
