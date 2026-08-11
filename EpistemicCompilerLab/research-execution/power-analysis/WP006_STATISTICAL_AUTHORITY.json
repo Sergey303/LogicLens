@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "linear_issue": "ENG-158",
+  "status": "R2_REMEDIATION_N_NOT_ACCEPTED_PENDING_SIMULATION_AND_DEPENDENCIES",
+  "normative_package": "EpistemicCompilerLab/research-execution/power-analysis",
+  "legacy_statistics_registry": {
+    "active_path": "EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml",
+    "status": "SUPERSEDED_HISTORICAL_POINTER_ONLY",
+    "historical_snapshot": "EpistemicCompilerLab/research-execution/statistics/historical/ANALYSIS_REGISTRY.v1.0.0.yaml",
+    "hard_point_estimate_0_08_retain_rule_current": false
+  },
+  "primary": {
+    "unit": "base_scenario_id",
+    "endpoint": "publication_composite_correctness",
+    "paired": true,
+    "primary_confirmatory_contrasts": 1,
+    "hypothesis": "two_sided_superiority_H0_delta_equals_0",
+    "alpha_two_sided": 0.05,
+    "SESOI_absolute": 0.08,
+    "SESOI_role": "planning_relevance_alternative_not_hard_observed_point_threshold",
+    "target_joint_holdout_replication_success_probability": 0.90
+  },
+  "nesting": {
+    "independent_unit": "base_scenario_id",
+    "paraphrase_is_independent_unit": false,
+    "repeat_is_independent_unit": false,
+    "training_seed_is_independent_unit": false,
+    "infrastructure_rerun_is_independent_unit": false,
+    "model_profile_assignment": "exactly_one_frozen_student_profile_per_base_scenario_for_primary_population_unless_WP004_versions_a_crossed_design_before_HOLDOUT",
+    "paraphrase_aggregation": "all mandatory paraphrases must pass after repeat aggregation",
+    "repeat_aggregation": "at_least_2_of_3_exact_contract_pass_per_mandatory_paraphrase",
+    "declared_runtime_failures": "incorrect_before_repeat_and_paraphrase_aggregation"
+  },
+  "dependencies": {
+    "accepted_WP004_exact_arm_binding": "REQUIRED_BEFORE_FINAL_N_OR_REAL_POWER_GATE",
+    "accepted_WP005_oracle_scorer": "REQUIRED_BEFORE_REAL_POWER_GATE",
+    "accepted_ENG197_M16": "OPTIONAL_SECONDARY_ONLY_IF_INDEPENDENTLY_ACCEPTED_AND_WP004_RETAINS_IT",
+    "WP007_feasibility": "REQUIRED_BEFORE_FINAL_MODE_SET_AND_CONFIRMATORY_FREEZE"
+  },
+  "current_numeric_status": {
+    "old_600": "SUPERSEDED_UNPOWERED_V1",
+    "analytical_802": "PLANNING_ONLY_REJECTED_BY_R2_AS_BOUNDARY_TOO_CLOSE_AND_MONTE_CARLO_BELOW_0_90",
+    "accepted_required_N": null
+  },
+  "confirmatory_access": {
+    "HOLDOUT": false,
+    "REPLICATION": false,
+    "GATE_001": false
+  },
+  "independence": {
+    "producer_cannot_accept_own_R2_remediation": true,
+    "distinct_adversarial_statistical_reviewer_required": true
+  }
+}
