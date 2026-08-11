@@ -1,127 +1,32 @@
-schema_version: 1.0.0
+schema_version: 2.0.0
 work_package_id: WP-006
-freeze_stage: before_HOLDOUT
-primary:
-  claim_id: CLM-003
-  contrast: M6_minus_M14_global_B_star
-  treatment: M6
-  comparator: M14
-  baseline_rule: DEV-GLOBAL-STRONGEST-MATCHED-V1
-  endpoint: scenario_level_exact_epistemic_contract_accuracy
-  unit: base_scenario_id
-  alpha: 0.05
-  sidedness: two_sided
-  smallest_meaningful_absolute_gain: 0.08
-  scenario_aggregation:
-    paraphrases: 2
-    repeats_per_paraphrase: 3
-    repeat_rule: at_least_2_of_3_exact_contract_pass
-    scenario_rule: all_mandatory_paraphrases_pass
-    failure_rule: declared_failures_are_incorrect_before_aggregation
-  allocation:
-    domains: 3
-    model_profiles: 4
-    holdout_scenarios: 600
-    replication_scenarios: 600
-    balance: 50 scenarios per domain_by_model stratum in each confirmatory set
-    all_modes_paired_within_scenario: true
-  estimates:
-  - paired_absolute_accuracy_difference
-  - hierarchical_paired_bootstrap_95ci
-  - mcnemar_pvalue
-  - treatment_only_and_baseline_only_discordance
-  - comparison_to_smallest_meaningful_gain
-  hypothesis_test:
-    method: paired_McNemar
-    exact_when_discordant_below: 25
-    otherwise: continuity_corrected_chi_square
-  bootstrap:
-    repetitions: 10000
-    seed: 2026080611
-    hierarchy: resample domain_by_model strata, then base scenarios within selected strata; retain paired mode outcomes
-    weighting: equal base-scenario weight after restoring frozen stratum weights
-  retain_rule:
-  - positive paired effect
-  - two-sided p_value below 0.05
-  - point estimate at least 0.08
-  - interval and full uncertainty reported relative to 0 and 0.08
-  - replication direction agrees
-  - no preregistered fatal falsification
-  failure_wording: The compiled verified interface did not show a practically meaningful advantage over the strongest matched non-compiled control.
-confirmatory_sets:
-  holdout:
-    purpose: primary inference
-    scenarios: 600
-    model_assignment: balanced and frozen before execution
-  replication:
-    purpose: independently sourced directional and interval replication
-    scenarios: 600
-    model_assignment: same rule with independent source families and allocation seed
-mode_coverage:
-  full_primary_and_falsification:
-    modes: [M6, M14, M9, M10, M11, M12, M13, M7]
-    scenarios_per_confirmatory_set: 600
-    notes:
-    - M11 is deterministic and uses no model call
-    - M13 applies one preregistered mutation family per scenario, balanced by stratum
-  diagnostic_subset:
-    modes: [M0, M1, M2, M3, M4, M5]
-    scenarios_per_confirmatory_set: 300
-    sampling: frozen stratified half-sample selected before execution
-  strong_teacher_ceiling:
-    modes: [M8]
-    scenarios_per_confirmatory_set: 150
-    sampling: frozen stratified quarter-sample selected before execution
-secondary_families:
-- family_id: epistemic_behaviour
-  metrics: [unknown_preservation, conflict_preservation, refuted_preservation, unsupported_certainty, scope_preservation, provenance_precision, provenance_recall, forbidden_conclusion]
-  correction: Holm
-- family_id: query_boundary
-  metrics: [predicate_accuracy, argument_linking, arity_validity, semantic_id_validity, exact_query, acceptable_alternative, rejected_query_recovery, clarification_precision, clarification_recall]
-  correction: Holm
-- family_id: renderer_fidelity
-  metrics: [frame_field_preservation, frame_ignore, contradiction_with_frame, answer_completeness, language_compliance, fabricated_evidence]
-  correction: Holm
-- family_id: efficiency
-  metrics: [latency_p50, latency_p95, input_tokens, output_tokens, prolog_time, verification_time, ram, vram, teacher_calls, capsule_bytes]
-  correction: descriptive_with_predeclared_key_comparisons
-- family_id: teacher_effect
-  metrics: [paired_delta_from_epoch_zero, regression_rate, candidate_acceptance, epoch_variance]
-  correction: Holm
-falsification_decisions:
-- contrast: M6_minus_M12
-  decision: large_only_conclusion_effect_pivots_to_minimal_decision_contract
-- contrast: M6_minus_M11
-  decision: deterministic_renderer_noninferior_requires_no_LLM_necessity_claim
-- contrast: M6_minus_M13
-  decision: blind_corruption_following_narrows_safety_and_auditability
-- contrast: M7_minus_M6
-  decision: large_gap_relocates_error_to_query_or_compiler_boundary
-- contrast: M6_minus_M9
-  decision: null_effect_removes_typed_structure_claim
-heterogeneity:
-  preregistered_strata: [domain, model_profile, epistemic_status, source_family, rule_template]
-  reporting: all strata including adverse and null
-  no_stratum_specific_baseline: true
-  no_posthoc_headline_subgroup: true
-multiplicity:
-  primary: no correction; exactly one primary contrast and endpoint
-  secondary: Holm within each declared family
-  exploratory: explicitly labeled and excluded from headline claims
-acceptable_alternatives:
-  freeze_before_model_runs: true
-  source: independent_annotation_and_adjudication
-  post_model_addition_forbidden: true
-exclusions_and_retries:
-  source: FAILURE_AND_EXCLUSION_RULES.md
-  complete_block_rerun_only_for: preregistered infrastructure-wide outage before any scientific outcome inspection
-  all_attempts_retained: true
-analysis_freeze_outputs:
-- primary contrast and endpoint
-- effect threshold and power result
-- registry and failure rules hashes
-- analysis script hash
-- table shell hashes
-- B_star and M14 transformation hashes
-- oracle/scorer/mutation/differential report hashes
-- model/run manifests
+status: SUPERSEDED_HISTORICAL_POINTER
+superseded_on: 2026-08-11
+superseded_reason: >-
+  Independent statistical review rejected the v1 hard point-estimate retain rule and
+  later R2 found a second active-looking power-analysis package. This path is retained
+  only as the canonical locator for the original WP-006 deliverable; it is no longer a
+  source of confirmatory truth.
+historical_snapshot: EpistemicCompilerLab/research-execution/statistics/historical/ANALYSIS_REGISTRY.v1.0.0.yaml
+normative_successor:
+  package: EpistemicCompilerLab/research-execution/power-analysis
+  primary_contract: EpistemicCompilerLab/research-execution/power-analysis/PRIMARY_ANALYSIS_CONTRACT.json
+  power_scenarios: EpistemicCompilerLab/research-execution/power-analysis/POWER_SCENARIOS.json
+  blinded_update: EpistemicCompilerLab/research-execution/power-analysis/BLINDED_NUISANCE_UPDATE_PROTOCOL.json
+  power_gate: EpistemicCompilerLab/research-execution/power-analysis/POWER_GATE_INPUT.schema.json
+  authority_contract: EpistemicCompilerLab/research-execution/power-analysis/WP006_STATISTICAL_AUTHORITY.json
+forbidden_as_current_rule:
+  - point_estimate_at_least_0.08_retain_rule
+  - fixed_600_holdout_scenarios
+  - fixed_600_replication_scenarios
+  - M0_to_M14_mode_coverage_matrix
+  - paired_McNemar_as_current_primary_test
+  - DEV_GLOBAL_STRONGEST_MATCHED_V1_if_not_exactly_bound_by_accepted_WP004
+current_unit: base_scenario_id
+current_primary_endpoint: publication_composite_correctness
+current_hypothesis_class: two_sided_superiority_H0_delta_equals_0_with_SESOI_0.08_as_planning_relevance_alternative_not_hard_observed_point_threshold
+confirmatory_authorization:
+  holdout: false
+  replication: false
+  gate_001: false
+  requires_distinct_independent_statistical_review: true
