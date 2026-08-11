@@ -1,4 +1,4 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 work_package_id: WP-004
 linear_issue: ENG-156
 acceptance_gate: GATE-001
@@ -12,40 +12,66 @@ command_contracts:
   - WP-004
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
-- name: package_acceptance_1
+- name: local_semantic_validation
+  working_directory: .
+  environment:
+    PyYAML: 6.0.2
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/MODE_CONTRACTS/validate_wp004_semantics.py
+  - --output
+  - EpistemicCompilerLab/research-execution/MODE_CONTRACTS/WP004_SEMANTIC_VALIDATION_REPORT.json
+  stage: producer_validation
+  must_exit_zero_when: WP-004 local causal semantics are internally coherent even when independently governed freeze blockers remain open
+  required_status_while_dependencies_pending: LOCAL_SEMANTICS_PASS_FREEZE_BLOCKED
+- name: freeze_readiness_validation
+  working_directory: .
+  environment:
+    PyYAML: 6.0.2
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/MODE_CONTRACTS/validate_wp004_semantics.py
+  - --require-freeze-ready
+  stage: pre_handoff_and_independent_review
+  must_exit_zero_when: zero cross-package or child-review freeze blockers remain
+  current_expected_result: nonzero while endpoint drift, child review, WP-002, WP-006 or WP-007 blockers remain
+- name: legacy_wrapper_availability_only
   working_directory: .
   argv:
   - python
   - EpistemicCompilerLab/research-execution/scripts/validate_causal_design.py
   - --preflight
-  stage: post_completion
-  must_exit_zero_when: all declared deliverables for this package exist
-  source_working_directory: EpistemicCompilerLab
-  source_argv:
-  - python
-  - research-execution/scripts/validate_causal_design.py
-  - --contrasts
-  - research-execution/CAUSAL_CONTRASTS.yaml
-  - --modes
-  - research-execution/MODE_CONTRACTS
-  - --estimands
-  - research-execution/ESTIMANDS.yaml
-  source_command: python research-execution/scripts/validate_causal_design.py --contrasts
-    research-execution/CAUSAL_CONTRASTS.yaml --modes research-execution/MODE_CONTRACTS
-    --estimands research-execution/ESTIMANDS.yaml
-  availability_contract: The versioned wrapper is available before task start. The
-    exact source command is retained and becomes mandatory after its declared deliverables
-    exist.
+  stage: compatibility_only
+  interpretation: generic wrapper availability is not semantic acceptance and cannot satisfy the two commands above
 checks:
   artifact:
-  - 'All declared deliverables exist and validate: contrasts, mode contracts, alternatives,
-    baseline rule, estimands.'
+  - CAUSAL_CONTRASTS.yaml, ESTIMANDS.yaml, BASELINE_SELECTION_RULE.yaml and ALTERNATIVE_EXPLANATIONS.md exist.
+  - MODE_CONTRACTS contains modes, M11 renderer comparability, M13 mutation validity, padding invariance, transfer-ladder adjudication, weight-boundary adjudication, cross-package alignment and the dedicated semantic validator/report.
   scientific:
-  - One interpretable primary contrast; strongest baseline only by frozen DEV rule.
+  - Exactly one primary fixed-weight contrast estimates the M6-versus-M14(global B*) multi-component deployed-interface bundle; it is not represented as a one-factor mechanism effect.
+  - Mechanism attribution is allowed only through separately bounded matched secondary estimands.
+  - M9 is a verified-result serialization/interface bundle control, not typing-only evidence.
+  - M10 is the normative verified status-plus-action minimal decision contract.
+  - M11 has identical semantic scoring obligations and a pre-HOLDOUT non-inferiority contract.
+  - M13 separates detectable consistency checks from non-detectable authority following.
+  - Exact token matching is valid only after the DEV-only padding-invariance audit passes for every required mode/profile.
+  - Qwen never receives Python source in M21/M22; weight-changing W-arms remain outside the fixed-weight M-mode primary claim.
+  cross_package:
+  - Exact primary IDs, baseline version, base_scenario_id unit and endpoint must align across WP-002, WP-004 and WP-006; semantic similarity is insufficient.
+  - Current WP-006 endpoint identifier publication_composite_correctness does not exactly match WP-004 scenario_level_exact_epistemic_contract_accuracy and therefore remains a freeze blocker until versioned equivalence or ENG-158 revision.
+  - Producer handoffs from ENG-197/201/202 cannot substitute for distinct independent acceptance.
+  - WP-007 feasibility must PASS before an extension mode set can be frozen.
   independence:
-  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions
-    and declare prior roles/conflicts.
+  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+  - This producer context cannot independently accept ENG-156 or resolve its own ENG-158 statistical candidate.
   adversarial:
-  - M11–M14 can falsify LLM necessity, copying, field reliance and length.
+  - M11–M14 can falsify LLM-renderer necessity, ready-answer/minimal-decision copying, result-interface serialization, detectable corruption and padding neutrality.
+  - M15–M22 are fail-closed conditional/DEV-only candidates until their child review, power and feasibility conditions are met.
   reproducibility:
-  - A clean reviewer can repeat the commands from hashes and manifests.
+  - A clean reviewer can run the dedicated non-mutating validator and reproduce its machine-readable report from exact repository bytes.
+  - --require-freeze-ready must fail while any named blocker remains; a local semantic PASS cannot authorize HOLDOUT or GATE-001.
+producer_state_rule:
+  local_semantics_pass: may remain In Progress while blockers are open
+  immutable_handoff: forbidden until freeze_readiness_validation exits zero
+  in_review: only after immutable handoff
+  done: only after distinct independent reviewer PASS

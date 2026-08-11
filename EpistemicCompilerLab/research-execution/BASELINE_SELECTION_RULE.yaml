@@ -1,4 +1,4 @@
-schema_version: 1.1.0
+schema_version: 1.2.0
 work_package_id: WP-004
 rule_id: DEV-GLOBAL-STRONGEST-MATCHED-V2
 selection_timing: after all eligible DEV blocks are complete and before HOLDOUT construction or access
@@ -9,9 +9,9 @@ ineligible_modes:
   M7: gold oracle
   M8: strong-model ceiling
   M9: receives verified result
-  M10: receives verified label
+  M10: receives verified status+action decision
   M11: deterministic treatment renderer
-  M12: receives compiled status/action
+  M12: receives compiled status/action plus additional verified frame fields
   M13: corrupted treatment
   M14: constructed after B* selection
 eligibility_requirements:
@@ -46,14 +46,18 @@ ranking:
   value: [M3, M2, M1, M5, M4]
 construction_of_primary_control:
   output_mode_id: M14
+  padding_contract: MODE_CONTRACTS/PADDING_INVARIANCE_CONTRACT.yaml
   steps:
   - select one global B* using the ranking above
   - freeze B* prompt and full representation hashes
   - instantiate B* under the common M6 answer/output obligations without adding computed fields
   - compute unpadded token counts for M6, M9, M10, M12, M13 and full-information M14 with each frozen model-profile tokenizer
   - set each scenario/model-profile block envelope to the maximum unpadded count among compared LLM modes
-  - add scenario-independent neutral padding only to shorter modes
-  - store unpadded and padded token counts plus byte/token transformation manifests
+  - freeze exact scenario-independent padding bytes, placement and tokenizer-specific token IDs for every student profile
+  - execute the DEV-only padding-invariance audit required by MODE_CONTRACTS/PADDING_INVARIANCE_CONTRACT.yaml
+  - require padding-invariance PASS for every required representative mode and student profile before accepting the matched-envelope construction
+  - only after invariance PASS, add the exact frozen neutral padding to shorter modes
+  - store unpadded and padded token counts, padding fraction, padding byte hash and byte/token transformation manifests
   - reject the scenario from benchmark construction before split assignment if the lossless envelope plus output reserve exceeds any declared student context
 matching_prohibitions:
 - no deterministic or learned truncation
@@ -61,10 +65,17 @@ matching_prohibitions:
 - no outcome-dependent selection, summarization, compression or padding
 - no post-HOLDOUT matching repair
 - padding contains no scenario facts, rules, labels, policies, status words or decision hints
+- no claim that token-length confounding is controlled when padding-invariance has not passed
 token_tolerance:
   unit: model-profile tokenizer tokens
   absolute_difference_max_after_padding: 0
+  conditional_on: padding_invariance_PASS
   if_unachievable: fail benchmark-construction validation before split freeze; do not create a scored missing observation
+padding_invariance:
+  required: true
+  stage: DEV_only_before_split_freeze
+  contract: MODE_CONTRACTS/PADDING_INVARIANCE_CONTRACT.yaml
+  failure_action: redesign padding/envelope before benchmark construction; exact token equality never overrides a behavioral invariance failure
 anti_cherry_picking:
 - one global B* for the headline HOLDOUT and REPLICATION contrast
 - no stratum-specific switching in the headline analysis
@@ -79,4 +90,4 @@ adversarial_profile_sensitivity:
   interpretation:
   - if M6 survives global B* but not profile-wise strongest baselines, narrow the pooled headline and report profile dependence
   - if a profile-specific matched baseline is non-inferior within the frozen margin, do not claim compilation advantage for that profile
-result: global B*, profile-sensitivity map, M14 construction hashes and lossless token envelopes become preregistration inputs
+result: global B*, profile-sensitivity map, M14 construction hashes, padding-invariance report and lossless token envelopes become preregistration inputs

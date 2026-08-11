@@ -1,0 +1,37 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+mode_id: M11
+comparison: M11_minus_M6
+purpose: test whether the student LLM renderer is necessary once the exact M6 semantic frame already exists
+unit: base_scenario_id
+semantic_input:
+  frame_bytes: identical_to_M6_before_rendering
+  policy: identical
+  question_obligation: identical
+output:
+  canonical_answer_schema: identical_to_M6
+  required_semantic_fields: identical_to_M6
+  language_and_content_obligations: identical_to_M6
+  failure_taxonomy: identical_to_M6
+  mapping: deterministic and hash-frozen before model execution
+primary_renderer_metric: scenario_level_exact_epistemic_contract_accuracy
+secondary_metrics: [field_fidelity, fabricated_evidence, latency, output_tokens, deterministic_failure_rate]
+style_metrics: descriptive_only
+non_inferiority:
+  margin_absolute_accuracy: 0.02
+  direction: M11_minus_M6
+  criterion: one-sided 95% lower confidence bound is greater than -0.02 on the frozen paired scenario-level analysis
+  rationale: the renderer-control margin is deliberately much smaller than the 0.08 primary bundle SESOI; it is a secondary necessity test and remains subject to WP-006 independent statistical review
+  no_llm_necessity_wording_if_met: true
+equivalence_support:
+  optional: true
+  bound_absolute_accuracy: 0.02
+  criterion: paired 90% confidence interval lies wholly within [-0.02, 0.02]
+prohibitions:
+- comparing M11 template text style against M6 semantic correctness as if they were the same outcome
+- giving M11 fewer semantic answer obligations
+- rescuing an LLM-necessity claim using preference/style metrics after semantic non-inferiority
+- changing templates after HOLDOUT access
+stop_pivot:
+- if non_inferiority criterion is met: state that an LLM renderer is unnecessary for the evaluated task class under the tested semantic obligations
+- if M11 is materially worse: localize failures by canonical field before attributing value to free-form generation

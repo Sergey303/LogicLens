@@ -1,0 +1,79 @@
+{
+  "artifact_hashes": {
+    "EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md": "d3d41d1522c7c8216121cbf9427c28adbd3822d07c0812ff27a7dbcab443069f",
+    "EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml": "12da33afc284aa6f787811da1d7914b4a7277fb59dc5f42a4e3383f8c5ac3630",
+    "EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml": "bdcc167179a5907ddfa8a8111a6ed9bafd8387b31d9736b4cc595866c9a9e0e7",
+    "EpistemicCompilerLab/research-execution/ESTIMANDS.yaml": "bbd58189db69bc8764df8ac0edb75b8f7a33880c94b57b55a4c18178a7603034",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/CROSS_PACKAGE_ALIGNMENT.yaml": "cdbb9e39e951d878d6418ea257845fe64d64667ce7e1affd2419fa62e7405a42",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/M11_RENDERER_COMPARABILITY.yaml": "3324b552324bc5bb84fbe7c918b291dd9814a5f886f2808b27a9c80ec03eb2ec",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/M13_MUTATION_CONTRACT.yaml": "e94fb774728c0728caee69c3f75ddf2324a5e2269310b3e8b01cb81d65aa8497",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/PADDING_INVARIANCE_CONTRACT.yaml": "26135ee37d4243f264f0d33a4a08e05a18a6cd38421d7a4463041232c52a5cae",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/TRANSFER_LADDER_ADJUDICATION.yaml": "19b0d6eb837e899f6602a307fe7e1275f8d976b4e655ac140061a12fe5421495",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/WEIGHT_BOUNDARY_ADJUDICATION.yaml": "22690858ec8d3dadacf8609c6390aecbb9010af48ac727fe22fe42b2e016412b",
+    "EpistemicCompilerLab/research-execution/MODE_CONTRACTS/modes.yaml": "3369d7faa502ad45e2d8bb80ec509385b0dcd25f6e51deb1a3feb21034018ac7",
+    "EpistemicCompilerLab/research-execution/power-analysis/WP006_STATISTICAL_AUTHORITY.json": "600009046f620f35e46f916b1a167843b83d45d4eca03e20ee1fe1214d45a5be"
+  },
+  "endpoint_exact_identifier_match": false,
+  "freeze_blockers": [
+    "WP006_ENDPOINT_IDENTIFIER_DRIFT",
+    "WP002_ALIGNMENT_PENDING",
+    "ENG197_INDEPENDENT_REVIEW_PENDING",
+    "ENG199_DESIGN_REVIEW_PENDING",
+    "ENG201_INDEPENDENT_REVIEW_PENDING",
+    "ENG202_CUDA_SMOKE_AND_REVIEW_PENDING",
+    "ENG158_INDEPENDENT_REVIEW_PENDING",
+    "WP007_FEASIBILITY_PENDING",
+    "ENG-197_independent_review",
+    "ENG-199_design_and_review",
+    "ENG-201_independent_review",
+    "ENG-202_CUDA_smoke_and_independent_review",
+    "WP006_independent_review",
+    "WP007_feasibility",
+    "final_WP004_independent_review"
+  ],
+  "freeze_readiness": "BLOCKED",
+  "holdout_authorized": false,
+  "independent_review_required": true,
+  "known_B1_B8_local_design_remediation": "PASS",
+  "linear_issue": "ENG-156",
+  "local_semantics": "PASS",
+  "mode_registry": {
+    "M10_authoritative": [
+      "status",
+      "action"
+    ],
+    "ids": [
+      "M0",
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7",
+      "M8",
+      "M9",
+      "M10",
+      "M11",
+      "M12",
+      "M13",
+      "M14"
+    ]
+  },
+  "primary": {
+    "baseline_rule": "DEV-GLOBAL-STRONGEST-MATCHED-V2",
+    "comparator": "M14",
+    "contrast_id": "C-PRIMARY",
+    "endpoint": "scenario_level_exact_epistemic_contract_accuracy",
+    "estimand_id": "E-PRIMARY-COMPILED-BUNDLE",
+    "treatment": "M6",
+    "unit": "base_scenario_id"
+  },
+  "producer_may_self_accept": false,
+  "replication_authorized": false,
+  "schema_version": "1.0.0",
+  "status": "LOCAL_SEMANTICS_PASS_FREEZE_BLOCKED",
+  "work_package_id": "WP-004",
+  "wp004_required_endpoint": "scenario_level_exact_epistemic_contract_accuracy",
+  "wp006_observed_endpoint": "publication_composite_correctness"
+}

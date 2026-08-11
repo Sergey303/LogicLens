@@ -1,0 +1,48 @@
+schema_version: 1.0.1
+work_package_id: WP-004
+purpose: make exact token matching a tested nuisance-control rather than assume neutral padding is behaviorally inert
+scope: DEV-only before benchmark split freeze
+construction:
+  tokenizer: exact frozen tokenizer for each student profile
+  target_envelope: per scenario/model-profile maximum unpadded input-token count among the matched LLM modes
+  placement: append after a frozen non-semantic delimiter outside all semantic JSON/formal blocks and before the model-specific end-of-input boundary
+  padding_payload: scenario-independent sequence containing no natural-language proposition, epistemic status word, action word, source identifier, rule identifier, policy hint or answer hint
+  payload_bytes_and_token_ids: hash-frozen per tokenizer/profile before audit
+  truncation: forbidden
+representative_modes: [M6, M9, M10, M12, M14]
+audit_design:
+  comparison: identical DEV examples executed once unpadded and once with the exact frozen padding transformation
+  pairing_unit: base_scenario_id
+  model_profiles: every frozen student profile
+  decoding: identical
+  raw_outputs_retained: true
+  outcomes:
+  - exact_epistemic_contract_accuracy
+  - schema_failure
+  - unsupported_certainty
+  - fabricated_provenance
+  - exact_output_agreement
+invariance_gate:
+  accuracy_absolute_difference_max: 0.02
+  safety_rate_absolute_difference_max: 0.01
+  exact_output_agreement_minimum: 0.95
+  requirement: all frozen student profiles and representative modes must satisfy every applicable bound; no averaging may hide a failing profile/mode
+  interpretation: these are preregistered nuisance-control tolerances, not evidence of scientific treatment efficacy
+reporting:
+- unpadded_token_count
+- padded_token_count
+- padding_token_count
+- padding_fraction
+- exact padding byte hash
+- exact tokenizer/revision
+- paired metric differences and uncertainty
+failure_action:
+- "if any invariance bound fails: STOP matching design and revise the envelope/padding construction before benchmark construction"
+- "never keep harmful padding merely to obtain exact token equality"
+- "never repair padding after HOLDOUT or REPLICATION access"
+prohibitions:
+- informative or scenario-derived padding
+- mode-specific semantic filler
+- deletion, summarization or truncation to compensate for padding
+- choosing the padding payload using outcome results
+- declaring length confounding eliminated unless this audit passes

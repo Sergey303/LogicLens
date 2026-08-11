@@ -1,0 +1,131 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+status: CONDITIONAL_INTEGRATION_NOT_FREEZE_READY
+fixed_weight_primary_claim: M6_vs_M14_global_Bstar_only
+principle: candidate comparator artifacts do not enter confirmatory execution merely because a child issue is producer-complete; distinct child review plus WP-004 factor-vector acceptance plus WP-006 power plus WP-007 feasibility are all required before HOLDOUT
+teacher_transfer_ladder:
+- placement: natural_language_prompt_or_instructions
+  active_modes: [M4]
+  runtime_owner: student_llm
+  qwen_visible_teacher_artifact: prompt_or_instruction
+  trusted_execution_before_qwen: false
+  changed_weights: false
+- placement: raw_formal_representation
+  active_modes: [M5]
+  runtime_owner: student_llm
+  qwen_visible_teacher_artifact: frozen_formal_representation
+  trusted_execution_before_qwen: false
+  changed_weights: false
+- placement: compiled_verified_result_interface
+  active_modes: [M6, M9, M10, M12]
+  runtime_owner: production_compiler_or_matched_result_transform
+  qwen_visible_teacher_artifact: structured_or_matched_verified_result
+  trusted_execution_before_qwen: true
+  changed_weights: false
+- placement: pure_relational_sql
+  candidate_modes: [M15, M16]
+  child_issue: ENG-197
+  child_status: IN_REVIEW
+  changed_weights: false
+- placement: hybrid_sql_prolog
+  candidate_modes: [M17, M18]
+  child_issue: ENG-199
+  child_status: BLOCKED_PENDING_ENG197
+  changed_weights: false
+- placement: teacher_generated_routing_policy
+  candidate_modes: [M19, M20]
+  child_issue: ENG-200
+  child_status: INDEPENDENT_R3_PASS_DESIGN_ARTIFACT
+  changed_weights: false
+- placement: hidden_executable_python
+  candidate_modes: [M21, M22]
+  child_issue: ENG-201
+  child_status: IN_REVIEW
+  changed_weights: false
+- placement: adapted_student_weights
+  boundary_arms: [W-A, W-B, W-C, W-D]
+  child_issue: ENG-202
+  child_status: IN_PROGRESS_REAL_CUDA_SMOKE_REQUIRED
+  changed_weights: true
+mode_decisions:
+  M15:
+    decision: DEV_ONLY
+    reason: single-endpoint relational query agent does not yet provide a strong query-selection treatment; preserve as query/schema diagnostic even if ENG-197 passes
+    confirmatory_eligible: false
+  M16:
+    decision: CONDITIONAL_CANDIDATE
+    reason: strongest simple pure-relational falsification comparator; real PostgreSQL producer evidence exists but child independent review is pending
+    required_before_activation: [ENG-197_independent_PASS, WP006_independent_acceptance_and_power_allocation, WP007_feasibility_PASS, WP004_final_factor_vector_freeze]
+    confirmatory_eligible_now: false
+    factor_vector:
+      semantic_execution_owner: PostgreSQL
+      query_selection_owner: frozen_outcome_blind_mapper
+      result_interface: typed_status_action_root_evidence_source_provenance
+      proof_graph_visibility: absent
+      qwen_role: render_only
+      changed_weights: false
+    interpretation: M16_vs_M6 is conventional relational-result-interface bundle versus epistemic decision-frame bundle; proof-graph equivalence is not claimed
+  M17:
+    decision: PENDING_CHILD_DESIGN
+    required_before_activation: [ENG-197_independent_PASS, ENG-199_producer_and_independent_PASS, WP006_power, WP007_feasibility]
+    confirmatory_eligible_now: false
+  M18:
+    decision: DEV_ONLY_BY_DEFAULT_PENDING_CHILD_DESIGN
+    reason: adds Qwen hybrid query formation to M17 and is diagnostic unless separately powered
+    confirmatory_eligible_now: false
+  M19:
+    decision: DEV_ONLY_ELIGIBLE_FOR_MINIMAL_ROUTER_SUBSET
+    child_evidence: ENG-200 independent R3 PASS design/artifact only
+    reason: deterministic execution of a frozen teacher routing policy is scientifically interpretable, but no behavioral teacher effect has been shown and WP-006/WP-007 have not authorized cost/power
+    confirmatory_eligible_now: false
+    factor_vector:
+      feature_input: exact_frozen_typed_feature_bytes
+      routing_policy: same_canonical_IR_as_M20
+      route_selection_owner: deterministic_runtime
+      argument_binding_owner: independent_held_equal_binder
+      tool_execution: downstream_held_equal
+      qwen_policy_explanation_visible: false
+      changed_weights: false
+  M20:
+    decision: DEV_ONLY_ELIGIBLE_FOR_MINIMAL_ROUTER_SUBSET
+    child_evidence: ENG-200 independent R3 PASS design/artifact only
+    reason: compared with M19 to measure Qwen following/selecting from the same policy; remains DEV-only until separately powered and feasible
+    confirmatory_eligible_now: false
+    factor_vector:
+      feature_input: exact_same_bytes_as_M19
+      routing_policy: same_canonical_IR_as_M19
+      route_selection_owner: qwen_from_frozen_policy_explanation
+      argument_binding_owner: independent_held_equal_binder
+      tool_execution: downstream_held_equal
+      qwen_policy_explanation_visible: true
+      changed_weights: false
+    held_equal_with_M19: [typed_feature_bytes, canonical_policy_semantics, capability_identity, argument_binder, downstream_tool_semantics]
+    prohibited_interpretation: M19_vs_M20 does not measure raw-question feature extraction or argument generation
+  M21:
+    decision: CONDITIONAL_CANDIDATE_PENDING_ENG201_REVIEW
+    reason: strongest general executable-result comparator if hidden Python source remains absent from Qwen and semantic obligations are matched
+    confirmatory_eligible_now: false
+    required_before_activation: [ENG-201_independent_PASS, Qwen_visible_payload_source_absence_audit_PASS, WP006_power, WP007_feasibility]
+  M22:
+    decision: DEV_ONLY_BY_DEFAULT_PENDING_ENG201_REVIEW
+    reason: isolates Qwen typed-tool selection versus deterministic selection in M21; Qwen never reads Python source
+    confirmatory_eligible_now: false
+weight_boundary_decision:
+  path: MODE_CONTRACTS/WEIGHT_BOUNDARY_ADJUDICATION.yaml
+  fixed_weight_mode: false
+  merge_into_primary_claim: forbidden
+confirmatory_extension_policy:
+  current_active_extensions: []
+  maximum_policy: choose the smallest independently accepted, powered and feasible falsification subset before HOLDOUT; do not full-cross every candidate mode
+  priority_order_for_feasibility_analysis: [M16, M17, M21, one_minimal_M19_M20_router_contrast]
+  M15_M18_M22: DEV-only by default
+  activation_record_required: new immutable WP-004 version before HOLDOUT with exact accepted child candidate hashes and factor vectors
+stop_pivot:
+- if M16 matches M6 at lower cost: prefer the simpler relational engineering boundary and narrow custom-frame necessity
+- if M17 matches M16: do not claim marginal Prolog value
+- if M19 is strong but M20 weak: localize bottleneck to Qwen policy following/routing selection
+- if direct Qwen/static SOP matches M19/M20: drop teacher-router necessity
+- if M21 matches specialized interfaces: report general executable-result sufficiency
+- if M22 is weaker than M21: localize bottleneck to Qwen tool selection, not Python execution
+freeze_ready: false
+freeze_blockers: [ENG-197_independent_review, ENG-199_design_and_review, ENG-201_independent_review, ENG-202_CUDA_smoke_and_independent_review, WP006_independent_review, WP007_feasibility, final_WP004_independent_review]

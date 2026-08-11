@@ -1,0 +1,79 @@
+schema_version: 1.0.0
+work_package_id: WP-004
+child_issue: ENG-202
+status: PENDING_REAL_CUDA_SMOKE_AND_DISTINCT_INDEPENDENT_REVIEW
+scientific_boundary: separate_weight_changing_study_not_an_M_mode
+merge_into_fixed_weight_primary_claim: forbidden
+current_child_evidence:
+  design_contracts: producer_complete_static_validation_pass
+  real_linux_cuda_smoke: missing
+  scientific_training_run: not_performed
+  holdout_access: false
+  replication_access: false
+arms:
+  W-A:
+    name: base_Qwen
+    weight_change: false
+    role: unadapted base reference
+  W-B:
+    name: gold_only_matched_QLoRA_SFT
+    weight_change: true
+    role: control for weight adaptation itself
+  W-C:
+    name: Codex_distilled_matched_QLoRA_SFT
+    weight_change: true
+    role: tests incremental value of Codex-generated TRAIN-only supervision beyond W-B
+  W-D:
+    name: verified_executable_trace_distillation
+    weight_change: true
+    role: optional DEV-only boundary arm
+    default: disabled
+required_primary_boundary_contrast: W-C_minus_W-B
+held_equal_WB_WC:
+- exact base model repository and revision
+- exact tokenizer revision
+- same grouped TRAIN record IDs
+- same target schema and valid-target completeness rules
+- same optimizer-step budget
+- same QLoRA rank/alpha/dropout/target-module recipe
+- same frozen seed set
+- same deterministic record ordering rule per seed
+- same checkpoint selection rule
+- no early stopping or best-seed selection
+teacher_boundary:
+  W-C_teacher_visibility: TRAIN input/evidence view plus frozen schema/instructions only
+  hidden_from_teacher: [adjudicated_gold_targets, student_outputs, DEV, HOLDOUT, REPLICATION, outcome_metrics]
+  outcome_directed_regeneration: forbidden
+  student_weakness_based_example_selection: distinct_treatment_forbidden_in_core_WC
+current_controls_required:
+- SmartAD_capacity_aligned_agent_distillation
+- skill_aware_data_selection_and_finetuning
+- reinforcement_distillation_from_teacher_data_negative_signals
+- gold_only_matched_adaptation_WB
+- schema_and_data_selection_variables_held_equal_or_separately_labeled
+causal_interpretation:
+  W-C_vs_W-B: incremental effect of Codex-generated supervision under matched adaptation recipe
+  strongest_fixed_weight_vs_W-C: separate external-interface-versus-weight-change boundary comparison, not evidence for the fixed-weight primary estimand
+  W-C_vs_W-A_alone: insufficient to attribute gain to Codex teaching because adaptation itself is uncontrolled
+required_before_activation:
+- exact frozen real Linux/CUDA smoke produces CUDA_SMOKE_ARTIFACT_PASS
+- smoke artifact independently verified by prototype/verify_smoke_artifact.py
+- distinct ENG-202 independent PASS
+- WP-006 separate seed/training variability analysis and power decision
+- WP-007 compute/storage/time feasibility
+- final WP-004 boundary version frozen before HOLDOUT
+report_tradeoffs:
+- accuracy
+- auditability
+- provenance
+- update_cost
+- retraining_cost
+- rollback
+- storage
+- teacher_calls
+- training_compute
+stop_pivot:
+- if W-C does not beat W-B: do not attribute adaptation gain to Codex-generated supervision
+- if strongest fixed-weight interface matches adapted W-C: emphasize that weight modification is unnecessary for the evaluated class
+- if training-seed variance makes the comparison unstable or infeasible: keep ENG-202 exploratory/DEV-only
+freeze_ready: false
