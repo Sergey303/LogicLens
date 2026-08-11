@@ -1,18 +1,23 @@
 # Independence Boundary — Production Path A and Validation Path B
 
-Status: **WP-005 producer remediation candidate; independent Mutation and Dependency Auditor re-review required**
+Status: **WP-005 R2 lifecycle remediation candidate; independent Mutation and Dependency Auditor re-review required**
 
-## 1. Paths and claim surfaces
+## 1. Paths, authorities and claim surfaces
 
 ```text
 A = production interpretation/query/compiler + SWI-Prolog + production policy/frame serializer
+Gold = blind human query/outcome adjudication under frozen semantic/policy contracts
 B-oracle = clean-room formal executor + policy/frame constructor
-B-scorer = clean-room field scorer activated only after oracle/gold/scorer freeze
+B-scorer = clean-room field scorer activated only after gold/B consistency and scorer freeze
 ```
 
 B implements `SEMANTIC_SPEC.md`, `SEMANTIC_REGISTRY.json` and `POLICY_TABLE.json`; it must not imitate observed A outputs.
 
-The exact data surfaces are normative in `ORACLE_PACKET_CONTRACT.json`. Four claim tracks remain separate: gold-query execution, natural-question query scoring, production end-to-end, and oracle-frame renderer ceiling.
+`ORACLE_LIFECYCLE_CONTRACT.json` is the machine-readable lifecycle mirror of the authoritative `context-packets/WP-005/ACCEPTANCE.v1.3.yaml` `freeze_order`. `ORACLE_PACKET_CONTRACT.json` is normative for data visibility. Any lifecycle mismatch among acceptance, lifecycle, gold protocol, packet activation rules or this boundary blocks producer handoff.
+
+Outcome gold is the **expected-value authority for scoring**. B-oracle is an independently implemented consistency check, not a second authority that may vote with or overwrite gold.
+
+Four claim tracks remain separate: gold-query execution, natural-question query scoring, production end-to-end, and oracle-frame renderer ceiling.
 
 ## 2. Allowed B-oracle packet
 
@@ -26,26 +31,35 @@ B-oracle may receive only read-only, hash-frozen:
 - public JSON schemas;
 - type/identifier/alias registries required to validate the query/source packet.
 
-A pre-model query-adjudication registry may supply an explicit normalized query to a gold-query/oracle-ceiling execution, but **expected semantic outcomes remain in a different registry and are not visible to B-oracle**.
+The query-adjudication registry is already frozen before B execution and may supply the explicit `normalized_query` for an authorized execution. **The independently adjudicated outcome-gold registry is also already frozen at that point, but it is not mounted, readable, importable or otherwise visible to B-oracle while B computes.**
 
 Shared executable semantic helpers are prohibited.
 
-## 3. Outcome gold is not an oracle input
+## 3. One fail-closed lifecycle: blind gold first, isolated B second
 
-The previous architecture allowed “adjudicated gold records” as a shared B surface. That is prohibited in this version.
+The previous architecture allowed ambiguous ordering between gold construction and B execution. That ambiguity is prohibited in this version.
 
-Expected fields live in a distinct `outcome_gold_registry`, including expected status/action/conclusion/warnings/evidence/provenance/proof/frame. This registry is inaccessible to B-oracle while it computes a case.
+The exact lifecycle is:
 
-Order is fail-closed:
+1. `semantic_spec_registry_policy_hashes_frozen`;
+2. `source_rule_packet_hashes_frozen`;
+3. `blind_query_adjudication_completed`;
+4. `query_adjudication_registry_hash_frozen`;
+5. `blind_outcome_gold_adjudication_completed`;
+6. `outcome_gold_registry_hash_frozen`;
+7. `isolated_B_oracle_computes_without_outcome_gold_mount`;
+8. `B_oracle_output_hash_frozen`;
+9. `B_vs_outcome_gold_consistency_checked`;
+10. `scorer_source_and_hash_frozen`;
+11. `first_scored_model_output_may_exist`.
 
-1. source/query/spec/policy hashes freeze;
-2. B-oracle computes from its allowed packet;
-3. B-oracle output bytes/hash freeze;
-4. query-adjudication and outcome-gold registry hashes freeze;
-5. B-scorer source/hash freezes;
-6. only then may B-scorer receive raw student response + frozen B result + frozen gold registries.
+This order intentionally distinguishes **temporal freeze** from **runtime visibility**: outcome gold is frozen before B runs so it cannot be repaired from B, while physical isolation prevents B from reading the frozen answers.
 
-Injecting `expected_status`, `expected_frame`, student output, production frame or outcome metrics into a B-oracle packet is a hard independence failure before execution.
+After B output is frozen, a separate consistency phase may compare B against outcome gold. An unexplained disagreement blocks scorer activation and benchmark freeze. B may not override gold, and gold may not be repaired from B. A legitimate gold/specification defect requires a versioned correction under the frozen governance rules; it is never resolved by majority vote between A, B and gold.
+
+Only after `B_vs_outcome_gold_consistency_checked` may scorer source/hash freeze and later score raw model responses against the frozen outcome-gold authority. The frozen B result remains independent consistency evidence and layer-diagnostic material, not the scorer's expected-value source.
+
+Injecting `outcome_gold_registry`, `expected_status`, `expected_positive_evidence_roots`, `expected_negative_evidence_roots`, `expected_proof_normal_form`, `expected_frame`, student output, production frame or outcome metrics into a B-oracle packet is a hard independence failure before execution.
 
 ## 4. Forbidden to B-oracle
 
@@ -55,7 +69,7 @@ B-oracle must not read, import, call, copy, translate or dynamically load:
 - production Prolog predicates or compiled clauses;
 - production policy functions or frame serializer;
 - production-generated expected frames;
-- expected status/action/conclusion/evidence/provenance/proof/frame fields from gold;
+- the outcome-gold registry or expected status/action/conclusion/warnings/positive evidence roots/negative evidence roots/provenance/proof/frame fields from gold;
 - production unit-test expected outputs when derived from A;
 - student prompts, model configuration prompts or teacher proposals;
 - raw student/model outputs;
@@ -63,7 +77,7 @@ B-oracle must not read, import, call, copy, translate or dynamically load:
 - sealed datasets before authorized execution;
 - caches, RAG indexes, HOME caches, editable packages or logs containing forbidden artifacts.
 
-B-scorer receives raw responses only after the freeze order in section 3 and only for scoring.
+B-scorer receives raw responses only after the lifecycle in section 3 reaches `scorer_source_and_hash_frozen`, and only for scoring.
 
 ## 5. Gold-query execution is not query-formation validation
 
@@ -81,20 +95,21 @@ Any report that promotes one track into another is invalid even when numeric agr
 
 ## 6. Acceptable-alternative freeze
 
-Query alternatives and expected outcome alternatives must be frozen before the first model output exists.
+Query alternatives and expected outcome alternatives must be frozen before B-oracle execution and therefore before the first model output exists.
 
 After model output:
 
 - no in-place alternative may be appended;
-- scorer implementation bugs may be fixed only if the expected semantic set is byte-identical;
-- a newly discovered legitimate ambiguity invalidates current confirmatory eligibility and requires a new benchmark version, new hashes and independent review.
+- scorer implementation bugs may be fixed only if the query/outcome-gold semantic bytes remain byte-identical;
+- a newly discovered legitimate ambiguity invalidates current confirmatory eligibility and requires a new benchmark version, new blind adjudication, new hashes and independent review.
 
 “Outcome-blind equivalence review” is not a loophole for expanding expected answers after seeing behavior.
 
 ## 7. Clean-room roles
 
 - Semantic-spec producer and Path A producer disclose prior roles.
-- Path B implementer receives only the allowed B-oracle packet and conformance artifacts.
+- Gold adjudicators are distinct from same-candidate Path A, Path B, B-scorer, teacher-target and model-output-analysis roles.
+- Path B implementer receives only the allowed B-oracle packet and conformance artifacts; outcome gold is absent from the B runtime mount.
 - Audit-tool producer must be distinct from Path B implementer for final trust acceptance.
 - Mutation/Dependency Auditor is distinct from Path B implementer and audit-tool producer.
 - Human adjudicators do not see A/B/model outputs.
@@ -107,7 +122,7 @@ The producer of a critical artifact cannot independently approve it.
 The final B build/run environment must:
 
 - mount only an explicit allowed manifest;
-- omit production source, generated-frame, model-output and sealed directories;
+- omit outcome-gold, production source, generated-frame, model-output and sealed directories;
 - use separate package lock/module namespace;
 - disable arbitrary network access;
 - expose read-only inputs and an output-only allowlist;
@@ -126,7 +141,7 @@ Place unique forbidden canaries in at least:
 - production compiler source;
 - generated frame directory;
 - production test expected-output fixtures;
-- outcome-gold registry location exposed only to scorer phase;
+- outcome-gold registry location exposed only after B execution to the consistency/scorer phases;
 - model-output directory;
 - teacher prompt directory;
 - HOME/language cache;
@@ -140,22 +155,24 @@ Any forbidden canary in B-oracle source, build, logs or outputs is a hard indepe
 
 ## 11. Differential agreement
 
-A/B agreement is field-level and only within a declared track. Reports include case/track, A and B normalized query where applicable, per-field values, evidence/proof roots, policy result, disagreement layer, resolution classification and artifact hashes.
+A/B agreement is field-level and only within a declared track. Gold/B consistency is separately recorded after both gold and B output hashes are frozen. Reports include case/track, normalized query where applicable, per-field values, evidence/proof roots, policy result, disagreement layer, resolution classification and artifact hashes.
 
-Exact agreement is required unless the applicable alternative was frozen pre-model under `SEMANTIC_REGISTRY.json` normal form.
+Exact agreement is required unless the applicable alternative was frozen pre-B/pre-model under `SEMANTIC_REGISTRY.json` normal form.
 
-Every unexplained disagreement blocks freeze. Resolution must classify annotation/gold error, Path A error, Path B error, scorer error or underspecified semantics and produce a versioned reviewed change.
+Every unexplained disagreement blocks scorer activation/freeze. Resolution must classify annotation/gold error, Path A error, Path B error, scorer error or underspecified semantics and produce a versioned reviewed change. Neither B nor A may silently repair outcome gold.
 
 ## 12. STOP conditions
 
 STOP confirmatory work when:
 
-- B-oracle can observe expected outcome/frame or raw model output;
+- B-oracle can observe outcome gold, expected outcome/frame or raw model output;
+- B executes before blind outcome gold is frozen;
+- outcome gold is repaired from B or model behavior;
 - B requires production executable semantics;
 - any forbidden dependency/access is observed;
 - any required audit channel is unobservable and unmitigated;
 - gold/alternatives are changed in place after model output;
 - critical mutation survives;
-- A/B disagreement remains unexplained;
+- B/gold or A/B disagreement remains unexplained where the relevant contract requires agreement;
 - gold-query agreement is presented as natural-query validation;
 - field-level decomposition cannot reproduce the composite endpoint.
