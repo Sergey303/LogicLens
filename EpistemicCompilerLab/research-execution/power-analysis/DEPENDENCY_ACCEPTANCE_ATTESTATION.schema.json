@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://logiclens.local/wp006/dependency-acceptance-attestation.schema.json",
+  "title": "WP-006 accepted dependency attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dependency_id",
+    "linear_issue",
+    "verdict",
+    "candidate_sha",
+    "review_commit_sha",
+    "reviewer_context_id",
+    "producer_context_id",
+    "review_scope",
+    "holdout_replication_access"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "dependency_id": {"type": "string", "pattern": "^[A-Z0-9_-]+$"},
+    "linear_issue": {"type": "string", "pattern": "^ENG-[0-9]+$"},
+    "verdict": {"const": "PASS"},
+    "candidate_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "review_commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "reviewer_context_id": {"type": "string", "minLength": 16},
+    "producer_context_id": {"type": "string", "minLength": 16},
+    "review_scope": {"type": "string", "minLength": 16},
+    "accepted_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "holdout_replication_access": {"const": "NONE"}
+  },
+  "allOf": [
+    {
+      "not": {
+        "properties": {
+          "reviewer_context_id": {"const": "SAME_AS_PRODUCER"}
+        }
+      }
+    }
+  ]
+}
