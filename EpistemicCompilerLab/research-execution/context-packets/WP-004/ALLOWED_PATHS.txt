@@ -5,3 +5,4 @@ EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml
 EpistemicCompilerLab/research-execution/ESTIMANDS.yaml
 EpistemicCompilerLab/research-execution/context-packets/WP-004
 EpistemicCompilerLab/research-execution/handoffs/WP-004.json
+.github/workflows/validate-wp004-semantics.yml
