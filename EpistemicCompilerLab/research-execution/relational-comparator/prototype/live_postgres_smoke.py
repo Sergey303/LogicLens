@@ -223,6 +223,17 @@ def main() -> int:
     expected_server = runtime["postgresql"]
     require(psycopg.__version__ == runtime["python"]["psycopg"]["version"], "psycopg version drift")
 
+    # Container identity is validated before opening a DB connection. A digest
+    # observed only after pulling a mutable tag is not a pin. The CI/container
+    # path must provide the exact precommitted digest from RUNTIME_DEPENDENCIES.
+    image_digest = os.environ.get("ENG197_POSTGRES_IMAGE_DIGEST")
+    if image_digest:
+        expected_digest = expected_server["container"]["required_repo_digest"]
+        require(image_digest == expected_digest, f"PostgreSQL container digest drift: {image_digest} != {expected_digest}")
+        execution_identity = "container_digest_pre_pinned"
+    else:
+        execution_identity = "native_exact_version_not_image_pinned"
+
     source = load(SOURCE)
     eligibility = evaluate_source(source)
     require(eligibility["eligible"] is True, f"prototype source is relational-ineligible: {eligibility}")
@@ -266,8 +277,6 @@ def main() -> int:
         require(server_version == expected_server["required_server_version"], f"PostgreSQL base release drift: {server_version_raw}")
         require(server_version_num == expected_server["required_server_version_num"], f"PostgreSQL server_version_num drift: {server_version_num}")
 
-        image_digest = os.environ.get("ENG197_POSTGRES_IMAGE_DIGEST")
-        execution_identity = "container_digest_pinned" if image_digest else "native_exact_version_not_image_pinned"
         report["runtime"] = {
             "database_name": db_name,
             "postgresql_version_string": version_string,
