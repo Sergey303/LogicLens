@@ -8,6 +8,7 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $Package = Join-Path $RepoRoot 'EpistemicCompilerLab\research-execution\relational-comparator'
 $Requirements = Join-Path $Package 'requirements-eng197.txt'
+$RuntimePath = Join-Path $Package 'RUNTIME_DEPENDENCIES.json'
 $ManifestBuilder = Join-Path $Package 'prototype\build_freeze_manifest.py'
 $Smoke = Join-Path $Package 'prototype\live_postgres_smoke.py'
 $Equivalence = Join-Path $Package 'prototype\build_subset_equivalence_report.py'
@@ -26,15 +27,27 @@ if (Test-Path $OutputPath) {
 $python = Get-Command python -ErrorAction SilentlyContinue
 if (-not $python) { throw 'python is required.' }
 
+# Execution is never allowed to manufacture a new freeze boundary. A producer may
+# intentionally regenerate ENG-197_FREEZE_MANIFEST.json only as a separate freeze
+# operation before the candidate is handed off. The smoke itself is check-only.
+& $python.Source $ManifestBuilder --check
+if ($LASTEXITCODE -ne 0) { throw "ENG-197 freeze manifest drift: $LASTEXITCODE" }
+
+$runtime = Get-Content -LiteralPath $RuntimePath -Raw | ConvertFrom-Json
+$expectedDigest = [string] $runtime.postgresql.required_container_image_digest
+$actualDigest = [string] $env:ENG197_POSTGRES_IMAGE_DIGEST
+if ([string]::IsNullOrWhiteSpace($expectedDigest)) {
+    throw 'ENG-197 frozen PostgreSQL container digest is missing from RUNTIME_DEPENDENCIES.json.'
+}
+if ([string]::IsNullOrWhiteSpace($actualDigest)) {
+    throw 'ENG197_POSTGRES_IMAGE_DIGEST is required. Re-review evidence must use the frozen pre-execution container digest.'
+}
+if ($actualDigest -cne $expectedDigest) {
+    throw "ENG-197 PostgreSQL image digest drift. Expected '$expectedDigest', got '$actualDigest'."
+}
+
 & $python.Source -m pip install --disable-pip-version-check -r $Requirements
 if ($LASTEXITCODE -ne 0) { throw "ENG-197 dependency install failed: $LASTEXITCODE" }
-
-# Build the complete scientific/runtime closure from the exact checkout, then
-# immediately require byte-identical check before touching PostgreSQL.
-& $python.Source $ManifestBuilder
-if ($LASTEXITCODE -ne 0) { throw "ENG-197 freeze manifest build failed: $LASTEXITCODE" }
-& $python.Source $ManifestBuilder --check
-if ($LASTEXITCODE -ne 0) { throw "ENG-197 freeze manifest check failed: $LASTEXITCODE" }
 
 & $python.Source $Smoke --dsn $Dsn --output $OutputPath
 if ($LASTEXITCODE -ne 0) { throw "ENG-197 live PostgreSQL smoke failed: $LASTEXITCODE" }
