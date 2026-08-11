@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "linear_issue": "ENG-158",
+  "status": "PRE_HOLDOUT_ENDPOINT_IDENTITY_NORMALIZATION",
+  "canonical_endpoint_id": "scenario_level_exact_epistemic_contract_accuracy",
+  "legacy_aliases": {
+    "publication_composite_correctness": {
+      "status": "LEGACY_RESPONSE_COMPOSITE_NAME_USED_BY_R2_PLANNING",
+      "allowed_scope": "only as an explicitly declared alias for the binary response-level publication-critical conjunction that is then aggregated to the canonical base_scenario_id endpoint",
+      "may_appear_as_primary_endpoint_id_after_this_contract": false
+    }
+  },
+  "scoring_function": {
+    "response_level_publication_composite": {
+      "source": "WP-005 SEMANTIC_SPEC.md section 11 and accepted field-level scorer contract",
+      "definition": "true iff every publication-critical applicable field is true; malformed output, forbidden tool use and exhausted declared runtime/model failure are incorrect",
+      "model_output_determines_applicability": false
+    },
+    "repeat_aggregation": {
+      "mandatory_repeats_per_paraphrase": 3,
+      "rule": "at_least_2_of_3_response_level_publication_composites_are_true"
+    },
+    "paraphrase_aggregation": {
+      "mandatory_paraphrases_per_base_scenario_id": 2,
+      "rule": "all_2_mandatory_paraphrases_pass_repeat_aggregation"
+    },
+    "scenario_level_binary_event": {
+      "id": "scenario_level_exact_epistemic_contract_accuracy",
+      "unit": "base_scenario_id",
+      "value_true": "both mandatory paraphrases pass and therefore all frozen epistemic-contract obligations required by the scorer are satisfied under the repeat rule",
+      "value_false": "otherwise",
+      "denominator": "every preregistered eligible base_scenario_id; declared runtime/model failures remain incorrect and are not converted to missing",
+      "pre_split_ineligibility": "excluded before split assignment under the benchmark-construction contract and never treated as runtime attrition"
+    }
+  },
+  "equivalence_statement": "The R2 planning label publication_composite_correctness referred to the response-level all-publication-critical-fields conjunction. Under the already frozen 2-of-3 repeat and all-2-paraphrase aggregation, the primary binary variable analyzed at base_scenario_id is exactly scenario_level_exact_epistemic_contract_accuracy. This contract normalizes the identifier; it does not change any response scorer, aggregation rule, denominator, failure treatment, Monte-Carlo parameter, random seed, simulated outcome distribution, selected R2 grid floor, or hypothesis.",
+  "statistical_non_change": {
+    "R2_SIMULATION_SCENARIOS_json_bytes_must_remain_unchanged_for_this_remediation": true,
+    "R2_SIMULATION_RESULT_json_bytes_must_remain_unchanged_for_this_remediation": true,
+    "R2_SIMULATION_EVIDENCE_json_bytes_must_remain_unchanged_for_this_remediation": true,
+    "producer_R2_grid_floor": 820,
+    "alpha_two_sided": 0.05,
+    "SESOI_absolute": 0.08,
+    "target_joint_holdout_replication_success_probability": 0.90
+  },
+  "required_active_normalization": [
+    "WP006_STATISTICAL_AUTHORITY.json primary.endpoint == scenario_level_exact_epistemic_contract_accuracy",
+    "PRIMARY_ANALYSIS_CONTRACT.json primary_estimand.outcome == scenario_level_exact_epistemic_contract_accuracy",
+    "BLINDED_NUISANCE_UPDATE_PROTOCOL.json immutable_parameters.primary_outcome == scenario_level_exact_epistemic_contract_accuracy",
+    "context-packets/WP-006/TASK.md names scenario_level_exact_epistemic_contract_accuracy as the canonical primary endpoint"
+  ],
+  "cross_package_binding": {
+    "WP002_claim_evidence_endpoint": "scenario_level_exact_epistemic_contract_accuracy",
+    "WP004_estimand_endpoint": "scenario_level_exact_epistemic_contract_accuracy",
+    "WP005_response_composite_source": "all publication-critical applicable scorer fields",
+    "WP006_primary_endpoint": "scenario_level_exact_epistemic_contract_accuracy"
+  },
+  "forbidden": [
+    "treat publication_composite_correctness as a second primary endpoint",
+    "change scorer fields or applicability to obtain identifier alignment",
+    "change repeat/paraphrase aggregation under this normalization",
+    "recompute or seed-shop R2 Monte-Carlo merely because the identifier is normalized",
+    "claim endpoint equivalence if response-level composite, denominator, failure treatment or aggregation rules diverge"
+  ],
+  "confirmatory_access": {
+    "HOLDOUT": false,
+    "REPLICATION": false,
+    "GATE_001": false
+  },
+  "independence": {
+    "producer_normalization_is_not_independent_statistical_acceptance": true,
+    "distinct_adversarial_statistical_reviewer_required": true
+  }
+}
