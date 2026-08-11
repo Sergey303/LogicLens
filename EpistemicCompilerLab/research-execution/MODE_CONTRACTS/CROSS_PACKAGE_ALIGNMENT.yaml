@@ -1,6 +1,6 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 work_package_id: WP-004
-status: ALIGNMENT_CONTRACT_FROZEN_DEPENDENCIES_PENDING
+status: ALIGNMENT_CONTRACT_FROZEN_WITH_ENDPOINT_DRIFT_AND_DEPENDENCIES_PENDING
 primary_identity:
   contrast_id: C-PRIMARY
   estimand_id: E-PRIMARY-COMPILED-BUNDLE
@@ -33,6 +33,7 @@ wp006_statistics:
   current_status: IN_REVIEW
   required_alignment:
     unit: base_scenario_id
+    endpoint: scenario_level_exact_epistemic_contract_accuracy
     paired: true
     primary_confirmatory_contrasts: 1
     alpha_two_sided: 0.05
@@ -42,7 +43,12 @@ wp006_statistics:
     accepted_required_N: null
     real_power_gate: NOT_EVALUATED_DEPENDENCIES
     GATE_001: false
-  interpretation: WP-006 producer evidence can validate design alignment but cannot make WP-004 freeze-ready until a distinct statistical reviewer accepts ENG-158 and the real dependency/inventory gate later passes
+  observed_producer_authority:
+    endpoint: publication_composite_correctness
+    endpoint_exact_identifier_match: false
+    disposition: BLOCKER_UNTIL_VERSIONED_EQUIVALENCE_OR_ENG158_REVISE
+  endpoint_rule: semantic similarity is insufficient; either ENG-158 must use the exact frozen WP-004 endpoint identifier or a pre-HOLDOUT versioned equivalence contract must prove that both identifiers denote the identical scoring function, unit, denominator and failure treatment
+  interpretation: WP-006 producer evidence can validate other design dimensions but cannot make WP-004 freeze-ready until endpoint drift is resolved, a distinct statistical reviewer accepts ENG-158, and the real dependency/inventory gate later passes
 wp007_feasibility:
   issue: ENG-188
   current_status: BACKLOG
@@ -54,4 +60,13 @@ extension_dependencies:
   ENG-200: INDEPENDENT_R3_PASS_DESIGN_ONLY
   ENG-201: IN_REVIEW
   ENG-202: IN_PROGRESS_CUDA_SMOKE_REQUIRED
+freeze_blockers:
+- WP006_ENDPOINT_IDENTIFIER_DRIFT
+- WP002_ALIGNMENT_PENDING
+- ENG197_INDEPENDENT_REVIEW_PENDING
+- ENG199_DESIGN_REVIEW_PENDING
+- ENG201_INDEPENDENT_REVIEW_PENDING
+- ENG202_CUDA_SMOKE_AND_REVIEW_PENDING
+- ENG158_INDEPENDENT_REVIEW_PENDING
+- WP007_FEASIBILITY_PENDING
 freeze_rule: local WP-004 semantic consistency may PASS while cross-package freeze-readiness remains FAIL/PENDING; no pending status may be coerced to PASS by existence of a producer artifact
