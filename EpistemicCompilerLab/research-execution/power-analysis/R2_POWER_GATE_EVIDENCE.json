@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "linear_issue": "ENG-158",
+  "date": "2026-08-11",
+  "github_actions": {
+    "run_id": 31488320761,
+    "job_id": 93768505513,
+    "head_sha": "2889e459acbfca5f39506b98ff7817fb132af19f",
+    "result": "PASS",
+    "artifact_id": 9100510536,
+    "artifact_name": "eng-158-r2-statistical-evidence",
+    "artifact_zip_sha256": "77938318ce98b0b28510feae8d7513a7c7237dd04986a44771079c3095661365"
+  },
+  "real_dependency_resolution": {
+    "evidence_class": "REAL_LOCAL_GIT_RESOLUTION",
+    "required_dependencies": ["WP004_CAUSAL_ARMS", "WP005_ORACLE_SCORER", "WP007_FEASIBILITY"],
+    "all_required_dependencies_accepted": false,
+    "power_gate_dependency_status": "PENDING",
+    "gate_result": "NOT_EVALUATED_DEPENDENCIES",
+    "power_gate_pass": false,
+    "required_eligible_base_scenario_id_n": 820,
+    "confirmatory_access_authorized": false
+  },
+  "negative_fixture": {
+    "fixture": "fixtures-r2/dependency-bindings-fake-accepted.json",
+    "expected_failure": "candidate commit is not resolvable locally",
+    "result": "KILLED"
+  },
+  "synthetic_positive_logic_fixture": {
+    "resolution": "fixtures-r2/synthetic-resolution-all-accepted.json",
+    "inventory": "fixtures-r2/synthetic-inventory-ready.json",
+    "gate_result": "SYNTHETIC_LOGIC_PASS_ONLY",
+    "power_gate_pass": false,
+    "require_pass_exit": "NONZERO_REQUIRED_AND_OBSERVED"
+  },
+  "interpretation": "The real confirmatory power gate is deliberately not evaluable yet. Well-formed fake hashes/reviewer references and synthetic fixtures cannot produce literal POWER_GATE_PASS. Final evaluation requires locally resolvable accepted reviewer attestations and accepted artifact hashes from WP-004, WP-005 and WP-007 plus a frozen eligible inventory.",
+  "explicit_non_evidence": [
+    "accepted upstream dependencies",
+    "accepted final N",
+    "confirmatory inventory sufficiency",
+    "independent statistical reviewer PASS",
+    "HOLDOUT access",
+    "REPLICATION access",
+    "GATE-001 approval"
+  ]
+}
