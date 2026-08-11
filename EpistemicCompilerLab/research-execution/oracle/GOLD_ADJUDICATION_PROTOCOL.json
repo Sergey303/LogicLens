@@ -1,7 +1,8 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "work_package_id": "WP-005",
-  "purpose": "Create query-adjudication and semantic-outcome gold independently of Path A, Path B and model behavior before any scored model output.",
+  "lifecycle_contract": "ORACLE_LIFECYCLE_CONTRACT.json",
+  "purpose": "Create query-adjudication and semantic-outcome gold independently of Path A, Path B and model behavior; freeze gold before B-oracle execution while keeping outcome gold physically unavailable to B during computation.",
   "roles": {
     "query_adjudicators_per_case": 2,
     "outcome_adjudicators_per_case": 2,
@@ -46,8 +47,10 @@
       "source_and_registry_evidence",
       "reason_code"
     ],
-    "multiple_alternatives": "allowed only when two source/spec-grounded interpretations are genuinely non-equivalent; every alternative must be independently adjudicated before first model output",
-    "unresolved_disagreement": "case_not_eligible_for_freeze"
+    "multiple_alternatives": "allowed only when two source/spec-grounded interpretations are genuinely non-equivalent; every alternative must be independently adjudicated before query_adjudication_registry_hash_frozen",
+    "unresolved_disagreement": "case_not_eligible_for_freeze",
+    "completion_stage": "blind_query_adjudication_completed",
+    "registry_freeze_stage": "query_adjudication_registry_hash_frozen"
   },
   "outcome_adjudication": {
     "visible_inputs": [
@@ -98,24 +101,35 @@
       "provenance_resolution",
       "proof_normal_form"
     ],
-    "unresolved_disagreement": "case_not_eligible_for_freeze"
+    "unresolved_disagreement": "case_not_eligible_for_freeze",
+    "completion_stage": "blind_outcome_gold_adjudication_completed",
+    "registry_freeze_stage": "outcome_gold_registry_hash_frozen"
   },
   "freeze_order": [
     "semantic_spec_registry_policy_hashes_frozen",
-    "source_rule_query_packet_hashes_frozen",
-    "query_adjudicators_complete_blind_decisions",
-    "query_disagreements_adjudicated",
+    "source_rule_packet_hashes_frozen",
+    "blind_query_adjudication_completed",
     "query_adjudication_registry_hash_frozen",
-    "outcome_adjudicators_complete_blind_manual_derivations",
-    "outcome_disagreements_adjudicated",
+    "blind_outcome_gold_adjudication_completed",
     "outcome_gold_registry_hash_frozen",
+    "isolated_B_oracle_computes_without_outcome_gold_mount",
+    "B_oracle_output_hash_frozen",
+    "B_vs_outcome_gold_consistency_checked",
     "scorer_source_and_hash_frozen",
     "first_scored_model_output_may_exist"
   ],
+  "B_oracle_governance": {
+    "execution_after_outcome_gold_freeze": true,
+    "outcome_gold_mount_during_execution": "prohibited",
+    "B_output_may_override_gold": false,
+    "gold_may_be_repaired_from_B": false,
+    "unexplained_B_gold_disagreement": "block_scoring_and_benchmark_freeze"
+  },
   "post_model_governance": {
     "in_place_query_alternative_addition": "prohibited",
     "in_place_outcome_alternative_addition": "prohibited",
     "gold_repair_from_model_behavior": "prohibited",
+    "gold_repair_from_B": "prohibited",
     "new_legitimate_ambiguity": "new_benchmark_version_and_new_blind_adjudication; current_confirmatory_eligibility_invalidated",
     "implementation_only_scorer_fix": "allowed only when query and outcome gold semantic bytes remain unchanged"
   },
@@ -126,5 +140,5 @@
     "all_adjudication_records_hash_frozen": true,
     "identity_and_session_attestations_required": true
   },
-  "claim_boundary": "Agreement between Path B and independently adjudicated outcome gold is evidence about Path B semantic correctness only after the B-oracle computation was physically unable to access this gold."
+  "claim_boundary": "Outcome gold is the scorer expected-value authority. B-oracle is an independently implemented consistency check: gold is frozen before B execution, but the gold registry is not mounted or visible while B computes. Agreement supports B semantic correctness only under that physical isolation."
 }
