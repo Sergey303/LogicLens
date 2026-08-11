@@ -1,0 +1,133 @@
+name: ENG-158 WP-006 R2 final producer validation
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/statistics/**'
+      - 'EpistemicCompilerLab/research-execution/power-analysis/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-006/**'
+      - '.github/workflows/validate-wp006-r2-final.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'EpistemicCompilerLab/research-execution/statistics/**'
+      - 'EpistemicCompilerLab/research-execution/power-analysis/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-006/**'
+      - '.github/workflows/validate-wp006-r2-final.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  final-producer-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen validation dependencies
+        run: |
+          python -m pip install --disable-pip-version-check 'PyYAML==6.0.2'
+          python -m pip install --disable-pip-version-check -r EpistemicCompilerLab/research-execution/power-analysis/requirements-r2.txt
+      - name: Validate versioned WP-006 context packet
+        run: python EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py --package WP-006
+      - name: Validate one R2 statistical authority and fail-closed contracts
+        run: python EpistemicCompilerLab/research-execution/power-analysis/prototype/validate_wp006_r2.py
+      - name: Reproduce committed R2 Monte-Carlo result byte-for-byte
+        run: |
+          mkdir -p artifacts/eng-158-r2-final
+          python EpistemicCompilerLab/research-execution/power-analysis/prototype/simulate_power_r2.py \
+            --output artifacts/eng-158-r2-final/R2_SIMULATION_RESULT.reproduced.json
+          cmp --silent EpistemicCompilerLab/research-execution/power-analysis/R2_SIMULATION_RESULT.json \
+            artifacts/eng-158-r2-final/R2_SIMULATION_RESULT.reproduced.json
+      - name: Resolve real dependencies from Git/reviewer attestations
+        run: >-
+          python EpistemicCompilerLab/research-execution/power-analysis/prototype/resolve_power_dependencies.py
+          --output artifacts/eng-158-r2-final/POWER_DEPENDENCY_RESOLUTION.json
+      - name: Build and evaluate current real power gate
+        run: |
+          python EpistemicCompilerLab/research-execution/power-analysis/prototype/build_power_gate_input.py \
+            --resolution artifacts/eng-158-r2-final/POWER_DEPENDENCY_RESOLUTION.json \
+            --output artifacts/eng-158-r2-final/POWER_GATE_INPUT.current.json
+          python EpistemicCompilerLab/research-execution/power-analysis/prototype/evaluate_power_gate.py \
+            --input artifacts/eng-158-r2-final/POWER_GATE_INPUT.current.json \
+            --output artifacts/eng-158-r2-final/POWER_GATE_RESULT.current.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          dep = json.loads(Path('artifacts/eng-158-r2-final/POWER_DEPENDENCY_RESOLUTION.json').read_text())
+          gate = json.loads(Path('artifacts/eng-158-r2-final/POWER_GATE_RESULT.current.json').read_text())
+          assert dep['all_required_dependencies_accepted'] is False
+          assert all(d['resolved_status'] == 'PENDING' for d in dep['dependencies'])
+          assert gate['status'] == 'NOT_EVALUATED_DEPENDENCIES'
+          assert gate['power_gate_pass'] is False
+          assert gate['required_eligible_n'] == 820
+          assert gate['confirmatory_access_authorized'] is False
+          assert gate['gate_001_authorized'] is False
+          PY
+      - name: Kill fake accepted-dependency fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          if python EpistemicCompilerLab/research-execution/power-analysis/prototype/resolve_power_dependencies.py \
+              --bindings EpistemicCompilerLab/research-execution/power-analysis/fixtures-r2/dependency-bindings-fake-accepted.json \
+              --output artifacts/eng-158-r2-final/fake-resolution.json; then
+            echo 'Fake accepted dependency unexpectedly resolved' >&2
+            exit 1
+          fi
+      - name: Prove synthetic positive fixture is never a real PASS
+        shell: bash
+        run: |
+          set -euo pipefail
+          python EpistemicCompilerLab/research-execution/power-analysis/prototype/build_power_gate_input.py \
+            --resolution EpistemicCompilerLab/research-execution/power-analysis/fixtures-r2/synthetic-resolution-all-accepted.json \
+            --inventory EpistemicCompilerLab/research-execution/power-analysis/fixtures-r2/synthetic-inventory-ready.json \
+            --evidence-class SYNTHETIC_TEST_FIXTURE \
+            --output artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json
+          python EpistemicCompilerLab/research-execution/power-analysis/prototype/evaluate_power_gate.py \
+            --input artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json \
+            --output artifacts/eng-158-r2-final/POWER_GATE_RESULT.synthetic.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('artifacts/eng-158-r2-final/POWER_GATE_RESULT.synthetic.json').read_text())
+          assert r['status'] == 'SYNTHETIC_LOGIC_PASS_ONLY'
+          assert r['power_gate_pass'] is False
+          assert r['confirmatory_access_authorized'] is False
+          assert r['gate_001_authorized'] is False
+          PY
+          if python EpistemicCompilerLab/research-execution/power-analysis/prototype/evaluate_power_gate.py \
+              --input artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json --require-pass; then
+            echo 'Synthetic fixture unexpectedly satisfied --require-pass' >&2
+            exit 1
+          fi
+      - name: Freeze producer evidence boundary
+        run: |
+          python - <<'PY' > artifacts/eng-158-r2-final/producer-boundary.json
+          import json
+          print(json.dumps({
+              'issue': 'ENG-158',
+              'work_package': 'WP-006',
+              'analysis_unit': 'base_scenario_id',
+              'producer_R2_grid_floor': 820,
+              'final_N_accepted': False,
+              'real_power_gate': 'NOT_EVALUATED_DEPENDENCIES',
+              'independent_statistical_review': 'NOT_PERFORMED',
+              'gate_001': 'NOT_APPROVED',
+              'holdout_access': False,
+              'replication_access': False
+          }, sort_keys=True))
+          PY
+          cat artifacts/eng-158-r2-final/producer-boundary.json
+      - name: Upload final R2 producer evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eng-158-r2-final-producer-evidence
+          path: artifacts/eng-158-r2-final/
+          if-no-files-found: warn
+          retention-days: 30

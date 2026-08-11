@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-158",
+  "work_package": "WP-006",
+  "status": "READY_FOR_DISTINCT_INDEPENDENT_STATISTICAL_REVIEW",
+  "date": "2026-08-11",
+  "candidate_resolution": {
+    "rule": "scientific/statistical candidate is the first parent of the commit introducing this handoff file",
+    "expected_candidate_sha": "8d7393ff43ba4ea2c153438ff880903609a355d5",
+    "handoff_commit_must_change_only": "this handoff metadata file"
+  },
+  "roles": {
+    "producer_context": "ChatGPT ENG-158 R2 statistical remediation producer / 2026-08-11",
+    "reviewer": "UNASSIGNED distinct Adversarial Statistical Reviewer",
+    "producer_conflict": "This context authored the R2 statistical authority, simulation/gate remediation and final producer evidence and must not independently accept ENG-158, the final N, or GATE-001."
+  },
+  "primary_contract": {
+    "independent_analysis_unit": "base_scenario_id",
+    "endpoint": "publication_composite_correctness",
+    "paired": true,
+    "primary_confirmatory_contrasts": 1,
+    "alpha_two_sided": 0.05,
+    "SESOI_absolute": 0.08,
+    "SESOI_role": "planning_relevance_alternative_not_hard_observed_point_threshold",
+    "cluster_id": "source_family_id",
+    "reference_distribution": "CR1 cluster-robust variance with Student-t df=G-1",
+    "minimum_independent_source_family_clusters": 30,
+    "joint_confirmatory_rule": "HOLDOUT significant positive effect plus independently sourced REPLICATION positive direction",
+    "target_joint_success_probability_at_SESOI": 0.90
+  },
+  "pseudoreplication_guards": {
+    "paraphrase_is_independent_unit": false,
+    "repeat_is_independent_unit": false,
+    "model_seed_is_independent_unit": false,
+    "training_seed_is_independent_unit": false,
+    "infrastructure_rerun_is_independent_unit": false,
+    "declared_runtime_failures": "scored incorrect before repeat/paraphrase aggregation"
+  },
+  "r2_monte_carlo": {
+    "simulation_id": "wp006.r2.clustered-paired-heterogeneous-failure-aware.v1",
+    "domains": 3,
+    "student_model_profiles": 4,
+    "candidate_repetitions": 20000,
+    "candidate_seed": 158062,
+    "type_I_repetitions": 30000,
+    "type_I_seed": 158063,
+    "N_802": {
+      "joint_success_probability": 0.9026,
+      "joint_success_one_sided_95_lower": 0.8990967752375806,
+      "gate": "FAIL"
+    },
+    "N_820": {
+      "joint_success_probability": 0.9089,
+      "joint_success_one_sided_95_lower": 0.9054976640188974,
+      "gate": "FIRST_FROZEN_GRID_PASS"
+    },
+    "type_I_at_30_clusters": {
+      "two_sided_false_positive_probability": 0.04716666666666667,
+      "one_sided_95_upper": 0.04922105174858731,
+      "maximum_allowed_upper": 0.055,
+      "gate": "PASS"
+    },
+    "producer_R2_grid_floor": 820,
+    "accepted_final_N": null,
+    "interpretation": "820 is a producer-side R2 acceptance candidate/floor. It is not an independently accepted final confirmatory sample size."
+  },
+  "blinded_nuisance_update": {
+    "maximum_updates": 1,
+    "favorable_point_estimate_may_reduce_required_n": false,
+    "accepted_R2_required_n_is_floor": true,
+    "rule": "updated required N is max(R2 floor, N required under conservative blinded nuisance bounds)",
+    "runtime_failures_remain_in_denominator": true
+  },
+  "power_gate_v2": {
+    "schema_version": "2.0.0",
+    "required_dependencies": [
+      "WP004_CAUSAL_ARMS / ENG-156",
+      "WP005_ORACLE_SCORER / ENG-157",
+      "WP007_FEASIBILITY / ENG-188"
+    ],
+    "real_dependency_status": "PENDING",
+    "real_gate_status": "NOT_EVALUATED_DEPENDENCIES",
+    "real_power_gate_pass": false,
+    "required_eligible_n": 820,
+    "confirmatory_access_authorized": false,
+    "gate_001_authorized": false,
+    "synthetic_positive_status": "SYNTHETIC_LOGIC_PASS_ONLY",
+    "synthetic_can_produce_real_power_gate_pass": false,
+    "fake_accepted_dependency_fixture": "KILLED",
+    "accepted_dependency_rule": "candidate/review commits, reviewer attestation bytes/hash and accepted candidate-artifact hashes must all resolve locally in Git; free text or syntactically valid hashes are insufficient"
+  },
+  "final_producer_validation": {
+    "github_actions_run_id": 31491768957,
+    "github_actions_job_id": 93779707959,
+    "head_sha": "8d7393ff43ba4ea2c153438ff880903609a355d5",
+    "result": "PASS",
+    "all_scientific_contract_steps_passed": true,
+    "byte_identical_monte_carlo_reproduction": true,
+    "artifact_id": 9101307658,
+    "artifact_name": "eng-158-r2-final-producer-evidence",
+    "artifact_zip_sha256": "0a8d68e7269d772bfefb3f5b7da62040721748cbb22a3f491b1cc40ea85c7a41",
+    "artifact_size_bytes": 5161,
+    "reproduced_R2_result_sha256": "81e8fd1d404e32282b0fc3dca4cd01f827a1aa25e8453ab0c19a851822fd6438",
+    "real_dependency_resolution_sha256": "e7eb6e8c025eece9e8771ddaa9da1bf203644126e9fafc8d59cfb9091ef53e63",
+    "real_power_gate_result_sha256": "43ec5c8cecdb2141bb60348d2015dc2bdf4c3dec59ffa965319c0d29aeb43985",
+    "synthetic_power_gate_result_sha256": "4c04b31d970ae4e7caae1de192873084d7c831041aff4e56269910f664230c9c",
+    "producer_boundary_sha256": "935f6f8aee41324c7962b7a31626aa352e1fd176fd8cd2e78e83b98b4e48a1fe"
+  },
+  "supersession": {
+    "statistics_ANALYSIS_REGISTRY_v1": "preserved historical snapshot only",
+    "POWER_SCENARIOS_v1": "preserved historical snapshot only",
+    "evaluate_power_gate_v1": "preserved historical implementation only",
+    "current_normative_statistical_authority": "EpistemicCompilerLab/research-execution/power-analysis/WP006_STATISTICAL_AUTHORITY.json",
+    "current_gate_evaluator": "R2 schema-2 tri-state evaluator"
+  },
+  "explicit_non_evidence": [
+    "independent statistical reviewer PASS",
+    "accepted final confirmatory N",
+    "accepted WP-004 exact primary arm binding",
+    "accepted WP-005 oracle/scorer dependency",
+    "accepted WP-007 feasibility dependency",
+    "real confirmatory inventory sufficiency",
+    "POWER_GATE_PASS",
+    "GATE-001 approval",
+    "HOLDOUT evidence",
+    "REPLICATION evidence"
+  ],
+  "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed or used.",
+  "requested_next_action": "A distinct Adversarial Statistical Reviewer resolves candidate 8d7393ff43ba4ea2c153438ff880903609a355d5 and returns PASS, REVISE or PIVOT. Even a reviewer PASS does not by itself authorize HOLDOUT: real dependency/inventory power gate and GATE-001 remain separate fail-closed gates."
+}

@@ -1,8 +1,13 @@
-EpistemicCompilerLab/research-execution/statistics/POWER_SIMULATION_PLAN.md
-EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml
-EpistemicCompilerLab/research-execution/statistics/FAILURE_AND_EXCLUSION_RULES.md
-EpistemicCompilerLab/research-execution/statistics/power_simulation.py
-EpistemicCompilerLab/research-execution/statistics/ASSUMPTIONS_MANIFEST.yaml
-EpistemicCompilerLab/research-execution/statistics/table-shells
+# Historical original WP-006 deliverables retained for reproducibility
+EpistemicCompilerLab/research-execution/statistics
+
+# Normative R2 statistical package
+EpistemicCompilerLab/research-execution/power-analysis
+
+# Versioned WP-006 context packet and handoffs
 EpistemicCompilerLab/research-execution/context-packets/WP-006
 EpistemicCompilerLab/research-execution/handoffs/WP-006.json
+EpistemicCompilerLab/research-execution/handoffs/WP-006-ENG-158-R2-STATISTICAL-REMEDIATION-2026-08-11.json
+
+# Dedicated producer validation workflow only; no sealed scientific execution
+.github/workflows/validate-wp006-r2-statistics.yml

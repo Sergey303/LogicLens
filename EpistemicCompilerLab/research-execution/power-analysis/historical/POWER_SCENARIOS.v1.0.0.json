@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "analysis_contract": "PRIMARY_ANALYSIS_CONTRACT.json",
+  "parameters": {
+    "delta_sesoi": 0.08,
+    "alpha_two_sided": 0.05,
+    "target_power": 0.90,
+    "baseline_discordance_q": 0.35,
+    "mean_source_family_cluster_size": 8,
+    "icc": 0.05,
+    "attrition_rate": 0.05,
+    "minimum_independent_source_family_clusters": 30
+  },
+  "scenarios": [
+    {
+      "id": "optimistic",
+      "discordance_q": 0.30,
+      "mean_cluster_size": 6,
+      "icc": 0.02,
+      "attrition_rate": 0.02,
+      "role": "sensitivity_only"
+    },
+    {
+      "id": "baseline",
+      "discordance_q": 0.35,
+      "mean_cluster_size": 8,
+      "icc": 0.05,
+      "attrition_rate": 0.05,
+      "role": "primary_planning_scenario"
+    },
+    {
+      "id": "adverse",
+      "discordance_q": 0.40,
+      "mean_cluster_size": 10,
+      "icc": 0.10,
+      "attrition_rate": 0.10,
+      "role": "stress_sensitivity"
+    },
+    {
+      "id": "high_discordance",
+      "discordance_q": 0.45,
+      "mean_cluster_size": 8,
+      "icc": 0.05,
+      "attrition_rate": 0.05,
+      "role": "stress_sensitivity"
+    }
+  ],
+  "effect_sensitivity": [0.05, 0.08, 0.10],
+  "power_grid": {
+    "minimum_N": 240,
+    "maximum_N": 1200,
+    "step": 2
+  },
+  "simulation": {
+    "repetitions": 20000,
+    "seed": 158006,
+    "decision_rule": "reject H0 when abs(z) exceeds the two-sided alpha=0.05 normal critical value; attrition is simulated as missing pre-analysis and the paired mean is tested with cluster-robust CR1-style variance",
+    "ci": "two-sided 95 percent normal interval for the simulated paired mean",
+    "gate": "baseline empirical power must be at least 0.90 and a one-sided 95 percent normal-approximation lower confidence bound over the Monte-Carlo power estimate must be at least 0.89"
+  },
+  "justification": {
+    "discordance_q": "Conservative planning grid covering 0.30-0.45 total paired discordance; no confirmatory data were inspected.",
+    "icc": "Sensitivity grid spans weak to moderate within-source-family correlation because exact confirmatory clustering is not yet observable before corpus construction.",
+    "attrition": "0.05 baseline and 0.10 stress cover malformed/runtime/exclusion risk for capacity planning only; actual primary failures remain governed by the frozen failure contract.",
+    "effect": "0.08 is the preregistered smallest practically meaningful absolute gain; 0.05 and 0.10 are sensitivity values, not alternate primary claims."
+  },
+  "explicit_non_evidence": [
+    "confirmatory data",
+    "HOLDOUT or REPLICATION outcomes",
+    "empirical source-family ICC",
+    "final benchmark case availability",
+    "reviewer acceptance"
+  ]
+}
