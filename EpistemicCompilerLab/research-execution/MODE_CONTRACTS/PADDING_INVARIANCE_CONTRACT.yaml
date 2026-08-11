@@ -1,4 +1,4 @@
-schema_version: 1.0.0
+schema_version: 1.0.1
 work_package_id: WP-004
 purpose: make exact token matching a tested nuisance-control rather than assume neutral padding is behaviorally inert
 scope: DEV-only before benchmark split freeze
@@ -37,9 +37,9 @@ reporting:
 - exact tokenizer/revision
 - paired metric differences and uncertainty
 failure_action:
-- if any invariance bound fails: STOP matching design and revise the envelope/padding construction before benchmark construction
-- never keep harmful padding merely to obtain exact token equality
-- never repair padding after HOLDOUT or REPLICATION access
+- "if any invariance bound fails: STOP matching design and revise the envelope/padding construction before benchmark construction"
+- "never keep harmful padding merely to obtain exact token equality"
+- "never repair padding after HOLDOUT or REPLICATION access"
 prohibitions:
 - informative or scenario-derived padding
 - mode-specific semantic filler
