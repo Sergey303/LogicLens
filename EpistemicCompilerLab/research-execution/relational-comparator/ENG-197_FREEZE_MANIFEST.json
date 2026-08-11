@@ -24,7 +24,7 @@
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/generated/query-guide.md": "8dd303a544ce47c19f484408be3a60ee57a7415a881982038f284d06e631735a",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/generated/schema.sql": "9d08e43c5ff94f04100f9caa190a94bbc8ec1f32b79e0383e5cc7ab906e058d0",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/generated/seed.sql": "43d0540d0795b6294555f261958a3f1d7e52fc57be7a249b219ae90a56b1dc8e",
-    "EpistemicCompilerLab/research-execution/relational-comparator/prototype/live_postgres_smoke.py": "04928a41dc88f50974a5e2b2ac0cc470753fb57f82f4bd2f9c4107890510aea1",
+    "EpistemicCompilerLab/research-execution/relational-comparator/prototype/live_postgres_smoke.py": "24c25d80630ddcf8a82a5bc79f274200140301548cb993e50c1b47e6718fd683",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/query-registry.prototype.json": "ee56671cd15b0e6592de545df6955a7a71a49068069a6236ce76bc9acb9a7743",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/reference_oracle.py": "0206f7d18ee702263c3d09bc25d14bee9f269bb5d4de76d217710e824697cced",
     "EpistemicCompilerLab/research-execution/relational-comparator/prototype/source.prototype.json": "8a7132cf3eeec38814c9092738e463adcb6c78f989d4534c7f4fe12cbbdd3667",
