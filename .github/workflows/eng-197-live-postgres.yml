@@ -1,0 +1,151 @@
+name: ENG-197 live PostgreSQL 18.4 evidence
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/relational-comparator/ENG-197_FREEZE_MANIFEST.json'
+      - '.github/workflows/eng-197-live-postgres.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'EpistemicCompilerLab/research-execution/relational-comparator/ENG-197_FREEZE_MANIFEST.json'
+      - '.github/workflows/eng-197-live-postgres.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  live-postgres:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:18.4
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: eng197_ephemeral_ci
+          POSTGRES_DB: eng197_smoke
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d eng197_smoke"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install exact frozen PostgreSQL transport
+        run: python -m pip install --disable-pip-version-check -r EpistemicCompilerLab/research-execution/relational-comparator/requirements-eng197.txt
+
+      - name: Re-run static comparator verification
+        run: python EpistemicCompilerLab/research-execution/relational-comparator/prototype/verify.py
+
+      - name: Require exact frozen 34-file manifest
+        run: python EpistemicCompilerLab/research-execution/relational-comparator/prototype/build_freeze_manifest.py --check
+
+      - name: Capture pulled PostgreSQL image digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          digest="$(docker image inspect postgres:18.4 --format '{{index .RepoDigests 0}}')"
+          case "$digest" in
+            postgres@sha256:*) ;;
+            *) echo "Expected immutable postgres@sha256 RepoDigest, got: $digest" >&2; exit 1 ;;
+          esac
+          echo "ENG197_POSTGRES_IMAGE_DIGEST=$digest" >> "$GITHUB_ENV"
+          echo "PostgreSQL image digest: $digest"
+
+      - name: Execute real database path and persist pre-score bytes
+        env:
+          ENG197_POSTGRES_DSN: postgresql://postgres:eng197_ephemeral_ci@localhost:5432/eng197_smoke
+        run: >-
+          python EpistemicCompilerLab/research-execution/relational-comparator/prototype/live_postgres_smoke.py
+          --output artifacts/eng-197/postgres-smoke
+
+      - name: Run post-smoke strict-subset differential
+        run: >-
+          python EpistemicCompilerLab/research-execution/relational-comparator/prototype/build_subset_equivalence_report.py
+          --smoke-output artifacts/eng-197/postgres-smoke
+
+      - name: Fail closed on evidence contract
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          root = Path('artifacts/eng-197/postgres-smoke')
+          live_path = root / 'eng197-live-postgres-report.json'
+          eq_path = root / 'eng197-subset-equivalence-report.json'
+          if not live_path.is_file() or not eq_path.is_file():
+              raise SystemExit('missing live/equivalence report')
+          live = json.loads(live_path.read_text(encoding='utf-8'))
+          eq = json.loads(eq_path.read_text(encoding='utf-8'))
+
+          assert live['status'] == 'PASS'
+          assert live['runtime']['server_version'] == '18.4'
+          assert live['runtime']['server_version_num'] == 180004
+          assert live['runtime']['psycopg_version'] == '3.3.4'
+          assert live['runtime']['execution_identity'] == 'container_digest_pinned'
+          assert live['runtime']['container_image_digest'].startswith('postgres@sha256:')
+          assert live['runtime']['database_name'].startswith('eng197_')
+          assert live['security_negatives']['all_passed'] is True
+          assert set(live['security_negatives']['database_read_only_role']) == {
+              'insert_denied', 'update_denied', 'delete_denied', 'create_table_denied'
+          }
+          assert set(live['security_negatives']['adapter']) == {
+              'undeclared_endpoint', 'free_sql_field', 'extra_argument'
+          }
+          assert live['measurements']['pre_score_artifact_count'] == len(live['cases']) > 0
+          assert live['measurements']['database_build_ns'] > 0
+          assert live['measurements']['database_relation_index_bytes'] > 0
+          assert live['measurements']['db_call_latency_ns_min'] > 0
+          assert all(case['evaluation'] == 'PASS' for case in live['cases'])
+
+          pre = sorted((root / 'pre-score').glob('*.json'))
+          assert len(pre) == len(live['cases'])
+          for path in pre:
+              record = json.loads(path.read_text(encoding='utf-8'))
+              assert record['stage'] == 'pre_score_db_result'
+              assert record['score'] is None
+              assert record['result_bytes_utf8']
+
+          assert eq['eligible'] is True
+          assert eq['all_exact'] is True
+          assert eq['exact_case_count'] == eq['case_count'] == len(live['cases'])
+          assert eq['proof_graph_equivalence_claimed'] is False
+          assert all(row['exact_result_equal'] for row in eq['cases'])
+
+          evidence = {
+              'schema_version': '1.0.0',
+              'linear_issue': 'ENG-197',
+              'evidence_class': 'TRAIN_DEV_REAL_POSTGRESQL_EXECUTION_NOT_MODEL_EFFECT',
+              'live_report_sha256': hashlib.sha256(live_path.read_bytes()).hexdigest(),
+              'equivalence_report_sha256': hashlib.sha256(eq_path.read_bytes()).hexdigest(),
+              'postgresql_server_version': live['runtime']['server_version'],
+              'postgresql_image_digest': live['runtime']['container_image_digest'],
+              'case_count': len(live['cases']),
+              'subset_all_exact': True,
+              'permission_negatives_pass': True,
+              'm15_status': 'DEV_ONLY_SINGLE_ENDPOINT_SCHEMA_DIAGNOSTIC',
+              'm16_status': 'PRODUCER_EXECUTION_EVIDENCE_READY_FOR_INDEPENDENT_REVIEW',
+              'm16_confirmatory_authorized': False,
+              'independent_review': 'NOT_PERFORMED',
+              'holdout_replication_access': 'NONE'
+          }
+          out = root / 'eng197-ci-evidence-attestation.json'
+          out.write_text(json.dumps(evidence, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(evidence, sort_keys=True))
+          PY
+
+      - name: Upload retained PostgreSQL evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eng-197-postgres-18.4-evidence
+          path: artifacts/eng-197/postgres-smoke/
+          if-no-files-found: warn
+          retention-days: 30

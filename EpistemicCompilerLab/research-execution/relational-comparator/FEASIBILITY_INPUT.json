@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "linear_issue": "ENG-197",
   "consumers": ["ENG-158", "ENG-188"],
   "prototype_scope": "TRAIN_DEV_ONLY_SYNTHETIC",
@@ -17,28 +17,70 @@
     "m15_manual_registry_entries_per_scenario": 0
   },
   "measured_costs": {
-    "postgresql_build_ns": "PENDING_LIVE_POSTGRES_SMOKE",
-    "db_call_latency_ns_distribution": "PENDING_LIVE_POSTGRES_SMOKE",
-    "database_relation_index_bytes": "PENDING_LIVE_POSTGRES_SMOKE",
-    "pre_score_result_bytes": "PENDING_LIVE_POSTGRES_SMOKE"
+    "status": "BASELINE_LIVE_POSTGRES_OBSERVATION_RECORDED_NOT_SCALING_ESTIMATE",
+    "measurement_date": "2026-08-11",
+    "github_actions_run_id": 31483217680,
+    "github_actions_job_id": 93752645632,
+    "runtime": {
+      "postgresql_server_version": "18.4",
+      "postgresql_server_version_num": 180004,
+      "postgresql_image_digest": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636",
+      "psycopg_version": "3.3.4",
+      "runner": "GitHub Actions ubuntu-24.04 hosted runner"
+    },
+    "postgresql_build_ns": 17914788,
+    "db_call_latency_ns": {
+      "case_count": 4,
+      "min": 747123,
+      "median": 889130,
+      "max": 1627665,
+      "per_case": {
+        "proto-01": 1627665,
+        "proto-02": 1007774,
+        "proto-03": 770487,
+        "proto-04": 747123
+      }
+    },
+    "database_relation_index_bytes": 147456,
+    "generated_package_bytes_observed": 7878,
+    "pre_score_result_bytes": {
+      "definition": "UTF-8 byte length of the canonical one-row DB result whose SHA-256 equals the persisted live PostgreSQL result_sha256",
+      "total": 408,
+      "min": 79,
+      "median": 101,
+      "max": 127,
+      "per_case": {
+        "proto-01": 102,
+        "proto-02": 100,
+        "proto-03": 127,
+        "proto-04": 79
+      }
+    },
+    "live_report_sha256": "3f2c34d6e892b684a02a49451eb5fc13b00b8cccb5546754007e245052a21c0c",
+    "subset_equivalence_report_sha256": "c3371db1e5e0b965d71fea8229f0d6d5350283e86e106dccb9687ac73d4df2f3",
+    "artifact_zip_sha256": "94b4a73cb0792b422c0b86414b87c2e23b33c900eb4cf15ea4fa60e54a828f5b",
+    "artifact_id": 9098050218,
+    "interpretation": "One synthetic TRAIN/DEV infrastructure observation. It establishes that costs are measurable on the real DB path; it is not a production-capacity estimate and must not be treated as an independent sample for WP-006 power."
   },
   "live_evidence_contract": {
     "report": "artifacts/eng-197/postgres-smoke/eng197-live-postgres-report.json",
+    "subset_differential_report": "artifacts/eng-197/postgres-smoke/eng197-subset-equivalence-report.json",
     "source": "LIVE_POSTGRES_SMOKE_CONTRACT.md",
     "runtime": "RUNTIME_DEPENDENCIES.json",
     "must_be_real_postgresql": true,
-    "python_reference_oracle_is_not_measurement_evidence": true
+    "python_reference_oracle_is_not_measurement_evidence": true,
+    "baseline_observation_must_not_replace_final_WP007_profile_measurement": true
   },
   "measurement_required_before_confirmatory_freeze": {
     "catalogue_tokens_by_model_profile": "measure with each frozen student tokenizer",
     "guide_tokens_by_model_profile": "measure with each frozen student tokenizer",
     "result_tokens_by_scenario_and_model_profile": "measure canonical typed result bytes with each frozen student tokenizer",
-    "postgresql_build_time_ms": "derive from the frozen live PostgreSQL report and rerun under the accepted WP-007 hardware profile if different",
-    "postgresql_query_latency_ms": "derive cold/warm distributions under the accepted WP-007 hardware profile",
-    "database_storage_bytes": "use post-build relation/index size from live PostgreSQL, not generated file bytes",
+    "postgresql_build_time_ms": "baseline live observation exists; rerun under the accepted WP-007 hardware profile and report distribution, not one CI sample",
+    "postgresql_query_latency_ms": "baseline live observation exists; derive cold/warm distributions under the accepted WP-007 hardware profile",
+    "database_storage_bytes": "baseline post-build relation/index size exists; remeasure on accepted WP-007 profile/package scale",
     "m16_registry_annotation_seconds": "measure outcome-blind registry mapping effort and independent adjudication rate",
     "relational_subset_eligible_count_and_source_families": "compute outcome-blind before split assignment from eng197.relational-subset.v1"
   },
-  "power_note_for_wp006": "Current remediation recommends M16 only. WP-006 must power any accepted M16 contrast on paired relational-subset-eligible scenarios/source families, not total benchmark N. M15 remains DEV-only unless separately versioned before HOLDOUT.",
+  "power_note_for_wp006": "M16 is the only potential relational falsification candidate. WP-006 must power any accepted M16 contrast on paired relational-subset-eligible base_scenario_id units/source families; the four smoke cases and repeated infrastructure runs do not increase benchmark N. M15 remains DEV-only unless separately versioned before HOLDOUT.",
   "feasibility_stop_rule": "Reject or keep M16 DEV-only if eligible count/source-family diversity, token/context, database build/runtime, or registry annotation cost prevents a lossless powered matched run. Never truncate relational results or relax subset eligibility after outcomes are known."
 }
