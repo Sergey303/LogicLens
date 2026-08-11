@@ -1,4 +1,4 @@
-schema_version: 1.1.0
+schema_version: 1.1.1
 work_package_id: WP-005
 linear_issue: ENG-157
 acceptance_gate: GATE-001
@@ -15,18 +15,21 @@ command_contracts:
   - WP-005
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
-- name: semantic_and_boundary_acceptance
+- name: dedicated_semantic_acceptance
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_oracle_semantics.py
+  stage: post_completion
+  must_exit_zero_when: four-state semantic registry, exact gold vocabulary, policy, invariant/vector/mutation coverage, human-audit contract and audit-tool trust contract pass
+- name: boundary_wrapper_availability
   working_directory: .
   argv:
   - python
   - EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py
   - --preflight
-  - --boundary
-  - EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md
-  - --mutations
-  - EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
   stage: post_completion
-  must_exit_zero_when: semantic registry, conformance coverage, boundary and mutation contracts pass
+  must_exit_zero_when: versioned boundary wrapper is available; this command is not semantic execution evidence
 - name: blind_gold_and_lifecycle_acceptance
   working_directory: .
   argv:
@@ -43,6 +46,7 @@ checks:
   - Oracle B is implementable without A imports/calls/generated expected frames.
   - Blind outcome gold is frozen before B execution but physically unavailable to B while it computes.
   - Outcome gold is scorer expected-value authority; B is an independent consistency implementation and cannot override or repair gold.
+  - Dedicated semantic acceptance must execute validate_oracle_semantics.py directly; wrapper availability is insufficient.
   independence:
   - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
   - Gold adjudicators are disjoint from same-candidate Path A, Path B, scorer, teacher-target and model-output-analysis roles.
