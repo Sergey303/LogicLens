@@ -10,6 +10,7 @@ REPO = PACKAGE.parents[2]
 MANIFEST = PACKAGE / "ENG-197_FREEZE_MANIFEST.json"
 
 FILES = [
+    ".gitattributes",
     "EpistemicCompilerLab/research-execution/relational-comparator/README.md",
     "EpistemicCompilerLab/research-execution/relational-comparator/contract.json",
     "EpistemicCompilerLab/research-execution/relational-comparator/call.schema.json",
