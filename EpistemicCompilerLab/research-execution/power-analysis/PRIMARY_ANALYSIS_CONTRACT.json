@@ -1,9 +1,10 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "work_package_id": "WP-006",
   "linear_issue": "ENG-158",
-  "status": "R2_REMEDIATION_CANDIDATE_FINAL_N_PENDING",
+  "status": "R3_ENDPOINT_NORMALIZED_R2_REMEDIATION_CANDIDATE_FINAL_N_PENDING",
   "authority": "WP006_STATISTICAL_AUTHORITY.json",
+  "endpoint_identity_contract": "ENDPOINT_IDENTITY_CONTRACT.json",
   "sesoi_utility_contract": "SESOI_UTILITY_CONTRACT.md",
   "primary_estimand": {
     "population": "all preregistered confirmatory base_scenario_id units eligible under the frozen benchmark/oracle contract with frozen source-family and model-profile allocation",
@@ -12,7 +13,8 @@
     "treatment_semantic_id": "authoritative_semantic_result_placement_fixed_weight",
     "control_semantic_id": "matched_fixed_weight_baseline",
     "arm_binding_rule": "exact executable arm IDs and factor vectors are imported from accepted WP-004 before final N/confirmatory freeze; best-DEV-arm selection is forbidden",
-    "outcome": "publication_composite_correctness",
+    "outcome": "scenario_level_exact_epistemic_contract_accuracy",
+    "legacy_response_composite_alias": "publication_composite_correctness",
     "outcome_type": "binary",
     "contrast": "P(treatment_correct)-P(control_correct) over equally weighted base_scenario_id units under frozen target-population allocation",
     "se_soi_absolute": 0.08,
@@ -25,8 +27,9 @@
     "model_profile_id": "exactly_one_frozen_student_profile_per_base_scenario_id_for_primary_population_unless_WP004_versions_a_crossed_design_before_HOLDOUT",
     "mandatory_paraphrases_per_base_scenario": 2,
     "repeats_per_paraphrase": 3,
-    "repeat_aggregation": "at_least_2_of_3_publication_composite_correct",
-    "scenario_aggregation": "all_2_mandatory_paraphrases_pass",
+    "response_level_publication_composite": "all publication-critical applicable scorer fields correct",
+    "repeat_aggregation": "at_least_2_of_3_response_level_publication_composites_correct",
+    "scenario_aggregation": "all_2_mandatory_paraphrases_pass; this binary event is scenario_level_exact_epistemic_contract_accuracy",
     "declared_runtime_failure": "incorrect_before_repeat_and_paraphrase_aggregation",
     "paraphrase_is_independent_unit": false,
     "repeat_is_independent_unit": false,
@@ -44,7 +47,7 @@
   },
   "primary_analysis": {
     "case_level_difference_values": [-1, 0, 1],
-    "point_estimate": "mean paired base_scenario_id treatment-minus-control publication-composite difference under frozen target-population weights",
+    "point_estimate": "mean paired base_scenario_id treatment-minus-control scenario_level_exact_epistemic_contract_accuracy difference under frozen target-population weights",
     "cluster_id": "source_family_id",
     "variance": "CR1 source-family cluster-robust sandwich variance for intercept-only paired differences",
     "reference_distribution": "Student_t_with_df_equal_independent_source_family_clusters_minus_1",
@@ -62,8 +65,9 @@
     ]
   },
   "publication_composite": {
+    "role": "response_level_component_of_the_canonical_scenario_endpoint",
     "source": "accepted WP-005 field-level scorer contract",
-    "rule": "correct only when every publication-critical applicable field is correct after frozen repeat/paraphrase aggregation",
+    "rule": "correct only when every publication-critical applicable field is correct before frozen repeat/paraphrase aggregation",
     "malformed_response": "incorrect",
     "forbidden_tool_use": "incorrect",
     "declared_runtime_or_model_failure": "incorrect; never converted to missing for the primary endpoint",
@@ -97,6 +101,7 @@
     "change alpha or target power after observing results",
     "drop difficult source families to reach significance",
     "replace final endpoint with a favorable field-level endpoint",
+    "treat publication_composite_correctness as a second primary endpoint instead of a legacy response-level alias",
     "treat paraphrases repeats training seeds or infrastructure reruns as extra independent base scenarios",
     "treat secondary or exploratory significance as the preregistered primary claim"
   ],

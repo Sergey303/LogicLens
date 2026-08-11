@@ -1,6 +1,7 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "work_package_id": "WP-006",
+  "endpoint_identity_contract": "ENDPOINT_IDENTITY_CONTRACT.json",
   "purpose": "Allow at most one pre-HOLDOUT sample-size increase from non-directional nuisance information without changing the SESOI or inspecting which confirmatory arm is better.",
   "allowed_timing": "after TRAIN/DEV pipeline feasibility but before any HOLDOUT or REPLICATION access and before any confirmatory directional effect is revealed",
   "allowed_inputs": [
@@ -35,7 +36,8 @@
     "se_soi_role": "planning_relevance_alternative_not_hard_observed_point_threshold",
     "alpha_two_sided": 0.05,
     "target_joint_holdout_replication_success_probability": 0.90,
-    "primary_outcome": "publication_composite_correctness",
+    "primary_outcome": "scenario_level_exact_epistemic_contract_accuracy",
+    "legacy_response_composite_alias": "publication_composite_correctness",
     "primary_estimand": "paired absolute correctness difference at base_scenario_id",
     "primary_confirmatory_contrasts": 1,
     "independent_analysis_unit": "base_scenario_id"
@@ -75,6 +77,7 @@
     "nuisance_output_hash_required": true,
     "arm_mapping_not_in_power_packet": true,
     "independent_statistical_review_required": true,
-    "non_decreasing_N_assertion_required": true
+    "non_decreasing_N_assertion_required": true,
+    "canonical_endpoint_identity_required": true
   }
 }

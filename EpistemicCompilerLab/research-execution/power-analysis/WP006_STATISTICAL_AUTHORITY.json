@@ -1,9 +1,10 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "work_package_id": "WP-006",
   "linear_issue": "ENG-158",
-  "status": "R2_PRODUCER_PLANNING_FLOOR_ESTABLISHED_FINAL_N_NOT_ACCEPTED",
+  "status": "R3_ENDPOINT_NORMALIZED_R2_NUMERIC_FLOOR_UNCHANGED_FINAL_N_NOT_ACCEPTED",
   "normative_package": "EpistemicCompilerLab/research-execution/power-analysis",
+  "endpoint_identity_contract": "ENDPOINT_IDENTITY_CONTRACT.json",
   "legacy_statistics_registry": {
     "active_path": "EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml",
     "status": "SUPERSEDED_HISTORICAL_POINTER_ONLY",
@@ -12,7 +13,8 @@
   },
   "primary": {
     "unit": "base_scenario_id",
-    "endpoint": "publication_composite_correctness",
+    "endpoint": "scenario_level_exact_epistemic_contract_accuracy",
+    "legacy_response_composite_alias": "publication_composite_correctness",
     "paired": true,
     "primary_confirmatory_contrasts": 1,
     "hypothesis": "two_sided_superiority_H0_delta_equals_0",
@@ -28,6 +30,7 @@
     "training_seed_is_independent_unit": false,
     "infrastructure_rerun_is_independent_unit": false,
     "model_profile_assignment": "exactly_one_frozen_student_profile_per_base_scenario_for_primary_population_unless_WP004_versions_a_crossed_design_before_HOLDOUT",
+    "response_level_composite": "all publication-critical applicable scorer fields correct; malformed/forbidden-tool/runtime-model failures are incorrect",
     "paraphrase_aggregation": "all mandatory paraphrases must pass after repeat aggregation",
     "repeat_aggregation": "at_least_2_of_3_exact_contract_pass_per_mandatory_paraphrase",
     "declared_runtime_failures": "incorrect_before_repeat_and_paraphrase_aggregation"
@@ -49,16 +52,17 @@
     "R2_type_I_upper_95_at_30_clusters": 0.04922105174858731,
     "R2_simulation_result": "R2_SIMULATION_RESULT.json",
     "R2_simulation_evidence": "R2_SIMULATION_EVIDENCE.json",
+    "R2_simulation_endpoint_alias_normalized_by": "ENDPOINT_IDENTITY_CONTRACT.json",
     "accepted_required_N": null
   },
-  "final_N_rule": "after distinct R2 statistical PASS and accepted exact dependencies, final eligible base_scenario_id N is max(820, one permitted conservative blinded nuisance recalculation); favorable nuisance estimates cannot lower N",
+  "final_N_rule": "after distinct statistical PASS and accepted exact dependencies, final eligible base_scenario_id N is max(820, one permitted conservative blinded nuisance recalculation); favorable nuisance estimates cannot lower N",
   "confirmatory_access": {
     "HOLDOUT": false,
     "REPLICATION": false,
     "GATE_001": false
   },
   "independence": {
-    "producer_cannot_accept_own_R2_remediation": true,
+    "producer_cannot_accept_own_R2_or_R3_remediation": true,
     "distinct_adversarial_statistical_reviewer_required": true
   }
 }
