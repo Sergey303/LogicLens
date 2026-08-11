@@ -54,7 +54,7 @@ jobs:
             --resolution artifacts/eng-158-r2-final/POWER_DEPENDENCY_RESOLUTION.json \
             --output artifacts/eng-158-r2-final/POWER_GATE_INPUT.current.json
           python EpistemicCompilerLab/research-execution/power-analysis/prototype/evaluate_power_gate.py \
-            artifacts/eng-158-r2-final/POWER_GATE_INPUT.current.json \
+            --input artifacts/eng-158-r2-final/POWER_GATE_INPUT.current.json \
             --output artifacts/eng-158-r2-final/POWER_GATE_RESULT.current.json
           python - <<'PY'
           import json
@@ -67,6 +67,7 @@ jobs:
           assert gate['power_gate_pass'] is False
           assert gate['required_eligible_n'] == 820
           assert gate['confirmatory_access_authorized'] is False
+          assert gate['gate_001_authorized'] is False
           PY
       - name: Kill fake accepted-dependency fixture
         shell: bash
@@ -88,7 +89,7 @@ jobs:
             --evidence-class SYNTHETIC_TEST_FIXTURE \
             --output artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json
           python EpistemicCompilerLab/research-execution/power-analysis/prototype/evaluate_power_gate.py \
-            artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json \
+            --input artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json \
             --output artifacts/eng-158-r2-final/POWER_GATE_RESULT.synthetic.json
           python - <<'PY'
           import json
@@ -97,9 +98,10 @@ jobs:
           assert r['status'] == 'SYNTHETIC_LOGIC_PASS_ONLY'
           assert r['power_gate_pass'] is False
           assert r['confirmatory_access_authorized'] is False
+          assert r['gate_001_authorized'] is False
           PY
           if python EpistemicCompilerLab/research-execution/power-analysis/prototype/evaluate_power_gate.py \
-              artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json --require-pass; then
+              --input artifacts/eng-158-r2-final/POWER_GATE_INPUT.synthetic.json --require-pass; then
             echo 'Synthetic fixture unexpectedly satisfied --require-pass' >&2
             exit 1
           fi
