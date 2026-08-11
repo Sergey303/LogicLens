@@ -1,12 +1,18 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "linear_issue": "ENG-197",
   "scope": "TRAIN_DEV_ONLY",
   "postgresql": {
     "required_server_version": "18.4",
     "required_server_version_num": 180004,
     "database_name_prefix": "eng197_",
-    "live_execution_required_for_review": true
+    "live_execution_required_for_review": true,
+    "container": {
+      "required_image_reference": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636",
+      "required_repo_digest": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636",
+      "mutable_tag_execution_forbidden": true,
+      "pin_timing": "before_service_start_and_before_database_execution"
+    }
   },
   "python": {
     "supported": "3.10-3.14",
@@ -25,11 +31,12 @@
       "database_name",
       "package_freeze_manifest_sha256"
     ],
-    "container_image_digest": "required_when_container_execution_is_used",
+    "container_image_digest": "must_equal_precommitted_required_repo_digest_when_container_execution_is_used",
+    "container_execution_identity": "container_digest_pre_pinned",
     "native_installation": "exact PostgreSQL server version is required and the report must label execution_identity=native_exact_version_not_image_pinned"
   },
   "references": {
-    "postgresql_version_policy": "PostgreSQL 18.4 is the current supported minor frozen for this remediation candidate",
+    "postgresql_version_policy": "PostgreSQL 18.4 plus the precommitted immutable container RepoDigest are frozen for the containerized remediation path",
     "psycopg_installation": "Psycopg 3 binary installation is used only as the typed PostgreSQL transport driver"
   }
 }
