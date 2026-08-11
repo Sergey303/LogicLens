@@ -1,10 +1,13 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "linear_issue": "ENG-197",
   "scope": "TRAIN_DEV_ONLY",
   "postgresql": {
     "required_server_version": "18.4",
     "required_server_version_num": 180004,
+    "required_container_image_digest": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636",
+    "container_execution_required_for_re_review": true,
+    "mutable_tag_execution_prohibited": true,
     "database_name_prefix": "eng197_",
     "live_execution_required_for_review": true
   },
@@ -23,13 +26,14 @@
       "psycopg_version",
       "libpq_version",
       "database_name",
-      "package_freeze_manifest_sha256"
+      "package_freeze_manifest_sha256",
+      "container_image_digest"
     ],
-    "container_image_digest": "required_when_container_execution_is_used",
-    "native_installation": "exact PostgreSQL server version is required and the report must label execution_identity=native_exact_version_not_image_pinned"
+    "container_image_digest": "must equal postgresql.required_container_image_digest and be selected before container creation",
+    "native_installation": "diagnostic-only for this remediation round; independent re-review evidence requires the frozen container digest"
   },
   "references": {
-    "postgresql_version_policy": "PostgreSQL 18.4 is the current supported minor frozen for this remediation candidate",
+    "postgresql_version_policy": "PostgreSQL 18.4 with an exact pre-execution container RepoDigest is frozen for this remediation candidate",
     "psycopg_installation": "Psycopg 3 binary installation is used only as the typed PostgreSQL transport driver"
   }
 }
