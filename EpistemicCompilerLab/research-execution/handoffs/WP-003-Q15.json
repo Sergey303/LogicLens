@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "work_package": "WP-003",
+  "linear_issue": "ENG-155",
+  "remediation_round": "Q15",
+  "status": "READY_FOR_INDEPENDENT_REVIEW",
+  "date": "2026-08-11",
+  "candidate_resolution": {
+    "rule": "scientific candidate is the first parent of the commit that introduces this handoff file",
+    "expected_candidate_sha": "54bfb93302b5fa85f6fd9dcc97267785239425d2",
+    "append_only_base": "Q13/Q14 frozen WP-003 snapshot remains byte-preserved; Q15 overlays freshness evidence only"
+  },
+  "roles": {
+    "producer": "ChatGPT ENG-155 Q15 remediation producer context / 2026-08-11",
+    "reviewer": "UNASSIGNED distinct Research Program Architect",
+    "gatekeeper": "UNASSIGNED distinct GATE-001 reviewer",
+    "producer_conflict": "The Q15 producer context previously issued the R3 freshness finding and is now conflicted from independently accepting its own remediation."
+  },
+  "primary_sources_added": [
+    "RW-059 ToolGate — Findings ACL 2026",
+    "RW-060 Text2Mem — Findings ACL 2026",
+    "RW-061 LatentGate — ACL 2026 Industry",
+    "RW-062 Rethinking Scale — ACL 2026 Industry",
+    "RW-063 Guidelines as Environments — ACL 2026",
+    "RW-064 Don't Offer What Can't Be Done — arXiv:2608.01050"
+  ],
+  "artifacts": [
+    "context-packets/WP-003/Q15_RELATED_WORK_SUPPLEMENT.csv",
+    "context-packets/WP-003/Q15_SCREENING_LEDGER_2026-08-11.csv",
+    "context-packets/WP-003/Q15_DIMENSION_LEDGER_2026-08-11.csv",
+    "context-packets/WP-003/Q15_SATURATION_ROUND_2026-08-11.csv",
+    "NOVELTY_BOUNDARY_Q15_ADDENDUM.md",
+    "RELATED_WORK_SEARCH_LOG_Q15_ADDENDUM.md",
+    "context-packets/WP-003/validate_wp003_q15_semantics.py",
+    ".github/workflows/validate-wp003-q15.yml"
+  ],
+  "scientific_result": {
+    "frozen_base_primary_sources": 58,
+    "q15_added_primary_sources": 6,
+    "combined_primary_sources": 64,
+    "q15_screened_candidates": 6,
+    "strict_threshold": "at least 5 of 7 dimensions must be YES; PARTIAL does not count",
+    "q15_threshold_matches": 0,
+    "pivot_required_by_q15": false,
+    "surviving_candidate_claim": "preregistered matched causal evaluation of authoritative semantic-result placement for fixed-weight small language models under a four-state strict epistemic contract, with structure/no-conclusion/answer-copying controls and an independently implemented layer-specific oracle/scorer",
+    "priority_wording_authorized": false
+  },
+  "new_occupied_mechanisms": [
+    "typed trusted symbolic state plus runtime-verified tool state evolution",
+    "Hoare-style tool pre/postcondition gating",
+    "schema-based semantic contracts parsed into typed deterministic operations",
+    "SQL/reference backend execution for typed LLM-facing operations",
+    "frozen-SLM semantic routing with learned probes",
+    "small-model base vs tool-agent vs routing-agent architecture gains",
+    "explicit evolving state for interacting/conflicting rules",
+    "deterministic authoritative-state executability gating before LLM selection",
+    "counterfactual replay for gating effects on selection"
+  ],
+  "validation": {
+    "workflow": "ENG-155 WP-003 Q15 freshness validation",
+    "run_id": 31480628253,
+    "job_id": 93744495651,
+    "result": "PASS",
+    "reported_combined_sources": 64,
+    "reported_q15_threshold_matches": 0,
+    "independent_novelty_acceptance": "NOT_PERFORMED",
+    "gate_001": "NOT_APPROVED",
+    "holdout_replication_access": "NONE"
+  },
+  "explicit_non_evidence": [
+    "independent novelty acceptance",
+    "GATE-001 approval",
+    "proof that no exact prior work exists",
+    "first/unique/unprecedented priority",
+    "HOLDOUT evidence",
+    "REPLICATION evidence"
+  ],
+  "requested_next_action": "Distinct Research Program Architect performs independent R4 review of the resolved candidate and returns PASS, REVISE, or PIVOT."
+}
