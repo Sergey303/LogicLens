@@ -15,3 +15,4 @@ EpistemicCompilerLab/research-execution/relational-comparator/** text eol=lf
 EpistemicCompilerLab/scripts/run-relational-comparator-tests.ps1 text eol=lf
 EpistemicCompilerLab/scripts/run-relational-postgres-smoke.ps1 text eol=lf
 EpistemicCompilerLab/scripts/launch.ps1 text eol=lf
+.github/workflows/eng-197-live-postgres.yml text eol=lf
