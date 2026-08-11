@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "status": "SYNTHETIC_NEGATIVE_FIXTURE",
+  "attestation_schema": "DEPENDENCY_ACCEPTANCE_ATTESTATION.schema.json",
+  "dependencies": [
+    {
+      "dependency_id": "WP004_CAUSAL_ARMS",
+      "linear_issue": "ENG-156",
+      "required_for": "negative fixture",
+      "status": "ACCEPTED",
+      "candidate_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "review_commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "attestation_path": "EpistemicCompilerLab/research-execution/power-analysis/fixtures-r2/nonexistent-review.json",
+      "attestation_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ]
+}
