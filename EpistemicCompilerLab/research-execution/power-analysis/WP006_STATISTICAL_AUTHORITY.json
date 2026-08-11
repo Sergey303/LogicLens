@@ -1,8 +1,8 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "work_package_id": "WP-006",
   "linear_issue": "ENG-158",
-  "status": "R2_REMEDIATION_N_NOT_ACCEPTED_PENDING_SIMULATION_AND_DEPENDENCIES",
+  "status": "R2_PRODUCER_PLANNING_FLOOR_ESTABLISHED_FINAL_N_NOT_ACCEPTED",
   "normative_package": "EpistemicCompilerLab/research-execution/power-analysis",
   "legacy_statistics_registry": {
     "active_path": "EpistemicCompilerLab/research-execution/statistics/ANALYSIS_REGISTRY.yaml",
@@ -41,8 +41,17 @@
   "current_numeric_status": {
     "old_600": "SUPERSEDED_UNPOWERED_V1",
     "analytical_802": "PLANNING_ONLY_REJECTED_BY_R2_AS_BOUNDARY_TOO_CLOSE_AND_MONTE_CARLO_BELOW_0_90",
+    "R2_producer_grid_floor": 820,
+    "R2_selection_rule": "smallest frozen candidate grid N >=802 with one-sided 95% Wilson lower bound for joint HOLDOUT+REPLICATION success >=0.90",
+    "R2_joint_success_point_at_820": 0.9089,
+    "R2_joint_success_lower_95_at_820": 0.9054976640188974,
+    "R2_type_I_point_at_30_clusters": 0.04716666666666667,
+    "R2_type_I_upper_95_at_30_clusters": 0.04922105174858731,
+    "R2_simulation_result": "R2_SIMULATION_RESULT.json",
+    "R2_simulation_evidence": "R2_SIMULATION_EVIDENCE.json",
     "accepted_required_N": null
   },
+  "final_N_rule": "after distinct R2 statistical PASS and accepted exact dependencies, final eligible base_scenario_id N is max(820, one permitted conservative blinded nuisance recalculation); favorable nuisance estimates cannot lower N",
   "confirmatory_access": {
     "HOLDOUT": false,
     "REPLICATION": false,
