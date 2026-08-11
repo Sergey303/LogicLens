@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0.0",
+  "linear_issue": "ENG-197",
+  "status": "READY_FOR_DISTINCT_INDEPENDENT_REVIEW",
+  "date": "2026-08-11",
+  "candidate_resolution": {
+    "rule": "scientific/runtime candidate is the first parent of the commit introducing this handoff file",
+    "expected_candidate_sha": "f703f958dd720ce9bdaeaf26ed4d8eafc0c638ac",
+    "handoff_commit_must_change_only": "this handoff metadata file"
+  },
+  "roles": {
+    "producer_context": "ChatGPT ENG-197 live PostgreSQL producer execution / 2026-08-11",
+    "reviewer": "UNASSIGNED distinct Independent Causal and Database Systems Reviewer",
+    "producer_conflict": "This context changed the live PostgreSQL runner, feasibility evidence, verifier and freeze manifest and must not independently accept M16 or ENG-197."
+  },
+  "mode_boundary": {
+    "M15": "DEV_ONLY_SINGLE_ENDPOINT_SCHEMA_DIAGNOSTIC",
+    "M16": "CANDIDATE_RELATIONAL_RESULT_INTERFACE_READY_FOR_INDEPENDENT_REVIEW",
+    "M16_confirmatory_authorized": false,
+    "M14_or_Bstar_eligible": false,
+    "proof_graph_equivalence_claimed": false,
+    "allowed_interpretation": "lossless equality only for the frozen relational-subset result fields status/action/root-evidence/source-provenance; any M16-vs-M6 effect remains a trusted-result-interface bundle contrast"
+  },
+  "freeze": {
+    "file_count": 34,
+    "manifest_self_excluded": true,
+    "manifest_sha256_observed_in_final_live_report": "a1dc0c4a59c4e7d208226d411a18f1e09f1e76d0129dfbea08c3bff837cc4428",
+    "freeze_check_before_database_execution": "PASS"
+  },
+  "runtime": {
+    "postgresql_server_version": "18.4",
+    "postgresql_server_version_raw": "18.4 (Debian 18.4-1.pgdg13+1)",
+    "postgresql_server_version_num": 180004,
+    "postgresql_image_digest": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636",
+    "psycopg_version": "3.3.4",
+    "libpq_version": 180000,
+    "execution_identity": "container_digest_pinned",
+    "runner": "GitHub Actions ubuntu-24.04 hosted runner"
+  },
+  "final_live_execution": {
+    "github_actions_run_id": 31483902560,
+    "github_actions_job_id": 93754801806,
+    "result": "PASS",
+    "live_report_sha256": "23553d49c2c81104a59e899e7aca15199079df8c5d93cab1ad618e82c9e7f0e2",
+    "subset_equivalence_report_sha256": "73ad5f52cb47df4133841abd6351f6341243ae64783bbc716a7d3e01c3f8c588",
+    "artifact_id": 9098310980,
+    "artifact_zip_sha256": "8c18ad4496fba0386224d21a6f787875518368b9022186638141fc11e31b563d",
+    "artifact_file_count": 7,
+    "case_count": 4,
+    "all_cases_evaluation": "PASS",
+    "subset_exact_case_count": 4,
+    "subset_all_exact": true,
+    "pre_score_artifact_count": 4,
+    "pre_score_written_before_evaluator_expectations_opened": true,
+    "security_negatives_all_passed": true
+  },
+  "final_case_evidence": [
+    {
+      "case_id": "proto-01",
+      "db_latency_ns": 1657447,
+      "pre_score_sha256": "c2a1453d8653a8454ee220f50150d5960a98747b1e9261bdd314ea3e24709e71",
+      "result_sha256": "175fd1b247b138a0e782373d5bcbaa6910742f4a57f77ad0db1d36cd4c112c3c"
+    },
+    {
+      "case_id": "proto-02",
+      "db_latency_ns": 1036727,
+      "pre_score_sha256": "6a82b5ac9cd802dcd06c7ad9ca6e1c188b146066003728c54980091c758882cc",
+      "result_sha256": "089aeed17017825164e3174d2c890b0af5367456aff6c88f32761eee3f0f7d82"
+    },
+    {
+      "case_id": "proto-03",
+      "db_latency_ns": 840501,
+      "pre_score_sha256": "d605ad4e46ff2bb3deb0cc7fa6a478b81e4d62b95570d98a07f20a2ce5d76aec",
+      "result_sha256": "dab4b091dd12085811f03cdd19d23911b29e5c5ab3a999592ce9a91e887f1a52"
+    },
+    {
+      "case_id": "proto-04",
+      "db_latency_ns": 815403,
+      "pre_score_sha256": "07657c34411fd3bac6e027eb8786846ae7cafdd68a1aaf6fde61911798ca79fd",
+      "result_sha256": "67ca3144eb30e0470f4ba01deec284d567c8830056efb154b7ab4e9e2084a427"
+    }
+  ],
+  "final_measurements": {
+    "database_build_ns": 19656318,
+    "db_call_latency_ns_min": 815403,
+    "db_call_latency_ns_median": 938614,
+    "db_call_latency_ns_max": 1657447,
+    "database_relation_index_bytes": 147456,
+    "generated_package_bytes": 7878
+  },
+  "recorded_feasibility_baseline": {
+    "source_run_id": 31483217680,
+    "source_job_id": 93752645632,
+    "role": "one prior image-pinned TRAIN/DEV infrastructure observation retained in FEASIBILITY_INPUT.json",
+    "not": [
+      "production capacity estimate",
+      "final WP-007 hardware profile measurement",
+      "independent statistical sample",
+      "additional base_scenario_id units"
+    ]
+  },
+  "security": {
+    "adapter_negatives": ["undeclared_endpoint", "free_sql_field", "extra_argument"],
+    "database_read_only_negatives": ["insert_denied", "update_denied", "delete_denied", "create_table_denied"],
+    "reader_role": {
+      "login": false,
+      "superuser": false,
+      "createdb": false,
+      "createrole": false,
+      "replication": false,
+      "bypassrls": false,
+      "memberships": 0
+    }
+  },
+  "producer_execution_history": [
+    {
+      "run_id": 31482974712,
+      "result": "FAIL",
+      "finding": "SHOW server_version returned the valid distro packaging string '18.4 (Debian 18.4-1.pgdg13+1)' while the initial runner incorrectly demanded literal '18.4'",
+      "remediation": "preserve exact server_version_num=180004 and immutable image digest gates; normalize only the base release for comparison and retain the complete raw packaging string in evidence"
+    },
+    {
+      "run_id": 31483217680,
+      "result": "PASS",
+      "role": "first complete live PostgreSQL evidence and measured feasibility baseline"
+    },
+    {
+      "run_id": 31483902560,
+      "result": "PASS",
+      "role": "final rerun after measured feasibility and verifier were included in the 34-file frozen candidate"
+    }
+  ],
+  "explicit_non_evidence": [
+    "independent reviewer PASS",
+    "M16 confirmatory inclusion",
+    "M15 query-selection effect",
+    "M6 proof-graph equivalence",
+    "model-effect evidence",
+    "production capacity estimate",
+    "WP-006 power evidence from four smoke cases",
+    "HOLDOUT evidence",
+    "REPLICATION evidence"
+  ],
+  "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed or used.",
+  "requested_next_action": "Distinct Independent Causal and Database Systems Reviewer resolves candidate f703f958... and returns PASS, REVISE or PIVOT. If accepted, ENG-156/ENG-158/ENG-188 may consume M16 only under their own frozen scope/power/feasibility decisions."
+}
