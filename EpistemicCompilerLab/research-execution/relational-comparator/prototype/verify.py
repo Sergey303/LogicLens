@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import statistics
 import tempfile
 from pathlib import Path
 
@@ -18,6 +19,7 @@ GENERATED = ROOT / "generated"
 SOURCE = ROOT / "source.prototype.json"
 REGISTRY = ROOT / "query-registry.prototype.json"
 EXPECTED = ROOT / "evaluator" / "expected.prototype.json"
+HEX = set("0123456789abcdef")
 
 
 def load(path: Path):
@@ -27,6 +29,10 @@ def load(path: Path):
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise AssertionError(message)
+
+
+def require_sha256(value: object, label: str) -> None:
+    require(isinstance(value, str) and len(value) == 64 and set(value) <= HEX, f"invalid SHA-256: {label}")
 
 
 def verify_contract() -> None:
@@ -203,14 +209,88 @@ def verify_leakage() -> None:
 
 def verify_feasibility() -> None:
     feasibility = load(PACKAGE_ROOT / "FEASIBILITY_INPUT.json")
+    require(feasibility["schema_version"] == "1.2.0", "feasibility schema version drift")
     require(feasibility["prototype_scope"] == "TRAIN_DEV_ONLY_SYNTHETIC", "feasibility scope drift")
+    require(feasibility["mode_adjudication"]["M15"] == "DEV_ONLY_SINGLE_ENDPOINT", "M15 feasibility status drift")
+    require(feasibility["mode_adjudication"]["M16"] == "CANDIDATE_AFTER_LIVE_POSTGRES_AND_REVIEW", "M16 feasibility status drift")
+
     static = feasibility["static_costs"]
     require(static["m15_typed_calls_per_scenario"] == 1 and static["m16_typed_calls_per_scenario"] == 1, "call budget drift")
+    require(static["database_executions_per_scenario"] == 1, "database execution budget drift")
     require(static["maximum_result_rows"] == 1, "feasibility row budget drift")
     actual_bytes = sum(path.stat().st_size for path in GENERATED.iterdir() if path.is_file())
     require(static["generated_package_bytes"] == actual_bytes, "generated package byte count drift")
+
     measured = feasibility["measured_costs"]
-    require(all(value == "PENDING_LIVE_POSTGRES_SMOKE" for value in measured.values()), "pre-smoke feasibility must fail closed as pending")
+    require(measured["status"] == "BASELINE_LIVE_POSTGRES_OBSERVATION_RECORDED_NOT_SCALING_ESTIMATE", "live feasibility evidence status drift")
+    require(measured["measurement_date"] == "2026-08-11", "live feasibility date drift")
+    require(measured["github_actions_run_id"] == 31483217680, "live feasibility run binding drift")
+    require(measured["github_actions_job_id"] == 93752645632, "live feasibility job binding drift")
+
+    runtime = measured["runtime"]
+    require(runtime["postgresql_server_version"] == "18.4", "measured PostgreSQL version drift")
+    require(runtime["postgresql_server_version_num"] == 180004, "measured PostgreSQL numeric version drift")
+    require(runtime["postgresql_image_digest"] == "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636", "measured PostgreSQL image digest drift")
+    require(runtime["psycopg_version"] == "3.3.4", "measured psycopg version drift")
+    require(runtime["runner"] == "GitHub Actions ubuntu-24.04 hosted runner", "measured runner identity drift")
+
+    require(isinstance(measured["postgresql_build_ns"], int) and measured["postgresql_build_ns"] > 0, "invalid measured PostgreSQL build time")
+    latency = measured["db_call_latency_ns"]
+    per_case_latency = latency["per_case"]
+    require(set(per_case_latency) == {"proto-01", "proto-02", "proto-03", "proto-04"}, "measured latency case-set drift")
+    latency_values = list(per_case_latency.values())
+    require(all(isinstance(value, int) and value > 0 for value in latency_values), "invalid measured DB latency")
+    require(latency["case_count"] == len(latency_values) == 4, "measured DB latency case count drift")
+    require(latency["min"] == min(latency_values), "measured DB latency minimum drift")
+    require(latency["median"] == int(statistics.median(latency_values)), "measured DB latency median drift")
+    require(latency["max"] == max(latency_values), "measured DB latency maximum drift")
+    require(latency["min"] <= latency["median"] <= latency["max"], "measured DB latency ordering invalid")
+
+    require(isinstance(measured["database_relation_index_bytes"], int) and measured["database_relation_index_bytes"] > 0, "invalid measured database bytes")
+    require(measured["generated_package_bytes_observed"] == actual_bytes, "observed generated package byte count drift")
+
+    result_bytes = measured["pre_score_result_bytes"]
+    per_case_bytes = result_bytes["per_case"]
+    require(set(per_case_bytes) == {"proto-01", "proto-02", "proto-03", "proto-04"}, "pre-score result-byte case-set drift")
+    byte_values = list(per_case_bytes.values())
+    require(all(isinstance(value, int) and value > 0 for value in byte_values), "invalid pre-score result byte measurement")
+    require(result_bytes["total"] == sum(byte_values), "pre-score result-byte total drift")
+    require(result_bytes["min"] == min(byte_values), "pre-score result-byte minimum drift")
+    require(result_bytes["median"] == int(statistics.median(byte_values)), "pre-score result-byte median drift")
+    require(result_bytes["max"] == max(byte_values), "pre-score result-byte maximum drift")
+    require("canonical one-row DB result" in result_bytes["definition"], "pre-score byte definition drift")
+
+    require_sha256(measured["live_report_sha256"], "live report")
+    require_sha256(measured["subset_equivalence_report_sha256"], "subset equivalence report")
+    require_sha256(measured["artifact_zip_sha256"], "artifact zip")
+    require(measured["live_report_sha256"] == "3f2c34d6e892b684a02a49451eb5fc13b00b8cccb5546754007e245052a21c0c", "live report evidence binding drift")
+    require(measured["subset_equivalence_report_sha256"] == "c3371db1e5e0b965d71fea8229f0d6d5350283e86e106dccb9687ac73d4df2f3", "subset report evidence binding drift")
+    require(measured["artifact_zip_sha256"] == "94b4a73cb0792b422c0b86414b87c2e23b33c900eb4cf15ea4fa60e54a828f5b", "artifact evidence binding drift")
+    require(measured["artifact_id"] == 9098050218, "artifact ID binding drift")
+    require("not a production-capacity estimate" in measured["interpretation"], "baseline observation overclaim guard missing")
+    require("not be treated as an independent sample" in measured["interpretation"], "power pseudoreplication guard missing")
+
+    live_contract = feasibility["live_evidence_contract"]
+    require(live_contract["must_be_real_postgresql"] is True, "real PostgreSQL evidence requirement drift")
+    require(live_contract["python_reference_oracle_is_not_measurement_evidence"] is True, "reference-oracle measurement guard drift")
+    require(live_contract["baseline_observation_must_not_replace_final_WP007_profile_measurement"] is True, "WP-007 remeasurement guard drift")
+
+    required = feasibility["measurement_required_before_confirmatory_freeze"]
+    for key in (
+        "catalogue_tokens_by_model_profile",
+        "guide_tokens_by_model_profile",
+        "result_tokens_by_scenario_and_model_profile",
+        "postgresql_build_time_ms",
+        "postgresql_query_latency_ms",
+        "database_storage_bytes",
+        "m16_registry_annotation_seconds",
+        "relational_subset_eligible_count_and_source_families",
+    ):
+        require(key in required and required[key], f"confirmatory feasibility requirement missing: {key}")
+    power_note = feasibility["power_note_for_wp006"]
+    require("base_scenario_id" in power_note, "WP-006 unit binding missing")
+    require("do not increase benchmark N" in power_note, "WP-006 smoke pseudoreplication guard missing")
+    require("M15 remains DEV-only" in power_note, "M15 DEV-only boundary missing from feasibility handoff")
 
 
 def verify_sql_contract() -> None:
@@ -240,7 +320,7 @@ def main() -> int:
     for check in checks:
         check()
         print(f"PASS {check.__name__}")
-    print("ENG-197 static producer verification passed; live PostgreSQL evidence remains mandatory")
+    print("ENG-197 static producer verification passed; recorded live PostgreSQL evidence remains subject to independent review")
     return 0
 
 
