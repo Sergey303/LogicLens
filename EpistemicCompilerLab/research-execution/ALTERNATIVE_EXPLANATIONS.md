@@ -1,44 +1,54 @@
 # Alternative Explanations and Falsification Controls — WP-004
 
-Status: **producer causal-design artifact; pending independent review**
+Status: **producer causal-design artifact; pending distinct independent review**
 
 ## Primary interpretation boundary
 
-The primary contrast is `M6 − M14(global B*)`. It estimates the total effect of a trusted compiled verified-interface bundle versus the globally strongest full-information non-compiled source interface under matched student, question, answer schema and a lossless common token envelope.
+The primary contrast is `M6 − M14(global B*)`. It estimates the total effect of a trusted compiled verified-interface bundle versus the globally strongest full-information non-compiled source interface under matched student, question, answer schema and a lossless common token envelope that has separately passed the frozen padding-invariance audit.
 
-It is intentionally a bundle estimand. It does not by itself identify whether execution, typed structure, explicit conclusion, provenance, policy fields or another component causes the effect. Component claims require the contrasts below.
+It is intentionally a bundle estimand. It does not by itself identify whether execution, typed structure, explicit conclusion, provenance, policy fields or another component causes the effect. Component claims require separately valid contrasts.
 
 ## 1. Solver versus no solver
 
 **Threat:** M6 wins only because one condition receives a solved task while the other must reason.
 
-**Controls:** M14 is the strongest full-information non-compiled source interface; M9, M10 and M12 separate result structure and conclusion fields; M7 diagnoses production compiler loss.
+**Controls:** M14 is the strongest full-information non-compiled source interface; M9, M10 and M12 progressively test verified-result serialization, a minimal executed status/action contract and direct conclusion availability; M7 diagnoses production compiler loss.
 
-**Falsification:** The primary result may support only a bundle effect. If M12 does not beat M14, the effect is mainly an explicit conclusion contract rather than rich semantic compilation and the paper pivots accordingly.
+**Falsification:** The primary result may support only a bundle effect. If minimal M10 already matches M6 and materially beats M14, rich-frame necessity is not supported. If M12 does not materially outperform M14 while M6 does, the effect is concentrated in `allowedConclusion` and the paper pivots accordingly.
 
-## 2. Ready-answer copying
+## 2. Ready-answer / decision copying
 
-**Threat:** `allowedConclusion` contains the answer and the student merely copies it.
+**Threat:** `allowedConclusion`, or even a verified minimal decision label, gives the student most of the answer.
 
-**Controls:** M12 removes only `allowedConclusion`; M10 supplies only the verified status label; M13 corrupts one field; renderer scoring retains non-trivial scope, provenance, warning and language obligations.
+**Controls:** M12 removes only `allowedConclusion`; normative M10 contains **verified status + action**, not status alone; M14 contains no computed result. The decomposition is therefore:
 
-**Falsification:** A large M6−M12 effect with no M12−M14 effect triggers a pivot to a minimal executable decision-contract paper. Blind following of M13 corruption weakens safety and auditability claims.
+- `M6 − M12`: incremental effect of `allowedConclusion`;
+- `M12 − M10`: bundled effect of scope/provenance/evidence/warnings/proof fields beyond the minimal status/action decision contract;
+- `M10 − M14`: value of a minimal executed decision contract versus strongest non-compiled source context.
 
-## 3. Typed structure or constrained output
+A status-only arm is not silently encoded as M10. If later scientifically necessary it requires a new versioned identifier before HOLDOUT.
 
-**Threat:** JSON field names or schema compliance, not formal execution, explain the gain.
+**Falsification:** If M10 explains essentially all of M6's gain, report a minimal executable decision-contract result rather than rich verified-frame necessity. If only M6−M12 is substantial, direct conclusion availability is the dominant measured component.
 
-**Controls:** M9 contains the same verified semantic values in unstructured prose; M14 shares output obligations without computed fields; grammar-constrained or structured baselines remain eligible when they contain no authoritative result.
+## 3. Result-interface serialization rather than “typing alone”
 
-**Falsification:** If M9 matches M6, typed frame structure has no measured marginal benefit. If structured M14 matches M6, the compilation-advantage headline is rejected.
+**Threat:** JSON field names, ordering, lexical cues, redundancy or reduced parsing burden explain M6 relative to an unstructured verified result.
 
-## 4. Token length and context compression
+**Control:** M9 contains exactly the same verified semantic values as M6 through a canonical deterministic lossless serialization. A pre-model round-trip verifier must prove semantic field/value equivalence.
 
-**Threat:** M6 is easier because its input is shorter, more salient, or obtained by deleting material from the control.
+**Interpretation boundary:** `M6 − M9` is a **typed-frame versus canonical unstructured result-interface serialization bundle**. It is not evidence that field typing alone caused any difference.
 
-**Controls:** No compared mode may lose assertions, rules, policy clauses, provenance or verified-frame fields for token matching. For each scenario/model-profile block, the common envelope equals the maximum unpadded token count among compared LLM modes. Only shorter modes receive frozen neutral padding. Benchmark construction must reject over-context scenarios before split assignment.
+**Falsification:** If M9 matches M6, the tested typed/structured serialization bundle has no measured marginal value. A future pure-typing claim would require an additional matched control that changes only the relevant container/field-typing factor.
 
-**Falsification:** Exact unpadded and padded token counts are reported. Informative padding, truncation, outcome-dependent selection, post-HOLDOUT repair, or source deletion invalidates the affected block and the matching claim.
+## 4. Token length and behaviorally active padding
+
+**Threat:** M6 is easier because its input is shorter, more salient, or because the chosen “neutral” padding changes attention or decoding behavior.
+
+**Controls:** No compared mode may lose assertions, rules, policy clauses, provenance or verified-frame fields for token matching. For each scenario/model-profile block, the common envelope equals the maximum unpadded token count among compared LLM modes. Only shorter modes receive scenario-independent padding whose exact bytes, placement and tokenizer-specific token IDs are frozen by `MODE_CONTRACTS/PADDING_INVARIANCE_CONTRACT.yaml`.
+
+Before benchmark construction, representative DEV cases for every student profile must compare padded versus unpadded behavior. A failing mode/profile blocks the matching design; exact token equality is not treated as evidence that padding is inert.
+
+**Falsification:** Informative padding, truncation, outcome-dependent selection, post-HOLDOUT repair, source deletion, or a failed padding-invariance gate invalidates the length-control claim and requires redesign before split freeze.
 
 ## 5. Additional or missing information rather than execution
 
@@ -68,11 +78,21 @@ It is intentionally a bundle estimand. It does not by itself identify whether ex
 
 **Threat:** once the frame exists, deterministic templating is as good as or better than an LLM.
 
-**Control:** M11 consumes the same semantic frame and frozen content contract as M6.
+**Control:** M11 consumes the exact M6 semantic frame and deterministically emits the same canonical answer/scoring schema, semantic fields, language/content obligations and failure taxonomy. `MODE_CONTRACTS/M11_RENDERER_COMPARABILITY.yaml` freezes the secondary non-inferiority rule; style/preference metrics remain descriptive.
 
-**Falsification:** If M11 matches or exceeds M6 on every task outcome, state that an LLM renderer was unnecessary for the evaluated task class. Efficiency or style alone cannot rescue a necessity claim.
+**Falsification:** If M11 is non-inferior to M6 under the frozen criterion, state that an LLM renderer was unnecessary for the evaluated task class under the tested obligations. Efficiency or style cannot rescue an LLM-necessity claim.
 
-## 9. Production compiler/query errors
+## 9. Corruption following versus legitimate authority following
+
+**Threat:** M13 could falsely label a model unsafe for following an authoritative corrupted field that cannot be contradicted from the remaining visible information.
+
+**Control:** `MODE_CONTRACTS/M13_MUTATION_CONTRACT.yaml` preregisters, per mutation instance, the corrupted field, detectability from remaining visible bytes, witness/reason, expected safe behavior, valid answer set, scoring rule and semantic role.
+
+Detectable inconsistency tests and non-detectable authority-following tests are separate estimands. Hidden M6 truth alone cannot turn a visible mutation into a detectable one.
+
+**Falsification:** Practically important silent following of **detectable** contradictions narrows auditability/safety claims. Following a **non-detectable** visible authoritative value is not automatically scored unsafe and is never pooled into a universal “blind corruption” rate.
+
+## 10. Production compiler/query errors
 
 **Threat:** errors attributed to the renderer originate in extraction, query building or compilation.
 
@@ -80,7 +100,7 @@ It is intentionally a bundle estimand. It does not by itself identify whether ex
 
 **Falsification:** A large M7−M6 gap relocates the main bottleneck to the production boundary and blocks renderer-centric interpretation.
 
-## 10. Shared oracle/scorer error
+## 11. Shared oracle/scorer error
 
 **Threat:** production compiler and evaluator encode the same bug.
 
@@ -88,7 +108,7 @@ It is intentionally a bundle estimand. It does not by itself identify whether ex
 
 **Falsification:** Failure of dependency or mutation audit blocks all correctness and mechanism claims.
 
-## 11. One favorable model, domain or status
+## 12. One favorable model, domain or status
 
 **Threat:** pooled effect is driven by one stratum.
 
@@ -96,7 +116,7 @@ It is intentionally a bundle estimand. It does not by itself identify whether ex
 
 **Falsification:** practically important reversal, profile-control failure or single-stratum dominance forces explicit narrowing.
 
-## 12. Strong-model ceiling
+## 13. Strong-model ceiling
 
 **Threat:** the local pipeline is less useful than simply using a strong remote model.
 
@@ -104,6 +124,22 @@ It is intentionally a bundle estimand. It does not by itself identify whether ex
 
 **Interpretation:** M8 is an economic/quality ceiling, not the primary causal baseline. A strong M8 result must still be reported.
 
-## 13. World truth and privacy overclaim
+## 14. Conventional executable alternatives and routing responsibility
+
+**Threat:** a simpler relational, SQL→Prolog, router, or hidden-Python interface explains the same benefit at lower complexity; alternatively the main bottleneck is Qwen query/tool selection rather than semantic representation.
+
+**Control:** candidate M15–M22 are governed by `MODE_CONTRACTS/TRANSFER_LADDER_ADJUDICATION.yaml`. No candidate becomes confirmatory merely because its subtask produced an artifact. Exact upstream independent acceptance, factor vectors, semantic ownership, WP-006 power and WP-007 feasibility are required before activation.
+
+**Falsification/PIVOT:** if a simpler accepted conventional executable result interface matches M6, prefer and report the simpler engineering boundary and narrow custom-interface necessity. If deterministic result selection is strong but Qwen tool/query selection is weak, localize the bottleneck to routing/selection.
+
+## 15. Weight-changing adaptation is a separate boundary study
+
+**Threat:** apparent teacher-interface advantage disappears once Qwen weights are adapted, or Codex-generated training data adds nothing beyond ordinary matched gold-only adaptation.
+
+**Control:** ENG-202 remains outside fixed-weight M-modes. W-C must be compared with matched W-B; no best-seed selection; fixed-weight versus adapted-weight reporting is a separate boundary result with its own leakage, seed, power, rollback and feasibility contract.
+
+**Current status:** not activatable until the mandatory real Linux/CUDA smoke and distinct independent ENG-202 review are complete.
+
+## 16. World truth and privacy overclaim
 
 Runtime correctness is only relative to validated loaded assertions and rules. Fixed-weight and local execution do not prove source truth, confidentiality, differential privacy or absence from RAM/VRAM. These are prohibited alternative interpretations, not measured outcomes of WP-004.
