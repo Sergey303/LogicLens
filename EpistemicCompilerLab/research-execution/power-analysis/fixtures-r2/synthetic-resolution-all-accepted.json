@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "evidence_class": "SYNTHETIC_TEST_FIXTURE",
+  "bindings_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "resolved_at_git_head": "SYNTHETIC_ONLY",
+  "dependencies": [
+    {
+      "dependency_id": "WP004_CAUSAL_ARMS",
+      "linear_issue": "ENG-156",
+      "declared_status": "ACCEPTED",
+      "resolved_status": "ACCEPTED",
+      "accepted_artifacts": [{"path": "synthetic/wp004.json", "sha256": "1111111111111111111111111111111111111111111111111111111111111111"}]
+    },
+    {
+      "dependency_id": "WP005_ORACLE_SCORER",
+      "linear_issue": "ENG-157",
+      "declared_status": "ACCEPTED",
+      "resolved_status": "ACCEPTED",
+      "accepted_artifacts": [{"path": "synthetic/wp005.json", "sha256": "2222222222222222222222222222222222222222222222222222222222222222"}]
+    },
+    {
+      "dependency_id": "WP007_FEASIBILITY",
+      "linear_issue": "ENG-188",
+      "declared_status": "ACCEPTED",
+      "resolved_status": "ACCEPTED",
+      "accepted_artifacts": [{"path": "synthetic/wp007.json", "sha256": "3333333333333333333333333333333333333333333333333333333333333333"}]
+    }
+  ],
+  "all_required_dependencies_accepted": true,
+  "power_gate_dependency_status": "READY",
+  "fixture_or_free_text_can_satisfy_acceptance": false
+}
