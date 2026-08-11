@@ -1,46 +1,93 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "work_package_id": "WP-006",
   "linear_issue": "ENG-158",
-  "status": "PRODUCER_DESIGN_CANDIDATE",
+  "status": "R2_REMEDIATION_CANDIDATE_FINAL_N_PENDING",
+  "authority": "WP006_STATISTICAL_AUTHORITY.json",
+  "sesoi_utility_contract": "SESOI_UTILITY_CONTRACT.md",
   "primary_estimand": {
-    "population": "all preregistered confirmatory benchmark cases eligible under the frozen benchmark/oracle contract",
-    "unit": "benchmark_case",
+    "population": "all preregistered confirmatory base_scenario_id units eligible under the frozen benchmark/oracle contract with frozen source-family and model-profile allocation",
+    "unit": "base_scenario_id",
     "paired": true,
     "treatment_semantic_id": "authoritative_semantic_result_placement_fixed_weight",
     "control_semantic_id": "matched_fixed_weight_baseline",
-    "arm_binding_rule": "exact executable arm IDs are imported from accepted WP-004 before confirmatory execution; best-DEV-arm selection is forbidden",
+    "arm_binding_rule": "exact executable arm IDs and factor vectors are imported from accepted WP-004 before final N/confirmatory freeze; best-DEV-arm selection is forbidden",
     "outcome": "publication_composite_correctness",
     "outcome_type": "binary",
-    "contrast": "P(treatment_correct)-P(control_correct)",
-    "se_soi_absolute": 0.08
+    "contrast": "P(treatment_correct)-P(control_correct) over equally weighted base_scenario_id units under frozen target-population allocation",
+    "se_soi_absolute": 0.08,
+    "se_soi_role": "planning_relevance_alternative_not_hard_observed_point_threshold"
+  },
+  "observation_nesting": {
+    "independent_analysis_unit": "base_scenario_id",
+    "source_family_id": "cluster_id_and_not_an_additional_independent_case",
+    "domain_id": "preregistered_stratum",
+    "model_profile_id": "exactly_one_frozen_student_profile_per_base_scenario_id_for_primary_population_unless_WP004_versions_a_crossed_design_before_HOLDOUT",
+    "mandatory_paraphrases_per_base_scenario": 2,
+    "repeats_per_paraphrase": 3,
+    "repeat_aggregation": "at_least_2_of_3_publication_composite_correct",
+    "scenario_aggregation": "all_2_mandatory_paraphrases_pass",
+    "declared_runtime_failure": "incorrect_before_repeat_and_paraphrase_aggregation",
+    "paraphrase_is_independent_unit": false,
+    "repeat_is_independent_unit": false,
+    "model_seed_is_independent_unit": false,
+    "training_seed_is_independent_unit": false,
+    "infrastructure_rerun_is_independent_unit": false
   },
   "hypothesis": {
     "null": "delta = 0",
     "alternative": "delta != 0",
     "alpha_two_sided": 0.05,
-    "target_power_at_sesoi": 0.90
+    "target_power_at_sesoi": 0.90,
+    "practical_advantage_wording_requires_reference_to_sesoi": true,
+    "hard_point_estimate_at_least_sesoi_retain_rule": false
   },
   "primary_analysis": {
     "case_level_difference_values": [-1, 0, 1],
-    "point_estimate": "mean paired case-level treatment-minus-control correctness difference",
+    "point_estimate": "mean paired base_scenario_id treatment-minus-control publication-composite difference under frozen target-population weights",
     "cluster_id": "source_family_id",
-    "variance": "source-family cluster-robust sandwich variance for intercept-only paired differences",
-    "small_cluster_rule": "if fewer than 30 independent source-family clusters remain, asymptotic primary PASS is prohibited and a separately preregistered finite-cluster randomization/bootstrap method is required before confirmatory scoring",
+    "variance": "CR1 source-family cluster-robust sandwich variance for intercept-only paired differences",
+    "reference_distribution": "Student_t_with_df_equal_independent_source_family_clusters_minus_1",
+    "minimum_independent_clusters": 30,
+    "small_cluster_rule": "if fewer than 30 independent source-family clusters remain, primary PASS is prohibited and a separately preregistered finite-cluster method is required before confirmatory scoring",
+    "type_I_calibration": "simulation under null at the minimum 30-cluster boundary must satisfy the frozen Monte-Carlo Type-I gate before sample-size acceptance",
     "confidence_interval": 0.95,
-    "effect_report": ["absolute_difference", "confidence_interval", "discordant_pair_counts", "cluster_count", "eligible_case_count"]
+    "effect_report": [
+      "absolute_difference",
+      "cluster_robust_95ci",
+      "discordant_pair_counts",
+      "cluster_count",
+      "eligible_base_scenario_count",
+      "SESOI_reference_0.08"
+    ]
   },
   "publication_composite": {
     "source": "accepted WP-005 field-level scorer contract",
-    "rule": "correct only when every publication-critical applicable field is correct",
+    "rule": "correct only when every publication-critical applicable field is correct after frozen repeat/paraphrase aggregation",
     "malformed_response": "incorrect",
     "forbidden_tool_use": "incorrect",
-    "infrastructure_failure": "retained and handled under frozen missingness/infrastructure rules, never silently dropped as success"
+    "declared_runtime_or_model_failure": "incorrect; never converted to missing for the primary endpoint",
+    "pre_split_construction_ineligibility": "excluded before split assignment under the benchmark construction contract and not called runtime attrition"
+  },
+  "confirmatory_sets": {
+    "HOLDOUT": {
+      "role": "primary superiority inference",
+      "success": "two-sided cluster-robust p<0.05 and point estimate > 0; full interval and SESOI comparison reported"
+    },
+    "REPLICATION": {
+      "role": "independently sourced directional and interval replication",
+      "success": "point estimate > 0 with full cluster-robust interval reported; significance is reported but not required by the frozen replication success rule"
+    },
+    "joint_success": {
+      "rule": "HOLDOUT success AND independently sourced REPLICATION success",
+      "target_probability_at_SESOI": 0.90,
+      "power_method": "independent paired simulation of both confirmatory sets under the same frozen design assumptions; sample-size recommendation must satisfy the joint Monte-Carlo lower-bound gate"
+    }
   },
   "multiplicity": {
     "primary_confirmatory_contrasts": 1,
     "primary_alpha_allocation": 0.05,
-    "secondary_family": "Holm step-down at familywise alpha 0.05",
+    "secondary_family": "Holm step-down at familywise alpha 0.05 within each accepted family",
     "exploratory": "reported with effect sizes and uncertainty, explicitly non-confirmatory"
   },
   "selection_prohibitions": [
@@ -50,6 +97,7 @@
     "change alpha or target power after observing results",
     "drop difficult source families to reach significance",
     "replace final endpoint with a favorable field-level endpoint",
+    "treat paraphrases repeats training seeds or infrastructure reruns as extra independent base scenarios",
     "treat secondary or exploratory significance as the preregistered primary claim"
   ],
   "confirmatory_authorization": {
@@ -58,7 +106,9 @@
     "requires_independent_statistical_review": true,
     "requires_accepted_WP004_arm_binding": true,
     "requires_accepted_WP005_oracle_scorer": true,
-    "requires_frozen_case_and_cluster_counts": true,
-    "requires_power_gate_pass": true
+    "requires_frozen_case_cluster_domain_model_inventory": true,
+    "requires_R2_power_and_type_I_gate_pass": true,
+    "requires_joint_holdout_replication_power_gate": true,
+    "requires_WP007_feasibility": true
   }
 }
