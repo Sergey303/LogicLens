@@ -1,58 +1,80 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "work_package_id": "WP-006",
-  "purpose": "Allow a pre-HOLDOUT sample-size recalculation from non-directional nuisance information without changing the SESOI or inspecting which confirmatory arm is better.",
+  "purpose": "Allow at most one pre-HOLDOUT sample-size increase from non-directional nuisance information without changing the SESOI or inspecting which confirmatory arm is better.",
   "allowed_timing": "after TRAIN/DEV pipeline feasibility but before any HOLDOUT or REPLICATION access and before any confirmatory directional effect is revealed",
   "allowed_inputs": [
     "paired disagreement indicator without direction",
     "source_family_id with blinded treatment/control labels",
-    "non_evaluable_case_indicator and predeclared reason code",
-    "eligible case count",
+    "domain_id",
+    "frozen model_profile_id",
+    "declared failure indicator without arm identity plus predeclared failure-family code",
+    "pre_split construction eligibility indicator and reason code",
+    "eligible base_scenario_id count",
     "independent source-family cluster count"
   ],
   "forbidden_inputs": [
     "signed treatment-minus-control difference",
     "arm-labelled correctness rates",
     "which arm wins a discordant pair",
+    "arm-labelled runtime failure rates",
     "field-level directional treatment effects",
     "HOLDOUT",
     "REPLICATION",
     "reviewer or analyst narrative describing directional treatment performance"
   ],
-  "updatable_parameters": [
+  "updatable_nuisance_parameters": [
     "discordance_q",
-    "mean_cluster_size",
-    "icc_of_blinded_disagreement_or_predeclared_conservative_proxy",
-    "non_evaluable_attrition"
+    "mean_source_family_cluster_size",
+    "icc_of_blinded_paired_difference_or_predeclared_conservative_proxy",
+    "blinded_runtime_failure_rate_for_stress_simulation",
+    "pre_split_inventory_loss_rate_for_collection_overbuild_only"
   ],
   "immutable_parameters": {
     "se_soi_absolute": 0.08,
+    "se_soi_role": "planning_relevance_alternative_not_hard_observed_point_threshold",
     "alpha_two_sided": 0.05,
-    "target_power": 0.90,
+    "target_joint_holdout_replication_success_probability": 0.90,
     "primary_outcome": "publication_composite_correctness",
-    "primary_estimand": "paired absolute correctness difference",
-    "primary_confirmatory_contrasts": 1
+    "primary_estimand": "paired absolute correctness difference at base_scenario_id",
+    "primary_confirmatory_contrasts": 1,
+    "independent_analysis_unit": "base_scenario_id"
   },
   "blinding": {
     "arm_labels_replaced_with": ["arm_X", "arm_Y"],
     "direction_removed_before_analyst": true,
     "analyst_must_not_receive_mapping": true,
     "mapping_custodian_distinct_from_power_analyst": true,
-    "update_report_must_contain_only_nuisance_statistics_and_required_N": true
+    "update_report_must_not_contain_arm_specific_directional_statistics": true
+  },
+  "uncertainty_protection": {
+    "cluster_bootstrap_repetitions": 10000,
+    "cluster_bootstrap_seed": 158061,
+    "one_sided_confidence_level": 0.95,
+    "discordance_q_used_for_recalculation": "max(frozen_planning_q, one_sided_95pct_upper_cluster_bootstrap_bound)",
+    "mean_cluster_size_used_for_recalculation": "max(frozen_planning_mean_cluster_size, one_sided_95pct_upper_cluster_bootstrap_bound)",
+    "icc_used_for_recalculation": "max(frozen_planning_icc, one_sided_95pct_upper_bound_or_predeclared_conservative_proxy)",
+    "runtime_failure_used_for_stress_simulation": "max(frozen_planning_failure_parameter, one_sided_95pct_upper_blinded_bound)",
+    "favorable_point_estimate_may_reduce_required_n": false
   },
   "decision_rule": {
-    "recalculate_required_n_once": true,
-    "required_n": "ceil minimum N giving >=0.90 power at fixed delta=0.08 under updated nuisance estimates plus frozen attrition rule",
-    "if_available_confirmatory_cases_below_required_n": "POWER_GATE_FAIL_OR_REDESIGN_BEFORE_HOLDOUT",
-    "if_independent_clusters_below_30": "POWER_GATE_FAIL_FOR_ASYMPTOTIC_PRIMARY_ANALYSIS",
-    "if_updated_nuisance_estimate_unavailable": "use frozen conservative primary planning assumptions, never substitute a favorable guess"
+    "recalculate_required_n_at_most_once": true,
+    "accepted_R2_required_n_is_floor": true,
+    "updated_required_n": "max(accepted_R2_required_n, minimum N passing the frozen R2 Monte-Carlo lower-bound and Type-I/joint-success rules under conservative blinded nuisance bounds)",
+    "if_available_confirmatory_base_scenarios_below_required_n": "POWER_GATE_FAIL_OR_REDESIGN_BEFORE_HOLDOUT",
+    "if_independent_clusters_below_30": "POWER_GATE_FAIL_FOR_PRIMARY_ANALYSIS",
+    "if_updated_nuisance_bound_unavailable": "use frozen conservative planning value and accepted_R2_required_n floor; never substitute a favorable guess",
+    "pre_split_inventory_loss": "may increase raw collection target but never decreases required eligible base_scenario_id N",
+    "runtime_failures": "remain scored incorrect; never converted to attrition to lower denominator"
   },
   "audit": {
     "input_manifest_hash_required": true,
     "blinding_transform_hash_required": true,
     "analyst_identity_session_required": true,
+    "nuisance_output_machine_schema_required": true,
     "nuisance_output_hash_required": true,
     "arm_mapping_not_in_power_packet": true,
-    "independent_statistical_review_required": true
+    "independent_statistical_review_required": true,
+    "non_decreasing_N_assertion_required": true
   }
 }
