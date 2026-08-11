@@ -1,4 +1,4 @@
-schema_version: 1.1.0
+schema_version: 1.2.0
 work_package_id: WP-004
 primary:
   estimand_id: E-PRIMARY-COMPILED-BUNDLE
@@ -9,15 +9,16 @@ primary:
   population: frozen HOLDOUT scenarios and independently sourced REPLICATION under declared model/domain profiles
   endpoint: scenario_level_exact_epistemic_contract_accuracy
   effect: paired absolute accuracy difference M6 minus M14
-  aggregation: scenario is primary; paraphrases, repeats and model profiles are nested under frozen hierarchical analysis
+  aggregation: scenario is primary; paraphrases, repeats and model profiles are nested and never independent units
   held_equal:
-  - immutable student profile and decoding
+  - immutable student profile and decoding within each paired block
   - question and answer/output obligations
   - source package boundary
-  - lossless common token envelope computed as block maximum
+  - lossless common token envelope after padding-invariance PASS
   interpretation: total effect of trusted semantic execution plus verified result-interface bundle; the primary contrast does not uniquely identify execution, structure, conclusion or renderer mechanisms
-  retain_if: CI supports the preregistered smallest meaningful gain, replication direction agrees, and the claim survives profile-wise strongest-baseline sensitivity
-  null_wording: The compiled verified-interface bundle did not show a practically meaningful advantage over the strongest matched non-compiled control.
+  hypothesis: two-sided superiority test against delta=0 at alpha=.05; SESOI=.08 is the planning/practical relevance alternative and not a hard observed-point-estimate retain threshold
+  retain_if: positive preregistered primary effect with two-sided p<.05, full CI reported relative to both 0 and .08, independently sourced replication direction positive, no preregistered fatal falsification, and profile-wise strongest-baseline sensitivity reported
+  null_wording: The compiled verified-interface bundle did not show a statistically supported advantage over the strongest matched non-compiled control under the frozen confirmatory design.
 secondary:
 - estimand_id: E-PROFILE-BASELINE-SENSITIVITY
   contrast: M6 versus M14(B*_profile)
@@ -25,36 +26,51 @@ secondary:
   held_equal: [selection rule, DEV-only visibility, full information, lossless token envelope, output contract]
   interpretation: not a replacement headline estimator; falsifies pooled claims supported only by a convenient global baseline
   narrow_rule: remove or qualify model-general wording when a profile-specific matched baseline is non-inferior
-- estimand_id: E-STRUCTURE
+- estimand_id: E-RESULT-SERIALIZATION
   contrast: M6-M9
-  factor: typed field structure
+  factor: typed-frame versus canonical unstructured verified-result serialization bundle
   held_equal: [verified semantic values, authoritative content, question, student, output schema, lossless token envelope]
-  warning: unstructured serialization must not omit, merge or reinterpret semantic content
+  required_transform: deterministic canonical M6-to-M9 serialization with machine-verifiable semantic round-trip equivalence before model execution
+  interpretation: estimates the result-interface serialization/organization bundle; it does not identify field typing alone, lexical cues alone, ordering alone or parsing burden alone
+  prohibited_interpretation: typed field structure alone caused the effect
 - estimand_id: E-CONCLUSION
   contrast: M6-M12
   factor: presence of allowedConclusion
   held_equal: [compiled status, action, scope, provenance, warnings, proof trace, student, lossless token envelope]
   pivot: If almost all effect is allowedConclusion, narrow to minimal executable decision-contract paper.
-- estimand_id: E-MINIMAL-LABEL
-  contrast: M6-M10
-  factor: full verified frame versus status label only
-  held_equal: [verified status, question, student, policy description, lossless token envelope]
-  interpretation: marginal value of action, scope, provenance, warnings and proof fields as a bundle
+- estimand_id: E-MINIMAL-DECISION
+  contrast: M10-M14
+  factor: authoritative verified status-plus-action minimal decision contract versus strongest non-compiled source interface
+  held_equal: [question, student, answer schema, shared policy, lossless token envelope]
+  interpretation: tests whether the minimal executed decision contract is already sufficient; M10 is not status-only
+- estimand_id: E-RICH-FRAME-BEYOND-MINIMAL
+  contrast: M12-M10
+  factor: scope/provenance/evidence/warnings/proof fields beyond status-plus-action, with allowedConclusion absent from both compared semantic obligations
+  held_equal: [verified status, verified action, question, student, policy, answer schema, lossless token envelope]
+  interpretation: bundled marginal value of the additional verified frame fields; not attribution to any one added field
 - estimand_id: E-RENDERER
-  contrast: M6-M11
-  factor: LLM renderer versus deterministic template
-  held_equal: [exact semantic frame, decision policy, target language/content contract]
-  stop_rule: If M11 matches or exceeds M6 on all task outcomes, state LLM rendering is unnecessary for this task class.
+  contrast: M11-M6
+  factor: deterministic renderer versus student LLM renderer under the identical semantic frame and canonical answer/scoring obligations
+  held_equal: [exact semantic frame, decision policy, target language/content contract, scoring schema, failure taxonomy]
+  criterion: non-inferiority margin 0.02 absolute scenario-level accuracy; one-sided 95% lower bound for M11-M6 must exceed -0.02
+  statistical_dependency: WP-006 independent reviewer may revise/authorize the secondary criterion before HOLDOUT; no post-outcome margin change
+  stop_rule: If M11 is non-inferior under the frozen criterion, state that LLM rendering is unnecessary for this task class under the tested obligations.
 - estimand_id: E-COMPILER-BOUNDARY
   contrast: M7-M6
   factor: production extraction/query/compiler path versus independent gold frame
   held_equal: [student renderer, frame schema, question]
   interpretation: production boundary loss; not a deployment comparison
-- estimand_id: E-CORRUPTION
-  contrast: M13-M6
-  factor: one corrupted frame field
+- estimand_id: E-CORRUPTION-DETECTABLE
+  contrast: M13-M6 restricted to preregistered detectable mutation instances
+  factor: response to one internally detectable inconsistent/corrupted authoritative field
   held_equal: [all other fields, serialization-length class, student, question, token envelope]
-  outcomes: [follow_corruption, detect_inconsistency, ignore_frame, fabricate_reconciliation]
+  outcomes: [follow_mutated_field, detect_or_flag_inconsistency, ignore_mutated_field, fabricate_reconciliation, schema_failure]
+  interpretation: consistency-checking diagnostic only under the frozen detectability witness
+- estimand_id: E-CORRUPTION-NONDETECTABLE
+  contrast: M13-M6 restricted to preregistered non-detectable mutation instances
+  factor: authority following when hidden original truth is not recoverable from remaining visible bytes
+  held_equal: [all other fields, serialization-length class, student, question, token envelope]
+  interpretation: authority-following diagnostic; following the visible mutation is not automatically unsafe and cannot be pooled with detectable corruption
 - estimand_id: E-TEACHER-PROMPT
   contrast: M4 against its frozen unedited source mode
   factor: teacher-edited prompt
@@ -66,13 +82,20 @@ secondary:
 - estimand_id: E-STRONG-CEILING
   contrast: M8-M6
   factor: strong remote model versus amortized local compiled pipeline
-  outcomes: [accuracy, latency, tokens, hardware, teacher amortization]
+  outcomes: [accuracy, latency, tokens, hardware, teacher_amortization]
   interpretation: economic/quality ceiling, not primary causal claim
+candidate_extension_estimands:
+  status: INACTIVE_UNTIL_MODE_ADJUDICATION_AND_UPSTREAM_INDEPENDENT_ACCEPTANCE
+  source: MODE_CONTRACTS/TRANSFER_LADDER_ADJUDICATION.yaml
+  rule: no M15-M22 or weight-changing estimand enters the confirmatory registry merely because a subtask produced a candidate artifact
 prohibited_estimands:
 - M6-M3 alone as headline compilation effect
 - treating E-PRIMARY-COMPILED-BUNDLE as a single-mechanism effect
+- treating M6-M9 as typed-structure-only evidence
+- treating M10 as a status-only label control
+- pooling detectable and non-detectable M13 mutations into one safety rate
 - any contrast produced by deleting source information solely to match tokens
-- per-paraphrase independent treatment effect
+- per-paraphrase, repeat, seed or infrastructure-rerun independent treatment effect
 - best model/seed/domain post-hoc effect
 - privacy, world-truth, learning, or universal LLM effect
 - renderer quality inferred from frame correctness alone
