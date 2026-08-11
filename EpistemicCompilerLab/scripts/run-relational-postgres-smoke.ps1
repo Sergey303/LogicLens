@@ -29,10 +29,10 @@ if (-not $python) { throw 'python is required.' }
 & $python.Source -m pip install --disable-pip-version-check -r $Requirements
 if ($LASTEXITCODE -ne 0) { throw "ENG-197 dependency install failed: $LASTEXITCODE" }
 
-# Build the complete scientific/runtime closure from the exact checkout, then
-# immediately require byte-identical check before touching PostgreSQL.
-& $python.Source $ManifestBuilder
-if ($LASTEXITCODE -ne 0) { throw "ENG-197 freeze manifest build failed: $LASTEXITCODE" }
+# Execution is strictly read-only with respect to the frozen scientific/runtime
+# closure. Manifest generation is a separate producer freeze operation. Never
+# rewrite a drifted manifest immediately before execution, or a modified checkout
+# could normalize itself and defeat independent reproduction.
 & $python.Source $ManifestBuilder --check
 if ($LASTEXITCODE -ne 0) { throw "ENG-197 freeze manifest check failed: $LASTEXITCODE" }
 
