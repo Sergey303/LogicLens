@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "simulation_id": "wp006.r2.clustered-paired-heterogeneous-failure-aware.v1",
+  "analysis_unit": "base_scenario_id",
+  "endpoint": "publication_composite_correctness",
+  "primary_alternative": {
+    "average_final_delta": 0.08,
+    "role": "SESOI planning alternative",
+    "alpha_two_sided": 0.05,
+    "joint_success_probability_target": 0.90
+  },
+  "strata": {
+    "domains": [
+      {"id": "domain-1", "control_accuracy_offset": -0.03, "final_delta_offset": -0.01, "discordance_offset": -0.02, "failure_multiplier": 1.10},
+      {"id": "domain-2", "control_accuracy_offset": 0.00, "final_delta_offset": 0.00, "discordance_offset": 0.00, "failure_multiplier": 1.00},
+      {"id": "domain-3", "control_accuracy_offset": 0.03, "final_delta_offset": 0.01, "discordance_offset": 0.02, "failure_multiplier": 0.90}
+    ],
+    "model_profiles": [
+      {"id": "model-1", "control_accuracy_offset": -0.03, "final_delta_offset": -0.015, "discordance_offset": -0.03, "failure_multiplier": 1.20},
+      {"id": "model-2", "control_accuracy_offset": -0.01, "final_delta_offset": -0.005, "discordance_offset": -0.01, "failure_multiplier": 1.10},
+      {"id": "model-3", "control_accuracy_offset": 0.01, "final_delta_offset": 0.005, "discordance_offset": 0.01, "failure_multiplier": 0.90},
+      {"id": "model-4", "control_accuracy_offset": 0.03, "final_delta_offset": 0.015, "discordance_offset": 0.03, "failure_multiplier": 0.80}
+    ],
+    "allocation": "source-family clusters are assigned round-robin across the 12 domain-by-model strata; every base_scenario_id belongs to exactly one source family and one frozen model profile"
+  },
+  "paired_semantic_generator": {
+    "base_control_accuracy": 0.65,
+    "base_discordance_q": 0.35,
+    "source_family_shared_pair_mixture_probability": 0.05,
+    "interpretation": "with the stated probability one latent paired semantic outcome is shared within a source-family cluster; otherwise paired outcomes are independently drawn within that cluster. Marginal p11/p10/p01/p00 are calibrated per stratum."
+  },
+  "failure_generator": {
+    "source_family_catastrophic_failure_probability": 0.01,
+    "scenario_common_failure_probability": 0.005,
+    "treatment_case_failure_probability_base": 0.015,
+    "control_case_failure_probability_base": 0.010,
+    "stratum_failure_rate": "arm base probability multiplied by domain failure_multiplier and model failure_multiplier",
+    "scoring": "all generated failures set the affected arm publication_composite_correctness to 0; failures never remove a base_scenario_id from the analysis denominator",
+    "calibration": "latent semantic treatment accuracy is solved per stratum so expected FINAL post-failure treatment-minus-control accuracy equals the target final_delta for that stratum"
+  },
+  "clustering": {
+    "mean_source_family_cluster_size": 8,
+    "cluster_size_rule": "contiguous clusters of size 8 plus one final remainder cluster when N is not divisible by 8",
+    "minimum_independent_source_family_clusters": 30,
+    "primary_variance": "CR1 source-family cluster robust sandwich for intercept-only paired differences",
+    "reference_distribution": "Student t with df=G-1"
+  },
+  "power_search": {
+    "candidate_eligible_n_grid": [802, 820, 840, 860, 880, 900, 920, 940, 960, 980, 1000, 1040, 1080, 1120, 1200],
+    "repetitions_per_candidate": 20000,
+    "seed": 158062,
+    "selection_rule": "smallest candidate N on the frozen grid at or above 802 whose one-sided 95% Wilson lower confidence bound for JOINT HOLDOUT+REPLICATION success is at least 0.90",
+    "non_decreasing_floor": 802,
+    "seed_shopping": false
+  },
+  "confirmatory_success_simulation": {
+    "HOLDOUT": "independent draw; estimate > 0 and two-sided CR1 Student-t p < 0.05",
+    "REPLICATION": "independent draw from the same frozen population generator; estimate > 0; its two-sided p-value and interval are recorded but significance is not required for replication success",
+    "joint": "HOLDOUT success AND REPLICATION success in the same Monte-Carlo replicate"
+  },
+  "type_I_calibration": {
+    "eligible_n": 240,
+    "independent_source_family_clusters": 30,
+    "repetitions": 30000,
+    "seed": 158063,
+    "null_final_delta": 0.0,
+    "heterogeneity_retained": ["control_accuracy", "discordance_q", "failure_rates"],
+    "directional_delta_offsets_under_null": false,
+    "acceptance": "one-sided 95% Wilson upper confidence bound for two-sided false-positive probability must be <= 0.055"
+  },
+  "monte_carlo_uncertainty": {
+    "interval": "Wilson score",
+    "one_sided_confidence_level": 0.95,
+    "joint_power_gate_uses_lower_bound": true,
+    "type_I_gate_uses_upper_bound": true
+  },
+  "sensitivity": {
+    "SESOI_delta_values": [0.05, 0.08, 0.10],
+    "required_reporting": "rerun the frozen generator at the selected R2 N for all three delta values; only 0.08 drives the primary sample-size selection"
+  },
+  "explicit_nonclaims": [
+    "the generator is a fitted stochastic model of future benchmark outcomes",
+    "the heterogeneity or failure parameters are empirically estimated from HOLDOUT or REPLICATION",
+    "the R2 selected N is final before independent statistical review and accepted WP-004/WP-005/WP-007 dependencies",
+    "Monte-Carlo replicates are benchmark sample units"
+  ]
+}
