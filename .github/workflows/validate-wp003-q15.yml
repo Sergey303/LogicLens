@@ -1,0 +1,45 @@
+name: ENG-155 WP-003 Q15 freshness validation
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-003/Q15_*'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_q15_semantics.py'
+      - 'EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY_Q15_ADDENDUM.md'
+      - 'EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG_Q15_ADDENDUM.md'
+      - '.github/workflows/validate-wp003-q15.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-003/Q15_*'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_q15_semantics.py'
+      - 'EpistemicCompilerLab/research-execution/NOVELTY_BOUNDARY_Q15_ADDENDUM.md'
+      - 'EpistemicCompilerLab/research-execution/RELATED_WORK_SEARCH_LOG_Q15_ADDENDUM.md'
+      - '.github/workflows/validate-wp003-q15.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  q15-semantic-contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate frozen WP-003 base plus Q15 overlay
+        run: python EpistemicCompilerLab/research-execution/context-packets/WP-003/validate_wp003_q15_semantics.py
+      - name: Assert producer evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          print(json.dumps({
+              'issue': 'ENG-155',
+              'round': 'Q15',
+              'evidence_class': 'PRODUCER_REMEDIATION_VALIDATION_ONLY',
+              'independent_novelty_acceptance': 'NOT_PERFORMED',
+              'gate_001': 'NOT_APPROVED',
+              'holdout_replication_access': 'NONE'
+          }, sort_keys=True))
+          PY
