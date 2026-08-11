@@ -4,22 +4,31 @@ on:
   pull_request:
     paths:
       - 'EpistemicCompilerLab/research-execution/relational-comparator/ENG-197_FREEZE_MANIFEST.json'
+      - 'EpistemicCompilerLab/research-execution/relational-comparator/RUNTIME_DEPENDENCIES.json'
+      - 'EpistemicCompilerLab/research-execution/relational-comparator/prototype/live_postgres_smoke.py'
+      - 'EpistemicCompilerLab/scripts/run-relational-postgres-smoke.ps1'
       - '.github/workflows/eng-197-live-postgres.yml'
   push:
     branches: [main]
     paths:
       - 'EpistemicCompilerLab/research-execution/relational-comparator/ENG-197_FREEZE_MANIFEST.json'
+      - 'EpistemicCompilerLab/research-execution/relational-comparator/RUNTIME_DEPENDENCIES.json'
+      - 'EpistemicCompilerLab/research-execution/relational-comparator/prototype/live_postgres_smoke.py'
+      - 'EpistemicCompilerLab/scripts/run-relational-postgres-smoke.ps1'
       - '.github/workflows/eng-197-live-postgres.yml'
 
 permissions:
   contents: read
+
+env:
+  ENG197_REQUIRED_POSTGRES_IMAGE: postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636
 
 jobs:
   live-postgres:
     runs-on: ubuntu-24.04
     services:
       postgres:
-        image: postgres:18.4
+        image: postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: eng197_ephemeral_ci
@@ -44,20 +53,30 @@ jobs:
       - name: Re-run static comparator verification
         run: python EpistemicCompilerLab/research-execution/relational-comparator/prototype/verify.py
 
-      - name: Require exact frozen 34-file manifest
+      - name: Require exact frozen manifest before database access
         run: python EpistemicCompilerLab/research-execution/relational-comparator/prototype/build_freeze_manifest.py --check
 
-      - name: Capture pulled PostgreSQL image digest
+      - name: Prove service image was pre-pinned to committed RepoDigest
         shell: bash
         run: |
           set -euo pipefail
-          digest="$(docker image inspect postgres:18.4 --format '{{index .RepoDigests 0}}')"
-          case "$digest" in
-            postgres@sha256:*) ;;
-            *) echo "Expected immutable postgres@sha256 RepoDigest, got: $digest" >&2; exit 1 ;;
-          esac
-          echo "ENG197_POSTGRES_IMAGE_DIGEST=$digest" >> "$GITHUB_ENV"
-          echo "PostgreSQL image digest: $digest"
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+
+          expected = os.environ['ENG197_REQUIRED_POSTGRES_IMAGE']
+          runtime = json.loads(Path('EpistemicCompilerLab/research-execution/relational-comparator/RUNTIME_DEPENDENCIES.json').read_text())
+          contract_expected = runtime['postgresql']['container']['required_repo_digest']
+          image_reference = runtime['postgresql']['container']['required_image_reference']
+          assert expected == contract_expected == image_reference
+          assert runtime['postgresql']['container']['mutable_tag_execution_forbidden'] is True
+
+          raw = subprocess.check_output(['docker', 'image', 'inspect', expected, '--format', '{{json .RepoDigests}}'], text=True).strip()
+          repo_digests = json.loads(raw)
+          assert expected in repo_digests, (expected, repo_digests)
+          print(json.dumps({'expected_precommitted_digest': expected, 'repo_digests': repo_digests}, sort_keys=True))
+          PY
+          echo "ENG197_POSTGRES_IMAGE_DIGEST=$ENG197_REQUIRED_POSTGRES_IMAGE" >> "$GITHUB_ENV"
 
       - name: Execute real database path and persist pre-score bytes
         env:
@@ -74,7 +93,7 @@ jobs:
       - name: Fail closed on evidence contract
         run: |
           python - <<'PY'
-          import hashlib, json
+          import hashlib, json, os
           from pathlib import Path
 
           root = Path('artifacts/eng-197/postgres-smoke')
@@ -84,13 +103,16 @@ jobs:
               raise SystemExit('missing live/equivalence report')
           live = json.loads(live_path.read_text(encoding='utf-8'))
           eq = json.loads(eq_path.read_text(encoding='utf-8'))
+          runtime = json.loads(Path('EpistemicCompilerLab/research-execution/relational-comparator/RUNTIME_DEPENDENCIES.json').read_text())
+          expected_digest = runtime['postgresql']['container']['required_repo_digest']
 
+          assert expected_digest == os.environ['ENG197_REQUIRED_POSTGRES_IMAGE']
           assert live['status'] == 'PASS'
           assert live['runtime']['server_version'] == '18.4'
           assert live['runtime']['server_version_num'] == 180004
           assert live['runtime']['psycopg_version'] == '3.3.4'
-          assert live['runtime']['execution_identity'] == 'container_digest_pinned'
-          assert live['runtime']['container_image_digest'].startswith('postgres@sha256:')
+          assert live['runtime']['execution_identity'] == 'container_digest_pre_pinned'
+          assert live['runtime']['container_image_digest'] == expected_digest
           assert live['runtime']['database_name'].startswith('eng197_')
           assert live['security_negatives']['all_passed'] is True
           assert set(live['security_negatives']['database_read_only_role']) == {
@@ -120,18 +142,20 @@ jobs:
           assert all(row['exact_result_equal'] for row in eq['cases'])
 
           evidence = {
-              'schema_version': '1.0.0',
+              'schema_version': '1.1.0',
               'linear_issue': 'ENG-197',
               'evidence_class': 'TRAIN_DEV_REAL_POSTGRESQL_EXECUTION_NOT_MODEL_EFFECT',
               'live_report_sha256': hashlib.sha256(live_path.read_bytes()).hexdigest(),
               'equivalence_report_sha256': hashlib.sha256(eq_path.read_bytes()).hexdigest(),
               'postgresql_server_version': live['runtime']['server_version'],
               'postgresql_image_digest': live['runtime']['container_image_digest'],
+              'container_pin_timing': 'PRECOMMITTED_BEFORE_SERVICE_START',
               'case_count': len(live['cases']),
               'subset_all_exact': True,
               'permission_negatives_pass': True,
+              'local_runner_manifest_behavior': 'CHECK_ONLY_NO_REWRITE',
               'm15_status': 'DEV_ONLY_SINGLE_ENDPOINT_SCHEMA_DIAGNOSTIC',
-              'm16_status': 'PRODUCER_EXECUTION_EVIDENCE_READY_FOR_INDEPENDENT_REVIEW',
+              'm16_status': 'PRODUCER_EXECUTION_EVIDENCE_READY_FOR_DISTINCT_RE_REVIEW',
               'm16_confirmatory_authorized': False,
               'independent_review': 'NOT_PERFORMED',
               'holdout_replication_access': 'NONE'
@@ -145,7 +169,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eng-197-postgres-18.4-evidence
+          name: eng-197-postgres-18.4-pinned-evidence
           path: artifacts/eng-197/postgres-smoke/
           if-no-files-found: warn
           retention-days: 30
