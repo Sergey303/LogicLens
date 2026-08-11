@@ -1,0 +1,41 @@
+name: ENG-197 freeze-manifest bootstrap
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/relational-comparator/**'
+      - 'EpistemicCompilerLab/scripts/run-relational-comparator-tests.ps1'
+      - 'EpistemicCompilerLab/scripts/run-relational-postgres-smoke.ps1'
+      - 'EpistemicCompilerLab/scripts/launch.ps1'
+      - '.github/workflows/eng-197-freeze-manifest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  freeze-bootstrap:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Static comparator verification
+        run: python EpistemicCompilerLab/research-execution/relational-comparator/prototype/verify.py
+      - name: Build exact manifest from this checkout
+        run: python EpistemicCompilerLab/research-execution/relational-comparator/prototype/build_freeze_manifest.py
+      - name: Emit manifest bytes for producer freeze
+        run: cat EpistemicCompilerLab/research-execution/relational-comparator/ENG-197_FREEZE_MANIFEST.json
+      - name: Assert bootstrap is not PostgreSQL evidence
+        run: |
+          python - <<'PY'
+          import json
+          print(json.dumps({
+              'issue': 'ENG-197',
+              'evidence_class': 'FREEZE_BOOTSTRAP_ONLY',
+              'live_postgresql_executed': False,
+              'm16_accepted': False,
+              'independent_review': 'NOT_PERFORMED',
+              'holdout_replication_access': 'NONE'
+          }, sort_keys=True))
+          PY
