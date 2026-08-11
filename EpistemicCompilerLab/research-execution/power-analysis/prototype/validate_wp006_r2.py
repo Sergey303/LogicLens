@@ -45,8 +45,8 @@ def main() -> int:
     require(authority["normative_package"] == "EpistemicCompilerLab/research-execution/power-analysis", "normative package drift")
     require(authority["legacy_statistics_registry"]["status"] == "SUPERSEDED_HISTORICAL_POINTER_ONLY", "legacy registry still active")
     require("status: SUPERSEDED_HISTORICAL_POINTER" in legacy_pointer, "statistics/ANALYSIS_REGISTRY is not a supersession pointer")
-    require("point_estimate_at_least_0.08" in legacy_snapshot, "historical v1 snapshot not preserved")
-    require("point_estimate_at_least_0.08" not in legacy_pointer, "rejected hard point-estimate rule leaked into current pointer")
+    require("point estimate at least 0.08" in legacy_snapshot, "historical v1 snapshot not preserved")
+    require("point estimate at least 0.08" not in legacy_pointer, "rejected hard point-estimate rule leaked into current pointer")
     require(power_pointer["status"] == "SUPERSEDED_ANALYTICAL_POINTER", "old POWER_SCENARIOS still active")
     require(power_pointer["normative_R2_simulation"] == "R2_SIMULATION_SCENARIOS.json", "R2 simulation pointer drift")
 
