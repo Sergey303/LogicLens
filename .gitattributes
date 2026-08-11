@@ -9,3 +9,9 @@ EpistemicCompilerLab/progressive-dsl/opinion-d1/cases-v0.jsonl text eol=lf
 EpistemicCompilerLab/progressive-dsl/opinion-d1/opinions-v0.jsonl text eol=lf
 EpistemicCompilerLab/progressive-dsl/opinion-d2/cases-v0.jsonl text eol=lf
 EpistemicCompilerLab/progressive-dsl/opinion-d2/reports-v0.jsonl text eol=lf
+
+# ENG-197 is byte-frozen and must rebuild identically on Windows and Unix.
+EpistemicCompilerLab/research-execution/relational-comparator/** text eol=lf
+EpistemicCompilerLab/scripts/run-relational-comparator-tests.ps1 text eol=lf
+EpistemicCompilerLab/scripts/run-relational-postgres-smoke.ps1 text eol=lf
+EpistemicCompilerLab/scripts/launch.ps1 text eol=lf
