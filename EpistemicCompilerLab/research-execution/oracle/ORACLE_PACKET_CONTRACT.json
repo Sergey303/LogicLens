@@ -1,9 +1,12 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "work_package_id": "WP-005",
+  "lifecycle_contract": "ORACLE_LIFECYCLE_CONTRACT.json",
+  "gold_adjudication_protocol": "GOLD_ADJUDICATION_PROTOCOL.json",
   "components": {
     "b_oracle_input_packet": {
-      "purpose": "independent formal semantic execution",
+      "purpose": "independent formal semantic execution after blind outcome gold is frozen but without outcome-gold visibility",
+      "lifecycle_activation_stage": "isolated_B_oracle_computes_without_outcome_gold_mount",
       "allowed": [
         "source_assertions",
         "strict_rules",
@@ -15,13 +18,15 @@
         "type_identifier_registry"
       ],
       "forbidden": [
+        "outcome_gold_registry",
         "expected_status",
         "expected_action",
         "expected_conclusion",
         "expected_warnings",
-        "expected_evidence_roots",
+        "expected_positive_evidence_roots",
+        "expected_negative_evidence_roots",
         "expected_provenance",
-        "expected_proof_trace",
+        "expected_proof_normal_form",
         "expected_frame",
         "student_response",
         "production_frame",
@@ -30,8 +35,8 @@
       ]
     },
     "query_adjudication_registry": {
-      "purpose": "pre-model natural-question query alternatives",
-      "visible_to_b_oracle": "only_as_explicit_execution_queries_for_natural_question_ceiling_or_gold_query_track",
+      "purpose": "pre-model blind natural-question query alternatives",
+      "visible_to_b_oracle": "only normalized_query for an explicitly authorized gold-query/oracle-ceiling execution; adjudication metadata is not a semantic input",
       "allowed_fields": [
         "case_id",
         "question_hash",
@@ -39,21 +44,30 @@
         "normalized_query",
         "interpretation_requirements",
         "clarification_expected",
-        "adjudication_provenance"
+        "adjudicator_identities",
+        "independent_decisions",
+        "disagreement",
+        "third_adjudication_if_needed",
+        "source_and_registry_evidence",
+        "reason_code"
       ],
       "forbidden_fields": [
         "expected_status",
         "expected_action",
         "expected_conclusion",
         "expected_warnings",
-        "expected_evidence_roots",
-        "expected_proof_trace",
+        "expected_positive_evidence_roots",
+        "expected_negative_evidence_roots",
+        "expected_provenance",
+        "expected_proof_normal_form",
         "expected_frame"
       ],
+      "freeze_stage": "query_adjudication_registry_hash_frozen",
+      "freeze_before_b_oracle_execution": true,
       "freeze_before_first_model_output": true
     },
     "outcome_gold_registry": {
-      "purpose": "independently adjudicated semantic expectations",
+      "purpose": "independently blind-adjudicated semantic expectations and sole scorer expected-value authority",
       "visible_to_b_oracle_during_computation": false,
       "allowed_fields": [
         "case_id",
@@ -62,22 +76,44 @@
         "expected_action",
         "expected_conclusion",
         "expected_warnings",
-        "expected_evidence_roots",
+        "expected_positive_evidence_roots",
+        "expected_negative_evidence_roots",
         "expected_provenance",
         "expected_proof_normal_form",
         "policy_id",
         "semantic_version",
-        "adjudication_provenance"
+        "adjudicator_identities",
+        "independent_derivation_records",
+        "disagreement",
+        "third_adjudication_if_needed",
+        "source_locators",
+        "reason_code"
       ],
-      "freeze_before_first_model_output": true
+      "freeze_stage": "outcome_gold_registry_hash_frozen",
+      "freeze_before_b_oracle_execution": true,
+      "freeze_before_first_model_output": true,
+      "expected_value_authority": true
+    },
+    "b_gold_consistency_check": {
+      "purpose": "compare frozen independent B-oracle result against already frozen outcome gold without allowing either side to repair the other",
+      "lifecycle_stage": "B_vs_outcome_gold_consistency_checked",
+      "requires": [
+        "B_oracle_output_hash_frozen",
+        "outcome_gold_registry_hash_frozen"
+      ],
+      "unexplained_disagreement": "block_scoring_and_benchmark_freeze",
+      "B_may_override_gold": false,
+      "gold_may_be_repaired_from_B": false
     },
     "b_scorer_packet": {
-      "purpose": "post-freeze field scoring",
+      "purpose": "post-freeze field scoring against outcome-gold authority with B result retained as independent consistency evidence",
+      "lifecycle_activation_stage": "scorer_source_and_hash_frozen",
       "available_only_after": [
-        "b_oracle_output_hash_frozen",
         "query_adjudication_registry_hash_frozen",
         "outcome_gold_registry_hash_frozen",
-        "scorer_hash_frozen"
+        "B_oracle_output_hash_frozen",
+        "B_vs_outcome_gold_consistency_checked",
+        "scorer_source_and_hash_frozen"
       ],
       "allowed": [
         "raw_student_response",
@@ -87,17 +123,19 @@
         "response_schema",
         "field_scoring_contract"
       ],
+      "expected_value_authority": "outcome_gold_registry",
       "forbidden": [
         "production_generated_expected_frame",
         "post_model_gold_edit",
-        "post_model_acceptable_alternative_addition"
+        "post_model_acceptable_alternative_addition",
+        "B_oracle_override_of_gold"
       ]
     }
   },
   "tracks": {
     "gold_query_execution": {
       "input": "pre-model adjudicated normalized query",
-      "claim_scope": "formal execution plus decision policy only",
+      "claim_scope": "formal execution plus decision policy and frame serialization only",
       "may_validate": ["formal_execution", "decision_policy", "frame_serialization"],
       "must_not_validate": ["natural_question_interpretation", "student_query_formation"]
     },
@@ -120,8 +158,11 @@
   },
   "post_model_governance": {
     "acceptable_alternative_addition_after_first_model_output": "prohibited",
-    "scorer_bug_fix": "allowed_only_if_expected_semantic_set_is_byte_identical",
-    "new_gold_ambiguity_after_model_output": "new_benchmark_version_confirmatory_status_invalidated",
+    "outcome_gold_edit_after_first_model_output": "prohibited",
+    "gold_repair_from_model_behavior": "prohibited",
+    "gold_repair_from_B": "prohibited",
+    "scorer_bug_fix": "allowed_only_if_query_and_outcome_gold_semantic_bytes_are_identical",
+    "new_gold_ambiguity_after_model_output": "new_benchmark_version_and_new_blind_adjudication; current_confirmatory_status_invalidated",
     "silent_in_place_expansion": "prohibited"
   }
 }

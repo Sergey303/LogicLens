@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-005",
+  "authority": "machine-readable lifecycle mirror of context-packets/WP-005/ACCEPTANCE.v1.3.yaml freeze_order; any mismatch blocks producer handoff",
+  "freeze_order": [
+    "semantic_spec_registry_policy_hashes_frozen",
+    "source_rule_packet_hashes_frozen",
+    "blind_query_adjudication_completed",
+    "query_adjudication_registry_hash_frozen",
+    "blind_outcome_gold_adjudication_completed",
+    "outcome_gold_registry_hash_frozen",
+    "isolated_B_oracle_computes_without_outcome_gold_mount",
+    "B_oracle_output_hash_frozen",
+    "B_vs_outcome_gold_consistency_checked",
+    "scorer_source_and_hash_frozen",
+    "first_scored_model_output_may_exist"
+  ],
+  "phase_contracts": {
+    "blind_query_adjudication_completed": {
+      "requires": [
+        "two independent query adjudicators per case",
+        "third adjudicator on disagreement",
+        "unresolved disagreement makes case ineligible"
+      ],
+      "forbidden_visibility": ["Path_A_output", "Path_B_output", "student_or_teacher_output", "model_metrics", "outcome_gold_registry"]
+    },
+    "blind_outcome_gold_adjudication_completed": {
+      "requires": [
+        "two independent outcome adjudicators per case",
+        "third adjudicator on disagreement",
+        "manual derivation under frozen semantics/policy",
+        "unresolved disagreement makes case ineligible"
+      ],
+      "forbidden_visibility": ["Path_A_output", "Path_B_output", "student_or_teacher_output", "model_metrics", "post_model_error_analysis"]
+    },
+    "isolated_B_oracle_computes_without_outcome_gold_mount": {
+      "required_mount_absent": ["outcome_gold_registry"],
+      "required_forbidden_fields": [
+        "expected_status",
+        "expected_action",
+        "expected_conclusion",
+        "expected_warnings",
+        "expected_positive_evidence_roots",
+        "expected_negative_evidence_roots",
+        "expected_provenance",
+        "expected_proof_normal_form",
+        "expected_frame",
+        "student_response",
+        "production_frame",
+        "production_oracle_output",
+        "model_metrics"
+      ]
+    },
+    "B_vs_outcome_gold_consistency_checked": {
+      "role": "independent consistency check, not expected-value authority",
+      "expected_value_authority": "outcome_gold_registry",
+      "unexplained_disagreement": "block_scoring_and_benchmark_freeze",
+      "B_may_override_gold": false,
+      "gold_may_be_repaired_from_B": false
+    },
+    "scorer_source_and_hash_frozen": {
+      "requires_completed_before_activation": [
+        "query_adjudication_registry_hash_frozen",
+        "outcome_gold_registry_hash_frozen",
+        "B_oracle_output_hash_frozen",
+        "B_vs_outcome_gold_consistency_checked"
+      ]
+    }
+  },
+  "post_model_governance": {
+    "query_alternative_addition": "prohibited",
+    "outcome_alternative_addition": "prohibited",
+    "gold_repair_from_model_behavior": "prohibited",
+    "gold_repair_from_B": "prohibited",
+    "new_legitimate_ambiguity": "new benchmark version and new blind adjudication; current confirmatory eligibility invalidated"
+  },
+  "claim_boundary": "B-oracle is an independent consistency implementation. Outcome gold remains scorer authority. Agreement is interpretable only because outcome gold is frozen before B execution yet physically unavailable to B during computation."
+}

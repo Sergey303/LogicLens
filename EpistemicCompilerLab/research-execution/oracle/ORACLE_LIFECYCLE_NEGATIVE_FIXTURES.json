@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-005",
+  "fixtures": [
+    {
+      "fixture_id": "NEG-STALE-EVIDENCE-VOCABULARY",
+      "mutation": "replace_exact_evidence_fields_with_legacy_generic_fields_in_packet",
+      "targets": ["ORACLE_PACKET_CONTRACT.json"],
+      "legacy_fields": ["expected_evidence_roots", "expected_proof_trace"],
+      "removed_required_fields": [
+        "expected_positive_evidence_roots",
+        "expected_negative_evidence_roots",
+        "expected_proof_normal_form"
+      ],
+      "expected_result": "FAIL",
+      "expected_error_contains": "legacy generic evidence vocabulary"
+    },
+    {
+      "fixture_id": "NEG-B-BEFORE-GOLD-FREEZE",
+      "mutation": "move_B_execution_before_blind_outcome_gold_completion_in_lifecycle_and_protocol",
+      "targets": ["ORACLE_LIFECYCLE_CONTRACT.json", "GOLD_ADJUDICATION_PROTOCOL.json"],
+      "expected_result": "FAIL",
+      "expected_error_contains": "acceptance/lifecycle freeze order mismatch"
+    }
+  ],
+  "acceptance": {
+    "all_fixtures_must_fail": true,
+    "failure_reason_must_match_expected_substring": true,
+    "fixture_mutation_must_not_touch_repository_files": true
+  }
+}

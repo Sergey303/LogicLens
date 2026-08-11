@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0.0",
+  "work_package": "WP-005",
+  "linear_issue": "ENG-157",
+  "remediation_round": "R2_LIFECYCLE_CLOSURE",
+  "status": "READY_FOR_DISTINCT_INDEPENDENT_REVIEW",
+  "date": "2026-08-11",
+  "candidate_resolution": {
+    "rule": "scientific candidate is the first parent of the commit that introduces this handoff file",
+    "expected_candidate_sha": "b37fc17f247a49d30942671eb1f3feb95bd28d9d",
+    "handoff_commit_must_change_only": "this handoff metadata file"
+  },
+  "roles": {
+    "producer_context": "ChatGPT ENG-157 R2 lifecycle remediation producer / 2026-08-11",
+    "reviewer": "UNASSIGNED distinct Mutation and Dependency Auditor",
+    "gatekeeper": "UNASSIGNED distinct Senior Adversarial Methodology Reviewer",
+    "producer_conflict": "This context performed the R2 remediation and must not independently accept it or approve GATE-001."
+  },
+  "independent_R2_findings_closed_producer_side": [
+    {
+      "finding": "stale ORACLE_PACKET_CONTRACT evidence/proof vocabulary",
+      "remediation": "packet now uses expected_positive_evidence_roots, expected_negative_evidence_roots and expected_proof_normal_form throughout, binds GOLD_ADJUDICATION_PROTOCOL.json and ORACLE_LIFECYCLE_CONTRACT.json, and forbids legacy generic expected_evidence_roots/expected_proof_trace vocabulary",
+      "machine_check": "NEG-STALE-EVIDENCE-VOCABULARY is killed for the expected reason"
+    },
+    {
+      "finding": "producer preflight PASS could not match frozen candidate bytes",
+      "remediation": "fresh GitHub-hosted producer run executes context packet, dedicated semantic validator, wrapper availability and lifecycle validator on candidate b37fc17f...; old PASS evidence is not reused",
+      "machine_check": "GitHub Actions run 31482180529 / job 93749432758 PASS"
+    },
+    {
+      "finding": "contradictory gold/B freeze ordering",
+      "remediation": "one 11-stage order is shared by ACCEPTANCE.v1.3.yaml, ORACLE_LIFECYCLE_CONTRACT.json and GOLD_ADJUDICATION_PROTOCOL.json and is stated identically in INDEPENDENCE_BOUNDARY.md; blind outcome gold is frozen before B but is not mounted/visible to B during computation",
+      "machine_check": "NEG-B-BEFORE-GOLD-FREEZE is killed for acceptance/lifecycle mismatch"
+    },
+    {
+      "finding": "no candidate-wide lifecycle validator",
+      "remediation": "validate_oracle_gold_governance.py cross-checks acceptance, lifecycle, blind-gold protocol, packet stage bindings, scorer authority, boundary ordering and both frozen negative fixtures",
+      "machine_check": "lifecycle_consistency=PASS and both regression fixtures killed"
+    }
+  ],
+  "additional_fail_closed_discoveries_during_remediation": [
+    {
+      "finding": "ALLOWED_PATHS.txt still described only the original four deliverables despite already-expanded remediation artifacts",
+      "remediation": "R2 task/write-scope and executable acceptance are versioned explicitly inside the context packet"
+    },
+    {
+      "finding": "validate_oracle_boundary.py --preflight reports wrapper availability rather than executing semantic assertions",
+      "remediation": "acceptance and CI now execute validate_oracle_semantics.py directly and label boundary wrapper output as availability-only"
+    },
+    {
+      "finding": "dedicated semantic validator expected a machine truth_table that the registry did not contain",
+      "remediation": "the already normative SEMANTIC_SPEC (P,N)->status table is now mirrored machine-readably in SEMANTIC_REGISTRY.json without changing semantic_version wp005.semantic.v1"
+    }
+  ],
+  "authoritative_lifecycle": [
+    "semantic_spec_registry_policy_hashes_frozen",
+    "source_rule_packet_hashes_frozen",
+    "blind_query_adjudication_completed",
+    "query_adjudication_registry_hash_frozen",
+    "blind_outcome_gold_adjudication_completed",
+    "outcome_gold_registry_hash_frozen",
+    "isolated_B_oracle_computes_without_outcome_gold_mount",
+    "B_oracle_output_hash_frozen",
+    "B_vs_outcome_gold_consistency_checked",
+    "scorer_source_and_hash_frozen",
+    "first_scored_model_output_may_exist"
+  ],
+  "expected_value_authority": {
+    "scorer": "outcome_gold_registry",
+    "B_oracle": "independent_consistency_implementation",
+    "gold_frozen_before_B": true,
+    "gold_visible_to_B_during_computation": false,
+    "B_may_override_gold": false,
+    "gold_may_be_repaired_from_B": false,
+    "unexplained_B_gold_disagreement": "BLOCK_SCORING_AND_BENCHMARK_FREEZE"
+  },
+  "producer_validation": {
+    "candidate_sha": "b37fc17f247a49d30942671eb1f3feb95bd28d9d",
+    "workflow": "ENG-157 WP-005 R2 lifecycle validation",
+    "run_id": 31482180529,
+    "job_id": 93749432758,
+    "result": "PASS",
+    "context_packet": "PASS",
+    "dedicated_semantic_contract": {
+      "result": "PASS",
+      "semantic_version": "wp005.semantic.v1",
+      "invariants": 18,
+      "publication_score_fields": 14,
+      "mutation_ids_present": 42,
+      "exact_gold_vocabulary": "PASS",
+      "human_audit_sample_contract": 120,
+      "human_audit_executed": false
+    },
+    "boundary_wrapper": "AVAILABLE_ONLY_NOT_SEMANTIC_EXECUTION",
+    "gold_lifecycle_contract": {
+      "result": "PASS",
+      "freeze_order_stages": 11,
+      "outcome_gold_frozen_before_B": true,
+      "outcome_gold_visible_to_B": false,
+      "negative_fixtures_killed": [
+        "NEG-STALE-EVIDENCE-VOCABULARY",
+        "NEG-B-BEFORE-GOLD-FREEZE"
+      ]
+    }
+  },
+  "explicit_non_evidence": [
+    "independent Mutation and Dependency Auditor PASS",
+    "accepted or executed clean-room Path B implementation",
+    "executed future Path B dependency/canary audit",
+    "executed 120-case human audit",
+    "GATE-001 approval",
+    "HOLDOUT evidence",
+    "REPLICATION evidence"
+  ],
+  "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed or used during this remediation.",
+  "requested_next_action": "Distinct Mutation and Dependency Auditor resolves the exact candidate b37fc17f... and returns PASS, REVISE or PIVOT. Producer context must not self-accept."
+}

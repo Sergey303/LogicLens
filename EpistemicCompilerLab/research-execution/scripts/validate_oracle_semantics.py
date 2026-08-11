@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+"""Dedicated fail-closed semantic validator for WP-005.
+
+This validates the written/machine semantic contract and coverage artifacts. Lifecycle
+ordering is additionally validated by validate_oracle_gold_governance.py. Neither
+validator is independent review or evidence that future Path B has been implemented.
+"""
+from __future__ import annotations
+
 import csv
 import json
 import re
@@ -25,7 +33,6 @@ REQUIRED_SCORE_FIELDS = {
     "warnings",
     "language_or_rendering_contract",
 }
-
 REQUIRED_INVARIANTS = {
     "INV-CANON",
     "INV-TYPE-ARITY",
@@ -46,27 +53,34 @@ REQUIRED_INVARIANTS = {
     "INV-PACKET-SEPARATION",
     "INV-TRACK-SEPARATION",
 }
+EXACT_GOLD_FIELDS = {
+    "expected_status",
+    "expected_action",
+    "expected_conclusion",
+    "expected_warnings",
+    "expected_positive_evidence_roots",
+    "expected_negative_evidence_roots",
+    "expected_provenance",
+    "expected_proof_normal_form",
+}
+LEGACY_GENERIC_FIELDS = {"expected_evidence_roots", "expected_proof_trace"}
 
 
-def fail(message):
-    raise AssertionError(message)
-
-
-def require(condition, message):
+def require(condition: bool, message: str) -> None:
     if not condition:
-        fail(message)
+        raise AssertionError(message)
 
 
-def load_json(name):
+def load_json(name: str) -> dict:
     return json.loads((ORACLE / name).read_text(encoding="utf-8"))
 
 
-def load_csv(name):
+def load_csv(name: str) -> list[dict[str, str]]:
     with (ORACLE / name).open("r", encoding="utf-8", newline="") as stream:
         return list(csv.DictReader(stream))
 
 
-def validate_semantic_registry():
+def validate_semantic_registry() -> dict:
     registry = load_json("SEMANTIC_REGISTRY.json")
     require(registry["semantic_version"] == "wp005.semantic.v1", "semantic version drift")
     require(registry["canonical_json"]["whitespace"] == "none", "canonical JSON whitespace drift")
@@ -84,18 +98,20 @@ def validate_semantic_registry():
     require(registry["rules"]["exceptions"] == "none", "unexpected exceptions")
     require(registry["rules"]["negation_as_failure"] is False, "negation-as-failure forbidden")
     require(registry["evidence"]["minimality_claim"] is False, "evidence roots must not claim minimality")
-    require("every valid derivation" in registry["evidence"]["polarity_evidence_roots"], "evidence root completeness rule missing")
+    require("every valid derivation" in registry["evidence"]["polarity_evidence_roots"], "evidence-root completeness rule missing")
     require(registry["proof_normal_form"]["cycles"] == "invalid_proof", "proof cycle rule drift")
     require(registry["proof_normal_form"]["unresolvable_edge"] == "invalid_proof", "proof edge resolution rule drift")
 
     truth = {(row["positive_derivation"], row["negative_derivation"]): row["status"] for row in registry["truth_table"]}
-    require(truth == {
-        (True, False): "supported",
-        (False, True): "refuted",
-        (True, True): "conflicting",
-        (False, False): "unknown",
-    }, "four-state truth table is incomplete or wrong")
-
+    require(
+        truth == {
+            (True, False): "supported",
+            (False, True): "refuted",
+            (True, True): "conflicting",
+            (False, False): "unknown",
+        },
+        "four-state truth table is incomplete or wrong",
+    )
     require(set(registry["outcomes"]["semantic_status"]) == {"supported", "refuted", "conflicting", "unknown"}, "semantic status set drift")
     require(set(registry["outcomes"]["query_outcome"]) == {"valid", "needs_clarification", "invalid_query", "runtime_error"}, "query outcome set drift")
     require("never mapped" in registry["outcomes"]["runtime_error"], "runtime error must be separate from semantic status")
@@ -103,7 +119,7 @@ def validate_semantic_registry():
     return registry
 
 
-def validate_policy(registry):
+def validate_policy(registry: dict) -> None:
     policy = load_json("POLICY_TABLE.json")
     require(policy["semantic_version"] == registry["semantic_version"], "policy semantic version mismatch")
     require(policy["policy_may_change_status"] is False, "policy cannot change status")
@@ -125,34 +141,63 @@ def validate_policy(registry):
         require(row["mandatory_warnings"] == warnings, f"policy warnings mismatch for {key}")
         if key[1] in {"conflicting", "unknown"} or key[0] != "valid":
             require(set(row["forbidden_conclusions"]) == {"affirm", "deny"}, f"abstention/query error must forbid affirm/deny for {key}")
-    return policy
 
 
-def validate_packet_contract():
+def validate_packet_contract() -> None:
     packet = load_json("ORACLE_PACKET_CONTRACT.json")
+    require(packet["lifecycle_contract"] == "ORACLE_LIFECYCLE_CONTRACT.json", "packet lifecycle binding missing")
+    require(packet["gold_adjudication_protocol"] == "GOLD_ADJUDICATION_PROTOCOL.json", "packet gold-protocol binding missing")
+    packet_text = json.dumps(packet, sort_keys=True)
+    legacy = [field for field in LEGACY_GENERIC_FIELDS if field in packet_text]
+    require(not legacy, f"legacy generic evidence vocabulary present in semantic validator: {legacy}")
+
     components = packet["components"]
     oracle = components["b_oracle_input_packet"]
     forbidden = set(oracle["forbidden"])
-    required_forbidden = {
-        "expected_status", "expected_action", "expected_conclusion", "expected_warnings",
-        "expected_evidence_roots", "expected_provenance", "expected_proof_trace", "expected_frame",
-        "student_response", "production_frame", "production_oracle_output", "model_metrics",
+    required_forbidden = EXACT_GOLD_FIELDS | {
+        "outcome_gold_registry",
+        "expected_frame",
+        "student_response",
+        "production_frame",
+        "production_oracle_output",
+        "model_metrics",
     }
     require(required_forbidden <= forbidden, "B-oracle forbidden outcome/model fields incomplete")
     require("outcome_gold_registry" not in oracle["allowed"], "outcome gold must not be allowed to B-oracle")
-    require(components["outcome_gold_registry"]["visible_to_b_oracle_during_computation"] is False, "outcome gold visible to B-oracle")
-    require(components["query_adjudication_registry"]["freeze_before_first_model_output"] is True, "query alternatives not pre-model frozen")
-    require(components["outcome_gold_registry"]["freeze_before_first_model_output"] is True, "outcome gold not pre-model frozen")
+    require(oracle["lifecycle_activation_stage"] == "isolated_B_oracle_computes_without_outcome_gold_mount", "B-oracle activation stage drift")
+
+    query_registry = components["query_adjudication_registry"]
+    outcome_registry = components["outcome_gold_registry"]
+    require(query_registry["freeze_before_b_oracle_execution"] is True, "query alternatives not frozen before B")
+    require(query_registry["freeze_before_first_model_output"] is True, "query alternatives not pre-model frozen")
+    require(outcome_registry["freeze_before_b_oracle_execution"] is True, "outcome gold not frozen before B")
+    require(outcome_registry["freeze_before_first_model_output"] is True, "outcome gold not pre-model frozen")
+    require(outcome_registry["visible_to_b_oracle_during_computation"] is False, "outcome gold visible to B-oracle")
+    require(outcome_registry["expected_value_authority"] is True, "outcome gold must be scorer authority")
+    require(EXACT_GOLD_FIELDS <= set(outcome_registry["allowed_fields"]), "outcome gold exact evidence/proof fields incomplete")
+
+    consistency = components["b_gold_consistency_check"]
+    require(consistency["lifecycle_stage"] == "B_vs_outcome_gold_consistency_checked", "B/gold consistency stage drift")
+    require(consistency["B_may_override_gold"] is False, "B may override gold")
+    require(consistency["gold_may_be_repaired_from_B"] is False, "gold may be repaired from B")
+    require(consistency["unexplained_disagreement"] == "block_scoring_and_benchmark_freeze", "B/gold disagreement must fail closed")
+
     scorer = components["b_scorer_packet"]
-    require("b_oracle_output_hash_frozen" in scorer["available_only_after"], "scorer may run before B output freeze")
+    require("B_oracle_output_hash_frozen" in scorer["available_only_after"], "scorer may run before B output freeze")
     require("outcome_gold_registry_hash_frozen" in scorer["available_only_after"], "scorer may run before gold freeze")
-    require(packet["post_model_governance"]["acceptable_alternative_addition_after_first_model_output"] == "prohibited", "post-model alternative expansion allowed")
+    require("B_vs_outcome_gold_consistency_checked" in scorer["available_only_after"], "scorer may run before B/gold check")
+    require(scorer["expected_value_authority"] == "outcome_gold_registry", "scorer authority drift")
+
+    governance = packet["post_model_governance"]
+    require(governance["acceptable_alternative_addition_after_first_model_output"] == "prohibited", "post-model alternative expansion allowed")
+    require(governance["outcome_gold_edit_after_first_model_output"] == "prohibited", "post-model gold edit allowed")
+    require(governance["gold_repair_from_model_behavior"] == "prohibited", "model-driven gold repair allowed")
+    require(governance["gold_repair_from_B"] == "prohibited", "B-driven gold repair allowed")
     require(packet["tracks"]["gold_query_execution"]["must_not_validate"] == ["natural_question_interpretation", "student_query_formation"], "gold-query claim boundary drift")
     require(packet["tracks"]["oracle_frame_renderer_ceiling"]["must_not_validate"] == ["question_interpretation", "query_formation", "formal_execution"], "renderer ceiling boundary drift")
-    return packet
 
 
-def mutation_ids():
+def mutation_ids() -> set[str]:
     text = (ORACLE / "MUTATION_MATRIX.yaml").read_text(encoding="utf-8")
     ids = re.findall(r"^\s*- mutation_id:\s*([A-Z0-9-]+)\s*$", text, flags=re.MULTILINE)
     require(len(ids) == len(set(ids)), "duplicate mutation IDs")
@@ -164,7 +209,7 @@ def mutation_ids():
     return set(ids)
 
 
-def validate_vectors_and_coverage(mutations):
+def validate_vectors_and_coverage(mutations: set[str]) -> None:
     vector_doc = load_json("CONFORMANCE_VECTORS.json")
     vectors = vector_doc["vectors"]
     by_id = {row["vector_id"]: row for row in vectors}
@@ -173,7 +218,7 @@ def validate_vectors_and_coverage(mutations):
 
     rows = load_csv("INVARIANT_COVERAGE_MATRIX.csv")
     require({row["invariant_id"] for row in rows} == REQUIRED_INVARIANTS, "invariant coverage set incomplete or extra")
-    seen_score_fields = set()
+    seen_score_fields: set[str] = set()
     for row in rows:
         inv = row["invariant_id"]
         pos = row["positive_vector"]
@@ -187,13 +232,12 @@ def validate_vectors_and_coverage(mutations):
         require(row["expected_A_result"].strip(), f"missing expected A result for {inv}")
         require(row["expected_B_result"].strip(), f"missing expected B result for {inv}")
         fields = {item for item in row["expected_scorer_fields"].split(";") if item}
-        require(fields, f"no scorer field mapped for {inv}")
-        require(fields <= REQUIRED_SCORE_FIELDS, f"unknown scorer field for {inv}: {fields - REQUIRED_SCORE_FIELDS}")
+        require(fields and fields <= REQUIRED_SCORE_FIELDS, f"invalid scorer-field mapping for {inv}")
         seen_score_fields |= fields
     require(seen_score_fields == REQUIRED_SCORE_FIELDS, f"score field coverage incomplete: missing {REQUIRED_SCORE_FIELDS - seen_score_fields}")
 
 
-def validate_human_audit():
+def validate_human_audit() -> None:
     audit = load_json("HUMAN_AUDIT_PROTOCOL.json")
     sample = audit["sample"]
     require(sample["size"] == 120, "human audit sample size drift")
@@ -210,7 +254,7 @@ def validate_human_audit():
     require(acceptance["semantic_or_scorer_errors_allowed"] == 0, "human audit must allow zero semantic/scorer errors")
 
 
-def validate_audit_tool_trust():
+def validate_audit_tool_trust() -> None:
     trust = load_json("AUDIT_TOOL_TRUST_MANIFEST.json")
     require(len(trust["required_observation_channels"]) >= 16, "audit observation channels incomplete")
     require(set(trust["channel_status_values"]) == {"observed_pass", "observed_fail", "not_observable"}, "audit channel status vocabulary drift")
@@ -224,26 +268,35 @@ def validate_audit_tool_trust():
     require(trust["known_blind_spots_policy"]["unmitigated_required_channel"] == "blocks_pass", "unmitigated audit blind spot must block PASS")
 
 
-def validate_docs():
+def validate_docs() -> None:
     spec = (ORACLE / "SEMANTIC_SPEC.md").read_text(encoding="utf-8")
     boundary = (ORACLE / "INDEPENDENCE_BOUNDARY.md").read_text(encoding="utf-8")
     audit_plan = (ORACLE / "DEPENDENCY_AUDIT_PLAN.md").read_text(encoding="utf-8")
-    for required in ["SEMANTIC_REGISTRY.json", "POLICY_TABLE.json", "ORACLE_PACKET_CONTRACT.json", "INVARIANT_COVERAGE_MATRIX.csv", "HUMAN_AUDIT_PROTOCOL.json"]:
+    for required in [
+        "SEMANTIC_REGISTRY.json",
+        "POLICY_TABLE.json",
+        "ORACLE_PACKET_CONTRACT.json",
+        "INVARIANT_COVERAGE_MATRIX.csv",
+        "HUMAN_AUDIT_PROTOCOL.json",
+    ]:
         require(required in spec, f"semantic spec does not reference {required}")
     require("outcome_gold_registry" in spec, "semantic spec does not separate outcome gold")
     require("does not validate student query formation" in spec, "semantic spec query-track limitation missing")
-    require("outcome-gold registry" in boundary, "independence boundary does not separate outcome gold")
-    require("gold-query execution agreement" in boundary, "independence boundary missing track limitation")
+    require("outcome-gold registry" in boundary.lower(), "independence boundary does not separate outcome gold")
+    require("must_not_validate" in json.dumps(load_json("ORACLE_PACKET_CONTRACT.json")), "packet track limitation missing")
     require("AUDIT_TOOL_TRUST_MANIFEST.json" in audit_plan, "dependency audit plan missing audit-tool trust manifest")
     require("sample size exactly `120`" in audit_plan, "dependency audit plan missing quantitative human audit")
 
 
-def main():
-    for name in [
+def main() -> None:
+    required_files = [
         "SEMANTIC_SPEC.md",
         "SEMANTIC_REGISTRY.json",
         "POLICY_TABLE.json",
+        "ORACLE_LIFECYCLE_CONTRACT.json",
+        "ORACLE_LIFECYCLE_NEGATIVE_FIXTURES.json",
         "ORACLE_PACKET_CONTRACT.json",
+        "GOLD_ADJUDICATION_PROTOCOL.json",
         "CONFORMANCE_VECTORS.json",
         "INVARIANT_COVERAGE_MATRIX.csv",
         "INDEPENDENCE_BOUNDARY.md",
@@ -251,7 +304,8 @@ def main():
         "DEPENDENCY_AUDIT_PLAN.md",
         "HUMAN_AUDIT_PROTOCOL.json",
         "AUDIT_TOOL_TRUST_MANIFEST.json",
-    ]:
+    ]
+    for name in required_files:
         require((ORACLE / name).is_file(), f"missing oracle artifact: {name}")
 
     registry = validate_semantic_registry()
@@ -263,17 +317,24 @@ def main():
     validate_audit_tool_trust()
     validate_docs()
 
-    print(json.dumps({
-        "work_package": "WP-005",
-        "semantic_version": registry["semantic_version"],
-        "semantic_contract": "PASS",
-        "invariants": len(REQUIRED_INVARIANTS),
-        "score_fields_covered": len(REQUIRED_SCORE_FIELDS),
-        "critical_mutation_ids_present": len(mutations),
-        "human_audit_sample": 120,
-        "independent_review": "NOT_PERFORMED_BY_THIS_VALIDATOR",
-        "gate_001": "NOT_APPROVED_BY_THIS_VALIDATOR"
-    }, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "work_package": "WP-005",
+                "semantic_version": registry["semantic_version"],
+                "semantic_contract": "PASS",
+                "exact_gold_vocabulary": "PASS",
+                "invariants": len(REQUIRED_INVARIANTS),
+                "score_fields_covered": len(REQUIRED_SCORE_FIELDS),
+                "critical_mutation_ids_present": len(mutations),
+                "human_audit_sample_contract": 120,
+                "human_audit_executed": False,
+                "independent_review": "NOT_PERFORMED_BY_THIS_VALIDATOR",
+                "gate_001": "NOT_APPROVED_BY_THIS_VALIDATOR",
+            },
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

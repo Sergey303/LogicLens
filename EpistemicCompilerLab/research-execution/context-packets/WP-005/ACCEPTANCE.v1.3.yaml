@@ -1,7 +1,7 @@
-schema_version: 1.3.0
+schema_version: 1.3.1
 work_package_id: WP-005
 linear_issue: ENG-157
-status: PRODUCER_REMEDIATION_FINAL_REFREEZE_CANDIDATE
+status: PRODUCER_R2_LIFECYCLE_REMEDIATION_CANDIDATE
 scope:
   allowed_splits: [TRAIN, DEV]
   forbidden_splits: [HOLDOUT, REPLICATION]
@@ -11,6 +11,8 @@ normative_artifacts:
   - oracle/SEMANTIC_SPEC.md
   - oracle/SEMANTIC_REGISTRY.json
   - oracle/POLICY_TABLE.json
+  - oracle/ORACLE_LIFECYCLE_CONTRACT.json
+  - oracle/ORACLE_LIFECYCLE_NEGATIVE_FIXTURES.json
   - oracle/ORACLE_PACKET_CONTRACT.json
   - oracle/GOLD_ADJUDICATION_PROTOCOL.json
   - oracle/CONFORMANCE_VECTORS.json
@@ -37,9 +39,22 @@ freeze_order:
   - scorer_source_and_hash_frozen
   - first_scored_model_output_may_exist
 
+lifecycle_consistency:
+  machine_readable_mirror: oracle/ORACLE_LIFECYCLE_CONTRACT.json
+  acceptance_freeze_order_must_equal_mirror: true
+  gold_protocol_freeze_order_must_equal_mirror: true
+  packet_stage_bindings_must_match_mirror: true
+  independence_boundary_order_must_match_mirror: true
+  stale_generic_evidence_vocabulary_forbidden: true
+  required_negative_fixtures:
+    - NEG-STALE-EVIDENCE-VOCABULARY
+    - NEG-B-BEFORE-GOLD-FREEZE
+
 expected_value_authority:
   scorer_authority: outcome_gold_registry
   B_oracle_role: independent_consistency_check
+  outcome_gold_frozen_before_B_execution: true
+  outcome_gold_visible_to_B_during_execution: false
   unexplained_B_gold_disagreement: block_scoring_and_benchmark_freeze
   majority_vote: prohibited
   B_may_override_gold: false
@@ -52,10 +67,12 @@ acceptance_contract:
     third_adjudicator_on_disagreement: 1
     path_A_B_scorer_model_teacher_roles_forbidden: true
     unresolved_disagreement_case_eligible: false
+    pre_B_freeze_required: true
     pre_model_freeze_required: true
     post_model_query_expansion: prohibited
     post_model_outcome_expansion: prohibited
     post_model_gold_repair_from_behavior: prohibited
+    gold_repair_from_B: prohibited
   semantics:
     semantic_version: wp005.semantic.v1
     four_state_truth_table_complete: true
@@ -106,12 +123,18 @@ acceptance_contract:
     distinct_gatekeeper_required: true
 
 validation_commands:
-  - id: wp005_semantic_and_boundary
-    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight --boundary EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+  - id: wp005_dedicated_semantics
+    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_semantics.py
     expected_exit_code: 0
-  - id: wp005_gold_governance
+    evidence_class: semantic_contract_execution
+  - id: wp005_boundary_wrapper_availability
+    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight
+    expected_exit_code: 0
+    evidence_class: wrapper_availability_only_not_semantic_execution
+  - id: wp005_gold_governance_and_lifecycle
     command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py
     expected_exit_code: 0
+    required_negative_fixtures_killed: 2
   - id: wp005_windows_complete_local_no_actions
     command: "& 'D:\\projects\\ChatPilotGroup\\LogicLens\\EpistemicCompilerLab\\scripts\\run-wp005-remediation-check.ps1'"
     expected_exit_code: 0
@@ -119,8 +142,8 @@ validation_commands:
 producer_preflight_is_not:
   - independent_review
   - accepted_path_B_implementation
-  - mutation_execution_evidence
-  - dependency_audit_execution_evidence
+  - mutation_execution_evidence_for_future_Path_B
+  - dependency_audit_execution_evidence_for_future_Path_B
   - human_audit_execution_evidence
   - GATE-001_approval
 

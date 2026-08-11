@@ -1,6 +1,29 @@
+# WP-005 original deliverables
 EpistemicCompilerLab/research-execution/oracle/SEMANTIC_SPEC.md
 EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md
 EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
 EpistemicCompilerLab/research-execution/oracle/DEPENDENCY_AUDIT_PLAN.md
+
+# Independently reviewed remediation artifacts required to close circularity/semantic-governance blockers
+EpistemicCompilerLab/research-execution/oracle/SEMANTIC_REGISTRY.json
+EpistemicCompilerLab/research-execution/oracle/POLICY_TABLE.json
+EpistemicCompilerLab/research-execution/oracle/ORACLE_PACKET_CONTRACT.json
+EpistemicCompilerLab/research-execution/oracle/GOLD_ADJUDICATION_PROTOCOL.json
+EpistemicCompilerLab/research-execution/oracle/ORACLE_LIFECYCLE_CONTRACT.json
+EpistemicCompilerLab/research-execution/oracle/ORACLE_LIFECYCLE_NEGATIVE_FIXTURES.json
+EpistemicCompilerLab/research-execution/oracle/CONFORMANCE_VECTORS.json
+EpistemicCompilerLab/research-execution/oracle/INVARIANT_COVERAGE_MATRIX.csv
+EpistemicCompilerLab/research-execution/oracle/HUMAN_AUDIT_PROTOCOL.json
+EpistemicCompilerLab/research-execution/oracle/AUDIT_TOOL_TRUST_MANIFEST.json
+EpistemicCompilerLab/research-execution/scripts/validate_oracle_semantics.py
+EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py
+EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py
+EpistemicCompilerLab/scripts/run-wp005-remediation-check.ps1
+
+# Versioned context packet and handoff metadata
 EpistemicCompilerLab/research-execution/context-packets/WP-005
 EpistemicCompilerLab/research-execution/handoffs/WP-005.json
+EpistemicCompilerLab/research-execution/handoffs/WP-005-ENG-157-R2-LIFECYCLE-REMEDIATION-2026-08-11.json
+
+# Dedicated producer validation workflow only; no scientific execution
+.github/workflows/validate-wp005-r2-lifecycle.yml
