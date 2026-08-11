@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "work_package_id": "WP-006",
+  "linear_issue": "ENG-158",
+  "date": "2026-08-11",
+  "github_actions": {
+    "run_id": 31485751835,
+    "job_id": 93760629186,
+    "head_sha": "7978399908e3b1c9655290438cf4471c81987c51",
+    "result": "PASS",
+    "artifact_id": 9099026746,
+    "artifact_name": "eng-158-r2-statistical-evidence",
+    "artifact_zip_sha256": "1c93a1730126055608dc084312c4c210ca9c71b5ca1b5702eac712516e95d84e",
+    "artifact_size_bytes": 1688
+  },
+  "environment": {
+    "runner": "ubuntu-24.04",
+    "python": "3.11.15",
+    "numpy": "2.3.4",
+    "scipy": "1.16.3"
+  },
+  "result": {
+    "analysis_unit": "base_scenario_id",
+    "selected_R2_grid_floor": 820,
+    "N_802_joint_point": 0.9026,
+    "N_802_joint_one_sided_95_lower": 0.8990967752375806,
+    "N_802_pass": false,
+    "N_820_joint_point": 0.9089,
+    "N_820_joint_one_sided_95_lower": 0.9054976640188974,
+    "N_820_pass": true,
+    "type_I_point_at_30_clusters": 0.04716666666666667,
+    "type_I_one_sided_95_upper": 0.04922105174858731,
+    "type_I_gate_pass": true
+  },
+  "interpretation": "820 is the producer-side non-decreasing R2 planning grid floor under the frozen adversarial simulation, not independently accepted final confirmatory N. Exact arm/scorer/feasibility dependencies remain unresolved.",
+  "explicit_non_evidence": [
+    "independent statistical reviewer PASS",
+    "accepted final N",
+    "accepted WP-004 arm binding",
+    "accepted WP-005 scorer",
+    "accepted WP-007 feasibility",
+    "HOLDOUT evidence",
+    "REPLICATION evidence",
+    "GATE-001 approval"
+  ]
+}
