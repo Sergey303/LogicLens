@@ -1,0 +1,60 @@
+name: ENG-157 WP-005 R2 lifecycle validation
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/oracle/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-005/**'
+      - 'EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py'
+      - 'EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py'
+      - 'EpistemicCompilerLab/scripts/run-wp005-remediation-check.ps1'
+      - '.github/workflows/validate-wp005-r2-lifecycle.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'EpistemicCompilerLab/research-execution/oracle/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-005/**'
+      - 'EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py'
+      - 'EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py'
+      - 'EpistemicCompilerLab/scripts/run-wp005-remediation-check.ps1'
+      - '.github/workflows/validate-wp005-r2-lifecycle.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  producer-contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install context-packet validator dependency
+        run: python -m pip install 'PyYAML==6.0.2'
+      - name: Validate versioned context packet
+        run: python EpistemicCompilerLab/research-execution/scripts/validate_context_packet.py --package WP-005
+      - name: Validate semantic and independence boundary
+        run: >-
+          python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py
+          --preflight
+          --boundary EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md
+          --mutations EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+      - name: Validate blind gold and candidate-wide lifecycle
+        run: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py
+      - name: Assert producer evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          print(json.dumps({
+              'issue': 'ENG-157',
+              'work_package': 'WP-005',
+              'evidence_class': 'PRODUCER_R2_LIFECYCLE_CONTRACT_ONLY',
+              'path_b_implementation_accepted': False,
+              'human_audit_executed': False,
+              'dependency_canary_audit_executed': False,
+              'independent_review': 'NOT_PERFORMED',
+              'gate_001': 'NOT_APPROVED',
+              'holdout_replication_access': 'NONE'
+          }, sort_keys=True))
+          PY
