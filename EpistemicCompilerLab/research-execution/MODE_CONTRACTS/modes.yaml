@@ -1,9 +1,9 @@
-schema_version: 1.1.0
+schema_version: 1.2.0
 work_package_id: WP-004
 common:
   student: same immutable model profile within block
   question: same scenario question
-  output_schema: same answer schema except deterministic adapter M11
+  output_schema: same canonical answer schema and semantic obligations for every scored mode; M11 may use an internal deterministic adapter but its emitted scoring record is identical in schema
   hidden:
   - gold/scoring fields
   - HOLDOUT or REPLICATION outcomes
@@ -14,10 +14,11 @@ common:
   lossless_matching:
     rule: no source assertion, rule, policy clause, provenance item, or verified-frame field may be removed to equalize tokens
     envelope: maximum unpadded input-token count among the compared modes in the scenario/model-profile block
-    operation: neutral padding is added only to shorter modes
+    operation: frozen neutral padding is added only to shorter LLM modes
     tokenizer: frozen model-profile tokenizer
     output_reserve: frozen per model profile before dataset construction
     feasibility: every benchmark scenario must fit the smallest declared student context under the lossless common envelope before split assignment
+    padding_contract: MODE_CONTRACTS/PADDING_INVARIANCE_CONTRACT.yaml
     prohibited: [informative_padding, deterministic_truncation, outcome_dependent_selection, post_outcome_exclusion]
 modes:
 - id: M0
@@ -84,25 +85,31 @@ modes:
   authoritative: []
   budget: quality/economic ceiling; never baseline
 - id: M9
-  name: Unstructured Verified Result
-  visible: [question, same verified values as M6 in frozen prose, answer schema]
+  name: Unstructured Verified Result Serialization
+  visible: [question, same verified semantic values as M6 in frozen canonical lossless prose serialization, answer schema]
   extra_hidden: [typed container and field names]
   renderer: student_llm
-  authoritative: [same values as M6]
+  authoritative: [same semantic values as M6]
+  transformation_contract: canonical deterministic semantic-equivalence transform; every M6 semantic field/value must round-trip without loss before model execution
+  causal_boundary: estimates typed-frame versus canonical unstructured result-interface serialization bundle; does not isolate typing alone
   budget: content-equivalent; padded losslessly to block envelope
 - id: M10
-  name: Minimal Verified Label
-  visible: [question, verified status only, shared policy, answer schema]
-  extra_hidden: [action, allowedConclusion, provenance, warnings, proofTrace]
+  name: Minimal Verified Decision Contract
+  visible: [question, verified status, verified action, shared policy, answer schema]
+  extra_hidden: [allowedConclusion, provenance, evidence, warnings, proofTrace, scope/version beyond fields required by action validity]
   renderer: student_llm
-  authoritative: [status]
+  authoritative: [status, action]
+  causal_boundary: minimal executable status-plus-action decision interface; not a status-only class-label control
   budget: neutral padding to block envelope; no additional semantic hints
 - id: M11
   name: Deterministic Renderer
-  visible: [exact unpadded M6 frame bytes, frozen templates]
+  visible: [exact M6 semantic frame bytes, frozen deterministic templates]
   extra_hidden: [LLM output]
   renderer: deterministic
   authoritative: [same frame as M6]
+  canonical_output: deterministically mapped to the exact same answer/scoring schema, required semantic fields, language/content obligations, and failure taxonomy as M6
+  style_role: descriptive only; stylistic preference cannot establish or rescue semantic non-inferiority
+  comparison_contract: MODE_CONTRACTS/M11_RENDERER_COMPARABILITY.yaml
   budget: no LLM tokens; receives identical semantic frame before deterministic serialization
 - id: M12
   name: Frame Without Conclusion
@@ -110,13 +117,16 @@ modes:
   extra_hidden: [allowedConclusion]
   renderer: student_llm
   authoritative: [status, action, scope/version, provenance/evidence, warnings, proofTrace]
+  causal_boundary: isolates the incremental presence of allowedConclusion relative to the otherwise complete frame
   budget: neutral padding to block envelope; all remaining frame fields unchanged
 - id: M13
   name: Corrupted Frame
   visible: [question, M6 frame with exactly one preregistered field mutation, answer schema]
   extra_hidden: [uncorrupted value, mutation label]
   renderer: student_llm
-  authoritative: [all fields except one corrupted]
+  authoritative: [all unmutated fields; mutated field authority is defined per preregistered mutation instance]
+  mutation_contract: MODE_CONTRACTS/M13_MUTATION_CONTRACT.yaml
+  causal_boundary: detectable and non-detectable mutations are separate estimands; following a non-detectable authoritative mutation is not automatically classified as unsafe
   budget: identical padded envelope and serialization length class as source M6
 - id: M14
   name: Strongest Matched Non-compiled Context
@@ -129,5 +139,8 @@ freeze:
 - no semantic mode change after HOLDOUT
 - visible/hidden inputs and renderer identities are hash-frozen
 - no token matching may remove or summarize information after B* selection
-- M13 mutates one field only
+- M9 canonical serialization equivalence must pass before split assignment
+- M10 remains status-plus-action; a status-only control, if ever added, requires a new versioned identifier before HOLDOUT
+- M13 mutates one field only under its mutation-validity contract
+- M11 emits the canonical answer/scoring record and uses its frozen non-inferiority contract
 - all failures and raw outputs retained
