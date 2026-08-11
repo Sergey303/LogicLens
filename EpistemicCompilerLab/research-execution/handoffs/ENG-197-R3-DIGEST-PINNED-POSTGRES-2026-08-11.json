@@ -1,0 +1,146 @@
+{
+  "candidate_commit_message": "ENG-197: refreeze pre-pinned PostgreSQL candidate",
+  "date": "2026-08-11",
+  "execution": {
+    "all_cases_pass": true,
+    "cgr_command_sha256": "df615d302fb3933fca8a8f57f43e3fd8099d3c21cf3356e6cc668e7f620cde9c",
+    "cgr_created_at": "2026-08-11T13:27:51.664Z",
+    "cgr_exit_code": 0,
+    "cgr_outer_zip_sha256": "08e2a9aa75be2e886e925d20ecde1c0b025ee8ae9a06e68ef0038793327ca188",
+    "cgr_output_full_sha256": "3a1ecfcb43640529143949ab531aeae8936913c9158907655999df7e6f52d391",
+    "evidence_zip_file_count": 6,
+    "evidence_zip_sha256": "74ef79e38f06f350e9b5ca4351834e1a5a9e7d48e57248189963961d4e472ca1",
+    "live_report_sha256": "32566ff2b09d87e64876f8771f29c81b563b880307a4d7cc2164190717e13a99",
+    "method": "LOCAL_CGR_WINDOWS_DOCKER",
+    "postgresql_image_reference": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636",
+    "postgresql_server_version": "18.4",
+    "postgresql_server_version_num": 180004,
+    "postgresql_server_version_raw": "18.4 (Debian 18.4-1.pgdg13+1)",
+    "psycopg_version": "3.3.4",
+    "security_negatives_all_passed": true,
+    "subset_all_exact": true,
+    "subset_equivalence_report_sha256": "e70ff22c46d2f120234aee6eaef5623b48ff26d108c8081d1870485478a5721a"
+  },
+  "explicit_non_evidence": [
+    "independent reviewer PASS",
+    "automatic confirmatory inclusion",
+    "M15 query-selection effect",
+    "M6 proof-graph equivalence",
+    "model-effect evidence",
+    "production capacity estimate",
+    "WP-006 power evidence from four smoke cases",
+    "HOLDOUT evidence",
+    "REPLICATION evidence"
+  ],
+  "forbidden_context_attestation": "No HOLDOUT or REPLICATION content was accessed or used.",
+  "freeze": {
+    "file_count": 35,
+    "manifest_commit_changes_only_manifest": true,
+    "manifest_self_excluded": true,
+    "manifest_sha256": "e3000319a572c4e0fbe2f0fdb0b3677ec6984c0b4ad84697aee2d3178eab6e8a"
+  },
+  "linear_issue": "ENG-197",
+  "mode_boundary": {
+    "M14_or_Bstar_eligible": false,
+    "M15": "DEV_ONLY_SINGLE_ENDPOINT_SCHEMA_DIAGNOSTIC",
+    "M16": "CANDIDATE_RELATIONAL_RESULT_INTERFACE_READY_FOR_DISTINCT_RE_REVIEW",
+    "M16_accepted": false,
+    "M16_confirmatory_authorized": false,
+    "interpretation": "M16 vs M6 remains a trusted-result-interface bundle contrast; exact equality is limited to status/action/root-evidence/source-provenance.",
+    "proof_graph_equivalence_claimed": false
+  },
+  "previous_independent_review": {
+    "artifact": "EpistemicCompilerLab/research-execution/ENG-197_INDEPENDENT_REVIEW_2026-08-11_SESSION-20260811T1952-PLUS07.md",
+    "blockers": {
+      "B1": "mutable PostgreSQL tag was attested after pull instead of pre-execution digest pin",
+      "B2": "local live runner regenerated freeze manifest before checking it"
+    },
+    "commit": "95e4a845b0c0179871f04071310984edda8d75b6",
+    "verdict": "REVISE"
+  },
+  "producer_conflict": "Producer remediation context must not independently accept ENG-197 or M16.",
+  "producer_context": "ChatGPT ENG-197 R3 remediation / local CGR execution",
+  "r3_blocker_resolution": {
+    "B1": {
+      "frozen_workflow_service_image_is_exact_digest": true,
+      "local_execution_started_container_by_exact_digest": true,
+      "mutable_tag_execution_prohibited": true,
+      "required_digest": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636",
+      "runtime_contract_requires_digest_before_container_creation": true,
+      "status": "PRODUCER_CLOSED_PENDING_INDEPENDENT_RE_REVIEW"
+    },
+    "B2": {
+      "deliberate_manifest_generation_was_separate_freeze_operation": true,
+      "execution_runner_manifest_behavior": "CHECK_ONLY_NO_REGENERATION",
+      "manifest_check_precedes_dependency_install_and_database_access": true,
+      "status": "PRODUCER_CLOSED_PENDING_INDEPENDENT_RE_REVIEW"
+    }
+  },
+  "requested_next_action": "Distinct Independent Causal and Database Systems Reviewer independently checks candidate 862640f3..., R3 blocker closure and retained evidence, then returns PASS/REVISE/PIVOT. Only an independent PASS may move ENG-197 to Done and unblock ENG-199.",
+  "retained_evidence": {
+    "eng197-live-postgres-report.json": {
+      "bootstrap_statement_counts": {"permissions": 7, "schema": 5, "seed": 12},
+      "cases": [
+        {"case_id": "proto-01", "db_latency_ns": 1699700, "evaluation": "PASS", "pre_score_artifact": "pre-score/proto-01.json", "pre_score_sha256": "b47be57ad5ac5745576357fc92668a55ea3a14902d4c0feaa2dcb23192663110", "result_sha256": "175fd1b247b138a0e782373d5bcbaa6910742f4a57f77ad0db1d36cd4c112c3c"},
+        {"case_id": "proto-02", "db_latency_ns": 1992800, "evaluation": "PASS", "pre_score_artifact": "pre-score/proto-02.json", "pre_score_sha256": "c50ae29c0fffcbeff669133a7ddbb73b5cf70088009994cd2509d47c8a821cab", "result_sha256": "089aeed17017825164e3174d2c890b0af5367456aff6c88f32761eee3f0f7d82"},
+        {"case_id": "proto-03", "db_latency_ns": 1197100, "evaluation": "PASS", "pre_score_artifact": "pre-score/proto-03.json", "pre_score_sha256": "f405b2ab420039e0c64ae78d4ed5b1b595243bd2c02ea2e97fdf36a1f011f686", "result_sha256": "dab4b091dd12085811f03cdd19d23911b29e5c5ab3a999592ce9a91e887f1a52"},
+        {"case_id": "proto-04", "db_latency_ns": 1869400, "evaluation": "PASS", "pre_score_artifact": "pre-score/proto-04.json", "pre_score_sha256": "51a0745cc814394a75f95068584ca19f6e4063be3fa5fa3a8fc51bc87804cd79", "result_sha256": "67ca3144eb30e0470f4ba01deec284d567c8830056efb154b7ab4e9e2084a427"}
+      ],
+      "evidence_class": "TRAIN_DEV_LIVE_POSTGRESQL_NOT_MODEL_EFFECT",
+      "hashes": {
+        "evaluator_expected_sha256": "6ecfbbac11f2540de1c5a8ae28fc5189909f9d0e59133d1b093fd8f03b47d1c9",
+        "freeze_manifest_sha256": "e3000319a572c4e0fbe2f0fdb0b3677ec6984c0b4ad84697aee2d3178eab6e8a",
+        "package_manifest_sha256": "ed5e9719695faa49391e4c22da772d96089b32955df19c6ef22e584ad44a4943",
+        "permissions_sql_sha256": "4493edd343106ddbbb5e3f3eafbe4196e2dd6bc9a9c18f6c55d01b0d7dc2452c",
+        "query_registry_sha256": "ee56671cd15b0e6592de545df6955a7a71a49068069a6236ce76bc9acb9a7743",
+        "schema_sql_sha256": "9d08e43c5ff94f04100f9caa190a94bbc8ec1f32b79e0383e5cc7ab906e058d0",
+        "seed_sql_sha256": "43d0540d0795b6294555f261958a3f1d7e52fc57be7a249b219ae90a56b1dc8e",
+        "source_sha256": "8a7132cf3eeec38814c9092738e463adcb6c78f989d4534c7f4fe12cbbdd3667"
+      },
+      "linear_issue": "ENG-197",
+      "measurements": {"database_build_ns": 56454500, "database_relation_index_bytes": 147456, "db_call_latency_ns_max": 1992800, "db_call_latency_ns_median": 1784550, "db_call_latency_ns_min": 1197100, "generated_package_bytes": 7878, "pre_score_artifact_count": 4},
+      "reader_role": {"rolbypassrls": false, "rolcanlogin": false, "rolcreatedb": false, "rolcreaterole": false, "role_memberships": 0, "rolreplication": false, "rolsuper": false},
+      "runtime": {"container_image_digest": "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636", "database_name": "eng197_smoke", "execution_identity": "container_digest_pinned", "libpq_version": 180003, "postgresql_version_string": "PostgreSQL 18.4 (Debian 18.4-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit", "psycopg_version": "3.3.4", "server_version": "18.4", "server_version_num": 180004, "server_version_raw": "18.4 (Debian 18.4-1.pgdg13+1)"},
+      "schema_version": "1.0.0",
+      "security_negatives": {"adapter": ["undeclared_endpoint", "free_sql_field", "extra_argument"], "all_passed": true, "database_read_only_role": ["insert_denied", "update_denied", "delete_denied", "create_table_denied"]},
+      "status": "PASS",
+      "subset_eligibility": {"eligible": true, "reason_codes": []}
+    },
+    "eng197-subset-equivalence-report.json": {
+      "all_exact": true,
+      "case_count": 4,
+      "cases": [
+        {"action_equal": true, "case_id": "proto-01", "db_result_sha256": "175fd1b247b138a0e782373d5bcbaa6910742f4a57f77ad0db1d36cd4c112c3c", "evidence_equal": true, "exact_result_equal": true, "provenance_equal": true, "reference_result_sha256": "175fd1b247b138a0e782373d5bcbaa6910742f4a57f77ad0db1d36cd4c112c3c", "status_equal": true},
+        {"action_equal": true, "case_id": "proto-02", "db_result_sha256": "089aeed17017825164e3174d2c890b0af5367456aff6c88f32761eee3f0f7d82", "evidence_equal": true, "exact_result_equal": true, "provenance_equal": true, "reference_result_sha256": "089aeed17017825164e3174d2c890b0af5367456aff6c88f32761eee3f0f7d82", "status_equal": true},
+        {"action_equal": true, "case_id": "proto-03", "db_result_sha256": "dab4b091dd12085811f03cdd19d23911b29e5c5ab3a999592ce9a91e887f1a52", "evidence_equal": true, "exact_result_equal": true, "provenance_equal": true, "reference_result_sha256": "dab4b091dd12085811f03cdd19d23911b29e5c5ab3a999592ce9a91e887f1a52", "status_equal": true},
+        {"action_equal": true, "case_id": "proto-04", "db_result_sha256": "67ca3144eb30e0470f4ba01deec284d567c8830056efb154b7ab4e9e2084a427", "evidence_equal": true, "exact_result_equal": true, "provenance_equal": true, "reference_result_sha256": "67ca3144eb30e0470f4ba01deec284d567c8830056efb154b7ab4e9e2084a427", "status_equal": true}
+      ],
+      "contract_id": "eng197.relational-subset.v1",
+      "eligible": true,
+      "exact_case_count": 4,
+      "interpretation": "lossless equality is asserted only for the frozen relational subset result fields status/action/root-evidence/source-provenance; M6 full proof-frame visibility is not matched",
+      "linear_issue": "ENG-197",
+      "live_postgres_report_sha256": "32566ff2b09d87e64876f8771f29c81b563b880307a4d7cc2164190717e13a99",
+      "proof_graph_equivalence_claimed": false,
+      "query_registry_sha256": "ee56671cd15b0e6592de545df6955a7a71a49068069a6236ce76bc9acb9a7743",
+      "schema_version": "1.0.0",
+      "scope": "TRAIN_DEV_ONLY_SYNTHETIC",
+      "source_sha256": "8a7132cf3eeec38814c9092738e463adcb6c78f989d4534c7f4fe12cbbdd3667"
+    },
+    "pre-score/proto-01.json": {"call_bytes_utf8": "{\"arguments\":{\"proposition_id\":\"p-allowed\",\"scope_id\":\"prototype-scope\",\"version\":\"v1\"},\"endpoint\":\"resolve_claim\"}\n", "call_sha256": "2a33c9aab611e9f845df80cafeedd27a5fee3b84f4e5a7fd8fda7d63dc7944e8", "db_latency_ns": 1699700, "execution_owner": "postgresql", "provenance": ["src-spec-001"], "result_bytes_utf8": "{\"action_code\":\"accept\",\"evidence\":[\"a-001\"],\"provenance\":[\"src-spec-001\"],\"status_code\":\"supported\"}\n", "result_sha256": "175fd1b247b138a0e782373d5bcbaa6910742f4a57f77ad0db1d36cd4c112c3c", "schema_version": "1.0.0", "score": null, "stage": "pre_score_db_result"},
+    "pre-score/proto-02.json": {"call_bytes_utf8": "{\"arguments\":{\"proposition_id\":\"p-certified\",\"scope_id\":\"prototype-scope\",\"version\":\"v1\"},\"endpoint\":\"resolve_claim\"}\n", "call_sha256": "0eae3d0c56f13358c0fcf28171e44c85cd9a3aa9d1ab8bc80e9bdfc59d413c61", "db_latency_ns": 1992800, "execution_owner": "postgresql", "provenance": ["src-spec-002"], "result_bytes_utf8": "{\"action_code\":\"reject\",\"evidence\":[\"a-002\"],\"provenance\":[\"src-spec-002\"],\"status_code\":\"refuted\"}\n", "result_sha256": "089aeed17017825164e3174d2c890b0af5367456aff6c88f32761eee3f0f7d82", "schema_version": "1.0.0", "score": null, "stage": "pre_score_db_result"},
+    "pre-score/proto-03.json": {"call_bytes_utf8": "{\"arguments\":{\"proposition_id\":\"p-compatible\",\"scope_id\":\"prototype-scope\",\"version\":\"v1\"},\"endpoint\":\"resolve_claim\"}\n", "call_sha256": "bab6c37a82dbc584339895dd4f85e24547a044c0080e0e22c50a5ccd5e130e67", "db_latency_ns": 1197100, "execution_owner": "postgresql", "provenance": ["src-spec-003", "src-spec-004"], "result_bytes_utf8": "{\"action_code\":\"review\",\"evidence\":[\"a-003\",\"a-004\"],\"provenance\":[\"src-spec-003\",\"src-spec-004\"],\"status_code\":\"conflicting\"}\n", "result_sha256": "dab4b091dd12085811f03cdd19d23911b29e5c5ab3a999592ce9a91e887f1a52", "schema_version": "1.0.0", "score": null, "stage": "pre_score_db_result"},
+    "pre-score/proto-04.json": {"call_bytes_utf8": "{\"arguments\":{\"proposition_id\":\"p-documented\",\"scope_id\":\"prototype-scope\",\"version\":\"v1\"},\"endpoint\":\"resolve_claim\"}\n", "call_sha256": "26a75d9ddf4a2a6f0a49fabafe3cc621891deba46c2494e6a888e7f4171eca71", "db_latency_ns": 1869400, "execution_owner": "postgresql", "provenance": [], "result_bytes_utf8": "{\"action_code\":\"review\",\"evidence\":[],\"provenance\":[],\"status_code\":\"unknown\"}\n", "result_sha256": "67ca3144eb30e0470f4ba01deec284d567c8830056efb154b7ab4e9e2084a427", "schema_version": "1.0.0", "score": null, "stage": "pre_score_db_result"}
+  },
+  "retained_file_sha256": {
+    "eng197-live-postgres-report.json": "32566ff2b09d87e64876f8771f29c81b563b880307a4d7cc2164190717e13a99",
+    "eng197-subset-equivalence-report.json": "e70ff22c46d2f120234aee6eaef5623b48ff26d108c8081d1870485478a5721a",
+    "pre-score/proto-01.json": "b47be57ad5ac5745576357fc92668a55ea3a14902d4c0feaa2dcb23192663110",
+    "pre-score/proto-02.json": "c50ae29c0fffcbeff669133a7ddbb73b5cf70088009994cd2509d47c8a821cab",
+    "pre-score/proto-03.json": "f405b2ab420039e0c64ae78d4ed5b1b595243bd2c02ea2e97fdf36a1f011f686",
+    "pre-score/proto-04.json": "51a0745cc814394a75f95068584ca19f6e4063be3fa5fa3a8fc51bc87804cd79"
+  },
+  "schema_version": "1.0.0",
+  "scientific_runtime_candidate_sha": "862640f3f4d46d175f07ebf88f851f699f503ddf",
+  "status": "READY_FOR_DISTINCT_INDEPENDENT_RE_REVIEW"
+}
