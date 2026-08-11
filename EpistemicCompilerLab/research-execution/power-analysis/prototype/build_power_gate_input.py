@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = ROOT.parents[3]
+REPO_ROOT = ROOT.parents[2]
 R2_RESULT = ROOT / "R2_SIMULATION_RESULT.json"
 DEFAULT_INVENTORY = ROOT / "POWER_GATE_INVENTORY.current.json"
 
