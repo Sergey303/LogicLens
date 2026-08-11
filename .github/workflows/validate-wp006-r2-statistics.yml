@@ -1,0 +1,82 @@
+name: ENG-158 WP-006 R2 statistical validation
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/statistics/**'
+      - 'EpistemicCompilerLab/research-execution/power-analysis/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-006/**'
+      - '.github/workflows/validate-wp006-r2-statistics.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'EpistemicCompilerLab/research-execution/statistics/**'
+      - 'EpistemicCompilerLab/research-execution/power-analysis/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-006/**'
+      - '.github/workflows/validate-wp006-r2-statistics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  r2-monte-carlo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen R2 numerical dependencies
+        run: python -m pip install --disable-pip-version-check -r EpistemicCompilerLab/research-execution/power-analysis/requirements-r2.txt
+      - name: Record numerical environment
+        run: |
+          mkdir -p artifacts/eng-158-r2
+          python - <<'PY' > artifacts/eng-158-r2/environment.json
+          import json, platform, numpy, scipy
+          print(json.dumps({
+              'python': platform.python_version(),
+              'numpy': numpy.__version__,
+              'scipy': scipy.__version__,
+          }, sort_keys=True))
+          PY
+      - name: Execute frozen heterogeneous failure-aware R2 simulation
+        run: >-
+          python EpistemicCompilerLab/research-execution/power-analysis/prototype/simulate_power_r2.py
+          --output artifacts/eng-158-r2/R2_SIMULATION_RESULT.json
+      - name: Assert producer evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('artifacts/eng-158-r2/R2_SIMULATION_RESULT.json').read_text())
+          assert result['analysis_unit'] == 'base_scenario_id'
+          assert result['evidence_class'] == 'ACCEPTANCE_CANDIDATE'
+          assert result['acceptance_conditions']['type_I_upper_bound_le_0_055'] is True
+          assert result['acceptance_conditions']['joint_power_lower_bound_ge_0_90'] is True
+          assert result['acceptance_conditions']['selected_n_not_below_802'] is True
+          assert result['acceptance_conditions']['final_N_accepted_by_independent_review'] is False
+          assert result['acceptance_conditions']['WP004_exact_arm_binding_accepted'] is False
+          assert result['acceptance_conditions']['WP005_scorer_accepted'] is False
+          assert result['acceptance_conditions']['WP007_feasibility_accepted'] is False
+          assert result['acceptance_conditions']['HOLDOUT_or_REPLICATION_accessed'] is False
+          print(json.dumps({
+              'issue': 'ENG-158',
+              'evidence_class': 'PRODUCER_R2_MONTE_CARLO_ONLY',
+              'selected_R2_grid_floor': result['selected_R2_grid_floor'],
+              'joint_lower_bound': result['selected_joint_lower_bound'],
+              'type_I_upper_bound': result['type_I_calibration']['two_sided_false_positive_wilson_one_sided_95_upper'],
+              'final_N_accepted': False,
+              'independent_review': 'NOT_PERFORMED',
+              'gate_001': 'NOT_APPROVED',
+              'holdout_replication_access': 'NONE'
+          }, sort_keys=True))
+          PY
+      - name: Upload R2 simulation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eng-158-r2-statistical-evidence
+          path: artifacts/eng-158-r2/
+          if-no-files-found: warn
+          retention-days: 30
