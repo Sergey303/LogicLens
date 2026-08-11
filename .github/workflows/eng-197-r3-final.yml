@@ -1,4 +1,5 @@
 name: ENG-197 R3 final pre-pinned PostgreSQL evidence
+# R3 final trigger: scientific/runtime closure already frozen; this workflow file is outside the 34-file closure.
 
 on:
   pull_request:
