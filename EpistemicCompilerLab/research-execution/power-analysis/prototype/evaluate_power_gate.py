@@ -1,153 +1,280 @@
 #!/usr/bin/env python3
+"""Evaluate the WP-006 R2 power gate without reading scientific outcomes.
+
+The evaluator is deliberately fail-closed. A real POWER_GATE_PASS requires:
+- the frozen R2 Monte-Carlo candidate and its hash;
+- locally resolved independent acceptance for WP-004, WP-005 and WP-007;
+- a frozen READY inventory whose dependency-artifact hashes match the resolved attestations;
+- sufficient eligible base_scenario_id count and independent source-family clusters;
+- no HOLDOUT or REPLICATION access.
+
+Synthetic fixtures can test gate logic but can never produce a real PASS.
+"""
+from __future__ import annotations
+
 import argparse
 import hashlib
-import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
-PROTO = ROOT / "prototype"
+REPO_ROOT = ROOT.parents[2]
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
+REQUIRED_DEPENDENCIES = {
+    "WP004_CAUSAL_ARMS": "wp004_arm_binding_artifact_sha256",
+    "WP005_ORACLE_SCORER": "wp005_scorer_artifact_sha256",
+    "WP007_FEASIBILITY": "wp007_feasibility_artifact_sha256",
+}
 
 
-def require(condition, message):
+def require(condition: bool, message: str) -> None:
     if not condition:
-        raise AssertionError(message)
+        raise RuntimeError(message)
 
 
-def load_module(name, path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load {path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
 
 
-def sha256_file(path):
-    h = hashlib.sha256()
-    with Path(path).open("rb") as stream:
-        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
+def sha256_file(path: Path) -> str:
+    return sha256_bytes(path.read_bytes())
 
 
-def validate_shape(data):
-    require(data.get("schema_version") == "1.0.0", "gate input schema version drift")
-    require(set(data) == {"schema_version", "wp004_arm_binding", "wp005_scorer", "inventory", "nuisance", "evidence", "sealed_access"}, "gate input top-level fields drift")
-    binding = data["wp004_arm_binding"]
-    require(binding["treatment_arm_id"].strip(), "treatment arm ID missing")
-    require(binding["control_arm_id"].strip(), "control arm ID missing")
-    require(binding["treatment_arm_id"] != binding["control_arm_id"], "treatment/control arm IDs must differ")
-    require(data["wp005_scorer"]["semantic_version"] == "wp005.semantic.v1", "WP-005 semantic version drift")
-    inv = data["inventory"]
-    require(isinstance(inv["eligible_paired_n"], int) and inv["eligible_paired_n"] >= 1, "invalid eligible paired N")
-    require(isinstance(inv["independent_source_family_clusters"], int) and inv["independent_source_family_clusters"] >= 1, "invalid cluster count")
-    nuisance = data["nuisance"]
-    require(nuisance["source"] in {"frozen_primary_planning", "single_blinded_nuisance_update"}, "invalid nuisance source")
-    require(0.08 <= nuisance["discordance_q"] <= 1, "discordance q outside valid range")
-    require(nuisance["mean_cluster_size"] >= 1, "mean cluster size < 1")
-    require(0 <= nuisance["icc"] < 1, "ICC outside [0,1)")
-    require(0 <= nuisance["attrition"] < 1, "attrition outside [0,1)")
-    sealed = data["sealed_access"]
-    require(sealed == {
-        "holdout_accessed": False,
-        "replication_accessed": False,
-        "directional_confirmatory_effect_seen_by_power_analyst": False,
-    }, "power gate cannot run after sealed/directional effect access")
-    for group, keys in [
-        (binding, ["contract_sha256"]),
-        (data["wp005_scorer"], ["scorer_sha256"]),
-        (inv, ["benchmark_manifest_sha256", "cluster_size_summary_sha256", "attrition_ledger_sha256"]),
-        (nuisance, ["report_sha256"]),
-        (data["evidence"], ["calculator_sha256", "validator_sha256", "power_protocol_sha256"]),
-    ]:
-        for key in keys:
-            require(isinstance(group[key], str) and len(group[key]) == 64 and all(c in "0123456789abcdef" for c in group[key]), f"invalid SHA-256 field {key}")
-    for group, keys in [
-        (binding, ["independent_review_ref"]),
-        (data["wp005_scorer"], ["independent_review_ref"]),
-        (data["evidence"], ["independent_statistical_review_ref"]),
-    ]:
-        for key in keys:
-            require(isinstance(group[key], str) and group[key].strip(), f"missing review reference {key}")
+def load_json(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Evaluate WP-006 confirmatory power gate without reading outcomes")
-    parser.add_argument("--input", required=True, type=Path)
-    args = parser.parse_args()
-    data = json.loads(args.input.read_text(encoding="utf-8"))
-    validate_shape(data)
+def resolve_repo_path(value: str) -> Path:
+    path = (REPO_ROOT / value).resolve()
+    try:
+        path.relative_to(REPO_ROOT.resolve())
+    except ValueError as exc:
+        raise RuntimeError(f"path escapes repository: {value}") from exc
+    return path
 
-    contract = json.loads((ROOT / "PRIMARY_ANALYSIS_CONTRACT.json").read_text(encoding="utf-8"))
-    scenarios = json.loads((ROOT / "POWER_SCENARIOS.json").read_text(encoding="utf-8"))
-    calc = load_module("wp006_calculate_power_gate", PROTO / "calculate_power.py")
 
-    require(contract["primary_estimand"]["se_soi_absolute"] == 0.08, "SESOI drift")
-    require(contract["hypothesis"]["alpha_two_sided"] == 0.05, "alpha drift")
-    require(contract["hypothesis"]["target_power_at_sesoi"] == 0.90, "target power drift")
-    require(contract["multiplicity"]["primary_confirmatory_contrasts"] == 1, "primary contrast count drift")
-
-    nuisance = data["nuisance"]
-    if nuisance["source"] == "frozen_primary_planning":
-        frozen = scenarios["primary_planning"]
-        require(nuisance["discordance_q"] == frozen["discordance_q"], "frozen nuisance q drift")
-        require(nuisance["mean_cluster_size"] == frozen["mean_cluster_size"], "frozen nuisance cluster size drift")
-        require(nuisance["icc"] == frozen["icc"], "frozen nuisance ICC drift")
-        require(nuisance["attrition"] == frozen["attrition"], "frozen nuisance attrition drift")
-
-    required_n = calc.minimum_n(
-        0.08,
-        nuisance["discordance_q"],
-        nuisance["mean_cluster_size"],
-        nuisance["icc"],
-        nuisance["attrition"],
-        0.05,
-        0.90,
-    )
-    eligible_n = data["inventory"]["eligible_paired_n"]
-    clusters = data["inventory"]["independent_source_family_clusters"]
-    achieved_planning_power = calc.power_for_n(
-        eligible_n,
-        0.08,
-        nuisance["discordance_q"],
-        nuisance["mean_cluster_size"],
-        nuisance["icc"],
-        nuisance["attrition"],
-        0.05,
-    )
-
-    n_pass = eligible_n >= required_n and achieved_planning_power >= 0.90
-    cluster_pass = clusters >= 30
-    decision = "POWER_GATE_PASS" if n_pass and cluster_pass else "POWER_GATE_FAIL"
-
-    output = {
-        "schema_version": "1.0.0",
-        "work_package_id": "WP-006",
-        "decision": decision,
-        "primary_sesoi": 0.08,
-        "alpha_two_sided": 0.05,
-        "target_power": 0.90,
-        "nuisance_source": nuisance["source"],
-        "required_eligible_n": required_n,
-        "available_eligible_n": eligible_n,
-        "planning_power_at_available_n": achieved_planning_power,
-        "n_gate_pass": n_pass,
-        "minimum_independent_clusters": 30,
-        "available_independent_clusters": clusters,
-        "cluster_gate_pass": cluster_pass,
-        "input_sha256": sha256_file(args.input),
-        "holdout_accessed": False,
-        "replication_accessed": False,
-        "directional_effect_used": False,
+def validate_input(data: dict[str, Any]) -> None:
+    expected_top = {
+        "schema_version", "work_package_id", "evidence_class", "r2_power",
+        "dependency_resolution", "inventory", "blinded_update", "sealed_access",
     }
-    print(json.dumps(output, sort_keys=True))
+    require(set(data) == expected_top, "gate input top-level fields drift")
+    require(data["schema_version"] == "2.0.0", "gate input schema version drift")
+    require(data["work_package_id"] == "WP-006", "gate work package drift")
+    require(data["evidence_class"] in {"REAL_LOCAL_GIT_RESOLUTION", "SYNTHETIC_TEST_FIXTURE"}, "invalid evidence class")
+
+    r2 = data["r2_power"]
+    require(set(r2) == {"result_path", "result_sha256", "producer_grid_floor", "type_I_gate_pass", "joint_power_gate_pass"}, "R2 power fields drift")
+    require(isinstance(r2["result_path"], str) and r2["result_path"], "R2 result path missing")
+    require(isinstance(r2["result_sha256"], str) and HEX64.fullmatch(r2["result_sha256"]) is not None, "invalid R2 result hash")
+    require(isinstance(r2["producer_grid_floor"], int) and r2["producer_grid_floor"] >= 820, "R2 producer floor below accepted producer candidate")
+    require(r2["type_I_gate_pass"] is True, "R2 Type-I gate is not PASS")
+    require(r2["joint_power_gate_pass"] is True, "R2 joint-power lower-bound gate is not PASS")
+
+    dep = data["dependency_resolution"]
+    require(set(dep) == {"path", "sha256", "all_required_dependencies_accepted"}, "dependency-resolution fields drift")
+    require(isinstance(dep["path"], str) and dep["path"], "dependency-resolution path missing")
+    require(isinstance(dep["sha256"], str) and HEX64.fullmatch(dep["sha256"]) is not None, "invalid dependency-resolution hash")
+    require(isinstance(dep["all_required_dependencies_accepted"], bool), "dependency acceptance flag is not boolean")
+
+    inv = data["inventory"]
+    require(inv.get("status") in {"NOT_READY", "READY"}, "invalid inventory status")
+    if inv["status"] == "NOT_READY":
+        require(set(inv) == {"status", "reason"}, "NOT_READY inventory fields drift")
+        require(isinstance(inv["reason"], str) and inv["reason"].strip(), "NOT_READY inventory reason missing")
+    else:
+        expected_inventory = {
+            "status", "eligible_base_scenario_ids", "independent_source_family_clusters",
+            "eligible_inventory_sha256", "primary_treatment_arm_id", "primary_control_arm_id",
+            "wp004_arm_binding_artifact_sha256", "wp005_scorer_artifact_sha256",
+            "wp007_feasibility_artifact_sha256", "model_profile_assignment_frozen",
+            "source_family_grouping_frozen",
+        }
+        require(set(inv) == expected_inventory, "READY inventory fields drift")
+        require(isinstance(inv["eligible_base_scenario_ids"], int) and inv["eligible_base_scenario_ids"] >= 1, "invalid eligible base_scenario_id count")
+        require(isinstance(inv["independent_source_family_clusters"], int) and inv["independent_source_family_clusters"] >= 1, "invalid source-family cluster count")
+        require(inv["primary_treatment_arm_id"] != inv["primary_control_arm_id"], "primary treatment/control arm IDs must differ")
+        require(inv["model_profile_assignment_frozen"] is True, "model-profile assignment is not frozen")
+        require(inv["source_family_grouping_frozen"] is True, "source-family grouping is not frozen")
+        for key in [
+            "eligible_inventory_sha256", "wp004_arm_binding_artifact_sha256",
+            "wp005_scorer_artifact_sha256", "wp007_feasibility_artifact_sha256",
+        ]:
+            require(isinstance(inv[key], str) and HEX64.fullmatch(inv[key]) is not None, f"invalid inventory SHA-256: {key}")
+
+    blinded = data["blinded_update"]
+    require(set(blinded) == {"status", "required_eligible_n", "report_path", "report_sha256"}, "blinded-update fields drift")
+    require(blinded["status"] in {"NOT_USED", "USED"}, "invalid blinded-update status")
+    require(isinstance(blinded["required_eligible_n"], int) and blinded["required_eligible_n"] >= r2["producer_grid_floor"], "blinded update lowered required N")
+    if blinded["status"] == "NOT_USED":
+        require(blinded["required_eligible_n"] == r2["producer_grid_floor"], "NOT_USED blinded update changed N")
+        require(blinded["report_path"] is None and blinded["report_sha256"] is None, "NOT_USED blinded update carries a report")
+    else:
+        require(isinstance(blinded["report_path"], str) and blinded["report_path"], "USED blinded update missing report path")
+        require(isinstance(blinded["report_sha256"], str) and HEX64.fullmatch(blinded["report_sha256"]) is not None, "USED blinded update missing report hash")
+
+    require(data["sealed_access"] == {"holdout_accessed": False, "replication_accessed": False}, "sealed split access detected")
+
+
+def verify_r2_result(data: dict[str, Any]) -> dict[str, Any]:
+    declared = data["r2_power"]
+    path = resolve_repo_path(declared["result_path"])
+    require(path.is_file(), "R2 result file missing")
+    require(sha256_file(path) == declared["result_sha256"], "R2 result hash mismatch")
+    result = load_json(path)
+    require(result["work_package_id"] == "WP-006", "R2 result package drift")
+    require(result["analysis_unit"] == "base_scenario_id", "R2 result analysis unit drift")
+    require(result["selected_R2_grid_floor"] == declared["producer_grid_floor"], "R2 floor mismatch")
+    require(result["acceptance_conditions"]["type_I_upper_bound_le_0_055"] is True, "committed R2 Type-I condition failed")
+    require(result["acceptance_conditions"]["joint_power_lower_bound_ge_0_90"] is True, "committed R2 joint-power condition failed")
+    require(result["acceptance_conditions"]["final_N_accepted_by_independent_review"] is False, "producer R2 result self-accepts final N")
+    require(result["acceptance_conditions"]["HOLDOUT_or_REPLICATION_accessed"] is False, "R2 result indicates sealed access")
+    return result
+
+
+def verify_dependency_resolution(data: dict[str, Any]) -> dict[str, Any]:
+    declared = data["dependency_resolution"]
+    path = resolve_repo_path(declared["path"])
+    require(path.is_file(), "dependency-resolution file missing")
+    require(sha256_file(path) == declared["sha256"], "dependency-resolution hash mismatch")
+    resolution = load_json(path)
+    require(resolution["work_package_id"] == "WP-006", "dependency-resolution package drift")
+    require(resolution["evidence_class"] == data["evidence_class"], "dependency-resolution evidence class mismatch")
+    deps = resolution["dependencies"]
+    require(isinstance(deps, list) and len(deps) == 3, "dependency-resolution count drift")
+    ids = {dep["dependency_id"] for dep in deps}
+    require(ids == set(REQUIRED_DEPENDENCIES), "required dependency IDs drift")
+    all_accepted_actual = all(dep.get("resolved_status") == "ACCEPTED" for dep in deps)
+    require(resolution["all_required_dependencies_accepted"] is all_accepted_actual, "resolution aggregate acceptance flag mismatch")
+    require(declared["all_required_dependencies_accepted"] is all_accepted_actual, "gate input dependency acceptance flag mismatch")
+    if data["evidence_class"] == "REAL_LOCAL_GIT_RESOLUTION":
+        require(resolution.get("fixture_or_free_text_can_satisfy_acceptance") is False, "real resolution permits fixture/free-text acceptance")
+    return resolution
+
+
+def verify_blinded_update(data: dict[str, Any]) -> bool:
+    blinded = data["blinded_update"]
+    if blinded["status"] == "NOT_USED":
+        return True
+    path = resolve_repo_path(blinded["report_path"])
+    require(path.is_file(), "blinded-update report missing")
+    require(sha256_file(path) == blinded["report_sha256"], "blinded-update report hash mismatch")
+    report = load_json(path)
+    # The current R2 contract does not yet freeze the full report schema. Refuse a
+    # real PASS instead of guessing how to interpret a future report.
+    require(report.get("work_package_id") == "WP-006", "blinded-update report package drift")
+    return False
+
+
+def artifact_binding_pass(inventory: dict[str, Any], resolution: dict[str, Any]) -> bool:
+    if inventory["status"] != "READY":
+        return False
+    by_id = {dep["dependency_id"]: dep for dep in resolution["dependencies"]}
+    for dependency_id, inventory_key in REQUIRED_DEPENDENCIES.items():
+        dep = by_id[dependency_id]
+        if dep.get("resolved_status") != "ACCEPTED":
+            return False
+        accepted = dep.get("accepted_artifacts")
+        if not isinstance(accepted, list) or not accepted:
+            return False
+        hashes = {artifact.get("sha256") for artifact in accepted}
+        if inventory[inventory_key] not in hashes:
+            return False
+    return True
+
+
+def evaluate(data: dict[str, Any], resolution: dict[str, Any], blinded_schema_ready: bool) -> dict[str, Any]:
+    r2 = data["r2_power"]
+    inventory = data["inventory"]
+    required_n = max(r2["producer_grid_floor"], data["blinded_update"]["required_eligible_n"])
+    dependencies_ready = resolution["all_required_dependencies_accepted"] is True
+    inventory_ready = inventory["status"] == "READY"
+    artifact_bindings_ok = artifact_binding_pass(inventory, resolution) if inventory_ready and dependencies_ready else False
+    available_n = inventory.get("eligible_base_scenario_ids") if inventory_ready else None
+    clusters = inventory.get("independent_source_family_clusters") if inventory_ready else None
+    n_gate_pass = bool(inventory_ready and available_n >= required_n)
+    cluster_gate_pass = bool(inventory_ready and clusters >= 30)
+
+    if data["evidence_class"] == "SYNTHETIC_TEST_FIXTURE":
+        logical_pass = bool(
+            dependencies_ready and inventory_ready and artifact_bindings_ok and
+            n_gate_pass and cluster_gate_pass and blinded_schema_ready
+        )
+        status = "SYNTHETIC_LOGIC_PASS_ONLY" if logical_pass else "SYNTHETIC_LOGIC_FAIL"
+        power_gate_pass = False
+    elif not dependencies_ready:
+        status = "NOT_EVALUATED_DEPENDENCIES"
+        power_gate_pass = False
+    elif not inventory_ready:
+        status = "NOT_EVALUATED_INVENTORY"
+        power_gate_pass = False
+    elif not blinded_schema_ready:
+        status = "NOT_EVALUATED_BLINDED_UPDATE"
+        power_gate_pass = False
+    else:
+        power_gate_pass = bool(artifact_bindings_ok and n_gate_pass and cluster_gate_pass)
+        status = "POWER_GATE_PASS" if power_gate_pass else "POWER_GATE_FAIL"
+
+    return {
+        "schema_version": "2.0.0",
+        "work_package_id": "WP-006",
+        "status": status,
+        "evidence_class": data["evidence_class"],
+        "power_gate_pass": power_gate_pass,
+        "required_eligible_n": required_n,
+        "available_eligible_n": available_n,
+        "minimum_independent_source_family_clusters": 30,
+        "available_independent_source_family_clusters": clusters,
+        "dependencies_ready": dependencies_ready,
+        "inventory_ready": inventory_ready,
+        "artifact_binding_pass": artifact_bindings_ok,
+        "n_gate_pass": n_gate_pass,
+        "cluster_gate_pass": cluster_gate_pass,
+        "blinded_update_schema_ready": blinded_schema_ready,
+        "r2_type_I_gate_pass": r2["type_I_gate_pass"],
+        "r2_joint_power_gate_pass": r2["joint_power_gate_pass"],
+        "confirmatory_access_authorized": False,
+        "gate_001_authorized": False,
+        "holdout_accessed": False,
+        "replication_accessed": False,
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Evaluate WP-006 R2 confirmatory power gate")
+    parser.add_argument("--input", required=True, type=Path)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--require-pass", action="store_true")
+    args = parser.parse_args()
+
+    data = load_json(args.input)
+    validate_input(data)
+    verify_r2_result(data)
+    resolution = verify_dependency_resolution(data)
+    blinded_schema_ready = verify_blinded_update(data)
+    result = evaluate(data, resolution, blinded_schema_ready)
+
+    text = json.dumps(result, indent=2, sort_keys=True) + "\n"
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(text, encoding="utf-8")
+    print(json.dumps(result, sort_keys=True))
+
+    if args.require_pass and not (
+        data["evidence_class"] == "REAL_LOCAL_GIT_RESOLUTION" and
+        result["status"] == "POWER_GATE_PASS" and
+        result["power_gate_pass"] is True
+    ):
+        return 3
+    return 0
 
 
 if __name__ == "__main__":
     try:
-        main()
+        raise SystemExit(main())
     except Exception as exc:
-        print(f"WP-006 power gate evaluation failed: {exc}", file=sys.stderr)
+        print(f"WP-006 R2 power gate evaluation failed: {exc}", file=sys.stderr)
         raise
