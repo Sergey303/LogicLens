@@ -1,7 +1,10 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 work_package_id: WP-005
 linear_issue: ENG-157
 acceptance_gate: GATE-001
+detailed_acceptance: EpistemicCompilerLab/research-execution/context-packets/WP-005/ACCEPTANCE.v1.3.yaml
+lifecycle_contract: EpistemicCompilerLab/research-execution/oracle/ORACLE_LIFECYCLE_CONTRACT.json
+negative_fixture_contract: EpistemicCompilerLab/research-execution/oracle/ORACLE_LIFECYCLE_NEGATIVE_FIXTURES.json
 command_contracts:
 - name: context_packet_preflight
   working_directory: .
@@ -12,37 +15,48 @@ command_contracts:
   - WP-005
   stage: pre_start
   must_exit_zero_when: packet and input manifests are intact
-- name: package_acceptance_1
+- name: semantic_and_boundary_acceptance
   working_directory: .
   argv:
   - python
   - EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py
   - --preflight
-  stage: post_completion
-  must_exit_zero_when: all declared deliverables for this package exist
-  source_working_directory: EpistemicCompilerLab
-  source_argv:
-  - python
-  - research-execution/scripts/validate_oracle_boundary.py
   - --boundary
-  - research-execution/oracle/INDEPENDENCE_BOUNDARY.md
+  - EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md
   - --mutations
-  - research-execution/oracle/MUTATION_MATRIX.yaml
-  source_command: python research-execution/scripts/validate_oracle_boundary.py --boundary
-    research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations research-execution/oracle/MUTATION_MATRIX.yaml
-  availability_contract: The versioned wrapper is available before task start. The
-    exact source command is retained and becomes mandatory after its declared deliverables
-    exist.
+  - EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+  stage: post_completion
+  must_exit_zero_when: semantic registry, conformance coverage, boundary and mutation contracts pass
+- name: blind_gold_and_lifecycle_acceptance
+  working_directory: .
+  argv:
+  - python
+  - EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py
+  stage: post_completion
+  must_exit_zero_when: acceptance/lifecycle/protocol/packet/boundary agree and all frozen lifecycle negative fixtures are killed for the expected reasons
 checks:
   artifact:
-  - 'All declared deliverables exist and validate: semantic spec, independence boundary,
-    mutation matrix, dependency plan.'
+  - All original deliverables exist and validate.
+  - ORACLE_LIFECYCLE_CONTRACT.json and ORACLE_LIFECYCLE_NEGATIVE_FIXTURES.json exist and are bound by detailed acceptance.
+  - ORACLE_PACKET_CONTRACT.json and GOLD_ADJUDICATION_PROTOCOL.json use exact positive/negative evidence-root and proof-normal-form vocabulary.
   scientific:
   - Oracle B is implementable without A imports/calls/generated expected frames.
+  - Blind outcome gold is frozen before B execution but physically unavailable to B while it computes.
+  - Outcome gold is scorer expected-value authority; B is an independent consistency implementation and cannot override or repair gold.
   independence:
-  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions
-    and declare prior roles/conflicts.
+  - Producer, independent reviewer and gatekeeper use distinct logged identities/sessions and declare prior roles/conflicts.
+  - Gold adjudicators are disjoint from same-candidate Path A, Path B, scorer, teacher-target and model-output-analysis roles.
   adversarial:
   - Circular gold, production dependency and missed mutation fail closed.
+  - NEG-STALE-EVIDENCE-VOCABULARY must fail for legacy generic field vocabulary.
+  - NEG-B-BEFORE-GOLD-FREEZE must fail for lifecycle-order mismatch.
   reproducibility:
-  - A clean reviewer can repeat the commands from hashes and manifests.
+  - A clean reviewer can repeat all post-completion commands from one immutable candidate and reproduce the same candidate-wide lifecycle result.
+  - Producer preflight evidence must identify the exact candidate commit and may not be reused from a prior candidate.
+producer_pass_is_not:
+- independent review
+- accepted Path B implementation
+- executed future Path B dependency/canary audit
+- executed 120-case human audit
+- GATE-001 approval
+- HOLDOUT or REPLICATION authorization
