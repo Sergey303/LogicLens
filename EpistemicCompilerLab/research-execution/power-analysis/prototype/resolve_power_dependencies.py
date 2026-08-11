@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = ROOT.parents[2]
 DEFAULT_BINDINGS = ROOT / "POWER_DEPENDENCY_BINDINGS.json"
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
@@ -41,14 +42,14 @@ def sha256_file(path: Path) -> str:
 
 
 def git_bytes(*args: str) -> bytes:
-    proc = subprocess.run(["git", *args], cwd=ROOT.parents[3], capture_output=True, check=False)
+    proc = subprocess.run(["git", *args], cwd=REPO_ROOT, capture_output=True, check=False)
     if proc.returncode != 0:
         raise RuntimeError(f"git {' '.join(args)} failed: {proc.stderr.decode(errors='replace').strip()}")
     return proc.stdout
 
 
 def git_commit_exists(sha: str) -> bool:
-    proc = subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"], cwd=ROOT.parents[3], capture_output=True, check=False)
+    proc = subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"], cwd=REPO_ROOT, capture_output=True, check=False)
     return proc.returncode == 0
 
 
@@ -87,7 +88,7 @@ def resolve_dependency(dep: dict[str, Any]) -> dict[str, Any]:
     require(review_exists, f"{dep['dependency_id']}: review commit is not resolvable locally")
     review_bytes = git_file_at_commit(review_commit, attestation_path)
     require(sha256_bytes(review_bytes) == attestation_sha, f"{dep['dependency_id']}: attestation digest mismatch at review commit")
-    current_path = ROOT.parents[3] / attestation_path
+    current_path = REPO_ROOT / attestation_path
     require(current_path.is_file(), f"{dep['dependency_id']}: attestation missing from current checkout")
     require(current_path.read_bytes() == review_bytes, f"{dep['dependency_id']}: current attestation bytes differ from review commit")
 
