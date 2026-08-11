@@ -28,6 +28,7 @@ RUNTIME = PACKAGE / "RUNTIME_DEPENDENCIES.json"
 FREEZE = PACKAGE / "ENG-197_FREEZE_MANIFEST.json"
 ADVISORY_LOCK = 197004
 DOLLAR_TAG = re.compile(r"\$[A-Za-z_0-9]*\$")
+BASE_RELEASE = re.compile(r"^(\d+\.\d+)(?:\s|$)")
 
 
 def load(path: Path) -> Any:
@@ -45,6 +46,20 @@ def sha256_file(path: Path) -> str:
 def require(ok: bool, message: str) -> None:
     if not ok:
         raise RuntimeError(message)
+
+
+def normalized_server_release(raw: str) -> str:
+    """Return PostgreSQL base release while retaining raw packaging identity separately.
+
+    Official distro/container builds commonly expose e.g.
+    `18.4 (Debian 18.4-1.pgdg13+1)` from SHOW server_version. The exact
+    PostgreSQL release is therefore gated by both this base release and
+    server_version_num; the complete raw build string and container digest
+    remain recorded as environment identity.
+    """
+    match = BASE_RELEASE.match(raw)
+    require(match is not None, f"unparseable PostgreSQL server_version: {raw}")
+    return match.group(1)
 
 
 def split_sql_script(sql: str) -> list[str]:
@@ -244,10 +259,11 @@ def main() -> int:
         db_name = connection.execute("SELECT current_database()").fetchone()[0]
         require(str(db_name).startswith(expected_server["database_name_prefix"]), "refusing non-disposable database name")
 
-        server_version = connection.execute("SHOW server_version").fetchone()[0]
+        server_version_raw = str(connection.execute("SHOW server_version").fetchone()[0])
+        server_version = normalized_server_release(server_version_raw)
         server_version_num = int(connection.execute("SHOW server_version_num").fetchone()[0])
         version_string = connection.execute("SELECT version()").fetchone()[0]
-        require(server_version == expected_server["required_server_version"], f"PostgreSQL server_version drift: {server_version}")
+        require(server_version == expected_server["required_server_version"], f"PostgreSQL base release drift: {server_version_raw}")
         require(server_version_num == expected_server["required_server_version_num"], f"PostgreSQL server_version_num drift: {server_version_num}")
 
         image_digest = os.environ.get("ENG197_POSTGRES_IMAGE_DIGEST")
@@ -256,6 +272,7 @@ def main() -> int:
             "database_name": db_name,
             "postgresql_version_string": version_string,
             "server_version": server_version,
+            "server_version_raw": server_version_raw,
             "server_version_num": server_version_num,
             "psycopg_version": psycopg.__version__,
             "libpq_version": psycopg.pq.version(),
