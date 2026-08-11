@@ -1,0 +1,92 @@
+name: ENG-156 WP-004 semantic and freeze-readiness validation
+
+on:
+  pull_request:
+    paths:
+      - 'EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml'
+      - 'EpistemicCompilerLab/research-execution/ESTIMANDS.yaml'
+      - 'EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml'
+      - 'EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md'
+      - 'EpistemicCompilerLab/research-execution/MODE_CONTRACTS/**'
+      - 'EpistemicCompilerLab/research-execution/power-analysis/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-004/**'
+      - '.github/workflows/validate-wp004-semantics.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'EpistemicCompilerLab/research-execution/CAUSAL_CONTRASTS.yaml'
+      - 'EpistemicCompilerLab/research-execution/ESTIMANDS.yaml'
+      - 'EpistemicCompilerLab/research-execution/BASELINE_SELECTION_RULE.yaml'
+      - 'EpistemicCompilerLab/research-execution/ALTERNATIVE_EXPLANATIONS.md'
+      - 'EpistemicCompilerLab/research-execution/MODE_CONTRACTS/**'
+      - 'EpistemicCompilerLab/research-execution/power-analysis/**'
+      - 'EpistemicCompilerLab/research-execution/context-packets/WP-004/**'
+      - '.github/workflows/validate-wp004-semantics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  wp004-semantics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install exact validator dependency
+        run: python -m pip install --disable-pip-version-check 'PyYAML==6.0.2'
+      - name: Validate local WP-004 semantics and persist report
+        run: |
+          mkdir -p artifacts/eng-156-wp004
+          python EpistemicCompilerLab/research-execution/MODE_CONTRACTS/validate_wp004_semantics.py \
+            --output artifacts/eng-156-wp004/WP004_SEMANTIC_VALIDATION_REPORT.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('artifacts/eng-156-wp004/WP004_SEMANTIC_VALIDATION_REPORT.json').read_text())
+          assert r['local_semantics'] == 'PASS'
+          assert r['status'] == 'LOCAL_SEMANTICS_PASS_FREEZE_BLOCKED'
+          assert r['freeze_readiness'] == 'BLOCKED'
+          assert r['endpoint_exact_identifier_match'] is False
+          assert 'WP006_ENDPOINT_IDENTIFIER_DRIFT' in r['freeze_blockers']
+          assert r['producer_may_self_accept'] is False
+          assert r['holdout_authorized'] is False
+          assert r['replication_authorized'] is False
+          PY
+      - name: Prove freeze readiness fails closed while blockers remain
+        shell: bash
+        run: |
+          set -euo pipefail
+          if python EpistemicCompilerLab/research-execution/MODE_CONTRACTS/validate_wp004_semantics.py --require-freeze-ready; then
+            echo 'WP-004 unexpectedly declared FREEZE_READY while named blockers remain' >&2
+            exit 1
+          fi
+      - name: Record execution environment and evidence boundary
+        run: |
+          python - <<'PY' > artifacts/eng-156-wp004/execution-boundary.json
+          import json, platform
+          print(json.dumps({
+              'issue': 'ENG-156',
+              'work_package': 'WP-004',
+              'python': platform.python_version(),
+              'local_semantics': 'PASS_EXPECTED',
+              'freeze_readiness': 'BLOCKED_EXPECTED',
+              'independent_review': 'NOT_PERFORMED',
+              'producer_self_acceptance': False,
+              'holdout_access': False,
+              'replication_access': False,
+              'gate_001': 'NOT_APPROVED'
+          }, sort_keys=True))
+          PY
+      - name: Upload WP-004 semantic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eng-156-wp004-semantic-evidence
+          path: artifacts/eng-156-wp004/
+          if-no-files-found: warn
+          retention-days: 30
