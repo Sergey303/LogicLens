@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "semantic_version": "wp005.semantic.v1",
   "canonical_json": {
     "encoding": "UTF-8",
@@ -87,6 +87,12 @@
     "unresolvable_edge": "invalid_proof",
     "ordering": "node IDs and edge pairs lexicographic"
   },
+  "truth_table": [
+    {"positive_derivation": true, "negative_derivation": false, "status": "supported"},
+    {"positive_derivation": false, "negative_derivation": true, "status": "refuted"},
+    {"positive_derivation": true, "negative_derivation": true, "status": "conflicting"},
+    {"positive_derivation": false, "negative_derivation": false, "status": "unknown"}
+  ],
   "outcomes": {
     "semantic_status": ["supported", "refuted", "conflicting", "unknown"],
     "query_outcome": ["valid", "needs_clarification", "invalid_query", "runtime_error"],
