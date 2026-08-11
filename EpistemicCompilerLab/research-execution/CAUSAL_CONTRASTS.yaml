@@ -1,4 +1,4 @@
-schema_version: 1.1.0
+schema_version: 1.2.0
 work_package_id: WP-004
 primary_contrast:
   contrast_id: C-PRIMARY
@@ -9,45 +9,48 @@ primary_contrast:
   headline_eligible: true
   intervention_type: multi-component deployed-interface bundle
   interpretation_boundary: trusted execution plus verified result-interface bundle versus strongest full-information non-compiled source interface
-  prohibited_interpretation: the primary contrast alone does not identify execution, type structure, conclusion, compression, or renderer as the unique cause
+  prohibited_interpretation: the primary contrast alone does not identify execution, type structure, conclusion, compression, provenance fields, or renderer as the unique cause
+  unit: base_scenario_id
+  endpoint: scenario_level_exact_epistemic_contract_accuracy
+  hypothesis: two-sided superiority against delta=0 at alpha=.05; SESOI=.08 is the planning/practical relevance alternative, not a hard observed-point-estimate threshold
   must_report:
-  - paired counts
-  - absolute difference
-  - hierarchical bootstrap 95% CI
-  - McNemar test
-  - smallest meaningful gain comparison
-  - domain/model strata
-  - independent replication
+  - paired scenario counts and discordance
+  - absolute difference and 95% confidence interval
+  - source-family CR1 cluster-robust inference with frozen finite-cluster reference rule
+  - SESOI comparison reported descriptively beside the superiority inference
+  - independent source-family cluster count
+  - domain/model/status strata
+  - independently sourced replication direction
   - profile-wise strongest-baseline sensitivity
 falsification_contrasts:
 - contrast_id: C-BUNDLE-VS-SOURCE
   modes: [M6, M14]
   objection: solver access, interface structure, or authoritative result as a bundle explains the effect
-  design_response: M14 retains the complete globally selected B* representation; all compared LLM modes are padded to the same lossless block envelope. The contrast estimates only the total deployed bundle; component claims require the controls below.
-- contrast_id: C-STRUCTURE
+  design_response: M14 retains the complete globally selected B* representation; all compared LLM modes use the same lossless block envelope only after padding-invariance PASS. The contrast estimates only the total deployed bundle; component claims require the controls below.
+- contrast_id: C-RESULT-SERIALIZATION
   modes: [M6, M9]
-  objection: typed field structure alone explains the effect
-  design_response: same verified semantic values and authoritative content, typed frame versus frozen unstructured serialization, under the same lossless token envelope.
+  objection: result-interface serialization/organization rather than trusted execution explains the effect
+  design_response: M9 carries the same verified semantic values through a frozen canonical lossless prose serialization with machine-verifiable round-trip equivalence. This contrast does not isolate typing alone.
 - contrast_id: C-COPYING
   modes: [M6, M12, M10, M14]
-  objection: allowedConclusion or status-label copying explains the benefit
-  design_response: M12 removes allowedConclusion only; M10 exposes status only; M14 exposes no computed result. All LLM modes use the common block envelope.
+  objection: allowedConclusion or a minimal executed status/action contract explains the benefit
+  design_response: M12 removes allowedConclusion only; M10 exposes the normative verified status-plus-action decision contract; M14 exposes no computed result. M6-M12 isolates conclusion presence, M12-M10 bounds richer verified fields beyond the minimal decision contract, and M10-M14 tests minimal executed-decision sufficiency.
 - contrast_id: C-LLM-NECESSITY
   modes: [M6, M11]
-  objection: LLM renderer contributes nothing
-  design_response: same exact semantic frame rendered by the student or frozen deterministic templates.
+  objection: LLM renderer contributes nothing once the exact frame exists
+  design_response: M11 consumes the exact M6 frame and is deterministically mapped to the identical canonical answer/scoring obligations. Non-inferiority uses the separately frozen M11 renderer contract; style is descriptive only.
 - contrast_id: C-FRAME-RELIANCE
   modes: [M6, M13]
-  objection: model ignores frame or blindly copies it
-  design_response: one-field mutations classify follow/detect/ignore/fabricate behavior while all other bytes and envelope constraints remain frozen.
+  objection: model ignores an internally detectable inconsistency or blindly follows visible authority
+  design_response: one-field mutations are preregistered with detectability, valid answer set, scoring rule and semantic role. Detectable consistency-checking and non-detectable authority-following instances are never pooled into one safety rate.
 - contrast_id: C-COMPILER
   modes: [M6, M7]
   objection: production extraction/query/compiler errors create apparent renderer errors
   design_response: independent gold frame holds renderer and output contract constant.
 - contrast_id: C-LENGTH
   modes: [M6, M14, M9, M10, M12, M13]
-  objection: shorter or differently budgeted input explains the effect
-  design_response: complete information is retained; the shared envelope is the maximum unpadded token count and only shorter modes receive neutral padding. Truncation is forbidden.
+  objection: shorter, differently placed or behaviorally active padding explains the effect
+  design_response: complete semantic/source information is retained; the shared envelope is the block maximum; exact padding bytes/placement are frozen by tokenizer/profile and must pass the DEV-only padding-invariance gate before benchmark construction.
 - contrast_id: C-TEACHING
   modes: [M4, M5, M14, M6]
   objection: strong teacher could achieve the same result contextually
@@ -58,11 +61,19 @@ falsification_contrasts:
   design_response: a secondary DEV-frozen B*_profile map applies the same ranking independently per profile; no outcome-driven switching is allowed.
 confirmatory_minimal_set: [M6, M14, M9, M10, M11, M12, M13]
 diagnostic_required_set: [M0, M1, M2, M3, M4, M5, M7, M8]
+candidate_extension_registry:
+  path: MODE_CONTRACTS/TRANSFER_LADDER_ADJUDICATION.yaml
+  activation: forbidden until the named upstream subtask has distinct independent acceptance and WP-004 records an explicit include/DEV-only/reject decision before HOLDOUT
+  weight_changing_boundary: never part of the fixed-weight M-mode primary claim
 freeze_rules:
-- all mode contracts, full input artifacts, transformation code, tokenizers, prompts, and output reserves hashed before HOLDOUT
+- all active mode contracts, full input artifacts, transformation code, tokenizers, prompts, output reserves and candidate-extension adjudications hashed before HOLDOUT
 - no mode addition after HOLDOUT access
 - no information-removing token match or context repair after split freeze
-- one-field M13 mutations preregistered and analyzed separately
+- M9 semantic round-trip equivalence required before use
+- M10 is status-plus-action; semantic change requires a new versioned mode decision
+- one-field M13 mutations preregistered with detectability and analyzed separately
+- M11 canonical scoring comparability and non-inferiority criterion frozen before HOLDOUT
+- exact neutral-padding bytes, placement, tokenizer construction and DEV invariance result frozen before benchmark construction
 - global B* and profile-sensitivity baselines selected on DEV only
 - all modes attempted in randomized blocked order
 - raw output stored before scoring
@@ -74,11 +85,15 @@ pivot_rules:
   decision: narrow to supported profiles and prohibit a pooled model-general claim
 - condition: M6-M12 is large while M12-M14 is null
   decision: pivot to minimal executable decision-contract study; do not attribute effect to rich frame
-- condition: M11 equals or exceeds M6 across task outcomes
-  decision: state LLM renderer unnecessary for the evaluated task class
-- condition: M13 shows unconditional corruption following
-  decision: narrow auditability/safety wording and analyze frame-trust failure
+- condition: M10 matches M6 and materially exceeds M14
+  decision: prefer the minimal verified status-plus-action contract interpretation over rich-frame necessity
+- condition: M11 is non-inferior to M6 under the frozen renderer criterion
+  decision: state LLM renderer unnecessary for the evaluated task class under the tested semantic obligations
+- condition: M13 detectable instances show practically important unconditional mutation following
+  decision: narrow auditability/safety wording and analyze frame-trust failure; non-detectable instances do not trigger this rule
 - condition: M7-M6 is large
   decision: prioritize extraction/compiler boundary; do not blame renderer
+- condition: padding invariance fails for any required mode/profile
+  decision: revise token-matching construction before benchmark construction; exact token equality does not justify behaviorally harmful padding
 - condition: lossless common envelope is infeasible for the planned benchmark/model contexts
   decision: revise dataset/source-size contract or model profiles before split construction; never truncate controls
