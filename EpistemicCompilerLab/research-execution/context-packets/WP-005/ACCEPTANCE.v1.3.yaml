@@ -1,4 +1,4 @@
-schema_version: 1.3.0
+schema_version: 1.3.1
 work_package_id: WP-005
 linear_issue: ENG-157
 status: PRODUCER_R2_LIFECYCLE_REMEDIATION_CANDIDATE
@@ -123,9 +123,14 @@ acceptance_contract:
     distinct_gatekeeper_required: true
 
 validation_commands:
-  - id: wp005_semantic_and_boundary
-    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight --boundary EpistemicCompilerLab/research-execution/oracle/INDEPENDENCE_BOUNDARY.md --mutations EpistemicCompilerLab/research-execution/oracle/MUTATION_MATRIX.yaml
+  - id: wp005_dedicated_semantics
+    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_semantics.py
     expected_exit_code: 0
+    evidence_class: semantic_contract_execution
+  - id: wp005_boundary_wrapper_availability
+    command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_boundary.py --preflight
+    expected_exit_code: 0
+    evidence_class: wrapper_availability_only_not_semantic_execution
   - id: wp005_gold_governance_and_lifecycle
     command: python EpistemicCompilerLab/research-execution/scripts/validate_oracle_gold_governance.py
     expected_exit_code: 0
