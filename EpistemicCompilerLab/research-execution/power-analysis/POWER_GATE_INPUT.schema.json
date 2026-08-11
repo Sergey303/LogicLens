@@ -1,77 +1,85 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://logiclens.local/wp006/power-gate-input.schema.json",
-  "title": "WP-006 confirmatory power gate input",
+  "title": "WP-006 real power gate input",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "wp004_arm_binding", "wp005_scorer", "inventory", "nuisance", "evidence", "sealed_access"],
+  "required": ["schema_version", "work_package_id", "evidence_class", "r2_power", "dependency_resolution", "inventory", "blinded_update", "sealed_access"],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
-    "wp004_arm_binding": {
+    "schema_version": {"const": "2.0.0"},
+    "work_package_id": {"const": "WP-006"},
+    "evidence_class": {"enum": ["REAL_LOCAL_GIT_RESOLUTION", "SYNTHETIC_TEST_FIXTURE"]},
+    "r2_power": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["treatment_arm_id", "control_arm_id", "contract_sha256", "independent_review_ref"],
+      "required": ["result_path", "result_sha256", "producer_grid_floor", "type_I_gate_pass", "joint_power_gate_pass"],
       "properties": {
-        "treatment_arm_id": {"type": "string", "minLength": 1},
-        "control_arm_id": {"type": "string", "minLength": 1},
-        "contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "independent_review_ref": {"type": "string", "minLength": 1}
+        "result_path": {"type": "string", "minLength": 1},
+        "result_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "producer_grid_floor": {"type": "integer", "minimum": 820},
+        "type_I_gate_pass": {"const": true},
+        "joint_power_gate_pass": {"const": true}
       }
     },
-    "wp005_scorer": {
+    "dependency_resolution": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["semantic_version", "scorer_sha256", "independent_review_ref"],
+      "required": ["path", "sha256", "all_required_dependencies_accepted"],
       "properties": {
-        "semantic_version": {"const": "wp005.semantic.v1"},
-        "scorer_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "independent_review_ref": {"type": "string", "minLength": 1}
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "all_required_dependencies_accepted": {"type": "boolean"}
       }
     },
     "inventory": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["benchmark_manifest_sha256", "eligible_paired_n", "independent_source_family_clusters", "cluster_size_summary_sha256", "attrition_ledger_sha256"],
-      "properties": {
-        "benchmark_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "eligible_paired_n": {"type": "integer", "minimum": 1},
-        "independent_source_family_clusters": {"type": "integer", "minimum": 1},
-        "cluster_size_summary_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "attrition_ledger_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
-      }
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "reason"],
+          "properties": {
+            "status": {"const": "NOT_READY"},
+            "reason": {"type": "string", "minLength": 1}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "eligible_base_scenario_ids", "independent_source_family_clusters", "eligible_inventory_sha256", "primary_treatment_arm_id", "primary_control_arm_id", "wp004_arm_binding_artifact_sha256", "wp005_scorer_artifact_sha256", "wp007_feasibility_artifact_sha256", "model_profile_assignment_frozen", "source_family_grouping_frozen"],
+          "properties": {
+            "status": {"const": "READY"},
+            "eligible_base_scenario_ids": {"type": "integer", "minimum": 1},
+            "independent_source_family_clusters": {"type": "integer", "minimum": 1},
+            "eligible_inventory_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "primary_treatment_arm_id": {"type": "string", "minLength": 1},
+            "primary_control_arm_id": {"type": "string", "minLength": 1},
+            "wp004_arm_binding_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "wp005_scorer_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "wp007_feasibility_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "model_profile_assignment_frozen": {"const": true},
+            "source_family_grouping_frozen": {"const": true}
+          }
+        }
+      ]
     },
-    "nuisance": {
+    "blinded_update": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["source", "discordance_q", "mean_cluster_size", "icc", "attrition", "report_sha256"],
+      "required": ["status", "required_eligible_n", "report_path", "report_sha256"],
       "properties": {
-        "source": {"enum": ["frozen_primary_planning", "single_blinded_nuisance_update"]},
-        "discordance_q": {"type": "number", "minimum": 0.08, "maximum": 1},
-        "mean_cluster_size": {"type": "number", "minimum": 1},
-        "icc": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
-        "attrition": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
-        "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
-      }
-    },
-    "evidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["calculator_sha256", "validator_sha256", "power_protocol_sha256", "independent_statistical_review_ref"],
-      "properties": {
-        "calculator_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "validator_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "power_protocol_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "independent_statistical_review_ref": {"type": "string", "minLength": 1}
+        "status": {"enum": ["NOT_USED", "USED"]},
+        "required_eligible_n": {"type": "integer", "minimum": 820},
+        "report_path": {"type": ["string", "null"]},
+        "report_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
       }
     },
     "sealed_access": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["holdout_accessed", "replication_accessed", "directional_confirmatory_effect_seen_by_power_analyst"],
+      "required": ["holdout_accessed", "replication_accessed"],
       "properties": {
         "holdout_accessed": {"const": false},
-        "replication_accessed": {"const": false},
-        "directional_confirmatory_effect_seen_by_power_analyst": {"const": false}
+        "replication_accessed": {"const": false}
       }
     }
   }
