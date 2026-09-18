@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "eng-70-qwen-002",
+  "requiredCommit": "08c6e44a167933f3a1e1081c8884aaf6f5337116",
+  "model": "qwen2.5-coder:7b",
+  "contextTokens": 16384,
+  "outputTokens": 2048,
+  "loadedModelsBefore": [],
+  "loadedModelsAfter": [],
+  "freeGpuMemoryMiB": 265
+}

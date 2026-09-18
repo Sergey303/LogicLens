@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "0.1",
+  "candidateId": "qwen-run-001-candidate",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "base": {
+    "epoch": 0,
+    "revision": 0
+  },
+  "provider": {
+    "kind": "ollama",
+    "name": "ollama",
+    "model": "qwen2.5-coder:7b",
+    "runId": "qwen-run-001"
+  },
+  "uiContractVersion": "0.1",
+  "cliProtocolVersion": "0.1",
+  "metrics": {
+    "cliCalls": 0,
+    "manualFixes": 0,
+    "elapsedMs": 21574.492,
+    "costUsd": 0
+  },
+  "files": [
+    {
+      "path": "rules/candidate_researcher_at_iis.pl",
+      "kind": "rule"
+    },
+    {
+      "path": "tests/candidate_researcher_at_iis_tests.pl",
+      "kind": "test"
+    },
+    {
+      "path": "ui/researcher-at-iis.json",
+      "kind": "ui"
+    }
+  ],
+  "notes": ""
+}

@@ -1,0 +1,14 @@
+{
+  "split": "dev",
+  "totalCases": 6,
+  "passedCases": 2,
+  "actionCorrect": 4,
+  "statusCorrect": 3,
+  "materialCorrect": 3,
+  "askFieldCorrect": 4,
+  "runnerErrors": 0,
+  "outputLimited": 0,
+  "elapsedMs": 69229,
+  "promptEvalCount": 4892,
+  "evalCount": 379
+}

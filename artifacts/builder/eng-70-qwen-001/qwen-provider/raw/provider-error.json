@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "0.1",
+  "status": "http-error",
+  "statusCode": 500,
+  "reason": "Internal Server Error",
+  "contentType": "application/json; charset=utf-8",
+  "bodyBytes": 222,
+  "bodyTruncated": false,
+  "error": "llama-server reported out-of-memory during startup: cudaMalloc failed: out of memory\nalloc_tensor_range: failed to allocate CUDA0 buffer of size 4370558976\nerror loading model: unable to allocate CUDA0 buffer",
+  "body": "{\"error\":\"llama-server reported out-of-memory during startup: cudaMalloc failed: out of memory\\nalloc_tensor_range: failed to allocate CUDA0 buffer of size 4370558976\\nerror loading model: unable to allocate CUDA0 buffer\"}"
+}

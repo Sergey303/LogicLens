@@ -1,0 +1,7 @@
+{
+  "computedDecisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+  "expectedDecisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+  "passed": true,
+  "schemaVersion": "0.1",
+  "stage": "activation-decision-hash-verification"
+}

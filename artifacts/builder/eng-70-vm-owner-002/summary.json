@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "0.1",
+  "diagnosticId": "eng-70-vm-owner-002",
+  "capturedAt": "2026-07-27T21:44:07.5722118+07:00",
+  "previousProcessId": 3300,
+  "targetProcessId": 3300,
+  "resolvedMatchCount": 0,
+  "resolvedMatches": [],
+  "hyperVVmCount": 1,
+  "computerSystemCount": 2,
+  "errors": []
+}

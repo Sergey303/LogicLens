@@ -1,0 +1,14 @@
+{
+  "split": "train",
+  "totalCases": 6,
+  "passedCases": 3,
+  "actionCorrect": 3,
+  "statusCorrect": 4,
+  "materialCorrect": 4,
+  "askFieldCorrect": 3,
+  "runnerErrors": 0,
+  "outputLimited": 0,
+  "elapsedMs": 65651,
+  "promptEvalCount": 4345,
+  "evalCount": 357
+}

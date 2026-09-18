@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "candidate-activation-overlay",
+  "overlayId": "eng-98-overlay-002",
+  "status": "prepared",
+  "source": {
+    "assessmentId": "eng-95-readiness-001",
+    "assessmentHash": "sha256:36256acedb11a5788c19bf98fc988dddc037629a8b160fcc9d161839471cc654",
+    "promotionPlanHash": "sha256:3fea6197b578908837a1abe720edf79c4f0133e52027a306b71a4e5b78744990",
+    "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+    "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+    "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "target": {
+    "epoch": 0,
+    "revision": 1
+  },
+  "derivedBinding": {
+    "command": "derived-query",
+    "predicateIri": "urn:logiclens:derived:researcher-at-iis",
+    "module": "candidate_researcher_at_iis",
+    "predicate": "researcher_at_iis",
+    "arity": 2
+  },
+  "changes": {
+    "replacedFiles": [
+      "entry.pl"
+    ],
+    "addedFiles": [
+      "rules/revision_runtime.pl"
+    ],
+    "modifiedActiveFiles": [],
+    "removedActiveFiles": []
+  },
+  "files": [
+    {
+      "path": "entry.pl",
+      "operation": "replace",
+      "sha256": "sha256:7e012a2a948737112edb5385cd31bffd174bd469c7a640b4806ada46893bf5ef",
+      "bytes": 559
+    },
+    {
+      "path": "rules/revision_runtime.pl",
+      "operation": "add",
+      "sha256": "sha256:cb0abe02ffdc34934a9a492dd042c831843befa5ecae9b8a03c1b77a240fbdcc",
+      "bytes": 7853
+    }
+  ],
+  "checks": {
+    "assessmentVerified": true,
+    "knownBlockersMatched": true,
+    "candidateIdentityConsistent": true,
+    "candidateInterfaceReviewed": true,
+    "overlayAllowlistEnforced": true,
+    "activePackageUntouched": true
+  },
+  "intent": {
+    "staging": "not-performed",
+    "apply": "not-performed",
+    "activePointerUpdate": "not-performed"
+  },
+  "overlayHash": "sha256:a80087ecbc9f97c301fa5852295c05a8d5da9ef10eaec9c9c1a86a81b8a0978b"
+}

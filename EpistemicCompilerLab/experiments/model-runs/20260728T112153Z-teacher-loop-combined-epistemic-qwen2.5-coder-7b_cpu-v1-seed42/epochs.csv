@@ -1,0 +1,4 @@
+epoch,status,changeType,trainPassed,devPassed,promptBytes,prologBytes,hypothesis
+0,baseline,,4,3,999,1285,
+1,accepted,prompt,4,3,1366,1285,The student answers from partial context before validating that both obligatory inputs are explicitly present; making input validation the first step should prevent inferred dates or revisions.
+2,accepted,prompt,4,3,1493,1285,The student skips the existing missing-field rule because it is not an explicit gate before material inference; a mandatory completeness check with fixed field precedence should prevent answers from partial input.

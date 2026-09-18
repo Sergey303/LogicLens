@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "0.1",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "title": "Derived researcher-at-IIS predicate",
+  "base": {
+    "epoch": 0,
+    "revision": 0
+  },
+  "contracts": {
+    "candidate": "0.1",
+    "cli": "0.1",
+    "ui": "0.1"
+  },
+  "objective": "Create a derived predicate that returns each person connected through one participation resource to organization urn:logiclens:org:iis with the Russian role literal исследователь. Interpret each evidence tuple as fact(FactId, Subject, Predicate, Object): the shared participation resource is the Subject of participant, in-org and role facts; Person, IIS and the role literal are their Objects. The second argument must be the sorted FactId evidence used for participant, organization and role conditions.",
+  "candidate": {
+    "rulePath": "rules/candidate_researcher_at_iis.pl",
+    "testPath": "tests/candidate_researcher_at_iis_tests.pl",
+    "uiPath": "ui/researcher-at-iis.json",
+    "module": "candidate_researcher_at_iis",
+    "predicate": "researcher_at_iis",
+    "arity": 2,
+    "uiPredicate": "urn:logiclens:derived:researcher-at-iis",
+    "uiComponent": "Property"
+  },
+  "evidenceRequests": [
+    {
+      "name": "person-subgraph",
+      "command": "subgraph",
+      "options": {
+        "rootId": "urn:logiclens:person:alex",
+        "depth": 2,
+        "direction": "both",
+        "language": "ru"
+      }
+    },
+    {
+      "name": "participation-facts",
+      "command": "inspect-facts",
+      "options": {
+        "entityId": "urn:logiclens:participation:work"
+      }
+    },
+    {
+      "name": "organization-facts",
+      "command": "inspect-facts",
+      "options": {
+        "entityId": "urn:logiclens:org:iis"
+      }
+    }
+  ],
+  "acceptance": [
+    "Use only the provider-neutral epoch candidate v0 files declared by the task.",
+    "Export candidate_researcher_at_iis:researcher_at_iis/2.",
+    "Interpret epoch_data:fact/4 exactly as fact(FactId, Subject, Predicate, Object); never swap Subject and Object.",
+    "Use one shared Participation subject for all three conditions: epoch_data:fact(FParticipant, Participation, 'http://fogid.net/o/participant', iri(Person)); epoch_data:fact(FOrganization, Participation, 'http://fogid.net/o/in-org', iri('urn:logiclens:org:iis')); epoch_data:fact(FRole, Participation, 'http://fogid.net/o/role', literal(\"исследователь\", lang('ru'))). The language-literal lexical value is a double-quoted SWI-Prolog string; never use the atom form literal('исследователь', lang('ru')).",
+    "Do not put Person or urn:logiclens:org:iis in the Subject position of participant or in-org facts.",
+    "Return the three supporting FactId values sorted with ordinal Prolog term order.",
+    "Place at least one ordinary test(...) clause after begin_tests/use_module and before end_tests; an empty PlUnit suite is invalid.",
+    "Bind urn:logiclens:derived:researcher-at-iis to the trusted Property component.",
+    "Do not modify or activate the active epoch."
+  ]
+}

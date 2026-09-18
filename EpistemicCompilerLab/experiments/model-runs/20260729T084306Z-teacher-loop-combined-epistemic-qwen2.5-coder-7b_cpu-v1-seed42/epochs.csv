@@ -1,0 +1,4 @@
+epoch,status,changeType,trainPassed,devPassed,promptBytes,prologBytes,fixed,regressed,unchangedFail,hypothesis
+0,baseline,,4,3,999,1285,,,,
+1,accepted,prompt,3,3,1329,1285,0,1,2,The student answers under-specified questions by inferring an omitted input; an explicit completeness gate before knowledge lookup will make it request the missing field.
+2,accepted,prompt,3,2,1543,1285,0,1,2,The student conflates an absent obligatory field with an unsupported supplied value; an ordered extraction gate with explicit present/absent states should prevent both guessing and false requests.

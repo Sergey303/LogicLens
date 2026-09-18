@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "eng-70-qwen-003",
+  "requiredCommit": "08c6e44a167933f3a1e1081c8884aaf6f5337116",
+  "actualCommit": "08c6e44a167933f3a1e1081c8884aaf6f5337116",
+  "model": "qwen2.5-coder:7b",
+  "contextTokens": 16384,
+  "outputTokens": 2048,
+  "gpuIndex": 0,
+  "gpuName": "NVIDIA GeForce RTX 3060 Ti",
+  "totalMemoryMiB": 8192,
+  "usedMemoryMiB": 1550,
+  "freeMemoryMiB": 6475,
+  "minimumFreeMemoryMiB": 5000,
+  "loadedOllamaModelsBefore": []
+}

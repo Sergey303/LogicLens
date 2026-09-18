@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "activation-transaction-attestation",
+  "transactionId": "eng-107-activation-002",
+  "outcome": "committed",
+  "decisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+  "beforePointer": {
+    "schemaVersion": "0.1",
+    "stage": "active-pointer",
+    "generation": 0,
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "packagePath": "packages/e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "decisionHash": null,
+    "transactionId": "eng-107-init-002",
+    "pointerHash": "sha256:250774e04cedd776f4e36ebfc1489f656d13c2f02e2f71c5aa8a6163d7737df7"
+  },
+  "afterPointer": {
+    "schemaVersion": "0.1",
+    "stage": "active-pointer",
+    "generation": 1,
+    "epoch": 0,
+    "revision": 1,
+    "packageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+    "packagePath": "packages/e000000-r000001-63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+    "decisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+    "transactionId": "eng-107-activation-002",
+    "pointerHash": "sha256:4fb0c1a31a02fc5ab6a9bc56a3440aa0be09b6d9cfc64c8c4858c4b2f8e7dc24"
+  },
+  "targetPackageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+  "rollbackPackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "checks": {
+    "decisionReverified": true,
+    "currentMatched": true,
+    "targetInstalled": true,
+    "preSwitchRuntimePassed": true,
+    "pointerSwapped": true,
+    "postSwitchRuntimePassed": true,
+    "rollbackPerformed": false,
+    "rollbackRuntimePassed": false,
+    "journalFinalized": true
+  },
+  "failure": null,
+  "journalHash": "sha256:a837e03ca62cdcb999d6776eb4ff61221607c1e9c67652178c6b4520d5ab2fbb",
+  "intent": {
+    "apply": "performed",
+    "activePointerUpdate": "performed",
+    "recovery": "not-required"
+  },
+  "transactionHash": "sha256:f87c4fff80adb61e76118f6b13b9776672ca596123301ae7e4d8c0e257297b7c"
+}

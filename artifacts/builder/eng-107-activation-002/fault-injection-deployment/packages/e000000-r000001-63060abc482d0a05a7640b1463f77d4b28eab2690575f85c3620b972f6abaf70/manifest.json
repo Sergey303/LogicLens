@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "staged-revision",
+  "stageId": "eng-89-stage-001",
+  "source": {
+    "planId": "eng-87-plan-001",
+    "promotionPlanHash": "sha256:3fea6197b578908837a1abe720edf79c4f0133e52027a306b71a4e5b78744990",
+    "plannedRevisionHash": "sha256:fcf0345dc45fdb3aad8a29811f3a7dd8f6b04cbc748ccd15beab6646f895d15f",
+    "assessmentId": "eng-104-readiness-after-overlay-003",
+    "assessmentHash": "sha256:1b41a79486014255dc9e0c9ebb65d0bcb41294b35d66fff47916f9c80af626a7",
+    "overlayId": "eng-104-overlay-003",
+    "overlayHash": "sha256:8039f9be5236734285542c8a1f8fdf5cb3f73890a28ce2dd178131b5c0d8b072",
+    "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+    "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+    "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "target": {
+    "epoch": 0,
+    "revision": 1,
+    "mode": "additive-revision"
+  },
+  "rollback": {
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "changes": {
+    "candidateAddedFiles": [
+      "rules/candidate_researcher_at_iis.pl",
+      "tests/candidate_researcher_at_iis_tests.pl",
+      "ui/researcher-at-iis.json"
+    ],
+    "overlayAddedFiles": [
+      "rules/revision_runtime.pl"
+    ],
+    "overlayReplacedFiles": [
+      "entry.pl"
+    ]
+  },
+  "checks": {
+    "planVerified": true,
+    "readyAssessmentVerified": true,
+    "overlayVerified": true,
+    "baselineVerified": true,
+    "candidateFilesVerified": true,
+    "overlayFilesVerified": true,
+    "staticValidationPassed": true,
+    "prologLoadPassed": true,
+    "plunitPassed": true,
+    "runtimePreviewPassed": true,
+    "baselineBehaviorPreserved": true,
+    "activePackageUntouched": true
+  },
+  "intent": {
+    "staging": "isolated-output-only",
+    "apply": "not-performed",
+    "activePointerUpdate": "not-performed"
+  },
+  "files": {
+    "contracts/prolog-cli-v0.schema.json": "sha256:a2187232d7253baf9dec70cb763c1f64e3f2fac7639d513c9af01391d94a7e40",
+    "data/epoch_data.pl": "sha256:dae49451381f8f315d2f9c2a629b3681ba5e656d988a81d66aab6e57cd880400",
+    "data/facts.generated.pl": "sha256:a52ba3cfdf6db1a1a8bab7ce96f4b08cde212b01820f7e11ee6cd57a98b47d07",
+    "data/origins.generated.pl": "sha256:5b97081e6b265196434df9f6128cb45ee368eb6bd22a042883d1bb6af870be72",
+    "entry.pl": "sha256:7e012a2a948737112edb5385cd31bffd174bd469c7a640b4806ada46893bf5ef",
+    "metadata/data.manifest.json": "sha256:b11a0851399bca9807a738cd7ce810f94cb68a0b884c75d0c2cef47d96f18537",
+    "metadata/ontology.manifest.json": "sha256:a5ca49deed64b2bb675915bd1f675500073283d69dce4b7b2047be57a9a7bb66",
+    "ontology/ontology.generated.pl": "sha256:49e89bad7a332d2364bb9ee065dd07fbbcc89807a5c1d07ff6083973685ad6c5",
+    "ontology/ontology_data.pl": "sha256:764327b54607782ad1739099f8d669e5a3268c59ecb3bca807a9fd2d650a80cf",
+    "rules/candidate_researcher_at_iis.pl": "sha256:f57e5d4ffb944572babe445049098456540688f4969747ba1f2593aebffcb724",
+    "rules/cli_runtime.pl": "sha256:ecd7a1ffc0aae0263f19e6ecc479b95fdf9c5b75f1dc1cfbdbcc0894dcf554b7",
+    "rules/generic_view.pl": "sha256:597104d5696fb3b09b3fae2f2d20561d49aa9ea0f562376363bfe001084e1a1f",
+    "rules/label_rules.pl": "sha256:251154a015dde5b7623773369253f28e6bd3ab7f1e613ced832f59d9f38937f6",
+    "rules/revision_runtime.pl": "sha256:9216162c15aacd82306b36a36dad39d58788e9bd7983bda54353d9e1d61cea13",
+    "rules/subgraph.pl": "sha256:f38096489bdbd00b60fa47ee794edd9a7b143c2819d8eb7822ff79b264bcf123",
+    "rules/traversal_policy.pl": "sha256:34064a4d70289eb54a66ca24570d4fc824305030d1a0869d592d0d7b74772c84",
+    "rules/view_policy.pl": "sha256:7d9bc9ba5b95c7e375b7b8e774fc11a8abcb9405655f9a9f968a9ccaf76f8c92",
+    "smoke/entity-view.request.json": "sha256:8a7401ab3dab03ecfc570a219aa7df19737895fa3bce1596fc80c56ee8fa0774",
+    "smoke/health.request.json": "sha256:5383138c4172cf6e7fcc08ad144cf8fc98087b91dba129fe45ff72ac225586be",
+    "smoke/subgraph.request.json": "sha256:85a02731ec7416123a414123f7c53200a673c01f9319da374c4a5f565dbba597",
+    "tests/candidate_researcher_at_iis_tests.pl": "sha256:f7cdf57263c980e18b1abc3bca81b5d62c803f74faf6cdb4ae47c49461cce006",
+    "ui/researcher-at-iis.json": "sha256:0880ce1b76e721b95b207e57e45ee05e1735f7b9743402abd2b3f4aa1500b375"
+  },
+  "packageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70"
+}

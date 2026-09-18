@@ -1,0 +1,4 @@
+epoch,status,changeType,trainPassed,devPassed,promptBytes,prologBytes,hypothesis
+0,baseline,,4,3,999,1285,
+1,accepted,prompt,3,3,1207,1285,The student consults material rules before validating obligatory question fields; an explicit preflight gate should prevent unsupported inference when date or revision is absent.
+2,accepted,prompt,3,2,1494,1285,The student is applying material rules before checking whether both obligatory inputs are explicitly present; a mandatory preflight with fixed output templates should block guessed answers.

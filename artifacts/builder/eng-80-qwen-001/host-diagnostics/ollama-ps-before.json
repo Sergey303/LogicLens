@@ -1,0 +1,23 @@
+{
+  "models": [
+    {
+      "name": "epistemic-qwen2.5-coder-7b:cpu-v1",
+      "model": "epistemic-qwen2.5-coder-7b:cpu-v1",
+      "size": 4813655899,
+      "digest": "0a673aef28101251ca198536a802f4af6ff487abacf112e5cda901db01647cf3",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen2",
+        "families": [
+          "qwen2"
+        ],
+        "parameter_size": "7.6B",
+        "quantization_level": "Q4_K_M"
+      },
+      "expires_at": "2026-07-28T16:21:38.4121455+07:00",
+      "size_vram": 0,
+      "context_length": 2048
+    }
+  ]
+}

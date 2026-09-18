@@ -1,0 +1,28 @@
+[
+  {
+    "ElementName": "COMP",
+    "Name": "COMP",
+    "Caption": "Компьютерная система для размещения",
+    "Description": "Компьютерная система (Майкрософт)",
+    "ProcessID": null,
+    "EnabledState": 2,
+    "HealthState": 5,
+    "OperationalStatus": [
+      2
+    ],
+    "Status": "OK"
+  },
+  {
+    "ElementName": "DockerDesktopVM",
+    "Name": "855F45FA-0D94-4747-909F-BD2FAEE51F6A",
+    "Caption": "Виртуальная машина",
+    "Description": "Виртуальная машина (Майкрософт)",
+    "ProcessID": null,
+    "EnabledState": 3,
+    "HealthState": 5,
+    "OperationalStatus": [
+      2
+    ],
+    "Status": "OK"
+  }
+]

@@ -1,0 +1,308 @@
+[
+  {
+    "ProcessId": 4048,
+    "ProcessName": "dwm.exe",
+    "DedicatedMiB": 930.64,
+    "SharedMiB": 6.31,
+    "ExecutablePath": "C:\\WINDOWS\\system32\\dwm.exe",
+    "CommandLine": "\"dwm.exe\"",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 15912,
+    "ProcessName": "chrome.exe",
+    "DedicatedMiB": 268.93,
+    "SharedMiB": 48.96,
+    "ExecutablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "CommandLine": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --type=gpu-process --no-pre-read-main-dll --gpu-preferences=UAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAOAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --metrics-shmem-handle=1724,i,7804783872415752487,2582109182501940333,262144 --field-trial-handle=1828,i,2915023605751276975,701373741087737411,262144 --variations-seed-version=20260726-030032.927000-production --pseudonymization-salt-handle=1852,i,18390227817160465645,4810658713676791527,4 --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=1820 /prefetch:2",
+    "CounterCount": 3
+  },
+  {
+    "ProcessId": 8712,
+    "ProcessName": "explorer.exe",
+    "DedicatedMiB": 225.86,
+    "SharedMiB": 7.14,
+    "ExecutablePath": "C:\\WINDOWS\\Explorer.EXE",
+    "CommandLine": "C:\\WINDOWS\\Explorer.EXE",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 7780,
+    "ProcessName": "msedgewebview2.exe",
+    "DedicatedMiB": 210.11,
+    "SharedMiB": 0.3,
+    "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe",
+    "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe\" --type=gpu-process --noerrdialogs --user-data-dir=\"C:\\Users\\LuxVe\\AppData\\Local\\Packages\\MicrosoftWindows.Client.WebExperience_cw5n1h2txyewy\\LocalState\\EBWebView\" --webview-exe-name=Widgets.exe --webview-exe-version=526.17301.10.0 --embedded-browser-webview=1 --gpu-preferences=UAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAOAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --startup-read-main-dll --metrics-shmem-handle=1972,i,7214099626285449531,11724144366647914768,262144 --field-trial-handle=2028,i,66279034932433469,9925824926385726933,262144 --variations-seed-version --pseudonymization-salt-handle=2060,i,14275975861621379443,4622521680060602068,4 --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=2012 /prefetch:2 /pfhostedapp:e0e63e5b049a7652d9b4d528b6b6a25cf24a3628",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 4580,
+    "ProcessName": "max.exe",
+    "DedicatedMiB": 184.77,
+    "SharedMiB": 0.49,
+    "ExecutablePath": "C:\\Program Files\\MAX\\max.exe",
+    "CommandLine": "\"C:\\Program Files\\MAX\\max.exe\" ",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 20396,
+    "ProcessName": "steamwebhelper.exe",
+    "DedicatedMiB": 182.8,
+    "SharedMiB": 0.38,
+    "ExecutablePath": "C:\\Program Files (x86)\\Steam\\bin\\cef\\cef.win64\\steamwebhelper.exe",
+    "CommandLine": "\"C:\\Program Files (x86)\\Steam\\bin\\cef\\cef.win64\\steamwebhelper.exe\" --type=gpu-process --start-stack-profiler --enable-chrome-runtime --user-data-dir=\"C:\\Users\\LuxVe\\AppData\\Local\\Steam\\htmlcache\" --user-agent-product=\"Valve Steam Client\" --buildid=1784778118 --steamid=0 --gpu-preferences=WAAAAAAAAADgAAAMAAAAAAAAAAAAAAAAAABgAAEAAAA4AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAYAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --field-trial-handle=1976,i,12626738386697006019,3049670777242946027,262144 --enable-features=PlatformHEVCDecoderSupport --disable-features=BlockPromptsIfIgnoredOften,DcheckIsFatal,SpareRendererForSitePerProcess,ValveFFmpegAllowLowDelayHEVC,WebUsbDeviceDetection,WinRetrieveSuggestionsOnlyOnDemand --variations-seed-version --enable-logging=handle --log-file=1980 --mojo-platform-channel-handle=1972 /prefetch:2",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 7360,
+    "ProcessName": "explorer.exe",
+    "DedicatedMiB": 71.46,
+    "SharedMiB": 5.73,
+    "ExecutablePath": "C:\\WINDOWS\\explorer.exe",
+    "CommandLine": "C:\\WINDOWS\\explorer.exe /factory,{75dff2b7-6936-4c06-a8bb-676a7b00b24b} -Embedding",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 3712,
+    "ProcessName": "SnippingTool.exe",
+    "DedicatedMiB": 52.2,
+    "SharedMiB": 0.59,
+    "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.ScreenSketch_11.2602.49.0_x64__8wekyb3d8bbwe\\SnippingTool\\SnippingTool.exe",
+    "CommandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.ScreenSketch_11.2602.49.0_x64__8wekyb3d8bbwe\\SnippingTool\\SnippingTool.exe\" ms-screenclip:///?source=HotKey",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 12280,
+    "ProcessName": "msedgewebview2.exe",
+    "DedicatedMiB": 44.06,
+    "SharedMiB": 0.3,
+    "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe",
+    "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe\" --type=gpu-process --noerrdialogs --user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; Cortana 1.18.9.23723; 10.0.0.0.26200.8875) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.26200 IsWebView2/True (WebView2Version 150.0.4078.83)\" --user-data-dir=\"C:\\Users\\LuxVe\\AppData\\Local\\Packages\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\LocalState\\EBWebView\" --webview-exe-name=SearchHost.exe --webview-exe-version=2605.27010.300.0 --embedded-browser-webview=1 --gpu-preferences=UAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAOAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --always-read-main-dll --metrics-shmem-handle=1980,i,9829532630427448323,12885197794939635800,262144 --field-trial-handle=2076,i,1736723275025935789,9160921787422714738,262144 --enable-features=msEdgeFluentOverlayScrollbar --disable-features=msSmartScreenProtection --variations-seed-version --pseudonymization-salt-handle=2084,i,18243881635237304226,10910135694439014112,4 --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=2052 /prefetch:2 /pfhostedapp:74a1bc8e7c3155a699e1c27496c57a4d9f4f3cda",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 13968,
+    "ProcessName": "WindowsTerminal.exe",
+    "DedicatedMiB": 33.98,
+    "SharedMiB": 3.64,
+    "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11911.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe",
+    "CommandLine": "wt.exe ",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 10944,
+    "ProcessName": "ShellExperienceHost.exe",
+    "DedicatedMiB": 21.97,
+    "SharedMiB": 1.02,
+    "ExecutablePath": "C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe",
+    "CommandLine": "\"C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe\" -ServerName:App.AppXtk181tbxbce2qsex02s8tw7hfxa9xb3t.mca",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 18868,
+    "ProcessName": "EdgeGameAssist.exe",
+    "DedicatedMiB": 19.54,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.Edge.GameAssist_1.0.4019.0_x64__8wekyb3d8bbwe\\EdgeGameAssist.exe",
+    "CommandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.Edge.GameAssist_1.0.4019.0_x64__8wekyb3d8bbwe\\EdgeGameAssist.exe\" -ServerName:App.AppXjs7v3smdq2xg9r0emdwc70mxxcrc31jq.mca",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 1252,
+    "ProcessName": "csrss.exe",
+    "DedicatedMiB": 17.29,
+    "SharedMiB": 28.17,
+    "ExecutablePath": "",
+    "CommandLine": "",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 10088,
+    "ProcessName": "StartMenuExperienceHost.exe",
+    "DedicatedMiB": 16.53,
+    "SharedMiB": 1.1,
+    "ExecutablePath": "C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe",
+    "CommandLine": "\"C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe\" -ServerName:FullTrustApp.AppXykjsye98af63ez2annt9djke8trg8stn.mca",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 27584,
+    "ProcessName": "msedge.exe",
+    "DedicatedMiB": 13.81,
+    "SharedMiB": 0.3,
+    "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=gpu-process --gpu-preferences=UAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAOAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --startup-read-main-dll --metrics-shmem-handle=2284,i,11910487420299112937,3481578750576227878,262144 --field-trial-handle=2364,i,13629964160361138371,9023631031277591068,262144 --variations-seed-version --pseudonymization-salt-handle=2388,i,1069713145922711436,9783754400870430153,4 --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=2344 /prefetch:2",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 10080,
+    "ProcessName": "SearchHost.exe",
+    "DedicatedMiB": 13.14,
+    "SharedMiB": 0.45,
+    "ExecutablePath": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe",
+    "CommandLine": "\"C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe\" -ServerName:CortanaUI.AppXstmwaab17q5s3y22tp6apqz7a45vwv65.mca",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 2376,
+    "ProcessName": "AmneziaVPN.exe",
+    "DedicatedMiB": 12.75,
+    "SharedMiB": 0.25,
+    "ExecutablePath": "C:\\Program Files\\AmneziaVPN\\AmneziaVPN.exe",
+    "CommandLine": "\"C:\\Program Files\\AmneziaVPN\\AmneziaVPN.exe\" ",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 14164,
+    "ProcessName": "TextInputHost.exe",
+    "DedicatedMiB": 12.09,
+    "SharedMiB": 0.2,
+    "ExecutablePath": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe",
+    "CommandLine": "\"C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe\" -ServerName:InputApp.AppXk0k6mrh4r2q0ct33a9wgbez0x7v9cz5y.mca",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 20476,
+    "ProcessName": "Docker Desktop.exe",
+    "DedicatedMiB": 11.12,
+    "SharedMiB": 0.35,
+    "ExecutablePath": "C:\\Program Files\\Docker\\Docker\\frontend\\Docker Desktop.exe",
+    "CommandLine": "\"C:\\Program Files\\Docker\\Docker\\frontend\\Docker Desktop.exe\" --type=gpu-process --user-data-dir=\"C:\\Users\\LuxVe\\AppData\\Roaming\\Docker Desktop\" --gpu-preferences=SAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --field-trial-handle=1804,i,7516789753999206346,1097709157317050390,262144 --enable-features=EnableTransparentHwndEnlargement,PdfUseShowSaveFilePicker --disable-features=LocalNetworkAccessChecks,NetworkServiceSandbox,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=1800 /prefetch:2",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 11004,
+    "ProcessName": "LockApp.exe",
+    "DedicatedMiB": 10.41,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\WINDOWS\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe",
+    "CommandLine": "\"C:\\WINDOWS\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe\" -ServerName:WindowsDefaultLockScreen.AppX7y4nbzq37zn4ks9k7amqjywdat7d3j2z.mca",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 25660,
+    "ProcessName": "vgtray.exe",
+    "DedicatedMiB": 9.98,
+    "SharedMiB": 1.35,
+    "ExecutablePath": "C:\\Program Files\\Riot Vanguard\\vgtray.exe",
+    "CommandLine": "\"C:\\Program Files\\Riot Vanguard\\vgtray.exe\"",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 14804,
+    "ProcessName": "ApplicationFrameHost.exe",
+    "DedicatedMiB": 9.36,
+    "SharedMiB": 0.2,
+    "ExecutablePath": "C:\\WINDOWS\\system32\\ApplicationFrameHost.exe",
+    "CommandLine": "C:\\WINDOWS\\system32\\ApplicationFrameHost.exe -Embedding",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 416,
+    "ProcessName": "M365Copilot.exe",
+    "DedicatedMiB": 4.59,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.MicrosoftOfficeHub_19.2607.47051.0_x64__8wekyb3d8bbwe\\M365Copilot.exe",
+    "CommandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.MicrosoftOfficeHub_19.2607.47051.0_x64__8wekyb3d8bbwe\\M365Copilot.exe\" ms-getoffice: autostart reason=AutoStarter AutoStartInactivityDelay=8858",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 4,
+    "ProcessName": "System",
+    "DedicatedMiB": 4.04,
+    "SharedMiB": 0.73,
+    "ExecutablePath": "",
+    "CommandLine": "",
+    "CounterCount": 3
+  },
+  {
+    "ProcessId": 5832,
+    "ProcessName": "msedgewebview2.exe",
+    "DedicatedMiB": 0.02,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe",
+    "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe\" --type=gpu-process --noerrdialogs --user-data-dir=\"C:\\Users\\LuxVe\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView\" --webview-exe-name=M365Copilot.exe --webview-exe-version=19.2607.47051.0 --embedded-browser-webview=1 --embedded-browser-webview-dpi-awareness=2 --gpu-preferences=UAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAOAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --startup-read-main-dll --metrics-shmem-handle=1988,i,3693586507891043733,5924896462288727974,262144 --field-trial-handle=1796,i,1558820867569611244,5682507643576102100,262144 --enable-features=msSingleSignOnOSForPrimaryAccountIsShared --disable-features=msEnhancedTrackingPreventionEnabled --variations-seed-version --pseudonymization-salt-handle=2056,i,610082156742815510,11364462486351980300,4 --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=2032 /prefetch:2 /pfhostedapp:3331525b22195f5f9b545b79db9b2d23782c7d57",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 16468,
+    "ProcessName": "chrome.exe",
+    "DedicatedMiB": 0.02,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "CommandLine": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=en-US --service-sandbox-type=none --video-capture-use-gpu-memory-buffer --no-pre-read-main-dll --metrics-shmem-handle=9792,i,7304296267166518475,8078003909513214172,524288 --field-trial-handle=1828,i,2915023605751276975,701373741087737411,262144 --variations-seed-version=20260726-030032.927000-production --pseudonymization-salt-handle=1852,i,18390227817160465645,4810658713676791527,4 --trace-process-track-uuid=3190709318024686040 --mojo-platform-channel-handle=9404 /prefetch:14",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 14088,
+    "ProcessName": "ApCent.exe",
+    "DedicatedMiB": 0.02,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Program Files (x86)\\Gigabyte\\AppCenter\\ApCent.exe",
+    "CommandLine": "\"C:\\Program Files (x86)\\Gigabyte\\AppCenter\\ApCent.exe\" ",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 8824,
+    "ProcessName": "ShellHost.exe",
+    "DedicatedMiB": 0.02,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Windows\\System32\\ShellHost.exe",
+    "CommandLine": "\"C:\\Windows\\System32\\ShellHost.exe\"",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 9156,
+    "ProcessName": "CrossDeviceResume.exe",
+    "DedicatedMiB": 0.02,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe",
+    "CommandLine": "\"C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe\" /tileid MicrosoftWindows.Client.CBS_cw5n1h2txyewy!CrossDeviceResumeApp",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 9292,
+    "ProcessName": "SystemSettings.exe",
+    "DedicatedMiB": 0.02,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe",
+    "CommandLine": "\"C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe\" -ServerName:microsoft.windows.immersivecontrolpanel",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 3300,
+    "ProcessName": "vmwp.exe",
+    "DedicatedMiB": 0.0,
+    "SharedMiB": 2.32,
+    "ExecutablePath": "C:\\WINDOWS\\System32\\vmwp.exe",
+    "CommandLine": "\"C:\\WINDOWS\\System32\\vmwp.exe\" 99212FB6-A53E-4F24-BB4C-F47A5954DFFF 0x33c",
+    "CounterCount": 3
+  },
+  {
+    "ProcessId": 2080,
+    "ProcessName": "IntelCpHDCPSvc.exe",
+    "DedicatedMiB": 0.0,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_b57fc4f35ff4051b\\IntelCpHDCPSvc.exe",
+    "CommandLine": "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_b57fc4f35ff4051b\\IntelCpHDCPSvc.exe",
+    "CounterCount": 1
+  },
+  {
+    "ProcessId": 17980,
+    "ProcessName": "ollama.exe",
+    "DedicatedMiB": 0.0,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Users\\LuxVe\\AppData\\Local\\Programs\\Ollama\\ollama.exe",
+    "CommandLine": "C:\\Users\\LuxVe\\AppData\\Local\\Programs\\Ollama\\ollama.exe serve",
+    "CounterCount": 2
+  },
+  {
+    "ProcessId": 19864,
+    "ProcessName": "XboxPcAppFT.exe",
+    "DedicatedMiB": 0.0,
+    "SharedMiB": 0.0,
+    "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.GamingApp_2607.1001.21.0_x64__8wekyb3d8bbwe\\XboxPcAppFT.exe",
+    "CommandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.GamingApp_2607.1001.21.0_x64__8wekyb3d8bbwe\\XboxPcAppFT.exe\" -Embedding",
+    "CounterCount": 1
+  }
+]

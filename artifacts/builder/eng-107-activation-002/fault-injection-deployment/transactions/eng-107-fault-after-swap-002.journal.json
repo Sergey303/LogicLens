@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "activation-transaction-journal",
+  "transactionId": "eng-107-fault-after-swap-002",
+  "sequence": 3,
+  "state": "rolled-back",
+  "decisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+  "previousPointer": {
+    "schemaVersion": "0.1",
+    "stage": "active-pointer",
+    "generation": 0,
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "packagePath": "packages/e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "decisionHash": null,
+    "transactionId": "eng-107-fault-init-002",
+    "pointerHash": "sha256:1cd5e7c5b484ded4d12ad5537cab161521812be6720c7c93db4b96f761097919"
+  },
+  "targetPointer": {
+    "schemaVersion": "0.1",
+    "stage": "active-pointer",
+    "generation": 1,
+    "epoch": 0,
+    "revision": 1,
+    "packageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+    "packagePath": "packages/e000000-r000001-63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+    "decisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+    "transactionId": "eng-107-fault-after-swap-002",
+    "pointerHash": "sha256:1f75d2a1aa05e07fe263739f898550b4339c3a2b9c4e5cca0f3341b34ee2a6c3"
+  },
+  "error": "injected failure after pointer swap",
+  "rollbackVerified": true,
+  "journalHash": "sha256:95440e17840cb3e3e7b95279db22972e60e6b2bc4ffa69bb6b00041c950eb885"
+}

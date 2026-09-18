@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "candidate-review",
+  "reviewId": "eng-86-review-001",
+  "decision": "recommend",
+  "reviewer": "Sergey303",
+  "reviewHash": "sha256:a0ec73003793e303456738828689a1d313099609f50d0161ce2d951efcf3b595",
+  "runId": "qwen-run-001",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "model": "qwen2.5-coder:7b",
+  "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+  "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+  "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "sourceArtifact": "eng-80-qwen-001",
+  "sourceArtifactSha256": "bc60eba91cd3020bf6bc8a438bc111cc73bc8ef09446b9c6c4597e44e59164cc",
+  "repositoryCommit": "02dabb7b15f0e2f59d5a78041d308e04b50fbf4b",
+  "activation": "not-performed",
+  "temporarySourceUsed": false
+}

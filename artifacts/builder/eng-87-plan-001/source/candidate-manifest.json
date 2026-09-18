@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "candidate",
+  "candidateId": "qwen-run-001-candidate",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "baseEpoch": 0,
+  "baseRevision": 0,
+  "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "uiContractVersion": "0.1",
+  "cliProtocolVersion": "0.1",
+  "provider": {
+    "kind": "ollama",
+    "name": "ollama",
+    "model": "qwen2.5-coder:7b",
+    "runId": "qwen-run-001"
+  },
+  "metrics": {
+    "cliCalls": 0,
+    "manualFixes": 0,
+    "elapsedMs": 12985.073,
+    "costUsd": 0
+  },
+  "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+  "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+  "files": {
+    "rules/candidate_researcher_at_iis.pl": {
+      "kind": "rule",
+      "sha256": "sha256:f57e5d4ffb944572babe445049098456540688f4969747ba1f2593aebffcb724",
+      "bytes": 543
+    },
+    "tests/candidate_researcher_at_iis_tests.pl": {
+      "kind": "test",
+      "sha256": "sha256:f7cdf57263c980e18b1abc3bca81b5d62c803f74faf6cdb4ae47c49461cce006",
+      "bytes": 562
+    },
+    "ui/researcher-at-iis.json": {
+      "kind": "ui",
+      "sha256": "sha256:0880ce1b76e721b95b207e57e45ee05e1735f7b9743402abd2b3f4aa1500b375",
+      "bytes": 154
+    }
+  }
+}

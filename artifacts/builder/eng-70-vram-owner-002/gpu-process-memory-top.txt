@@ -1,0 +1,35 @@
+
+ProcessId ProcessName                 DedicatedMiB SharedMiB WindowTitle
+--------- -----------                 ------------ --------- -----------
+     3300 vmwp.exe                         6129,11     80,32 
+    14184 dwm.exe                           801,92      2,38 
+    15912 chrome.exe                        231,69     48,57 
+    22780 msedgewebview2.exe                197,79      0,30 
+     8712 explorer.exe                      150,76      1,87 
+     4580 max.exe                           150,23      0,49 MAX
+     7556 LeagueClientUxRender.exe          100,14      4,88 
+    20476 Docker Desktop.exe                 99,18      0,35 
+    15456 WindowsTerminal.exe                64,75      0,84 C:\Program Files\WindowsApps\PythonSoftwareFoundation.PythonManager_26.3.240.0_x64__qbz5n2kfra8p0\py.exe
+     7360 explorer.exe                       64,18      1,55 Polar.Factograph и еще 1 вкладка — проводник
+     1252 csrss.exe                          53,45     14,11 
+     3712 SnippingTool.exe                   53,02      0,59 
+     1796 Riot Client.exe                    34,32      0,38 
+    12280 msedgewebview2.exe                 30,84      0,30 
+    10944 ShellExperienceHost.exe            22,03      0,00 
+     2376 AmneziaVPN.exe                     18,12      0,25 AmneziaVPN
+    10088 StartMenuExperienceHost.exe        15,53      0,30 
+    10080 SearchHost.exe                     13,14      0,30 
+    14164 TextInputHost.exe                  12,09      0,20 Интерфейс ввода Windows
+    15476 vgtray.exe                          9,98      1,35 
+    14804 ApplicationFrameHost.exe            9,48      0,20 Настройки
+    22160 msedge.exe                          7,92      0,30 
+      416 M365Copilot.exe                     4,59      0,00 
+        4 System                              4,04      0,73 
+    14088 ApCent.exe                          0,02      0,00 
+     5832 msedgewebview2.exe                  0,02      0,00 
+     8824 ShellHost.exe                       0,02      0,00 
+    11004 LockApp.exe                         0,02      0,00 
+     9156 CrossDeviceResume.exe               0,02      0,00 
+    16468 chrome.exe                          0,02      0,00 
+
+

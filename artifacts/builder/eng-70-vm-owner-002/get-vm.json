@@ -1,0 +1,26 @@
+{
+  "Name": "DockerDesktopVM",
+  "VMId": "855f45fa-0d94-4747-909f-bd2faee51f6a",
+  "State": 3,
+  "Status": "Работает нормально",
+  "Generation": 2,
+  "ProcessorCount": 12,
+  "MemoryAssigned": 0,
+  "Uptime": {
+    "Ticks": 0,
+    "Days": 0,
+    "Hours": 0,
+    "Milliseconds": 0,
+    "Microseconds": 0,
+    "Nanoseconds": 0,
+    "Minutes": 0,
+    "Seconds": 0,
+    "TotalDays": 0.0,
+    "TotalHours": 0.0,
+    "TotalMilliseconds": 0.0,
+    "TotalMicroseconds": 0.0,
+    "TotalNanoseconds": 0.0,
+    "TotalMinutes": 0.0,
+    "TotalSeconds": 0.0
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "eng-80-qwen-001",
+  "requiredCommit": "ae25d7d27334f7cbd6b12b0807dee6a1aa63385c",
+  "actualCommit": "6e052ff4e5b73d76401778782c2eafb090e0e784",
+  "model": "qwen2.5-coder:7b",
+  "contextTokens": 16384,
+  "outputTokens": 2048,
+  "gpuName": "NVIDIA GeForce RTX 3060 Ti",
+  "totalMemoryMiB": 8192,
+  "usedMemoryMiB": 2182,
+  "freeMemoryMiB": 5843,
+  "minimumFreeMemoryMiB": 5000,
+  "loadedModelsBefore": [
+    "epistemic-qwen2.5-coder-7b:cpu-v1"
+  ]
+}

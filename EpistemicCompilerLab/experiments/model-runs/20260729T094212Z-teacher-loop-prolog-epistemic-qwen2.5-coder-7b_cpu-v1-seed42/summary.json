@@ -1,0 +1,496 @@
+{
+  "schemaVersion": 1,
+  "kind": "codex-qwen-teacher-loop-pilot",
+  "createdAt": "2026-07-29T09:50:55.697969+00:00",
+  "commit": "4196a9c7455eccb1f8681aad073d3e4f9098fc43",
+  "track": "prolog",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "codexModelSelection": "account-default",
+  "epochBudget": 2,
+  "bestEpoch": 0,
+  "baseline": {
+    "epoch": 0,
+    "status": "baseline",
+    "changeType": null,
+    "hypothesis": null,
+    "expectedEffect": null,
+    "risk": null,
+    "promptHash": "7ab3dab2c2f76ca264523fefb5d5117af8a45556f7c57e03d46c13fab28c0b8b",
+    "prologHash": "498982ac39c88b17c0b24e087077f8a011f5e5a94ef965fff85154864bc21f55",
+    "promptBytes": 999,
+    "prologBytes": 1285,
+    "validationErrors": [],
+    "train": {
+      "split": "train",
+      "totalCases": 6,
+      "passedCases": 4,
+      "actionCorrect": 4,
+      "statusCorrect": 4,
+      "materialCorrect": 4,
+      "askFieldCorrect": 4,
+      "runnerErrors": 0,
+      "outputLimited": 0,
+      "elapsedMs": 74819,
+      "promptEvalCount": 4075,
+      "evalCount": 357
+    },
+    "dev": {
+      "split": "dev",
+      "totalCases": 6,
+      "passedCases": 3,
+      "actionCorrect": 4,
+      "statusCorrect": 4,
+      "materialCorrect": 3,
+      "askFieldCorrect": 4,
+      "runnerErrors": 0,
+      "outputLimited": 0,
+      "elapsedMs": 60939,
+      "promptEvalCount": 4082,
+      "evalCount": 385
+    },
+    "trainEffectCounts": null,
+    "trainCaseEffects": []
+  },
+  "bestTrain": {
+    "split": "train",
+    "totalCases": 6,
+    "passedCases": 4,
+    "actionCorrect": 4,
+    "statusCorrect": 4,
+    "materialCorrect": 4,
+    "askFieldCorrect": 4,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 74819,
+    "promptEvalCount": 4075,
+    "evalCount": 357
+  },
+  "bestDev": {
+    "split": "dev",
+    "totalCases": 6,
+    "passedCases": 3,
+    "actionCorrect": 4,
+    "statusCorrect": 4,
+    "materialCorrect": 3,
+    "askFieldCorrect": 4,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 60939,
+    "promptEvalCount": 4082,
+    "evalCount": 385
+  },
+  "baselineHoldout": {
+    "split": "holdout",
+    "totalCases": 6,
+    "passedCases": 2,
+    "actionCorrect": 2,
+    "statusCorrect": 3,
+    "materialCorrect": 3,
+    "askFieldCorrect": 2,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 65045,
+    "promptEvalCount": 4094,
+    "evalCount": 355
+  },
+  "selectedHoldout": {
+    "split": "holdout",
+    "totalCases": 6,
+    "passedCases": 2,
+    "actionCorrect": 2,
+    "statusCorrect": 3,
+    "materialCorrect": 3,
+    "askFieldCorrect": 2,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 65045,
+    "promptEvalCount": 4094,
+    "evalCount": 355
+  },
+  "holdoutDeltaCases": 0,
+  "generalizationGapCases": 2,
+  "epochs": [
+    {
+      "epoch": 0,
+      "status": "baseline",
+      "changeType": null,
+      "hypothesis": null,
+      "expectedEffect": null,
+      "risk": null,
+      "promptHash": "7ab3dab2c2f76ca264523fefb5d5117af8a45556f7c57e03d46c13fab28c0b8b",
+      "prologHash": "498982ac39c88b17c0b24e087077f8a011f5e5a94ef965fff85154864bc21f55",
+      "promptBytes": 999,
+      "prologBytes": 1285,
+      "validationErrors": [],
+      "train": {
+        "split": "train",
+        "totalCases": 6,
+        "passedCases": 4,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 4,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 74819,
+        "promptEvalCount": 4075,
+        "evalCount": 357
+      },
+      "dev": {
+        "split": "dev",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 3,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 60939,
+        "promptEvalCount": 4082,
+        "evalCount": 385
+      },
+      "trainEffectCounts": null,
+      "trainCaseEffects": []
+    },
+    {
+      "epoch": 1,
+      "status": "accepted",
+      "changeType": "prolog",
+      "hypothesis": "Explicit generic input-state predicates will help the student distinguish an absent required input from an unsupported supplied value instead of guessing a material.",
+      "expectedEffect": "Missing-date and missing-revision responses should become ask_user/need_user with the corresponding field, while supported and unsupported supplied inputs remain unchanged.",
+      "risk": "The student may ignore non-exported interface predicates or interpret the atom absent as literal user input rather than a representation of omission.",
+      "promptHash": "7ab3dab2c2f76ca264523fefb5d5117af8a45556f7c57e03d46c13fab28c0b8b",
+      "prologHash": "fa5c66e49b89b70d6fe1a03d225c26eb8a1635852eaf73039e74d854e8f836ea",
+      "promptBytes": 999,
+      "prologBytes": 1636,
+      "validationErrors": [],
+      "train": {
+        "split": "train",
+        "totalCases": 6,
+        "passedCases": 4,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 4,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 67789,
+        "promptEvalCount": 4549,
+        "evalCount": 358
+      },
+      "dev": {
+        "split": "dev",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 3,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 61039,
+        "promptEvalCount": 4556,
+        "evalCount": 383
+      },
+      "trainEffectCounts": {
+        "fixed": 0,
+        "regressed": 0,
+        "unchangedPass": 4,
+        "unchangedFail": 2
+      },
+      "trainCaseEffects": [
+        {
+          "caseId": "train-a-before",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A от 30 июня 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A от 30 июня 2026 года используется материал asd2."
+          }
+        },
+        {
+          "caseId": "train-b-after",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B 10 августа 2026 года использовать материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B 10 августа 2026 года использовать материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-c-unsupported",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Не удалось определить материал для указанной даты."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Не удалось определить материал для указанной ревизии."
+          }
+        },
+        {
+          "caseId": "train-missing-date",
+          "outcome": "unchanged_fail",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-missing-revision",
+          "outcome": "unchanged_fail",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для 10 августа 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для 10 августа 2026 года использовать материал asd2."
+          }
+        },
+        {
+          "caseId": "train-a-transition",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+          }
+        }
+      ]
+    },
+    {
+      "epoch": 2,
+      "status": "accepted",
+      "changeType": "prolog",
+      "hypothesis": "Requiring both query arguments to be instantiated inside current_material/4 will prevent omission from being treated as a variable that Prolog may bind to a supported value.",
+      "expectedEffect": "Questions missing either date or revision should request that field; complete supported and unsupported queries should retain their current outcomes.",
+      "risk": "The student may infer answers from the domain clauses without respecting the new operational precondition.",
+      "promptHash": "7ab3dab2c2f76ca264523fefb5d5117af8a45556f7c57e03d46c13fab28c0b8b",
+      "prologHash": "f0bebe0b70c757aaa3041a423d093088c3099f5a4d3ba47358e9efff559068ae",
+      "promptBytes": 999,
+      "prologBytes": 1490,
+      "validationErrors": [],
+      "train": {
+        "split": "train",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 3,
+        "statusCorrect": 4,
+        "materialCorrect": 4,
+        "askFieldCorrect": 3,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 65651,
+        "promptEvalCount": 4345,
+        "evalCount": 357
+      },
+      "dev": {
+        "split": "dev",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 3,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 65441,
+        "promptEvalCount": 4352,
+        "evalCount": 405
+      },
+      "trainEffectCounts": {
+        "fixed": 0,
+        "regressed": 1,
+        "unchangedPass": 3,
+        "unchangedFail": 2
+      },
+      "trainCaseEffects": [
+        {
+          "caseId": "train-a-before",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A от 30 июня 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 30 июня 2026 года использовать материал asd2."
+          }
+        },
+        {
+          "caseId": "train-b-after",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B 10 августа 2026 года использовать материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B 10 августа 2026 года использовать материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-c-unsupported",
+          "outcome": "regressed",
+          "changedChecks": [
+            {
+              "check": "actionCorrect",
+              "before": true,
+              "after": false
+            },
+            {
+              "check": "askFieldCorrect",
+              "before": true,
+              "after": false
+            }
+          ],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Не удалось определить материал для указанной даты."
+          },
+          "candidateResponse": {
+            "action": "ask_user",
+            "status": "unknown",
+            "material": null,
+            "askField": "date",
+            "answerRu": "Необходима дата для определения материала."
+          }
+        },
+        {
+          "caseId": "train-missing-date",
+          "outcome": "unchanged_fail",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-missing-revision",
+          "outcome": "unchanged_fail",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для 10 августа 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для 10 августа 2026 года использовать материал asd2."
+          }
+        },
+        {
+          "caseId": "train-a-transition",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+          }
+        }
+      ]
+    }
+  ],
+  "methodologyLimit": "18-case engineering pilot; not publication-grade without the declared extension."
+}

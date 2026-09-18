@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "0.1",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "title": "Derived researcher-at-IIS predicate",
+  "base": {
+    "epoch": 0,
+    "revision": 0
+  },
+  "contracts": {
+    "candidate": "0.1",
+    "cli": "0.1",
+    "ui": "0.1"
+  },
+  "objective": "Create a derived predicate that returns each person connected through one participation resource to organization urn:logiclens:org:iis with the Russian role literal исследователь. The second argument must be the sorted FactId evidence used for participant, organization and role conditions.",
+  "candidate": {
+    "rulePath": "rules/candidate_researcher_at_iis.pl",
+    "testPath": "tests/candidate_researcher_at_iis_tests.pl",
+    "uiPath": "ui/researcher-at-iis.json",
+    "module": "candidate_researcher_at_iis",
+    "predicate": "researcher_at_iis",
+    "arity": 2,
+    "uiPredicate": "urn:logiclens:derived:researcher-at-iis",
+    "uiComponent": "Property"
+  },
+  "evidenceRequests": [
+    {
+      "name": "person-subgraph",
+      "command": "subgraph",
+      "options": {
+        "rootId": "urn:logiclens:person:alex",
+        "depth": 2,
+        "direction": "both",
+        "language": "ru"
+      }
+    },
+    {
+      "name": "participation-facts",
+      "command": "inspect-facts",
+      "options": {
+        "entityId": "urn:logiclens:participation:work"
+      }
+    },
+    {
+      "name": "organization-facts",
+      "command": "inspect-facts",
+      "options": {
+        "entityId": "urn:logiclens:org:iis"
+      }
+    }
+  ],
+  "acceptance": [
+    "Use only the provider-neutral epoch candidate v0 files declared by the task.",
+    "Export candidate_researcher_at_iis:researcher_at_iis/2.",
+    "Return a person only when one participation resource supplies participant, in-org and role evidence.",
+    "Require organization urn:logiclens:org:iis and literal исследователь with language ru.",
+    "Return the three supporting FactId values sorted with ordinal Prolog term order.",
+    "Include executable candidate tests.",
+    "Bind urn:logiclens:derived:researcher-at-iis to the trusted Property component.",
+    "Do not modify or activate the active epoch."
+  ]
+}

@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260728T045302Z-planner-v1-codex-teacher-frame-account-default",
+  "inputMode": "teacher-frame",
+  "model": "account-default",
+  "commit": "b40f079005cc2bb333a23d545f880c4fe7d2c8df",
+  "sourceRun": "D:\\projects\\ChatPilotGroup\\LogicLens\\EpistemicCompilerLab\\experiments\\model-runs\\20260728T045209Z-planner-v1-codex-account-default\\teacher-frame\\run.jsonl",
+  "scoredAt": "2026-07-28T04:54:00.8325670+00:00",
+  "metrics": {
+    "totalCases": 9,
+    "passedCases": 9,
+    "actionCorrect": 9,
+    "planCorrect": 9,
+    "askFieldCorrect": 2,
+    "askFieldApplicable": 2,
+    "runnerErrors": 0,
+    "elapsedMs": 58191.0,
+    "byTaskType": {
+      "clarification": {
+        "passed": 2,
+        "total": 2
+      },
+      "exception_inspection": {
+        "passed": 1,
+        "total": 1
+      },
+      "explanation": {
+        "passed": 1,
+        "total": 1
+      },
+      "material_selection": {
+        "passed": 5,
+        "total": 5
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseId": "material-before-a",
+      "taskType": "material_selection",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": null,
+      "actual": {
+        "action": "query",
+        "plan": [
+          {
+            "operation": "current-material",
+            "arguments": {
+              "revision": "a",
+              "date": 20260630,
+              "entity": null,
+              "kind": null
+            }
+          }
+        ],
+        "askField": null
+      },
+      "expectedPlan": [
+        {
+          "operation": "current-material",
+          "arguments": {
+            "revision": "a",
+            "date": 20260630
+          }
+        }
+      ],
+      "runnerError": null
+    },
+    {
+      "caseId": "material-before-b",
+      "taskType": "material_selection",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": null,
+      "actual": {
+        "action": "query",
+        "plan": [
+          {
+            "operation": "current-material",
+            "arguments": {
+              "revision": "b",
+              "date": 20260630,
+              "entity": null,
+              "kind": null
+            }
+          }
+        ],
+        "askField": null
+      },
+      "expectedPlan": [
+        {
+          "operation": "current-material",
+          "arguments": {
+            "revision": "b",
+            "date": 20260630
+          }
+        }
+      ],
+      "runnerError": null
+    },
+    {
+      "caseId": "material-after-a-exception",
+      "taskType": "material_selection",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": null,
+      "actual": {
+        "action": "query",
+        "plan": [
+          {
+            "operation": "current-material",
+            "arguments": {
+              "revision": "a",
+              "date": 20260701,
+              "entity": null,
+              "kind": null
+            }
+          }
+        ],
+        "askField": null
+      },
+      "expectedPlan": [
+        {
+          "operation": "current-material",
+          "arguments": {
+            "revision": "a",
+            "date": 20260701
+          }
+        }
+      ],
+      "runnerError": null
+    },
+    {
+      "caseId": "material-after-b",
+      "taskType": "material_selection",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": null,
+      "actual": {
+        "action": "query",
+        "plan": [
+          {
+            "operation": "current-material",
+            "arguments": {
+              "revision": "b",
+              "date": 20260810,
+              "entity": null,
+              "kind": null
+            }
+          }
+        ],
+        "askField": null
+      },
+      "expectedPlan": [
+        {
+          "operation": "current-material",
+          "arguments": {
+            "revision": "b",
+            "date": 20260810
+          }
+        }
+      ],
+      "runnerError": null
+    },
+    {
+      "caseId": "unsupported-revision",
+      "taskType": "material_selection",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": null,
+      "actual": {
+        "action": "query",
+        "plan": [
+          {
+            "operation": "current-material",
+            "arguments": {
+              "revision": "c",
+              "date": 20260810,
+              "entity": null,
+              "kind": null
+            }
+          }
+        ],
+        "askField": null
+      },
+      "expectedPlan": [
+        {
+          "operation": "current-material",
+          "arguments": {
+            "revision": "c",
+            "date": 20260810
+          }
+        }
+      ],
+      "runnerError": null
+    },
+    {
+      "caseId": "missing-date",
+      "taskType": "clarification",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": true,
+      "actual": {
+        "action": "ask_user",
+        "plan": [],
+        "askField": "date"
+      },
+      "expectedPlan": [],
+      "runnerError": null
+    },
+    {
+      "caseId": "missing-revision",
+      "taskType": "clarification",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": true,
+      "actual": {
+        "action": "ask_user",
+        "plan": [],
+        "askField": "revision"
+      },
+      "expectedPlan": [],
+      "runnerError": null
+    },
+    {
+      "caseId": "explain-replacement",
+      "taskType": "explanation",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": null,
+      "actual": {
+        "action": "query",
+        "plan": [
+          {
+            "operation": "current-material",
+            "arguments": {
+              "revision": "b",
+              "date": 20260701,
+              "entity": null,
+              "kind": null
+            }
+          },
+          {
+            "operation": "expand",
+            "arguments": {
+              "revision": null,
+              "date": null,
+              "entity": "asd100500",
+              "kind": "evidence"
+            }
+          }
+        ],
+        "askField": null
+      },
+      "expectedPlan": [
+        {
+          "operation": "current-material",
+          "arguments": {
+            "revision": "b",
+            "date": 20260701
+          }
+        },
+        {
+          "operation": "expand",
+          "arguments": {
+            "entity": "asd100500",
+            "kind": "evidence"
+          }
+        }
+      ],
+      "runnerError": null
+    },
+    {
+      "caseId": "check-exceptions",
+      "taskType": "exception_inspection",
+      "passed": true,
+      "runnerOk": true,
+      "actionCorrect": true,
+      "planCorrect": true,
+      "askFieldCorrect": null,
+      "actual": {
+        "action": "query",
+        "plan": [
+          {
+            "operation": "expand",
+            "arguments": {
+              "revision": null,
+              "date": null,
+              "entity": "asd100500",
+              "kind": "exceptions"
+            }
+          }
+        ],
+        "askField": null
+      },
+      "expectedPlan": [
+        {
+          "operation": "expand",
+          "arguments": {
+            "entity": "asd100500",
+            "kind": "exceptions"
+          }
+        }
+      ],
+      "runnerError": null
+    }
+  ]
+}

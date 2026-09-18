@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "kind": "compiled-frame-replication-candidate",
+  "createdAt": "2026-07-29T15:51:32.093872+00:00",
+  "commit": "0262f7e948d6a312a1827495200ef4d4f3ae30d6",
+  "generator": "codex-cli-account-default",
+  "parserSha256": "4dabc3f43b8e1e00ce21d812ba554f6edd2affd52566f9acf71668692412f84c",
+  "generatorPromptSha256": "1e9280654a47bf43b808ba34aff26a2254fa261e3aa2bbc90f1b9352d987e26a",
+  "oldQuestionsWithheld": true,
+  "parserSourceWithheld": true,
+  "caseCount": 24,
+  "casesSha256": "22f346b523a4a4b09fd463e2803893fa4140f8949490049d6888154e9ce4f1f2",
+  "status": "candidate_requires_review_and_freeze"
+}

@@ -1,0 +1,225 @@
+# Codex teacher contract
+
+You improve a weak local student model by editing its reusable instruction and/or a source-grounded Prolog knowledge representation.
+
+You receive:
+- immutable source evidence;
+- the current student prompt;
+- the current Prolog representation;
+- labeled TRAIN cases with the student's stored responses and failed checks;
+- DEV aggregate metrics only;
+- the permitted change track and remaining edit budget.
+
+Return exactly one JSON object matching the supplied schema.
+
+Rules:
+- Make the smallest coherent reusable change.
+- Never include benchmark case IDs, full benchmark questions, split names, scorer fields or expected-output tables in either candidate file.
+- Do not encode question-specific lookup tables.
+- Do not invent facts absent from source evidence.
+- Keep domain dates and material-selection rules in Prolog, never in the student instruction.
+- Do not add free-form comments to candidate Prolog; use executable predicates and data only.
+- Preserve the Prolog module name and exported predicates.
+- A prompt edit may clarify parsing, statuses, required fields and use of the representation.
+- A Prolog edit may only make the source-grounded representation easier to interpret while preserving the verified domain semantics.
+- If the current candidate is already adequate or no safe improvement is supported, return decision `stop`, changeType `no_change`, and return both files unchanged.
+- For a prompt-only track, return the Prolog file byte-for-byte unchanged.
+- For a prolog-only track, return the student prompt byte-for-byte unchanged.
+- For a combined track, both may change, but explain one interaction hypothesis.
+- Do not reveal hidden chain-of-thought. Keep hypothesis, expectedEffect and risk short and testable.
+
+
+Teacher input:
+{
+  "epoch": 1,
+  "track": "combined",
+  "editBudget": "one smallest coherent reusable change",
+  "sourceEvidence": "# Material replacement fixture\n\nThis synthetic file is the human-readable source for the first Epistemic Compiler Lab experiment.\n\n## ASD100500\n\nMaterial `ASD100500` replaces `ASD2` starting on 1 July 2026.\n\nFor hardware revision `A`, continue using `ASD2` after the transition date.\n\nFor hardware revision `B`, use `ASD100500` on and after the transition date.\n\nBefore 1 July 2026, both supported revisions use `ASD2`.\n\n## Supported revisions\n\nThe fixture recognises only revisions `A` and `B`.\n\nAny other revision must produce `unknown`, not an inferred default.\n\n## Evidence policy\n\nThe Prolog layer may expose this section as evidence. The source remains authoritative if a generated fact or rule disagrees with it.",
+  "currentStudentPrompt": "# Direct representation student contract\n\nUse only the knowledge representation and user question supplied in the current request. Do not use memorised domain facts.\n\nReturn exactly one JSON object and no surrounding prose or Markdown.\n\nSchema:\n\n```json\n{\n  \"action\": \"answer | ask_user\",\n  \"status\": \"success | unknown | need_user\",\n  \"material\": \"string or null\",\n  \"askField\": \"date | revision | null\",\n  \"answerRu\": \"short Russian answer\"\n}\n```\n\nRules:\n\n- Ask the user when the date or revision required by the question is absent.\n- Use `need_user` only with `action=ask_user` and a non-null `askField`.\n- Use `success` only when the supplied representation determines one material.\n- Use `unknown` when the representation does not support the requested revision or cannot determine the answer.\n- Never rewrite `unknown` as `false` and never invent a default.\n- Preserve material identifiers exactly as lowercase `asd2` or `asd100500`.\n- Do not reveal hidden reasoning. Keep `answerRu` concise.\n",
+  "currentPrologKnowledge": ":- module(epistemic_compiler_knowledge, [\n    current_material/4,\n    expansion/4,\n    expansion_payload/2,\n    assertion_source/2\n]).\n\nsupported_revision(a).\nsupported_revision(b).\n\nassertion_source(a1042, _{\n    file:\"EpistemicCompilerLab/sources/materials.md\",\n    section:\"ASD100500\"\n}).\n\ncurrent_material(Revision, Date, asd2, [\"rule:before_transition\"]) :-\n    supported_revision(Revision),\n    integer(Date),\n    Date < 20260701.\n\ncurrent_material(a, Date, asd2, [\n    \"rule:revision_a_exception\",\n    \"assertion:a1042\"\n]) :-\n    integer(Date),\n    Date >= 20260701.\n\ncurrent_material(b, Date, asd100500, [\n    \"rule:default_after_transition\",\n    \"assertion:a1042\"\n]) :-\n    integer(Date),\n    Date >= 20260701.\n\nexpansion(\n    asd100500,\n    evidence,\n    exp_asd100500_evidence,\n    \"Original source section for the replacement rule\"\n).\n\nexpansion(\n    asd100500,\n    exceptions,\n    exp_asd100500_exceptions,\n    \"Hardware revisions that do not use the default material\"\n).\n\nexpansion_payload(exp_asd100500_evidence, _{\n    type:\"markdown\",\n    file:\"EpistemicCompilerLab/sources/materials.md\",\n    section:\"ASD100500\"\n}).\n\nexpansion_payload(exp_asd100500_exceptions, _{\n    type:\"rule_summary\",\n    revisions:[\"a\"],\n    material:\"asd2\",\n    condition:\"date >= 20260701\"\n}).",
+  "trainDiagnostics": [
+    {
+      "caseId": "train-a-before",
+      "question": "Какой материал использовать для ревизии A 30 июня 2026 года?",
+      "expected": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd2",
+        "askField": null
+      },
+      "studentResponse": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd2",
+        "askField": null,
+        "answerRu": "Для ревизии A от 30 июня 2026 года использовать материал asd2."
+      },
+      "runnerError": null,
+      "failedChecks": []
+    },
+    {
+      "caseId": "train-b-after",
+      "question": "Какой материал использовать для ревизии B 10 августа 2026 года?",
+      "expected": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd100500",
+        "askField": null
+      },
+      "studentResponse": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd100500",
+        "askField": null,
+        "answerRu": "Для ревизии B 10 августа 2026 года использовать материал ASD100500."
+      },
+      "runnerError": null,
+      "failedChecks": []
+    },
+    {
+      "caseId": "train-c-unsupported",
+      "question": "Какой материал использовать для ревизии C 10 августа 2026 года?",
+      "expected": {
+        "action": "answer",
+        "status": "unknown",
+        "material": null,
+        "askField": null
+      },
+      "studentResponse": {
+        "action": "answer",
+        "status": "unknown",
+        "material": null,
+        "askField": null,
+        "answerRu": "Не удалось определить материал для указанной даты."
+      },
+      "runnerError": null,
+      "failedChecks": []
+    },
+    {
+      "caseId": "train-missing-date",
+      "question": "Какой материал использовать для ревизии B?",
+      "expected": {
+        "action": "ask_user",
+        "status": "need_user",
+        "material": null,
+        "askField": "date"
+      },
+      "studentResponse": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd100500",
+        "askField": null,
+        "answerRu": "Для ревизии B используется материал ASD100500."
+      },
+      "runnerError": null,
+      "failedChecks": [
+        "passed",
+        "actionCorrect",
+        "statusCorrect",
+        "materialCorrect",
+        "askFieldCorrect"
+      ]
+    },
+    {
+      "caseId": "train-missing-revision",
+      "question": "Какой материал использовать 10 августа 2026 года?",
+      "expected": {
+        "action": "ask_user",
+        "status": "need_user",
+        "material": null,
+        "askField": "revision"
+      },
+      "studentResponse": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd2",
+        "askField": null,
+        "answerRu": "Для 10 августа 2026 года использовать материал asd2."
+      },
+      "runnerError": null,
+      "failedChecks": [
+        "passed",
+        "actionCorrect",
+        "statusCorrect",
+        "materialCorrect",
+        "askFieldCorrect"
+      ]
+    },
+    {
+      "caseId": "train-a-transition",
+      "question": "Какой материал использовать для ревизии A 1 июля 2026 года?",
+      "expected": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd2",
+        "askField": null
+      },
+      "studentResponse": {
+        "action": "answer",
+        "status": "success",
+        "material": "asd2",
+        "askField": null,
+        "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+      },
+      "runnerError": null,
+      "failedChecks": []
+    }
+  ],
+  "devAggregateOnly": {
+    "split": "dev",
+    "totalCases": 6,
+    "passedCases": 3,
+    "actionCorrect": 4,
+    "statusCorrect": 4,
+    "materialCorrect": 3,
+    "askFieldCorrect": 4,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 78886,
+    "promptEvalCount": 4082,
+    "evalCount": 385
+  },
+  "previousEpochs": [
+    {
+      "epoch": 0,
+      "status": "baseline",
+      "changeType": null,
+      "hypothesis": null,
+      "expectedEffect": null,
+      "risk": null,
+      "promptHash": "7ab3dab2c2f76ca264523fefb5d5117af8a45556f7c57e03d46c13fab28c0b8b",
+      "prologHash": "498982ac39c88b17c0b24e087077f8a011f5e5a94ef965fff85154864bc21f55",
+      "promptBytes": 999,
+      "prologBytes": 1285,
+      "validationErrors": [],
+      "train": {
+        "split": "train",
+        "totalCases": 6,
+        "passedCases": 4,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 4,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 77462,
+        "promptEvalCount": 4075,
+        "evalCount": 357
+      },
+      "dev": {
+        "split": "dev",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 3,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 78886,
+        "promptEvalCount": 4082,
+        "evalCount": 385
+      }
+    }
+  ]
+}

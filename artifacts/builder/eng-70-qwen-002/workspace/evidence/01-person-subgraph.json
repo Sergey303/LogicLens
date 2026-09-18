@@ -1,0 +1,406 @@
+{
+  "request": {
+    "protocolVersion": "0.1",
+    "requestId": "builder:eng-26-researcher-at-iis-v0:01",
+    "command": "subgraph",
+    "epoch": 0,
+    "revision": 0,
+    "options": {
+      "rootId": "urn:logiclens:person:alex",
+      "depth": 2,
+      "direction": "both",
+      "language": "ru"
+    }
+  },
+  "response": {
+    "command": "subgraph",
+    "diagnostics": [],
+    "epoch": 0,
+    "protocolVersion": "0.1",
+    "requestId": "builder:eng-26-researcher-at-iis-v0:01",
+    "result": {
+      "direction": "both",
+      "effectiveDepth": 2,
+      "effectiveLimits": {
+        "maxDepth": 2,
+        "maxFacts": 1000,
+        "maxNodes": 250,
+        "maxOccurrences": 1000,
+        "maxOutputBytes": 1000000,
+        "maxPathLength": 2,
+        "timeoutMs": 2000
+      },
+      "facts": [
+        {
+          "factId": "f:sha256:238f6c6e82b7f18c30dfeeab73add225f27d2498473db0460cc4fbb091d3e2ab",
+          "layer": 2,
+          "object": {
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "kind": "literal",
+            "language": null,
+            "lexical": "2010-09-01",
+            "literalKind": "datatype"
+          },
+          "origins": [
+            "origin:fixture-a:student-study"
+          ],
+          "predicate": "http://fogid.net/o/from-date",
+          "subject": "urn:logiclens:student:study"
+        },
+        {
+          "factId": "f:sha256:283a697a5f34cc13f788e00197cb2457591a761f86e4c6f6d49664c9df03a55e",
+          "layer": 2,
+          "object": {
+            "kind": "iri",
+            "value": "http://fogid.net/o/authority"
+          },
+          "origins": [
+            "origin:fixture-a:authority-paper-author"
+          ],
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "subject": "urn:logiclens:authority:paper-author"
+        },
+        {
+          "factId": "f:sha256:3242677a145c47ae3bc6037b8877beb244659c99fbbec00b87f8977ec60afaae",
+          "layer": 1,
+          "object": {
+            "kind": "iri",
+            "value": "http://fogid.net/o/person"
+          },
+          "origins": [
+            "origin:fixture-a:person-alex",
+            "origin:fixture-b:person-alex"
+          ],
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "subject": "urn:logiclens:person:alex"
+        },
+        {
+          "factId": "f:sha256:4462f979698ea067c9e2c0f3845e961bf84728aa82ecb91448742cd1b3ff9bb0",
+          "layer": 1,
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:person:alex"
+          },
+          "origins": [
+            "origin:fixture-a:authority-paper-author"
+          ],
+          "predicate": "http://fogid.net/o/author",
+          "subject": "urn:logiclens:authority:paper-author"
+        },
+        {
+          "factId": "f:sha256:4cc9eafc75d8adcefb5a634e80f564c4c44c5e81da100ed1861cd0397166dc2b",
+          "layer": 1,
+          "object": {
+            "datatype": null,
+            "kind": "literal",
+            "language": "en",
+            "lexical": "Alexey Vetrov",
+            "literalKind": "language"
+          },
+          "origins": [
+            "origin:fixture-a:person-alex"
+          ],
+          "predicate": "http://fogid.net/o/name",
+          "subject": "urn:logiclens:person:alex"
+        },
+        {
+          "factId": "f:sha256:54e98ac97c4d7e3c953f2cd19a84bdfa2ce5b19af180762864da3b42e5d5b69d",
+          "layer": 1,
+          "object": {
+            "datatype": null,
+            "kind": "literal",
+            "language": "ru",
+            "lexical": "Алексей Ветров",
+            "literalKind": "language"
+          },
+          "origins": [
+            "origin:fixture-a:person-alex",
+            "origin:fixture-b:person-alex"
+          ],
+          "predicate": "http://fogid.net/o/name",
+          "subject": "urn:logiclens:person:alex"
+        },
+        {
+          "factId": "f:sha256:582fcb389772b291cc3ad2e4b407fc84b8ba66bb7d23a775c71ce135a9b18761",
+          "layer": 2,
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:document:paper"
+          },
+          "origins": [
+            "origin:fixture-a:authority-paper-author"
+          ],
+          "predicate": "http://fogid.net/o/adoc",
+          "subject": "urn:logiclens:authority:paper-author"
+        },
+        {
+          "factId": "f:sha256:67abb6c01dde5080956246e21c49cb00db0bf95376fa64213d04e4efe964271b",
+          "layer": 2,
+          "object": {
+            "datatype": null,
+            "kind": "literal",
+            "language": "ru",
+            "lexical": "исследователь",
+            "literalKind": "language"
+          },
+          "origins": [
+            "origin:fixture-a:participation-work"
+          ],
+          "predicate": "http://fogid.net/o/role",
+          "subject": "urn:logiclens:participation:work"
+        },
+        {
+          "factId": "f:sha256:681902c9a2d34fbc64bb898fe4594067db409d2839335ee98467e96bee2752df",
+          "layer": 2,
+          "object": {
+            "kind": "iri",
+            "value": "http://fogid.net/o/participation"
+          },
+          "origins": [
+            "origin:fixture-a:participation-work"
+          ],
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "subject": "urn:logiclens:participation:work"
+        },
+        {
+          "factId": "f:sha256:7d5f4f25c4a067b148920e1d40b3231f2aa8d5513af26f4b5db7e1a70ca92524",
+          "layer": 2,
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:org:iis"
+          },
+          "origins": [
+            "origin:fixture-a:student-study"
+          ],
+          "predicate": "http://fogid.net/o/learning-org",
+          "subject": "urn:logiclens:student:study"
+        },
+        {
+          "factId": "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5",
+          "layer": 2,
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:org:iis"
+          },
+          "origins": [
+            "origin:fixture-a:participation-work"
+          ],
+          "predicate": "http://fogid.net/o/in-org",
+          "subject": "urn:logiclens:participation:work"
+        },
+        {
+          "factId": "f:sha256:aa6939e02dd1f1bbb10158176a7f67794adeac8060325500f836dc55baacdee0",
+          "layer": 1,
+          "object": {
+            "datatype": null,
+            "kind": "literal",
+            "language": null,
+            "lexical": "архивная запись",
+            "literalKind": "plain"
+          },
+          "origins": [
+            "origin:fixture-a:person-alex"
+          ],
+          "predicate": "http://fogid.net/o/comment",
+          "subject": "urn:logiclens:person:alex"
+        },
+        {
+          "factId": "f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3",
+          "layer": 1,
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:person:alex"
+          },
+          "origins": [
+            "origin:fixture-a:participation-work"
+          ],
+          "predicate": "http://fogid.net/o/participant",
+          "subject": "urn:logiclens:participation:work"
+        },
+        {
+          "factId": "f:sha256:d3800e0a4195a7e798b282de19167f264b45006b283433edd92ab790acea9b41",
+          "layer": 2,
+          "object": {
+            "kind": "iri",
+            "value": "http://fogid.net/o/student"
+          },
+          "origins": [
+            "origin:fixture-a:student-study"
+          ],
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "subject": "urn:logiclens:student:study"
+        },
+        {
+          "factId": "f:sha256:dc9fc03281438f6392211a8c1d649b335031a75067c06438270cec98bd17c743",
+          "layer": 1,
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:person:alex"
+          },
+          "origins": [
+            "origin:fixture-a:student-study"
+          ],
+          "predicate": "http://fogid.net/o/learner",
+          "subject": "urn:logiclens:student:study"
+        },
+        {
+          "factId": "f:sha256:f42a98a731b7b5f90f2f8975f1bc8b7bf30b95f8c9dafac793b3ecedd6de8aeb",
+          "layer": 1,
+          "object": {
+            "datatype": null,
+            "kind": "literal",
+            "language": null,
+            "lexical": "A-17",
+            "literalKind": "plain"
+          },
+          "origins": [
+            "origin:fixture-a:person-alex"
+          ],
+          "predicate": "urn:logiclens:test:internal-code",
+          "subject": "urn:logiclens:person:alex"
+        }
+      ],
+      "kind": "subgraph",
+      "nodes": [
+        {
+          "id": "urn:logiclens:authority:paper-author",
+          "label": "paper-author",
+          "minimumDistance": 1
+        },
+        {
+          "id": "urn:logiclens:document:paper",
+          "label": "Verified Logic Interfaces",
+          "minimumDistance": 2
+        },
+        {
+          "id": "urn:logiclens:org:iis",
+          "label": "Институт систем информатики",
+          "minimumDistance": 2
+        },
+        {
+          "id": "urn:logiclens:participation:work",
+          "label": "work",
+          "minimumDistance": 1
+        },
+        {
+          "id": "urn:logiclens:person:alex",
+          "label": "Алексей Ветров",
+          "minimumDistance": 0
+        },
+        {
+          "id": "urn:logiclens:student:study",
+          "label": "study",
+          "minimumDistance": 1
+        }
+      ],
+      "occurrenceFacts": [
+        {
+          "factIds": [
+            "f:sha256:3242677a145c47ae3bc6037b8877beb244659c99fbbec00b87f8977ec60afaae",
+            "f:sha256:4462f979698ea067c9e2c0f3845e961bf84728aa82ecb91448742cd1b3ff9bb0",
+            "f:sha256:4cc9eafc75d8adcefb5a634e80f564c4c44c5e81da100ed1861cd0397166dc2b",
+            "f:sha256:54e98ac97c4d7e3c953f2cd19a84bdfa2ce5b19af180762864da3b42e5d5b69d",
+            "f:sha256:aa6939e02dd1f1bbb10158176a7f67794adeac8060325500f836dc55baacdee0",
+            "f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3",
+            "f:sha256:dc9fc03281438f6392211a8c1d649b335031a75067c06438270cec98bd17c743",
+            "f:sha256:f42a98a731b7b5f90f2f8975f1bc8b7bf30b95f8c9dafac793b3ecedd6de8aeb"
+          ],
+          "occurrenceId": "o:sha256:9892029c35cacef35d34c23f38394c4f147ab61dec58c73b0c26057141a4c881"
+        },
+        {
+          "factIds": [
+            "f:sha256:283a697a5f34cc13f788e00197cb2457591a761f86e4c6f6d49664c9df03a55e",
+            "f:sha256:582fcb389772b291cc3ad2e4b407fc84b8ba66bb7d23a775c71ce135a9b18761"
+          ],
+          "occurrenceId": "o:sha256:1daf346c31e848c8c25cc30cd3364ebbd763d442b88a1be69af7b253069a0613"
+        },
+        {
+          "factIds": [
+            "f:sha256:238f6c6e82b7f18c30dfeeab73add225f27d2498473db0460cc4fbb091d3e2ab",
+            "f:sha256:7d5f4f25c4a067b148920e1d40b3231f2aa8d5513af26f4b5db7e1a70ca92524",
+            "f:sha256:d3800e0a4195a7e798b282de19167f264b45006b283433edd92ab790acea9b41"
+          ],
+          "occurrenceId": "o:sha256:c1ab6548bb48919b75cb293b5d0f00defb156f522af12dcf4d7a003edc854481"
+        },
+        {
+          "factIds": [
+            "f:sha256:67abb6c01dde5080956246e21c49cb00db0bf95376fa64213d04e4efe964271b",
+            "f:sha256:681902c9a2d34fbc64bb898fe4594067db409d2839335ee98467e96bee2752df",
+            "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5"
+          ],
+          "occurrenceId": "o:sha256:f01e1dc555c9969bb81e4cf8b67c55530621498e8104a2a70b13aeaa09e2f869"
+        }
+      ],
+      "occurrences": [
+        {
+          "depth": 0,
+          "direction": null,
+          "nodeId": "urn:logiclens:person:alex",
+          "occurrenceId": "o:sha256:9892029c35cacef35d34c23f38394c4f147ab61dec58c73b0c26057141a4c881",
+          "parentOccurrenceId": null,
+          "state": "expanded",
+          "viaFactId": null
+        },
+        {
+          "depth": 1,
+          "direction": "incoming",
+          "nodeId": "urn:logiclens:authority:paper-author",
+          "occurrenceId": "o:sha256:1daf346c31e848c8c25cc30cd3364ebbd763d442b88a1be69af7b253069a0613",
+          "parentOccurrenceId": "o:sha256:9892029c35cacef35d34c23f38394c4f147ab61dec58c73b0c26057141a4c881",
+          "state": "expanded",
+          "viaFactId": "f:sha256:4462f979698ea067c9e2c0f3845e961bf84728aa82ecb91448742cd1b3ff9bb0"
+        },
+        {
+          "depth": 1,
+          "direction": "incoming",
+          "nodeId": "urn:logiclens:student:study",
+          "occurrenceId": "o:sha256:c1ab6548bb48919b75cb293b5d0f00defb156f522af12dcf4d7a003edc854481",
+          "parentOccurrenceId": "o:sha256:9892029c35cacef35d34c23f38394c4f147ab61dec58c73b0c26057141a4c881",
+          "state": "expanded",
+          "viaFactId": "f:sha256:dc9fc03281438f6392211a8c1d649b335031a75067c06438270cec98bd17c743"
+        },
+        {
+          "depth": 1,
+          "direction": "incoming",
+          "nodeId": "urn:logiclens:participation:work",
+          "occurrenceId": "o:sha256:f01e1dc555c9969bb81e4cf8b67c55530621498e8104a2a70b13aeaa09e2f869",
+          "parentOccurrenceId": "o:sha256:9892029c35cacef35d34c23f38394c4f147ab61dec58c73b0c26057141a4c881",
+          "state": "expanded",
+          "viaFactId": "f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3"
+        },
+        {
+          "depth": 2,
+          "direction": "outgoing",
+          "nodeId": "urn:logiclens:org:iis",
+          "occurrenceId": "o:sha256:1e52067cf824aa7e73935434ad5d5fa742b34d4687bdd318d069d50d432f84b5",
+          "parentOccurrenceId": "o:sha256:c1ab6548bb48919b75cb293b5d0f00defb156f522af12dcf4d7a003edc854481",
+          "state": "boundary",
+          "viaFactId": "f:sha256:7d5f4f25c4a067b148920e1d40b3231f2aa8d5513af26f4b5db7e1a70ca92524"
+        },
+        {
+          "depth": 2,
+          "direction": "outgoing",
+          "nodeId": "urn:logiclens:document:paper",
+          "occurrenceId": "o:sha256:5e4d19a8621e4118c5e736061989f6d9a8f5913c2b4d9f2d0de89b2f37013663",
+          "parentOccurrenceId": "o:sha256:1daf346c31e848c8c25cc30cd3364ebbd763d442b88a1be69af7b253069a0613",
+          "state": "boundary",
+          "viaFactId": "f:sha256:582fcb389772b291cc3ad2e4b407fc84b8ba66bb7d23a775c71ce135a9b18761"
+        },
+        {
+          "depth": 2,
+          "direction": "outgoing",
+          "nodeId": "urn:logiclens:org:iis",
+          "occurrenceId": "o:sha256:fe5b8e79cc9abe39cb85c1cfd644a9cc6765a25489dabba9be69741805db8dfb",
+          "parentOccurrenceId": "o:sha256:f01e1dc555c9969bb81e4cf8b67c55530621498e8104a2a70b13aeaa09e2f869",
+          "state": "boundary",
+          "viaFactId": "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5"
+        }
+      ],
+      "requestedDepth": 2,
+      "root": "urn:logiclens:person:alex",
+      "truncated": false
+    },
+    "revision": 0,
+    "status": "ok"
+  }
+}

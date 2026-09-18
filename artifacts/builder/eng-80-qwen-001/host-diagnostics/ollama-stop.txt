@@ -1,0 +1,2 @@
+Stopping Ollama model: epistemic-qwen2.5-coder-7b:cpu-v1
+[?2026h[?25l[1G⠙ [K[?25h[?2026l[?25l[?2026h[?25l[1G[K[?25h[?2026l[2K[1G[?25h

@@ -1,0 +1,146 @@
+{
+  "baselineHealth": {
+    "command": "health",
+    "diagnostics": [],
+    "epoch": 0,
+    "protocolVersion": "0.1",
+    "requestId": "eng-104-baseline-health",
+    "result": {
+      "availableCommands": [
+        "health",
+        "inspect-facts",
+        "entity-view",
+        "subgraph"
+      ],
+      "hardLimits": {
+        "maxDepth": 2,
+        "maxFacts": 5000,
+        "maxNodes": 1000,
+        "maxOccurrences": 5000,
+        "maxOutputBytes": 2000000,
+        "maxPathLength": 2,
+        "timeoutMs": 5000
+      },
+      "kind": "health",
+      "manifestHashes": {
+        "data": "sha256:b2ebcb0e07c6582664ea016c82429d7cd28a57f716d7e27ceabdc49ce4ece0ed"
+      },
+      "protocolVersion": "0.1"
+    },
+    "revision": 0,
+    "status": "ok"
+  },
+  "checks": {
+    "baselineHealthPassed": true,
+    "baselineHealthResultPreserved": true,
+    "derivedQueryPassed": true,
+    "previewReportsRevisionOne": true,
+    "staleStateRejected": true,
+    "unknownPredicateRejected": true,
+    "weakImportWarningAbsent": true
+  },
+  "derivedQuery": {
+    "command": "derived-query",
+    "diagnostics": [],
+    "epoch": 0,
+    "protocolVersion": "0.1",
+    "requestId": "eng-104-derived",
+    "result": {
+      "kind": "derived-query",
+      "predicate": "urn:logiclens:derived:researcher-at-iis",
+      "rows": [
+        {
+          "entityId": "urn:logiclens:person:alex",
+          "evidenceFactIds": [
+            "f:sha256:67abb6c01dde5080956246e21c49cb00db0bf95376fa64213d04e4efe964271b",
+            "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5",
+            "f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3"
+          ]
+        }
+      ]
+    },
+    "revision": 1,
+    "status": "ok"
+  },
+  "intent": {
+    "activePointerUpdate": "not-performed",
+    "apply": "not-performed",
+    "staging": "not-performed"
+  },
+  "previewHealth": {
+    "command": "health",
+    "diagnostics": [],
+    "epoch": 0,
+    "protocolVersion": "0.1",
+    "requestId": "eng-104-preview-health",
+    "result": {
+      "availableCommands": [
+        "health",
+        "inspect-facts",
+        "entity-view",
+        "subgraph",
+        "derived-query"
+      ],
+      "hardLimits": {
+        "maxDepth": 2,
+        "maxFacts": 5000,
+        "maxNodes": 1000,
+        "maxOccurrences": 5000,
+        "maxOutputBytes": 2000000,
+        "maxPathLength": 2,
+        "timeoutMs": 5000
+      },
+      "kind": "health",
+      "manifestHashes": {
+        "data": "sha256:b2ebcb0e07c6582664ea016c82429d7cd28a57f716d7e27ceabdc49ce4ece0ed"
+      },
+      "protocolVersion": "0.1"
+    },
+    "revision": 1,
+    "status": "ok"
+  },
+  "schemaVersion": "0.1",
+  "stage": "warning-free-activation-overlay-preview",
+  "staleState": {
+    "command": "health",
+    "diagnostics": [],
+    "epoch": 0,
+    "error": {
+      "code": "stale_state",
+      "details": {
+        "loadedEpoch": 0,
+        "loadedRevision": 1,
+        "requestedEpoch": 0,
+        "requestedRevision": 0
+      },
+      "message": "The requested epoch or revision does not match the loaded state."
+    },
+    "protocolVersion": "0.1",
+    "requestId": "eng-104-stale",
+    "revision": 1,
+    "status": "error"
+  },
+  "stderr": {
+    "baselineHealth": "Warning: d:/projects/chatpilotgroup/logiclens/artifacts/builder/eng-80-qwen-001/active-epoch/rules/subgraph.pl:458:\nWarning:    Singleton variables: [Limit]\n",
+    "derivedQuery": "Warning: d:/projects/chatpilotgroup/logiclens/artifacts/builder/eng-104-overlay-003/runtime-preview/rules/subgraph.pl:458:\nWarning:    Singleton variables: [Limit]\n",
+    "previewHealth": "Warning: d:/projects/chatpilotgroup/logiclens/artifacts/builder/eng-104-overlay-003/runtime-preview/rules/subgraph.pl:458:\nWarning:    Singleton variables: [Limit]\n",
+    "staleState": "Warning: d:/projects/chatpilotgroup/logiclens/artifacts/builder/eng-104-overlay-003/runtime-preview/rules/subgraph.pl:458:\nWarning:    Singleton variables: [Limit]\n",
+    "unknownPredicate": "Warning: d:/projects/chatpilotgroup/logiclens/artifacts/builder/eng-104-overlay-003/runtime-preview/rules/subgraph.pl:458:\nWarning:    Singleton variables: [Limit]\n"
+  },
+  "unknownPredicate": {
+    "command": "derived-query",
+    "diagnostics": [],
+    "epoch": 0,
+    "error": {
+      "code": "unknown_predicate",
+      "details": {
+        "predicate": "urn:logiclens:derived:unknown"
+      },
+      "message": "The predicate is not part of the reviewed derived registry."
+    },
+    "protocolVersion": "0.1",
+    "requestId": "eng-104-unknown",
+    "revision": 1,
+    "status": "error"
+  }
+}

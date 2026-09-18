@@ -1,0 +1,160 @@
+{
+  "checks": {
+    "committedAttestationVerified": true,
+    "committedJournalVerified": true,
+    "committedPointerVerified": true,
+    "faultAttestationVerified": true,
+    "faultJournalRolledBack": true,
+    "faultPointerRestored": true,
+    "rollbackRuntimeHealthPassed": true,
+    "selectedDerivedQueryPassed": true,
+    "selectedRuntimeHealthPassed": true,
+    "selectedStaleStateRejected": true,
+    "selectedUnknownPredicateRejected": true
+  },
+  "committed": {
+    "journalHash": "sha256:a837e03ca62cdcb999d6776eb4ff61221607c1e9c67652178c6b4520d5ab2fbb",
+    "pointerHash": "sha256:4fb0c1a31a02fc5ab6a9bc56a3440aa0be09b6d9cfc64c8c4858c4b2f8e7dc24",
+    "runtime": {
+      "derivedQuery": {
+        "command": "derived-query",
+        "diagnostics": [],
+        "epoch": 0,
+        "protocolVersion": "0.1",
+        "requestId": "eng-107-independent-derived",
+        "result": {
+          "kind": "derived-query",
+          "predicate": "urn:logiclens:derived:researcher-at-iis",
+          "rows": [
+            {
+              "entityId": "urn:logiclens:person:alex",
+              "evidenceFactIds": [
+                "f:sha256:67abb6c01dde5080956246e21c49cb00db0bf95376fa64213d04e4efe964271b",
+                "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5",
+                "f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3"
+              ]
+            }
+          ]
+        },
+        "revision": 1,
+        "status": "ok"
+      },
+      "evidenceFactIds": [
+        "f:sha256:67abb6c01dde5080956246e21c49cb00db0bf95376fa64213d04e4efe964271b",
+        "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5",
+        "f:sha256:b0a5e5a69a3150e22a03e67cd709be47d8cb7319d6dc8b0cdc574cc0a582c2b3"
+      ],
+      "health": {
+        "command": "health",
+        "diagnostics": [],
+        "epoch": 0,
+        "protocolVersion": "0.1",
+        "requestId": "eng-107-independent-health",
+        "result": {
+          "availableCommands": [
+            "health",
+            "inspect-facts",
+            "entity-view",
+            "subgraph",
+            "derived-query"
+          ],
+          "hardLimits": {
+            "maxDepth": 2,
+            "maxFacts": 5000,
+            "maxNodes": 1000,
+            "maxOccurrences": 5000,
+            "maxOutputBytes": 2000000,
+            "maxPathLength": 2,
+            "timeoutMs": 5000
+          },
+          "kind": "health",
+          "manifestHashes": {
+            "data": "sha256:b2ebcb0e07c6582664ea016c82429d7cd28a57f716d7e27ceabdc49ce4ece0ed"
+          },
+          "protocolVersion": "0.1"
+        },
+        "revision": 1,
+        "status": "ok"
+      },
+      "packagePath": "D:\\projects\\ChatPilotGroup\\LogicLens\\artifacts\\builder\\eng-107-activation-002\\deployment\\packages\\e000000-r000001-63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+      "staleState": {
+        "command": "health",
+        "diagnostics": [],
+        "epoch": 0,
+        "error": {
+          "code": "stale_state",
+          "details": {
+            "loadedEpoch": 0,
+            "loadedRevision": 1,
+            "requestedEpoch": 0,
+            "requestedRevision": 0
+          },
+          "message": "The requested epoch or revision does not match the loaded state."
+        },
+        "protocolVersion": "0.1",
+        "requestId": "eng-107-independent-stale",
+        "revision": 1,
+        "status": "error"
+      },
+      "unknownPredicate": {
+        "command": "derived-query",
+        "diagnostics": [],
+        "epoch": 0,
+        "error": {
+          "code": "unknown_predicate",
+          "details": {
+            "predicate": "urn:logiclens:derived:unknown"
+          },
+          "message": "The predicate is not part of the reviewed derived registry."
+        },
+        "protocolVersion": "0.1",
+        "requestId": "eng-107-independent-unknown",
+        "revision": 1,
+        "status": "error"
+      }
+    },
+    "transactionHash": "sha256:f87c4fff80adb61e76118f6b13b9776672ca596123301ae7e4d8c0e257297b7c"
+  },
+  "faultInjection": {
+    "journalHash": "sha256:95440e17840cb3e3e7b95279db22972e60e6b2bc4ffa69bb6b00041c950eb885",
+    "pointerHash": "sha256:1cd5e7c5b484ded4d12ad5537cab161521812be6720c7c93db4b96f761097919",
+    "rollbackRuntime": {
+      "health": {
+        "command": "health",
+        "diagnostics": [],
+        "epoch": 0,
+        "protocolVersion": "0.1",
+        "requestId": "eng-107-independent-rollback-health",
+        "result": {
+          "availableCommands": [
+            "health",
+            "inspect-facts",
+            "entity-view",
+            "subgraph"
+          ],
+          "hardLimits": {
+            "maxDepth": 2,
+            "maxFacts": 5000,
+            "maxNodes": 1000,
+            "maxOccurrences": 5000,
+            "maxOutputBytes": 2000000,
+            "maxPathLength": 2,
+            "timeoutMs": 5000
+          },
+          "kind": "health",
+          "manifestHashes": {
+            "data": "sha256:b2ebcb0e07c6582664ea016c82429d7cd28a57f716d7e27ceabdc49ce4ece0ed"
+          },
+          "protocolVersion": "0.1"
+        },
+        "revision": 0,
+        "status": "ok"
+      },
+      "packagePath": "D:\\projects\\ChatPilotGroup\\LogicLens\\artifacts\\builder\\eng-107-activation-002\\fault-injection-deployment\\packages\\e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+      "stderr": "Warning: d:/projects/chatpilotgroup/logiclens/artifacts/builder/eng-107-activation-002/fault-injection-deployment/packages/e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7/rules/subgraph.pl:458:\nWarning:    Singleton variables: [Limit]\n"
+    },
+    "transactionHash": "sha256:91a3812bab4b032b94d6466b39b2d4db0821be32da729ed8dac208cf7a401027"
+  },
+  "schemaVersion": "0.1",
+  "stage": "activation-transaction-independent-verification"
+}

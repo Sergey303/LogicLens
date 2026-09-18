@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "activation-decision",
+  "decisionId": "eng-106-decision-001",
+  "decision": "authorize",
+  "source": {
+    "stageId": "eng-89-stage-001",
+    "stagedPackageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+    "promotionPlanHash": "sha256:3fea6197b578908837a1abe720edf79c4f0133e52027a306b71a4e5b78744990",
+    "plannedRevisionHash": "sha256:fcf0345dc45fdb3aad8a29811f3a7dd8f6b04cbc748ccd15beab6646f895d15f",
+    "assessmentHash": "sha256:1b41a79486014255dc9e0c9ebb65d0bcb41294b35d66fff47916f9c80af626a7",
+    "overlayHash": "sha256:8039f9be5236734285542c8a1f8fdf5cb3f73890a28ce2dd178131b5c0d8b072",
+    "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+    "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+    "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "expectedCurrent": {
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "target": {
+    "epoch": 0,
+    "revision": 1,
+    "packageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70"
+  },
+  "rollback": {
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "evidence": {
+    "stagedManifestFileHash": "sha256:a41b494e7381f08317b1eaee295e04908b9133e40297a753780ef4c5c45d0a6c",
+    "activeManifestFileHash": "sha256:57a9c79b17ee7faf9e7f44a70855e44c6505c228736aedf96598957c1cd771c5",
+    "candidateManifestFileHash": "sha256:281d09ece0757f419d79d17c7edc8ea7876cd86155587a55b010ff6850c9964c",
+    "overlayManifestFileHash": "sha256:c4777d4dcff0f0fce0a1c1f65b934074b6fa2efe4b128f280164d8f423d1f593"
+  },
+  "checks": {
+    "stagedSchemaVerified": true,
+    "stagedFilesVerified": true,
+    "stagedPackageHashVerified": true,
+    "sourceBindingsVerified": true,
+    "activeBaselineVerified": true,
+    "transitionIsNextRevision": true,
+    "rollbackPinned": true,
+    "runtimeRevalidated": true,
+    "activePackageUntouched": true
+  },
+  "intent": {
+    "authorization": "recorded-only",
+    "apply": "not-performed",
+    "activePointerUpdate": "not-performed"
+  },
+  "decisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab"
+}

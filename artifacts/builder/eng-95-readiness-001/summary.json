@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "candidate-activation-readiness",
+  "assessmentId": "eng-95-readiness-001",
+  "status": "blocked",
+  "assessmentHash": "sha256:36256acedb11a5788c19bf98fc988dddc037629a8b160fcc9d161839471cc654",
+  "promotionPlanHash": "sha256:3fea6197b578908837a1abe720edf79c4f0133e52027a306b71a4e5b78744990",
+  "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+  "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+  "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "targetEpoch": 0,
+  "targetRevision": 1,
+  "observedEpoch": 0,
+  "observedRevision": 0,
+  "candidateModules": [
+    "candidate_researcher_at_iis"
+  ],
+  "candidateExports": [
+    "researcher_at_iis/2"
+  ],
+  "blockers": [
+    {
+      "code": "runtime_revision_not_represented",
+      "message": "The proposed runtime does not declare epoch 0 revision 1.",
+      "remediation": "Add a reviewed activation overlay that updates the runtime epoch/revision source and verify stale-state behavior before staging."
+    },
+    {
+      "code": "candidate_rule_not_loaded",
+      "message": "No trusted runtime module imports every candidate rule module.",
+      "remediation": "Add a reviewed deterministic loader or registry entry outside the untrusted candidate files."
+    },
+    {
+      "code": "candidate_predicate_not_exposed",
+      "message": "The closed runtime has no invocation path for every exported candidate predicate.",
+      "remediation": "Define and test a reviewed CLI or derived-predicate registry contract before staging the revision."
+    }
+  ],
+  "planArtifactSha256": "cb4ebd0bb4c87430eb13653eadb79fbf694d165dd4f36674a23f0d8c8bb28181",
+  "candidateArtifactSha256": "bc60eba91cd3020bf6bc8a438bc111cc73bc8ef09446b9c6c4597e44e59164cc",
+  "repositoryCommit": "7c29e7e926b9ce4179d865e82ffd937c0b0e33b9",
+  "staging": "not-performed",
+  "apply": "not-performed",
+  "activePointerUpdate": "not-performed",
+  "planTemporary": false,
+  "candidateTemporary": false
+}

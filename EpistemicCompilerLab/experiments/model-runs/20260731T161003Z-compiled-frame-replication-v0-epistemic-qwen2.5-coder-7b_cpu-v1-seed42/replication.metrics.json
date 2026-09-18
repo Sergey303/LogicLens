@@ -1,0 +1,17 @@
+{
+  "split": "replication",
+  "totalCases": 24,
+  "framePassedCases": 24,
+  "renderedPassedCases": 24,
+  "actionCorrect": 24,
+  "statusCorrect": 24,
+  "materialCorrect": 24,
+  "askFieldCorrect": 24,
+  "answerRuNonEmpty": 24,
+  "answerRuHasCyrillic": 24,
+  "frameErrors": 0,
+  "runnerErrors": 0,
+  "elapsedMs": 234528,
+  "promptEvalCount": 7162,
+  "evalCount": 1154
+}

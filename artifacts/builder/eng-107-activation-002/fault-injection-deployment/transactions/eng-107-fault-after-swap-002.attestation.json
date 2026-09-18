@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "activation-transaction-attestation",
+  "transactionId": "eng-107-fault-after-swap-002",
+  "outcome": "rolled-back",
+  "decisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+  "beforePointer": {
+    "schemaVersion": "0.1",
+    "stage": "active-pointer",
+    "generation": 0,
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "packagePath": "packages/e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "decisionHash": null,
+    "transactionId": "eng-107-fault-init-002",
+    "pointerHash": "sha256:1cd5e7c5b484ded4d12ad5537cab161521812be6720c7c93db4b96f761097919"
+  },
+  "afterPointer": {
+    "schemaVersion": "0.1",
+    "stage": "active-pointer",
+    "generation": 0,
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "packagePath": "packages/e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "decisionHash": null,
+    "transactionId": "eng-107-fault-init-002",
+    "pointerHash": "sha256:1cd5e7c5b484ded4d12ad5537cab161521812be6720c7c93db4b96f761097919"
+  },
+  "targetPackageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+  "rollbackPackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "checks": {
+    "decisionReverified": true,
+    "currentMatched": true,
+    "targetInstalled": true,
+    "preSwitchRuntimePassed": true,
+    "pointerSwapped": true,
+    "postSwitchRuntimePassed": false,
+    "rollbackPerformed": true,
+    "rollbackRuntimePassed": true,
+    "journalFinalized": true
+  },
+  "failure": "injected failure after pointer swap",
+  "journalHash": "sha256:95440e17840cb3e3e7b95279db22972e60e6b2bc4ffa69bb6b00041c950eb885",
+  "intent": {
+    "apply": "rolled-back",
+    "activePointerUpdate": "restored",
+    "recovery": "not-required"
+  },
+  "transactionHash": "sha256:91a3812bab4b032b94d6466b39b2d4db0821be32da729ed8dac208cf7a401027"
+}

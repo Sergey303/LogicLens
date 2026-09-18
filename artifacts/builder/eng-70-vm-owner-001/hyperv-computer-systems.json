@@ -1,0 +1,11 @@
+{
+  "ElementName": "COMP",
+  "Name": "COMP",
+  "ProcessID": null,
+  "EnabledState": 2,
+  "HealthState": 5,
+  "OperationalStatus": [
+    2
+  ],
+  "Status": "OK"
+}

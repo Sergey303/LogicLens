@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "0.1",
+  "result": "infrastructure-failed",
+  "validatorExitCode": 1,
+  "sourceAttempt": "eng-66-qwen-001",
+  "sourceRunId": "qwen-run-001",
+  "model": "qwen2.5-coder:7b",
+  "modelCalled": false,
+  "modelOutputReused": true,
+  "providerOutputHash": "sha256:e576f85055e98ca1206621cfa1d67883c70562b13f3572e50f32afeb730b6984"
+}

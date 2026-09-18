@@ -1,0 +1,15 @@
+{
+  "split": "holdout",
+  "totalCases": 6,
+  "framePassedCases": 6,
+  "renderedPassedCases": 6,
+  "actionCorrect": 6,
+  "statusCorrect": 6,
+  "materialCorrect": 6,
+  "askFieldCorrect": 6,
+  "frameErrors": 0,
+  "runnerErrors": 0,
+  "elapsedMs": 62729,
+  "promptEvalCount": 1723,
+  "evalCount": 308
+}

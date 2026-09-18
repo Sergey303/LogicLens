@@ -1,0 +1,3 @@
+epoch,status,changeType,trainPassed,devPassed,promptBytes,prologBytes,hypothesis
+0,baseline,,4,3,999,1285,
+1,accepted,prompt,3,3,1255,1285,"The student queries the representation before checking whether both obligatory inputs are explicitly present, causing it to infer a material when date or revision is missing."

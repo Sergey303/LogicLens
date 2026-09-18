@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 1,
+  "kind": "codex-qwen-teacher-loop-pilot",
+  "createdAt": "2026-07-29T08:52:14.091599+00:00",
+  "commit": "4d6f8424d58cdc8712207a6aa6ddd432bf6250ac",
+  "track": "combined",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "codexModelSelection": "account-default",
+  "epochBudget": 2,
+  "bestEpoch": 0,
+  "baseline": {
+    "epoch": 0,
+    "status": "baseline",
+    "changeType": null,
+    "hypothesis": null,
+    "expectedEffect": null,
+    "risk": null,
+    "promptHash": "7ab3dab2c2f76ca264523fefb5d5117af8a45556f7c57e03d46c13fab28c0b8b",
+    "prologHash": "498982ac39c88b17c0b24e087077f8a011f5e5a94ef965fff85154864bc21f55",
+    "promptBytes": 999,
+    "prologBytes": 1285,
+    "validationErrors": [],
+    "train": {
+      "split": "train",
+      "totalCases": 6,
+      "passedCases": 4,
+      "actionCorrect": 4,
+      "statusCorrect": 4,
+      "materialCorrect": 4,
+      "askFieldCorrect": 4,
+      "runnerErrors": 0,
+      "outputLimited": 0,
+      "elapsedMs": 73856,
+      "promptEvalCount": 4075,
+      "evalCount": 357
+    },
+    "dev": {
+      "split": "dev",
+      "totalCases": 6,
+      "passedCases": 3,
+      "actionCorrect": 4,
+      "statusCorrect": 4,
+      "materialCorrect": 3,
+      "askFieldCorrect": 4,
+      "runnerErrors": 0,
+      "outputLimited": 0,
+      "elapsedMs": 62147,
+      "promptEvalCount": 4082,
+      "evalCount": 385
+    },
+    "trainEffectCounts": null,
+    "trainCaseEffects": []
+  },
+  "bestTrain": {
+    "split": "train",
+    "totalCases": 6,
+    "passedCases": 4,
+    "actionCorrect": 4,
+    "statusCorrect": 4,
+    "materialCorrect": 4,
+    "askFieldCorrect": 4,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 73856,
+    "promptEvalCount": 4075,
+    "evalCount": 357
+  },
+  "bestDev": {
+    "split": "dev",
+    "totalCases": 6,
+    "passedCases": 3,
+    "actionCorrect": 4,
+    "statusCorrect": 4,
+    "materialCorrect": 3,
+    "askFieldCorrect": 4,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 62147,
+    "promptEvalCount": 4082,
+    "evalCount": 385
+  },
+  "baselineHoldout": {
+    "split": "holdout",
+    "totalCases": 6,
+    "passedCases": 2,
+    "actionCorrect": 2,
+    "statusCorrect": 3,
+    "materialCorrect": 3,
+    "askFieldCorrect": 2,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 64081,
+    "promptEvalCount": 4094,
+    "evalCount": 355
+  },
+  "selectedHoldout": {
+    "split": "holdout",
+    "totalCases": 6,
+    "passedCases": 2,
+    "actionCorrect": 2,
+    "statusCorrect": 3,
+    "materialCorrect": 3,
+    "askFieldCorrect": 2,
+    "runnerErrors": 0,
+    "outputLimited": 0,
+    "elapsedMs": 64081,
+    "promptEvalCount": 4094,
+    "evalCount": 355
+  },
+  "holdoutDeltaCases": 0,
+  "generalizationGapCases": 2,
+  "epochs": [
+    {
+      "epoch": 0,
+      "status": "baseline",
+      "changeType": null,
+      "hypothesis": null,
+      "expectedEffect": null,
+      "risk": null,
+      "promptHash": "7ab3dab2c2f76ca264523fefb5d5117af8a45556f7c57e03d46c13fab28c0b8b",
+      "prologHash": "498982ac39c88b17c0b24e087077f8a011f5e5a94ef965fff85154864bc21f55",
+      "promptBytes": 999,
+      "prologBytes": 1285,
+      "validationErrors": [],
+      "train": {
+        "split": "train",
+        "totalCases": 6,
+        "passedCases": 4,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 4,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 73856,
+        "promptEvalCount": 4075,
+        "evalCount": 357
+      },
+      "dev": {
+        "split": "dev",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 3,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 62147,
+        "promptEvalCount": 4082,
+        "evalCount": 385
+      },
+      "trainEffectCounts": null,
+      "trainCaseEffects": []
+    },
+    {
+      "epoch": 1,
+      "status": "accepted",
+      "changeType": "prompt",
+      "hypothesis": "The student answers under-specified questions by inferring an omitted input; an explicit completeness gate before knowledge lookup will make it request the missing field.",
+      "expectedEffect": "Questions missing either obligatory input should produce a targeted request while fully specified and unsupported-revision behavior remains unchanged.",
+      "risk": "The model may apply the completeness gate too rigidly when a date or revision is expressed indirectly.",
+      "promptHash": "2546f3d4d211bd511c1b7cb7aa13975a82937da92afb8fa9311a62a672c7b8c0",
+      "prologHash": "498982ac39c88b17c0b24e087077f8a011f5e5a94ef965fff85154864bc21f55",
+      "promptBytes": 1329,
+      "prologBytes": 1285,
+      "validationErrors": [],
+      "train": {
+        "split": "train",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 3,
+        "statusCorrect": 3,
+        "materialCorrect": 4,
+        "askFieldCorrect": 3,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 75358,
+        "promptEvalCount": 4513,
+        "evalCount": 372
+      },
+      "dev": {
+        "split": "dev",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 4,
+        "statusCorrect": 4,
+        "materialCorrect": 3,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 60911,
+        "promptEvalCount": 4520,
+        "evalCount": 363
+      },
+      "trainEffectCounts": {
+        "fixed": 0,
+        "regressed": 1,
+        "unchangedPass": 3,
+        "unchangedFail": 2
+      },
+      "trainCaseEffects": [
+        {
+          "caseId": "train-a-before",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A от 30 июня 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A от 30 июня 2026 года использовать материал asd2."
+          }
+        },
+        {
+          "caseId": "train-b-after",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B 10 августа 2026 года использовать материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B от 10 августа 2026 года использовать материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-c-unsupported",
+          "outcome": "regressed",
+          "changedChecks": [
+            {
+              "check": "actionCorrect",
+              "before": true,
+              "after": false
+            },
+            {
+              "check": "statusCorrect",
+              "before": true,
+              "after": false
+            },
+            {
+              "check": "askFieldCorrect",
+              "before": true,
+              "after": false
+            }
+          ],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Не удалось определить материал для указанной даты."
+          },
+          "candidateResponse": {
+            "action": "ask_user",
+            "status": "need_user",
+            "material": null,
+            "askField": "date",
+            "answerRu": "Необходимо указать дату для определения материала."
+          }
+        },
+        {
+          "caseId": "train-missing-date",
+          "outcome": "unchanged_fail",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-missing-revision",
+          "outcome": "unchanged_fail",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для 10 августа 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для 10 августа 2026 года использовать материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-a-transition",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+          }
+        }
+      ]
+    },
+    {
+      "epoch": 2,
+      "status": "accepted",
+      "changeType": "prompt",
+      "hypothesis": "The student conflates an absent obligatory field with an unsupported supplied value; an ordered extraction gate with explicit present/absent states should prevent both guessing and false requests.",
+      "expectedEffect": "Missing inputs should trigger the corresponding targeted request, while supplied unsupported revisions remain unknown and fully specified answers remain unchanged.",
+      "risk": "The ordered gate asks for date first when both obligatory inputs are absent and may miss unusually implicit field expressions.",
+      "promptHash": "c733c2791ecf2540df9a1050b5aaff17c6a2945f7e6bd3365eba9cf158281d5f",
+      "prologHash": "498982ac39c88b17c0b24e087077f8a011f5e5a94ef965fff85154864bc21f55",
+      "promptBytes": 1543,
+      "prologBytes": 1285,
+      "validationErrors": [],
+      "train": {
+        "split": "train",
+        "totalCases": 6,
+        "passedCases": 3,
+        "actionCorrect": 4,
+        "statusCorrect": 3,
+        "materialCorrect": 4,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 83535,
+        "promptEvalCount": 4885,
+        "evalCount": 349
+      },
+      "dev": {
+        "split": "dev",
+        "totalCases": 6,
+        "passedCases": 2,
+        "actionCorrect": 4,
+        "statusCorrect": 3,
+        "materialCorrect": 3,
+        "askFieldCorrect": 4,
+        "runnerErrors": 0,
+        "outputLimited": 0,
+        "elapsedMs": 69229,
+        "promptEvalCount": 4892,
+        "evalCount": 379
+      },
+      "trainEffectCounts": {
+        "fixed": 0,
+        "regressed": 1,
+        "unchangedPass": 3,
+        "unchangedFail": 2
+      },
+      "trainCaseEffects": [
+        {
+          "caseId": "train-a-before",
+          "outcome": "regressed",
+          "changedChecks": [
+            {
+              "check": "statusCorrect",
+              "before": true,
+              "after": false
+            },
+            {
+              "check": "materialCorrect",
+              "before": true,
+              "after": false
+            }
+          ],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A от 30 июня 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Информация недостаточна для определения материала."
+          }
+        },
+        {
+          "caseId": "train-b-after",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B 10 августа 2026 года использовать материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B от 10 августа 2026 года использовать материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-c-unsupported",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Не удалось определить материал для указанной даты."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Не удалось определить материал для указанной ревизии."
+          }
+        },
+        {
+          "caseId": "train-missing-date",
+          "outcome": "unchanged_fail",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd100500",
+            "askField": null,
+            "answerRu": "Для ревизии B используется материал ASD100500."
+          }
+        },
+        {
+          "caseId": "train-missing-revision",
+          "outcome": "unchanged_fail",
+          "changedChecks": [
+            {
+              "check": "materialCorrect",
+              "before": false,
+              "after": true
+            }
+          ],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для 10 августа 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "unknown",
+            "material": null,
+            "askField": null,
+            "answerRu": "Неизвестно, какой материал используется 10 августа 2026 года."
+          }
+        },
+        {
+          "caseId": "train-a-transition",
+          "outcome": "unchanged_pass",
+          "changedChecks": [],
+          "beforeResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A 1 июля 2026 года использовать материал asd2."
+          },
+          "candidateResponse": {
+            "action": "answer",
+            "status": "success",
+            "material": "asd2",
+            "askField": null,
+            "answerRu": "Для ревизии A от 1 июля 2026 года используется материал asd2."
+          }
+        }
+      ]
+    }
+  ],
+  "methodologyLimit": "18-case engineering pilot; not publication-grade without the declared extension."
+}

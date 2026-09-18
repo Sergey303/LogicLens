@@ -1,0 +1,3 @@
+epoch,status,changeType,trainPassed,devPassed,promptBytes,prologBytes,hypothesis
+0,baseline,,4,3,999,1285,
+1,teacher_error,,,,999,1285,

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "kind": "strict-epistemic-benchmark-candidate",
+  "createdAt": "2026-08-01T05:55:32.607423+00:00",
+  "commit": "26817ca77ddb3aeca1308e4fca5a6928fcbab865",
+  "seed": 20260801,
+  "caseCount": 56,
+  "primaryCaseCount": 48,
+  "clarificationCaseCount": 8,
+  "uniquePrimaryPropositions": 48,
+  "sourceAssertionCount": 224,
+  "splitCounts": {
+    "train": 14,
+    "dev": 14,
+    "holdout": 14,
+    "replication": 14
+  },
+  "statusCounts": {
+    "refuted": 12,
+    "conflicting": 12,
+    "unknown": 12,
+    "supported": 12
+  },
+  "casesSha256": "ec393f269246f20c17e2b183f063fb59b8f0c4e1e8a84bfe0dca7b8b5094b0ea",
+  "sourceCatalogSha256": "6d121c2fa360a00130dcbd38b7a0e74eaaa106af0be2508c81370e24ce35f05a",
+  "caseOracleSha256": "d6cb535a4a92e155bcfa3a72799b7ad67879617f576883424cf4c0b96e51722f",
+  "generatorSha256": "1be8fcbc48bd7a1ef790867367beddd20f1ab796df10cd6ebb88562e5f865431",
+  "status": "candidate_requires_review_and_freeze",
+  "qwenEvaluated": false
+}

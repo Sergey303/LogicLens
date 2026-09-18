@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "candidate-promotion-plan",
+  "planId": "eng-87-plan-001",
+  "reviewId": "eng-86-review-001",
+  "reviewHash": "sha256:a0ec73003793e303456738828689a1d313099609f50d0161ce2d951efcf3b595",
+  "promotionPlanHash": "sha256:3fea6197b578908837a1abe720edf79c4f0133e52027a306b71a4e5b78744990",
+  "plannedRevisionHash": "sha256:fcf0345dc45fdb3aad8a29811f3a7dd8f6b04cbc748ccd15beab6646f895d15f",
+  "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+  "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+  "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "sourceEpoch": 0,
+  "sourceRevision": 0,
+  "targetEpoch": 0,
+  "targetRevision": 1,
+  "rollbackEpoch": 0,
+  "rollbackRevision": 0,
+  "rollbackPackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "addedFiles": [
+    "rules/candidate_researcher_at_iis.pl",
+    "tests/candidate_researcher_at_iis_tests.pl",
+    "ui/researcher-at-iis.json"
+  ],
+  "reviewArtifactSha256": "bb3ce1150b90c66e4b2f5ae69ffd6c3eba8cadaecd9c19cf3278ad786179a1a8",
+  "candidateArtifactSha256": "bc60eba91cd3020bf6bc8a438bc111cc73bc8ef09446b9c6c4597e44e59164cc",
+  "repositoryCommit": "4a3371af430b1b9bbab41daef3c76166e1f2893b",
+  "manifest": "planned-only",
+  "activePointerUpdate": "not-performed",
+  "apply": "not-performed",
+  "reviewTemporary": false,
+  "candidateTemporary": false
+}

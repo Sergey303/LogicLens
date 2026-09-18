@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "atomic-activation-transaction-run",
+  "runId": "eng-107-activation-002",
+  "repositoryCommit": "6400d04be4c409549516d4d95e18bcdb369e00c0",
+  "decisionHash": "sha256:d500f08044e04bc30915407ad93fc978df9a8079215ce06c66471d7d19cda5ab",
+  "before": {
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "after": {
+    "generation": 1,
+    "epoch": 0,
+    "revision": 1,
+    "packageHash": "sha256:63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+    "packagePath": "packages/e000000-r000001-63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70",
+    "pointerHash": "sha256:4fb0c1a31a02fc5ab6a9bc56a3440aa0be09b6d9cfc64c8c4858c4b2f8e7dc24"
+  },
+  "rollback": {
+    "retained": true,
+    "epoch": 0,
+    "revision": 0,
+    "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "activation": {
+    "outcome": "committed",
+    "transactionHash": "sha256:f87c4fff80adb61e76118f6b13b9776672ca596123301ae7e4d8c0e257297b7c",
+    "journalHash": "sha256:a837e03ca62cdcb999d6776eb4ff61221607c1e9c67652178c6b4520d5ab2fbb",
+    "checks": {
+      "decisionReverified": true,
+      "currentMatched": true,
+      "targetInstalled": true,
+      "preSwitchRuntimePassed": true,
+      "pointerSwapped": true,
+      "postSwitchRuntimePassed": true,
+      "rollbackPerformed": false,
+      "rollbackRuntimePassed": false,
+      "journalFinalized": true
+    },
+    "apply": "performed",
+    "activePointerUpdate": "performed",
+    "recovery": "not-required"
+  },
+  "faultInjection": {
+    "failurePoint": "after-swap",
+    "outcome": "rolled-back",
+    "finalEpoch": 0,
+    "finalRevision": 0,
+    "finalPackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "transactionHash": "sha256:91a3812bab4b032b94d6466b39b2d4db0821be32da729ed8dac208cf7a401027",
+    "journalHash": "sha256:95440e17840cb3e3e7b95279db22972e60e6b2bc4ffa69bb6b00041c950eb885",
+    "rollbackVerified": true,
+    "checks": {
+      "decisionReverified": true,
+      "currentMatched": true,
+      "targetInstalled": true,
+      "preSwitchRuntimePassed": true,
+      "pointerSwapped": true,
+      "postSwitchRuntimePassed": false,
+      "rollbackPerformed": true,
+      "rollbackRuntimePassed": true,
+      "journalFinalized": true
+    }
+  },
+  "independentChecks": {
+    "committedAttestationVerified": true,
+    "committedJournalVerified": true,
+    "committedPointerVerified": true,
+    "faultAttestationVerified": true,
+    "faultJournalRolledBack": true,
+    "faultPointerRestored": true,
+    "rollbackRuntimeHealthPassed": true,
+    "selectedDerivedQueryPassed": true,
+    "selectedRuntimeHealthPassed": true,
+    "selectedStaleStateRejected": true,
+    "selectedUnknownPredicateRejected": true
+  },
+  "packageDirectories": [
+    "e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "e000000-r000001-63060abc482d0a05a7640b1463f77d4b28eab2690575f85c3620b972f6abaf70"
+  ],
+  "activeSourceTreeBefore": "sha256:2455241d57aeca89a4f0c26d48719f55bd438ded1bade2fa342619eb522869c0",
+  "activeSourceTreeAfter": "sha256:2455241d57aeca89a4f0c26d48719f55bd438ded1bade2fa342619eb522869c0",
+  "stagedSourceTreeBefore": "sha256:951d9663271fc5de861d0c331c2f132f96cd0a9a143ac3a82bb6890874d40c42",
+  "stagedSourceTreeAfter": "sha256:951d9663271fc5de861d0c331c2f132f96cd0a9a143ac3a82bb6890874d40c42",
+  "candidateTemporary": false,
+  "stageTemporary": false,
+  "decisionTemporary": false
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "compiled-decision-frame-replication-v0",
+  "createdAt": "2026-07-31T16:13:58.882994+00:00",
+  "commit": "c8218bd2d0f40e3735f00d32ab22d4a26bdb7e51",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "frozenCasesSha256": "22f346b523a4a4b09fd463e2803893fa4140f8949490049d6888154e9ce4f1f2",
+  "frozenParserSha256": "4dabc3f43b8e1e00ce21d812ba554f6edd2affd52566f9acf71668692412f84c",
+  "metrics": {
+    "split": "replication",
+    "totalCases": 24,
+    "framePassedCases": 24,
+    "renderedPassedCases": 24,
+    "actionCorrect": 24,
+    "statusCorrect": 24,
+    "materialCorrect": 24,
+    "askFieldCorrect": 24,
+    "answerRuNonEmpty": 24,
+    "answerRuHasCyrillic": 24,
+    "frameErrors": 0,
+    "runnerErrors": 0,
+    "elapsedMs": 234528,
+    "promptEvalCount": 7162,
+    "evalCount": 1154
+  }
+}

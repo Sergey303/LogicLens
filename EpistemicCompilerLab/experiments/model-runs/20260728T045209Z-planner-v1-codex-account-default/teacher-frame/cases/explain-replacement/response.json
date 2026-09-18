@@ -1,0 +1,1 @@
+{"action":"query","plan":[{"operation":"current-material","arguments":{"revision":"b","date":20260701,"entity":null,"kind":null}},{"operation":"expand","arguments":{"revision":null,"date":null,"entity":"asd100500","kind":"evidence"}}],"askField":null}

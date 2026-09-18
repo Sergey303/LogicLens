@@ -1,0 +1,99 @@
+{
+  "request": {
+    "protocolVersion": "0.1",
+    "requestId": "builder:eng-26-researcher-at-iis-v0:03",
+    "command": "inspect-facts",
+    "epoch": 0,
+    "revision": 0,
+    "options": {
+      "entityId": "urn:logiclens:org:iis"
+    }
+  },
+  "response": {
+    "command": "inspect-facts",
+    "diagnostics": [],
+    "epoch": 0,
+    "protocolVersion": "0.1",
+    "requestId": "builder:eng-26-researcher-at-iis-v0:03",
+    "result": {
+      "effectiveLimits": {
+        "maxFacts": 1000,
+        "maxOutputBytes": 1000000,
+        "timeoutMs": 2000
+      },
+      "entityId": "urn:logiclens:org:iis",
+      "facts": [
+        {
+          "factId": "f:sha256:4d443df9cad85b24397455ca6d8978886715cc2897e0cdb0abb7763f8c9289d8",
+          "object": {
+            "datatype": null,
+            "kind": "literal",
+            "language": "en",
+            "lexical": "Institute of Informatics Systems",
+            "literalKind": "language"
+          },
+          "origins": [
+            "origin:fixture-a:org-iis"
+          ],
+          "predicate": "http://fogid.net/o/name",
+          "subject": "urn:logiclens:org:iis"
+        },
+        {
+          "factId": "f:sha256:7d5f4f25c4a067b148920e1d40b3231f2aa8d5513af26f4b5db7e1a70ca92524",
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:org:iis"
+          },
+          "origins": [
+            "origin:fixture-a:student-study"
+          ],
+          "predicate": "http://fogid.net/o/learning-org",
+          "subject": "urn:logiclens:student:study"
+        },
+        {
+          "factId": "f:sha256:9aa0dad76c25bdbbfde243a82b134e70a562d4843863f55dd1300dd1384955e5",
+          "object": {
+            "kind": "iri",
+            "value": "urn:logiclens:org:iis"
+          },
+          "origins": [
+            "origin:fixture-a:participation-work"
+          ],
+          "predicate": "http://fogid.net/o/in-org",
+          "subject": "urn:logiclens:participation:work"
+        },
+        {
+          "factId": "f:sha256:c8acd1ea45635f06c522aa4c871024ca8890056560a7de1c14595404594a9e73",
+          "object": {
+            "kind": "iri",
+            "value": "http://fogid.net/o/org-sys"
+          },
+          "origins": [
+            "origin:fixture-a:org-iis"
+          ],
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "subject": "urn:logiclens:org:iis"
+        },
+        {
+          "factId": "f:sha256:d847fe3c41c1d7d4e5c9e169493566b134573029650d469e7d61d5338422c9e6",
+          "object": {
+            "datatype": null,
+            "kind": "literal",
+            "language": "ru",
+            "lexical": "Институт систем информатики",
+            "literalKind": "language"
+          },
+          "origins": [
+            "origin:fixture-a:org-iis"
+          ],
+          "predicate": "http://fogid.net/o/name",
+          "subject": "urn:logiclens:org:iis"
+        }
+      ],
+      "kind": "inspect-facts",
+      "truncated": false
+    },
+    "revision": 0,
+    "status": "ok"
+  }
+}

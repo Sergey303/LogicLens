@@ -1,0 +1,248 @@
+{
+  "schemaVersion": "0.1",
+  "diagnosticId": "eng-70-vram-owner-002",
+  "capturedAt": "2026-07-27T17:42:36.5228440+07:00",
+  "processCount": 35,
+  "topProcesses": [
+    {
+      "ProcessId": 3300,
+      "ProcessName": "vmwp.exe",
+      "DedicatedMiB": 6129.11,
+      "SharedMiB": 80.32,
+      "ExecutablePath": "",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 14184,
+      "ProcessName": "dwm.exe",
+      "DedicatedMiB": 801.92,
+      "SharedMiB": 2.38,
+      "ExecutablePath": "",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 15912,
+      "ProcessName": "chrome.exe",
+      "DedicatedMiB": 231.69,
+      "SharedMiB": 48.57,
+      "ExecutablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 22780,
+      "ProcessName": "msedgewebview2.exe",
+      "DedicatedMiB": 197.79,
+      "SharedMiB": 0.3,
+      "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 8712,
+      "ProcessName": "explorer.exe",
+      "DedicatedMiB": 150.76,
+      "SharedMiB": 1.87,
+      "ExecutablePath": "C:\\WINDOWS\\Explorer.EXE",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 4580,
+      "ProcessName": "max.exe",
+      "DedicatedMiB": 150.23,
+      "SharedMiB": 0.49,
+      "ExecutablePath": "C:\\Program Files\\MAX\\max.exe",
+      "WindowTitle": "MAX"
+    },
+    {
+      "ProcessId": 7556,
+      "ProcessName": "LeagueClientUxRender.exe",
+      "DedicatedMiB": 100.14,
+      "SharedMiB": 4.88,
+      "ExecutablePath": "D:\\Games2\\Riot Games\\League of Legends\\LeagueClientUxRender.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 20476,
+      "ProcessName": "Docker Desktop.exe",
+      "DedicatedMiB": 99.18,
+      "SharedMiB": 0.35,
+      "ExecutablePath": "C:\\Program Files\\Docker\\Docker\\frontend\\Docker Desktop.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 15456,
+      "ProcessName": "WindowsTerminal.exe",
+      "DedicatedMiB": 64.75,
+      "SharedMiB": 0.84,
+      "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11911.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe",
+      "WindowTitle": "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.PythonManager_26.3.240.0_x64__qbz5n2kfra8p0\\py.exe"
+    },
+    {
+      "ProcessId": 7360,
+      "ProcessName": "explorer.exe",
+      "DedicatedMiB": 64.18,
+      "SharedMiB": 1.55,
+      "ExecutablePath": "C:\\WINDOWS\\explorer.exe",
+      "WindowTitle": "Polar.Factograph и еще 1 вкладка — проводник"
+    },
+    {
+      "ProcessId": 1252,
+      "ProcessName": "csrss.exe",
+      "DedicatedMiB": 53.45,
+      "SharedMiB": 14.11,
+      "ExecutablePath": "",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 3712,
+      "ProcessName": "SnippingTool.exe",
+      "DedicatedMiB": 53.02,
+      "SharedMiB": 0.59,
+      "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.ScreenSketch_11.2602.49.0_x64__8wekyb3d8bbwe\\SnippingTool\\SnippingTool.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 1796,
+      "ProcessName": "Riot Client.exe",
+      "DedicatedMiB": 34.32,
+      "SharedMiB": 0.38,
+      "ExecutablePath": "D:\\Games2\\Riot Games\\Riot Client\\RiotClientElectron\\Riot Client.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 12280,
+      "ProcessName": "msedgewebview2.exe",
+      "DedicatedMiB": 30.84,
+      "SharedMiB": 0.3,
+      "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 10944,
+      "ProcessName": "ShellExperienceHost.exe",
+      "DedicatedMiB": 22.03,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 2376,
+      "ProcessName": "AmneziaVPN.exe",
+      "DedicatedMiB": 18.12,
+      "SharedMiB": 0.25,
+      "ExecutablePath": "C:\\Program Files\\AmneziaVPN\\AmneziaVPN.exe",
+      "WindowTitle": "AmneziaVPN"
+    },
+    {
+      "ProcessId": 10088,
+      "ProcessName": "StartMenuExperienceHost.exe",
+      "DedicatedMiB": 15.53,
+      "SharedMiB": 0.3,
+      "ExecutablePath": "C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 10080,
+      "ProcessName": "SearchHost.exe",
+      "DedicatedMiB": 13.14,
+      "SharedMiB": 0.3,
+      "ExecutablePath": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 14164,
+      "ProcessName": "TextInputHost.exe",
+      "DedicatedMiB": 12.09,
+      "SharedMiB": 0.2,
+      "ExecutablePath": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe",
+      "WindowTitle": "Интерфейс ввода Windows"
+    },
+    {
+      "ProcessId": 15476,
+      "ProcessName": "vgtray.exe",
+      "DedicatedMiB": 9.98,
+      "SharedMiB": 1.35,
+      "ExecutablePath": "C:\\Program Files\\Riot Vanguard\\vgtray.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 14804,
+      "ProcessName": "ApplicationFrameHost.exe",
+      "DedicatedMiB": 9.48,
+      "SharedMiB": 0.2,
+      "ExecutablePath": "C:\\WINDOWS\\system32\\ApplicationFrameHost.exe",
+      "WindowTitle": "Настройки"
+    },
+    {
+      "ProcessId": 22160,
+      "ProcessName": "msedge.exe",
+      "DedicatedMiB": 7.92,
+      "SharedMiB": 0.3,
+      "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 416,
+      "ProcessName": "M365Copilot.exe",
+      "DedicatedMiB": 4.59,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "C:\\Program Files\\WindowsApps\\Microsoft.MicrosoftOfficeHub_19.2607.47051.0_x64__8wekyb3d8bbwe\\M365Copilot.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 4,
+      "ProcessName": "System",
+      "DedicatedMiB": 4.04,
+      "SharedMiB": 0.73,
+      "ExecutablePath": "",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 14088,
+      "ProcessName": "ApCent.exe",
+      "DedicatedMiB": 0.02,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 5832,
+      "ProcessName": "msedgewebview2.exe",
+      "DedicatedMiB": 0.02,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.99\\msedgewebview2.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 8824,
+      "ProcessName": "ShellHost.exe",
+      "DedicatedMiB": 0.02,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "C:\\Windows\\System32\\ShellHost.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 11004,
+      "ProcessName": "LockApp.exe",
+      "DedicatedMiB": 0.02,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "C:\\WINDOWS\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 9156,
+      "ProcessName": "CrossDeviceResume.exe",
+      "DedicatedMiB": 0.02,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe",
+      "WindowTitle": ""
+    },
+    {
+      "ProcessId": 16468,
+      "ProcessName": "chrome.exe",
+      "DedicatedMiB": 0.02,
+      "SharedMiB": 0.0,
+      "ExecutablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "WindowTitle": ""
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "qwen-run-001",
+  "taskId": "eng-26-researcher-at-iis-v0",
+  "taskHash": "sha256:31450f9407588afdaa034390686c45fd662843c8d81320854f0b61bdf28860f3",
+  "oracleHash": "sha256:e4831d5bfb058819f2b2ae90adc8897260a56c4c8f48b9b0f0d8aebe87711943",
+  "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "provider": {
+    "kind": "ollama",
+    "name": "ollama",
+    "model": "qwen2.5-coder:7b"
+  },
+  "metrics": {
+    "cliCalls": 0,
+    "manualFixes": 0,
+    "elapsedMs": 12985.073,
+    "costUsd": 0
+  },
+  "rawOutput": {
+    "path": "raw/provider-output.txt",
+    "sha256": "sha256:78ee4a148817ef04c74a582a35416408866e03e00c4fe5e38cf4f30dd32ec039",
+    "bytes": 652
+  },
+  "proposalHash": "sha256:9996b49103c0a27814c1190e7223d38e1816cbf354a04d319079e99418631df4",
+  "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+  "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+  "comparisonReportHash": "sha256:b5c17bb151949317d64f35ef3ec250c4f0c53883c60e47d1d92ed5d73ea75a07",
+  "validation": {
+    "candidate": "passed",
+    "oracle": "passed"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "active-pointer",
+  "generation": 0,
+  "epoch": 0,
+  "revision": 0,
+  "packageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "packagePath": "packages/e000000-r000000-75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+  "decisionHash": null,
+  "transactionId": "eng-107-fault-init-002",
+  "pointerHash": "sha256:1cd5e7c5b484ded4d12ad5537cab161521812be6720c7c93db4b96f761097919"
+}

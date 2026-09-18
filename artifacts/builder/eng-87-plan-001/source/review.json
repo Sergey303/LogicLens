@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "candidate-review",
+  "reviewId": "eng-86-review-001",
+  "decision": "recommend",
+  "reviewer": {
+    "kind": "human",
+    "id": "Sergey303"
+  },
+  "reason": "Real qwen2.5-coder:7b Builder run passed all candidate validations and the hidden oracle with zero manual fixes; recommend this exact candidate for the next reviewed promotion stage.",
+  "subject": {
+    "runId": "qwen-run-001",
+    "taskId": "eng-26-researcher-at-iis-v0",
+    "provider": {
+      "kind": "ollama",
+      "name": "ollama",
+      "model": "qwen2.5-coder:7b"
+    },
+    "taskHash": "sha256:31450f9407588afdaa034390686c45fd662843c8d81320854f0b61bdf28860f3",
+    "oracleHash": "sha256:e4831d5bfb058819f2b2ae90adc8897260a56c4c8f48b9b0f0d8aebe87711943",
+    "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7",
+    "proposalHash": "sha256:9996b49103c0a27814c1190e7223d38e1816cbf354a04d319079e99418631df4",
+    "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+    "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+    "comparisonReportHash": "sha256:b5c17bb151949317d64f35ef3ec250c4f0c53883c60e47d1d92ed5d73ea75a07"
+  },
+  "metrics": {
+    "cliCalls": 0,
+    "manualFixes": 0,
+    "elapsedMs": 12985.073,
+    "costUsd": 0
+  },
+  "evidence": {
+    "runEnvelopeFileHash": "sha256:2b83f168e756a968a780618e7d370d49325709c6bfe44b048d0b9c3872938d4c",
+    "comparisonReportFileHash": "sha256:b5c17bb151949317d64f35ef3ec250c4f0c53883c60e47d1d92ed5d73ea75a07",
+    "candidateManifestFileHash": "sha256:281d09ece0757f419d79d17c7edc8ea7876cd86155587a55b010ff6850c9964c"
+  },
+  "checks": {
+    "identityConsistent": true,
+    "baselineConsistent": true,
+    "candidateValidationPassed": true,
+    "oracleValidationPassed": true,
+    "comparisonValidationsPassed": true,
+    "runtimeOutputsEqual": true,
+    "activeFilesUnchanged": true
+  },
+  "activation": {
+    "status": "not-performed"
+  },
+  "reviewHash": "sha256:a0ec73003793e303456738828689a1d313099609f50d0161ce2d951efcf3b595"
+}

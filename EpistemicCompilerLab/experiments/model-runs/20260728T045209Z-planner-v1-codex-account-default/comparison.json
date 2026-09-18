@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "kind": "planner-v1-input-compilation-comparison",
+  "provider": "codex-cli",
+  "model": "account-default",
+  "commit": "b40f079005cc2bb333a23d545f880c4fe7d2c8df",
+  "createdAt": "2026-07-28T04:54:00.8552667+00:00",
+  "cases": 9,
+  "raw": {
+    "totalCases": 9,
+    "passedCases": 9,
+    "actionCorrect": 9,
+    "planCorrect": 9,
+    "askFieldCorrect": 2,
+    "askFieldApplicable": 2,
+    "runnerErrors": 0,
+    "elapsedMs": 52003.0,
+    "byTaskType": {
+      "clarification": {
+        "passed": 2,
+        "total": 2
+      },
+      "exception_inspection": {
+        "passed": 1,
+        "total": 1
+      },
+      "explanation": {
+        "passed": 1,
+        "total": 1
+      },
+      "material_selection": {
+        "passed": 5,
+        "total": 5
+      }
+    }
+  },
+  "teacherFrame": {
+    "totalCases": 9,
+    "passedCases": 9,
+    "actionCorrect": 9,
+    "planCorrect": 9,
+    "askFieldCorrect": 2,
+    "askFieldApplicable": 2,
+    "runnerErrors": 0,
+    "elapsedMs": 58191.0,
+    "byTaskType": {
+      "clarification": {
+        "passed": 2,
+        "total": 2
+      },
+      "exception_inspection": {
+        "passed": 1,
+        "total": 1
+      },
+      "explanation": {
+        "passed": 1,
+        "total": 1
+      },
+      "material_selection": {
+        "passed": 5,
+        "total": 5
+      }
+    }
+  },
+  "delta": {
+    "passedCases": 0,
+    "actionCorrect": 0,
+    "planCorrect": 0,
+    "runnerErrors": 0,
+    "elapsedMs": 6188
+  }
+}

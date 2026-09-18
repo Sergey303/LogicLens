@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "kind": "compiled-decision-frame-control",
+  "createdAt": "2026-07-29T11:03:12.100331+00:00",
+  "commit": "d9dcb45563ba0ffcab0f326a8b647cec57230090",
+  "studentModel": "epistemic-qwen2.5-coder-7b:cpu-v1",
+  "studentSeed": 42,
+  "splits": {
+    "train": {
+      "split": "train",
+      "totalCases": 6,
+      "framePassedCases": 6,
+      "renderedPassedCases": 6,
+      "actionCorrect": 6,
+      "statusCorrect": 6,
+      "materialCorrect": 6,
+      "askFieldCorrect": 6,
+      "frameErrors": 0,
+      "runnerErrors": 0,
+      "elapsedMs": 69284,
+      "promptEvalCount": 1723,
+      "evalCount": 310
+    },
+    "dev": {
+      "split": "dev",
+      "totalCases": 6,
+      "framePassedCases": 6,
+      "renderedPassedCases": 6,
+      "actionCorrect": 6,
+      "statusCorrect": 6,
+      "materialCorrect": 6,
+      "askFieldCorrect": 6,
+      "frameErrors": 0,
+      "runnerErrors": 0,
+      "elapsedMs": 62532,
+      "promptEvalCount": 1723,
+      "evalCount": 310
+    },
+    "holdout": {
+      "split": "holdout",
+      "totalCases": 6,
+      "framePassedCases": 6,
+      "renderedPassedCases": 6,
+      "actionCorrect": 6,
+      "statusCorrect": 6,
+      "materialCorrect": 6,
+      "askFieldCorrect": 6,
+      "frameErrors": 0,
+      "runnerErrors": 0,
+      "elapsedMs": 62729,
+      "promptEvalCount": 1723,
+      "evalCount": 308
+    }
+  }
+}

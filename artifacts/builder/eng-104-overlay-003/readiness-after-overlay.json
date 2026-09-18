@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "0.1",
+  "stage": "candidate-activation-readiness",
+  "assessmentId": "eng-104-readiness-after-overlay-003",
+  "status": "ready",
+  "source": {
+    "planId": "eng-87-plan-001",
+    "promotionPlanHash": "sha256:3fea6197b578908837a1abe720edf79c4f0133e52027a306b71a4e5b78744990",
+    "candidateHash": "sha256:ca462d810d02c25046a277c12b188bf49d1dc6549be467eee36e2e011621c947",
+    "candidatePackageHash": "sha256:e25879249aa594aac908e8a7ff7e8d94e721d9e1176e840a51a8dd9cf327fbec",
+    "basePackageHash": "sha256:75c31b2751841a42b39fb8fd5627c1ca7ed5fd038b07fa18083a752adfcbf0a7"
+  },
+  "target": {
+    "epoch": 0,
+    "revision": 1
+  },
+  "observedRuntime": {
+    "loadedEpoch": 0,
+    "loadedRevision": 1,
+    "candidateModules": [
+      "candidate_researcher_at_iis"
+    ],
+    "candidateExports": [
+      "researcher_at_iis/2"
+    ]
+  },
+  "checks": {
+    "planVerified": true,
+    "baselineVerified": true,
+    "candidateFilesVerified": true,
+    "targetRevisionRepresented": true,
+    "candidateRuleLoaded": true,
+    "candidatePredicateExposed": true
+  },
+  "blockers": [],
+  "intent": {
+    "staging": "not-performed",
+    "apply": "not-performed",
+    "activePointerUpdate": "not-performed"
+  },
+  "assessmentHash": "sha256:1b41a79486014255dc9e0c9ebb65d0bcb41294b35d66fff47916f9c80af626a7"
+}

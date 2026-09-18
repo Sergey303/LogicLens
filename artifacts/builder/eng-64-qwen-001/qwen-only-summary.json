@@ -1,0 +1,1 @@
+{"provider":{"contextTokens":16384,"kind":"ollama","model":"qwen2.5-coder:7b","outputTokens":2048,"runId":"qwen-run-001","status":"infrastructure-failed"},"result":"infrastructure-failed","schemaVersion":"0.1"}

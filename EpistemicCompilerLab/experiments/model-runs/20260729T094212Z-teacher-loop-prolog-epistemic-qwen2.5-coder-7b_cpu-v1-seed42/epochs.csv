@@ -1,0 +1,4 @@
+epoch,status,changeType,trainPassed,devPassed,promptBytes,prologBytes,fixed,regressed,unchangedFail,hypothesis
+0,baseline,,4,3,999,1285,,,,
+1,accepted,prolog,4,3,999,1636,0,0,2,Explicit generic input-state predicates will help the student distinguish an absent required input from an unsupported supplied value instead of guessing a material.
+2,accepted,prolog,3,3,999,1490,0,1,2,Requiring both query arguments to be instantiated inside current_material/4 will prevent omission from being treated as a variable that Prolog may bind to a supported value.

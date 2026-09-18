@@ -1,0 +1,6 @@
+{
+  "exitCode": 0,
+  "stdout": "Codex JSON response: D:\\projects\\ChatPilotGroup\\LogicLens\\EpistemicCompilerLab\\experiments\\model-runs\\20260729T133449Z-compiled-frame-replication-candidate\\teacher-response.json\nCodex events: D:\\projects\\ChatPilotGroup\\LogicLens\\EpistemicCompilerLab\\experiments\\model-runs\\20260729T133449Z-compiled-frame-replication-candidate\\teacher-events.jsonl\nCodex model selection: account default\n",
+  "stderr": "",
+  "eventsPath": "D:\\projects\\ChatPilotGroup\\LogicLens\\EpistemicCompilerLab\\experiments\\model-runs\\20260729T133449Z-compiled-frame-replication-candidate\\teacher-events.jsonl"
+}
