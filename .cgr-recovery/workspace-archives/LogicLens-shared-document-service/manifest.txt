@@ -1,0 +1,6 @@
+source=/workspace/WorkTrees/LogicLens-shared-document-service
+archive=LogicLens-broken-worktree-20260918.tar.gz
+sha256=6d7397b27142e9abd9c15c36cf5424700976301325506ad8fc05fa25baa21274
+archive_bytes=1422079
+original_git_marker=gitdir: D:/projects/ChatPilotGroup/LogicLens/.git/worktrees/LogicLens-shared-document-service
+excluded_reproducible_dirs=.git,node_modules,bin,obj,.cache,.npm,.pnpm-store,TestResults,coverage,.next,.vite,playwright-report,test-results,dist,build,.turbo,.vs,.venv,venv
